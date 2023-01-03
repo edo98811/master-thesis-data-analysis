@@ -1,0 +1,75 @@
+<component name="InspectionProjectProfileManager">
+  <profile version="1.0">
+    <option name="myName" value="Project Default" />
+    <inspection_tool class="PyCompatibilityInspection" enabled="true" level="WARNING" enabled_by_default="true">
+      <option name="ourVersions">
+        <value>
+          <list size="2">
+            <item index="0" class="java.lang.String" itemvalue="2.7" />
+            <item index="1" class="java.lang.String" itemvalue="3.11" />
+          </list>
+        </value>
+      </option>
+    </inspection_tool>
+    <inspection_tool class="PyPackageRequirementsInspection" enabled="true" level="WARNING" enabled_by_default="true">
+      <option name="ignoredPackages">
+        <value>
+          <list size="49">
+            <item index="0" class="java.lang.String" itemvalue="flake8-executable" />
+            <item index="1" class="java.lang.String" itemvalue="pynrrd" />
+            <item index="2" class="java.lang.String" itemvalue="mypy" />
+            <item index="3" class="java.lang.String" itemvalue="pre-commit" />
+            <item index="4" class="java.lang.String" itemvalue="types-PyYAML" />
+            <item index="5" class="java.lang.String" itemvalue="flake8-bugbear" />
+            <item index="6" class="java.lang.String" itemvalue="torchvision" />
+            <item index="7" class="java.lang.String" itemvalue="lmdb" />
+            <item index="8" class="java.lang.String" itemvalue="pydicom" />
+            <item index="9" class="java.lang.String" itemvalue="mccabe" />
+            <item index="10" class="java.lang.String" itemvalue="sphinx-autodoc-typehints" />
+            <item index="11" class="java.lang.String" itemvalue="fire" />
+            <item index="12" class="java.lang.String" itemvalue="jsonschema" />
+            <item index="13" class="java.lang.String" itemvalue="optuna" />
+            <item index="14" class="java.lang.String" itemvalue="transformers" />
+            <item index="15" class="java.lang.String" itemvalue="h5py" />
+            <item index="16" class="java.lang.String" itemvalue="nni" />
+            <item index="17" class="java.lang.String" itemvalue="pep8-naming" />
+            <item index="18" class="java.lang.String" itemvalue="types-pkg_resources" />
+            <item index="19" class="java.lang.String" itemvalue="psutil" />
+            <item index="20" class="java.lang.String" itemvalue="pyyaml" />
+            <item index="21" class="java.lang.String" itemvalue="tensorboard" />
+            <item index="22" class="java.lang.String" itemvalue="ninja" />
+            <item index="23" class="java.lang.String" itemvalue="matplotlib" />
+            <item index="24" class="java.lang.String" itemvalue="openslide-python" />
+            <item index="25" class="java.lang.String" itemvalue="scikit-image" />
+            <item index="26" class="java.lang.String" itemvalue="pycodestyle" />
+            <item index="27" class="java.lang.String" itemvalue="requests" />
+            <item index="28" class="java.lang.String" itemvalue="pytorch-ignite" />
+            <item index="29" class="java.lang.String" itemvalue="flake8" />
+            <item index="30" class="java.lang.String" itemvalue="recommonmark" />
+            <item index="31" class="java.lang.String" itemvalue="gdown" />
+            <item index="32" class="java.lang.String" itemvalue="parameterized" />
+            <item index="33" class="java.lang.String" itemvalue="flake8-comprehensions" />
+            <item index="34" class="java.lang.String" itemvalue="coverage" />
+            <item index="35" class="java.lang.String" itemvalue="scipy" />
+            <item index="36" class="java.lang.String" itemvalue="pyflakes" />
+            <item index="37" class="java.lang.String" itemvalue="sphinx-rtd-theme" />
+            <item index="38" class="java.lang.String" itemvalue="black" />
+            <item index="39" class="java.lang.String" itemvalue="mlflow" />
+            <item index="40" class="java.lang.String" itemvalue="tqdm" />
+            <item index="41" class="java.lang.String" itemvalue="pandas" />
+            <item index="42" class="java.lang.String" itemvalue="Sphinx" />
+            <item index="43" class="java.lang.String" itemvalue="pylint" />
+            <item index="44" class="java.lang.String" itemvalue="pillow" />
+            <item index="45" class="java.lang.String" itemvalue="tensorboardX" />
+            <item index="46" class="java.lang.String" itemvalue="isort" />
+            <item index="47" class="java.lang.String" itemvalue="einops" />
+            <item index="48" class="java.lang.String" itemvalue="skimage" />
+          </list>
+        </value>
+      </option>
+    </inspection_tool>
+    <inspection_tool class="ShellCheck" enabled="true" level="ERROR" enabled_by_default="true">
+      <shellcheck_settings value="SC2086" />
+    </inspection_tool>
+  </profile>
+</component>
