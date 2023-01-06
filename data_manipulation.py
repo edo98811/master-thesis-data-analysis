@@ -12,7 +12,7 @@ def read_label(label_name, path=""):
 def read_img(img_name, path = ""):
     return nib.load(str(path + img_name))
 
-def list_files(dir,imgname,labelname="",filetype="nii.gz"):
+def list_files(dir,imgname,filetype=".mgz"):
     """
     input
         imgname = str
@@ -21,8 +21,7 @@ def list_files(dir,imgname,labelname="",filetype="nii.gz"):
     """
 
     r_img = []
-    r_label = []
-    #r_all = []
+
     fl_len = len(filetype.split("."))
     for root, dirs, files in os.walk(dir):
         #r_all.append(os.path.join(root))
@@ -32,14 +31,8 @@ def list_files(dir,imgname,labelname="",filetype="nii.gz"):
                 continue
             if l_name[-fl_len-1] == imgname:# and l_name[-fl_len:-1] == filetype:
                 r_img.append(os.path.join(root, name))
-            elif l_name[-fl_len-1] == labelname:
-                r_label.append(os.path.join(root, name))
 
-        return {
-            #"r_all":r_all,
-            "r_img":r_img,
-            "r_annot":r_label
-        }
+        return r_img
 
 def write_dict(all_files, filename):
     json_object = json.dumps(all_files, indent=4)
@@ -63,7 +56,6 @@ def convert_img(img_list):
 
         subj = img_name.split("/")[-3]
         nib.save(img, f"../dataset/{subj}_T1.nii.gz")
-
 
 
 
