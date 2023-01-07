@@ -4,7 +4,6 @@ import nibabel.freesurfer as fs
 import nibabel as nib
 import os
 import json
-from monai.bundle import run
 
 def read_label(label_name, path=""):
     return fs.read_annot(str(path + label_name))
@@ -12,21 +11,26 @@ def read_label(label_name, path=""):
 def read_img(img_name, path = ""):
     return nib.load(str(path + img_name))
 
-def list_files(dir,imgname,filetype=".mgz"):
+def list_files(dir,imgname,filetype="mgz"):
     """
     input
         imgname = str
-        labelname = str
         filetype = str, default = nii.gz
     """
 
     r_img = []
 
     fl_len = len(filetype.split("."))
+    print(fl_len)
+    print(dir)
+    print(filetype)
+    print(filetype.split("."))
     for root, dirs, files in os.walk(dir):
         #r_all.append(os.path.join(root))
+        print(files)
         for name in files:
             l_name = name.split(".")
+            print(l_name)
             if len(l_name) < fl_len+1:
                 continue
             if l_name[-fl_len-1] == imgname:# and l_name[-fl_len:-1] == filetype:

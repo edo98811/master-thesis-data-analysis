@@ -16,6 +16,7 @@ def hausdorff_distance(mask1, mask2):
     )
 
 
+# da fare per maschere non binarie
 def dice_coefficient(mask1, mask2):
     # Convert the data to binary arrays (0 or 1)
     mask1 = mask1.astype(bool)
