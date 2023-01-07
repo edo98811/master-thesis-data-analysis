@@ -10,7 +10,7 @@ def see_random_slice(img):
         fig.add_subplot(rows, cols, i)
         plt.imshow(img[random_idx,:,:].squeeze(), cmap="gray")
         plt.title(f"slice: {random_idx}")
-        plt.axis(False);
+        plt.axis(False)
 
 
 def see_data_sample(sample): #only works with image and label

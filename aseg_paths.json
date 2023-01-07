@@ -1,0 +1,8 @@
+{
+    "free": [
+        "/media/neuropsycad/disk12t/VascoDiogo/OASIS/FS7/sub-OAS31172/mri/aseg.mgz"
+    ],
+    "fast": [
+        "/media/neuropsycad/disk12t/EdoardoFilippiMasterThesis/FastSurfer_output/example/mri/aseg.mgz"
+    ]
+}
