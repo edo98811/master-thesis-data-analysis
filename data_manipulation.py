@@ -4,7 +4,7 @@ import nibabel.freesurfer as fs
 import nibabel as nib
 import os
 import json
-from monai.bundle import run
+
 
 def read_label(label_name, path=""):
     return fs.read_annot(str(path + label_name))

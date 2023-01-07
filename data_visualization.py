@@ -23,7 +23,6 @@ def see_data_sample(sample): #only works with image and label
     fig.add_subplot(1, 1, 1)
     plt.imshow(img[:, :].squeeze(), cmap="gray")
 
-    # TODO: controllare se è ncessario squeeze
     fig.add_subplot(1, 2, 2)
     plt.imshow(label[:, :].squeeze(), cmap="gray")
 

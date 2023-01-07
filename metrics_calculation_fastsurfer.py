@@ -29,10 +29,23 @@ def main():
 
         dice_z = []
         hd_z = []
+        dice_y = []
+        hd_y = []
+        dice_x = []
+        hd_x = []
 
         for slice_n in range(image_fast.shape[2]):
             dice_z.append(m.dice_coefficient(image_fast[:,:,slice_n], image_free[:,:,slice_n]))
             hd_z.append(m.hausdorff_distance(image_fast[:,:,slice_n], image_free[:,:,slice_n]))
+
+        for slice_n in range(image_fast.shape[1]):
+            dice_y.append(m.dice_coefficient(image_fast[:,slice_n,:], image_free[:,slice_n,:]))
+            hd_y.append(m.hausdorff_distance(image_fast[:,slice_n,:], image_free[:,slice_n,:]))
+
+        for slice_n in range(image_fast.shape[0]):
+            dice_x.append(m.dice_coefficient(image_fast[slice_n,:,:], image_free[slice_n,:,:]))
+            hd_x.append(m.hausdorff_distance(image_fast[slice_n,:,:], image_free[slice_n,:,:]))
+
         # add the three dimensions
 
         # add a way to find the name of the image
