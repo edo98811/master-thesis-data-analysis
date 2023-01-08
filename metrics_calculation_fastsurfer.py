@@ -25,19 +25,25 @@ def main():
     dv.see_random_slice()
 
     for image_path_free, image_path_fast in zip(images_list_fastsurfer, images_list_freesurfer):
-        # maybe here it's better to use arrays and not lists
+
         image_fast = dm.read_img(image_path_fast).dataobj
         image_free = dm.read_img(image_path_free).dataobj
 
-def metrics_calcuation(image_fast, image_free):
+        metrics.update(metrics_calculation(image_fast, image_free))
+
+
+def metrics_calculation(image_fast, image_free):
     dice_z = []
     hd_z = []
-    metric = {}
+
     dice_y = []
     hd_y = []
     dice_x = []
     hd_x = []
 
+    metric = {}
+
+    # maybe here it's better to use arrays and not lists
     for slice_n in range(image_fast.shape[2]):
         dice_z.append(m.dice_coefficient(image_fast[:,:,slice_n], image_free[:,:,slice_n]))
         hd_z.append(m.hausdorff_distance(image_fast[:,:,slice_n], image_free[:,:,slice_n]))
@@ -50,14 +56,15 @@ def metrics_calcuation(image_fast, image_free):
         dice_x.append(m.dice_coefficient(image_fast[slice_n,:,:], image_free[slice_n,:,:]))
         hd_x.append(m.hausdorff_distance(image_fast[slice_n,:,:], image_free[slice_n,:,:]))
 
-        # add the three dimensions
-
     # add a way to find the name of the image
-    metric.update({"example":{"dice_z":dice_z, "hd_z":hd_z,
-                              "dice_x":dice_x, "hd_x":hd_x,
-                              "dice_y":dice_y, "hd_y":hd_y}})
+    metric.update({"example":{"dice_z": dice_z, "hd_z": hd_z,
+                              "dice_x": dice_x, "hd_x": hd_x,
+                              "dice_y": dice_y, "hd_y": hd_y}})
 
     return metric
+
+def get_filename(image_path):
+    pass
 
 if __name__ == "__main__":
     main()
