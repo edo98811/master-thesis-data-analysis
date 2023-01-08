@@ -22,7 +22,7 @@ def main():
         #      },
         # "image2":
     }
-    dv.see_random_slice()
+
 
     for image_path_free, image_path_fast in zip(images_list_fastsurfer, images_list_freesurfer):
 
@@ -30,7 +30,8 @@ def main():
         image_free = dm.read_img(image_path_free).dataobj
 
         metrics.update(metrics_calculation(image_fast, image_free))
-
+        dv.see_random_slice(image_free)
+        dv.see_random_slice(image_fast)
 
 def metrics_calculation(image_fast, image_free):
     dice_z = []
