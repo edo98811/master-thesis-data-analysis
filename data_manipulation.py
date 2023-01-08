@@ -30,7 +30,7 @@ def list_files(dir,imgname,filetype="mgz"):
         #print(files)
         for name in files:
             l_name = name.split(".")
-            print(l_name)
+            #print(l_name)
             if len(l_name) < fl_len+1:
                 continue
             if l_name[-fl_len-1] == imgname:# and l_name[-fl_len:-1] == filetype:
