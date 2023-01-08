@@ -27,7 +27,7 @@ def list_files(dir,imgname,filetype="mgz"):
     # print(filetype.split("."))
     for root, dirs, files in os.walk(dir):
         #r_all.append(os.path.join(root))
-        print(files)
+        #print(files)
         for name in files:
             l_name = name.split(".")
             print(l_name)
