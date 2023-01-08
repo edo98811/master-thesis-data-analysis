@@ -21,10 +21,10 @@ def list_files(dir,imgname,filetype="mgz"):
     r_img = []
 
     fl_len = len(filetype.split("."))
-    print(fl_len)
-    print(dir)
-    print(filetype)
-    print(filetype.split("."))
+    # print(fl_len)
+    # print(dir)
+    # print(filetype)
+    # print(filetype.split("."))
     for root, dirs, files in os.walk(dir):
         #r_all.append(os.path.join(root))
         print(files)
