@@ -48,6 +48,7 @@ def metrics_calculation(image_fast, image_free):
 
     # maybe here it's better to use arrays and not lists
     for slice_n in range(image_fast.shape[2]):
+        print(slice_n)
         dice_z.append(m.dice_coefficient(image_fast[:,:,slice_n], image_free[:,:,slice_n]))
         hd_z.append(m.hausdorff_distance(image_fast[:,:,slice_n], image_free[:,:,slice_n]))
 
