@@ -31,7 +31,19 @@ def see_data_sample(sample): #only works with image and label
 def avg_dice(subj):
     all_dice_values = np.nonzero(np.concat(subj["dice_x"],subj["dice_y"],subj["dice_z"]))
 
-    return np.
+    return np.average(all_dice_values)
+
+def plot_dice(subjects, dice_scores):
+
+    plt.bar(subjects, dice_scores)
+
+    # set the title and labels
+    plt.title('Average dice score over 10 subjects')
+    plt.ylabel('Dice score')
+    plt.xlabel('Subject')
+
+    # show the plot
+    plt.show()
 
     
 
