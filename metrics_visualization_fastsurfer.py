@@ -6,12 +6,11 @@ def main():
     data = dm.load_dict("media/neuropsycad/disk12t/EdoardoFilippiMasterThesis/metrics.json")
     avg_dices = np.zeros(len(data))
 
-    for subj in data:
-        avg_dices.append(dv.avg_dice(subj))
+    for i,subj  in enumerate(data):
+        avg_dices[i] = dv.avg_dice(subj)
     
     dv.plot_dice(data.keys(), avg_dices)
 
     
-
 if __name__ == "__main__":
     main()
