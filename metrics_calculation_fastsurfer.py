@@ -56,6 +56,7 @@ def metrics_calculation(image_fast, image_free, subj):
         dice_x[slice_n] = (m.dice_coefficient(image_fast[slice_n,:,:], image_free[slice_n,:,:]))
         #hd_x[slice_n] = (m.hausdorff_distance(image_fast[slice_n,:,:], image_free[slice_n,:,:]))
 
+    # prova
     # add a way to find the name of the image
     return {subj:{"dice_z": dice_z, "hd_z": hd_z,
     "dice_x": dice_x, "hd_x": hd_x,
