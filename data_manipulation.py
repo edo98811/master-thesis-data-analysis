@@ -50,7 +50,7 @@ def list_files(dir,filename):
             if name == filename:
                 r_img.append(os.path.join(root, name))
 
-        return r_img
+    return r_img
 def write_dict(all_files, filename):
     json_object = json.dumps(all_files, indent=4)
 
