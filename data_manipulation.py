@@ -36,7 +36,7 @@ def list_files_all(dir,imgname,filetype="mgz"):
             if l_name[-fl_len-1] == imgname:# and l_name[-fl_len:-1] == filetype:
                 r_img.append(os.path.join(root, name))
 
-        return r_img
+    return r_img
 def list_files(dir,filename):
     """
     input
