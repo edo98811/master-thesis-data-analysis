@@ -12,9 +12,7 @@ def main():
 
     dm.write_dict({"free": images_list_freesurfer, "fast": images_list_fastsurfer}, "aseg_paths.json")
 
-    # to update the dictionary i can use .update()
     metrics = {
-
         # "image":{
         #     "dice": list,
         #     "hd": list
