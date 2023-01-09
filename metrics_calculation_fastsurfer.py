@@ -29,7 +29,7 @@ def main():
         image_fast = dm.read_img(image_path_fast).dataobj
         image_free = dm.read_img(image_path_free).dataobj
 
-        metrics.update(metrics_calculation(image_fast, image_free, image_free.split("/")[-2]))
+        metrics.update(metrics_calculation(image_fast, image_free, image_path_free.split("/")[-2]))
         dv.see_random_slice(image_free)
         dv.see_random_slice(image_fast)
 
