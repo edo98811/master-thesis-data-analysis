@@ -6,9 +6,9 @@ from os.path import dirname
 def main():
     # save all the useful images paths, should work with any path
     basepath_fastsurfer = "/media/neuropsycad/disk12t/EdoardoFilippiMasterThesis/FastSurfer_output/example/mri/"
-    images_list_fastsurfer = dm.list_files(basepath_fastsurfer, "aseg")
+    images_list_fastsurfer = dm.list_files(basepath_fastsurfer, "aseg.mgz")
     basepath_freesurfer = "/media/neuropsycad/disk12t/VascoDiogo/OASIS/FS7/sub-OAS31172/mri/"
-    images_list_freesurfer = dm.list_files(basepath_freesurfer, "aseg")
+    images_list_freesurfer = dm.list_files(basepath_freesurfer, "aseg.mgz")
 
     dm.write_dict({"free": images_list_freesurfer, "fast": images_list_fastsurfer}, "aseg_paths.json")
 
