@@ -11,7 +11,7 @@ def read_label(label_name, path=""):
 def read_img(img_name, path = ""):
     return nib.load(str(path + img_name))
 
-def list_files(dir,imgname,filetype="mgz"):
+def list_files_all(dir,imgname,filetype="mgz"):
     """
     input
         imgname = str
@@ -37,7 +37,20 @@ def list_files(dir,imgname,filetype="mgz"):
                 r_img.append(os.path.join(root, name))
 
         return r_img
+def list_files(dir,filename):
+    """
+    input
+        imgname = str
+    """
+    r_img = []
 
+    for root, dirs, files in os.walk(dir):
+
+        for name in files:
+            if name == filename:
+                r_img.append(os.path.join(root, name))
+
+        return r_img
 def write_dict(all_files, filename):
     json_object = json.dumps(all_files, indent=4)
 
