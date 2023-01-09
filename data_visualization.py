@@ -29,7 +29,8 @@ def see_data_sample(sample): #only works with image and label
     plt.show()
 
 def avg_dice(subj):
-    all_dice_values = np.nonzero(np.concatenate(subj["dice_x"],subj["dice_y"],subj["dice_z"]))
+    # all_dice_values = np.nonzero(np.concatenate(subj["dice_x"],subj["dice_y"],subj["dice_z"]))
+    all_dice_values = np.nonzero(subj["dice_x"] + subj["dice_y"] + subj["dice_z"])
 
     return np.average(all_dice_values)
 
