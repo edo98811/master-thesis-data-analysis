@@ -5,9 +5,9 @@ from os.path import dirname
 
 def main():
     # save all the useful images paths, should work with any path
-    basepath_fastsurfer = "/media/neuropsycad/disk12t/EdoardoFilippiMasterThesis/FastSurfer_output/example/mri/"
+    basepath_fastsurfer = "/media/neuropsycad/disk12t/EdoardoFilippiMasterThesis/FastSurfer_output/"
     images_list_fastsurfer = dm.list_files(basepath_fastsurfer, "aseg.mgz")
-    basepath_freesurfer = "/media/neuropsycad/disk12t/VascoDiogo/OASIS/FS7/sub-OAS31172/mri/"
+    basepath_freesurfer = "/media/neuropsycad/disk12t/VascoDiogo/OASIS/FS7/sub-OAS31172/"
     images_list_freesurfer = dm.list_files(basepath_freesurfer, "aseg.mgz")
 
     dm.write_dict({"free": images_list_freesurfer, "fast": images_list_fastsurfer}, "aseg_paths.json")
@@ -28,13 +28,13 @@ def main():
         image_fast = dm.read_img(image_path_fast).dataobj
         image_free = dm.read_img(image_path_free).dataobj
 
-        metrics.update(metrics_calculation(image_fast, image_free))
+        metrics.update(metrics_calculation(image_fast, image_free, image_free.split("/")[-2]))
         dv.see_random_slice(image_free)
         dv.see_random_slice(image_fast)
 
     dm.write_dict({f"{dirname(basepath_fastsurfer)}":metrics},"metrics.json")
 
-def metrics_calculation(image_fast, image_free):
+def metrics_calculation(image_fast, image_free, subj):
     dice_z = []
     hd_z = []
     dice_y = []
@@ -57,9 +57,9 @@ def metrics_calculation(image_fast, image_free):
 
     # add a way to find the name of the image
 
-    return {"dice_z": dice_z, "hd_z": hd_z,
-            "dice_x": dice_x, "hd_x": hd_x,
-            "dice_y": dice_y, "hd_y": hd_y}
+    return {subj:{"dice_z": dice_z, "hd_z": hd_z,
+                          "dice_x": dice_x, "hd_x": hd_x,
+                          "dice_y": dice_y, "hd_y": hd_y}}
 
 if __name__ == "__main__":
     main()

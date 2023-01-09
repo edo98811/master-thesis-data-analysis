@@ -1,6 +1,6 @@
 import matplotlib.pyplot as plt
 import torch
-
+import numpy as np
 def see_random_slice(img):
     torch.manual_seed(42)
     fig = plt.figure(figsize=(9, 9))
@@ -27,3 +27,11 @@ def see_data_sample(sample): #only works with image and label
     plt.imshow(label[:, :].squeeze(), cmap="gray")
 
     plt.show()
+
+def avg_dice(subj):
+    all_dice_values = np.nonzero(np.concat(subj["dice_x"],subj["dice_y"],subj["dice_z"]))
+
+    return np.
+
+    
+
