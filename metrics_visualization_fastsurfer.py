@@ -3,7 +3,7 @@ import data_visualization as dv
 import numpy as np
 
 def main():
-    data = dm.load_dict("metrics.json")
+    data = dm.load_dict("media/neuropsycad/disk12t/EdoardoFilippiMasterThesis/metrics.json")
     avg_dices = np.zeros(len(data))
 
     for subj in data:
