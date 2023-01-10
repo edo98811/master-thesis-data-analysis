@@ -33,7 +33,7 @@ def main():
         dv.see_random_slice(image_free)
         dv.see_random_slice(image_fast)
 
-    dm.write_dict({f"{dirname(basepath_fastsurfer)}":metrics},"metrics.json")
+    dm.write_dict(metrics,"metrics.json")
 
 def metrics_calculation(image_fast, image_free, subj):
     dice_z = []
