@@ -32,17 +32,24 @@ def dice_coefficient(mask1, mask2):
     # Return the dice coefficient
     return dice
 
-def dice_coefficient(mask1, mask2):
-    # Convert the data to binary arrays (0 or 1)
-    mask1 = mask1.astype(bool)
-    mask2 = mask2.astype(bool)
 
-    # Calculate the dice coefficient
-    intersection = mask1 & mask2
-    if mask1.sum() or mask2.sum() > 0:
-        dice = 2 * intersection.sum() / (mask1.sum() + mask2.sum())
-    else:
-        dice = 0
+def dice_score_multiclass(y_true, y_pred):
+    """
+    Calculates the Dice score for a multiclass segmentation problem.
+    """
+    # Ensure that the masks have the same shape
+    assert y_true.shape == y_pred.shape, f"Masks have different shapes: {y_true.shape} and {y_pred.shape}."
 
-    # Return the dice coefficient
-    return dice
+    n_classes = y_true.shape[-1]
+    dice_scores = []
+
+    for i in range(n_classes):
+        y_true_class = y_true[..., i]
+        y_pred_class = y_pred[..., i]
+        intersection = np.sum(y_true_class * y_pred_class)
+        if y_true_class.sum() or y_pred_class.sum() > 0:
+            dice = (2. * intersection) / (np.sum(y_true_class) + np.sum(y_pred_class))
+
+        dice_scores.append(dice)
+
+    return dice_scores

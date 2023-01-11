@@ -34,6 +34,12 @@ def avg_dice(subj):
     print(all_dice_values)
     return np.average(all_dice_values, axis=None)
 
+def avg_hd(subj):
+    # all_dice_values = np.nonzero(np.concatenate(subj["dice_x"],subj["dice_y"],subj["dice_z"]))
+    all_hd_values = np.nonzero(subj["hd_x"] + subj["hd_y"] + subj["hd_z"])
+    print(all_hd_values)
+    return np.average(all_hd_values)
+
 def plot_dice(subjects, dice_scores):
 
     plt.bar(subjects, dice_scores)
@@ -47,4 +53,14 @@ def plot_dice(subjects, dice_scores):
     plt.show()
 
     
+def plot_hd(subjects, dice_scores):
 
+    plt.bar(subjects, dice_scores)
+
+    # set the title and labels
+    plt.title('Average dice score over 10 subjects')
+    plt.ylabel('Dice score')
+    plt.xlabel('Subject')
+
+    # show the plot
+    plt.show()
