@@ -1,8 +1,26 @@
 {
     "free": [
-        "/media/neuropsycad/disk12t/VascoDiogo/OASIS/FS7/sub-OAS31172/mri/aseg.mgz"
+        "/media/neuropsycad/disk12t/EdoardoFilippiMasterThesis/FastSurfer_output/sub-OAS30336/mri/aseg.mgz",
+        "/media/neuropsycad/disk12t/EdoardoFilippiMasterThesis/FastSurfer_output/sub-OAS30735/mri/aseg.mgz",
+        "/media/neuropsycad/disk12t/EdoardoFilippiMasterThesis/FastSurfer_output/sub-OAS30781/mri/aseg.mgz",
+        "/media/neuropsycad/disk12t/EdoardoFilippiMasterThesis/FastSurfer_output/sub-OAS30303/mri/aseg.mgz",
+        "/media/neuropsycad/disk12t/EdoardoFilippiMasterThesis/FastSurfer_output/sub-OAS30507/mri/aseg.mgz",
+        "/media/neuropsycad/disk12t/EdoardoFilippiMasterThesis/FastSurfer_output/sub-OAS30457/mri/aseg.mgz",
+        "/media/neuropsycad/disk12t/EdoardoFilippiMasterThesis/FastSurfer_output/sub-OAS30890/mri/aseg.mgz",
+        "/media/neuropsycad/disk12t/EdoardoFilippiMasterThesis/FastSurfer_output/sub-OAS30810/mri/aseg.mgz",
+        "/media/neuropsycad/disk12t/EdoardoFilippiMasterThesis/FastSurfer_output/sub-OAS30258/mri/aseg.mgz",
+        "/media/neuropsycad/disk12t/EdoardoFilippiMasterThesis/FastSurfer_output/sub-OAS30297/mri/aseg.mgz"
     ],
     "fast": [
-        "/media/neuropsycad/disk12t/EdoardoFilippiMasterThesis/FastSurfer_output/example/mri/aseg.mgz"
+        "/media/neuropsycad/disk12t/VascoDiogo/OASIS/FS7/sub-OAS30336/mri/aseg.mgz",
+        "/media/neuropsycad/disk12t/VascoDiogo/OASIS/FS7/sub-OAS30735/mri/aseg.mgz",
+        "/media/neuropsycad/disk12t/VascoDiogo/OASIS/FS7/sub-OAS30781/mri/aseg.mgz",
+        "/media/neuropsycad/disk12t/VascoDiogo/OASIS/FS7/sub-OAS30303/mri/aseg.mgz",
+        "/media/neuropsycad/disk12t/VascoDiogo/OASIS/FS7/sub-OAS30507/mri/aseg.mgz",
+        "/media/neuropsycad/disk12t/VascoDiogo/OASIS/FS7/sub-OAS30457/mri/aseg.mgz",
+        "/media/neuropsycad/disk12t/VascoDiogo/OASIS/FS7/sub-OAS30890/mri/aseg.mgz",
+        "/media/neuropsycad/disk12t/VascoDiogo/OASIS/FS7/sub-OAS30810/mri/aseg.mgz",
+        "/media/neuropsycad/disk12t/VascoDiogo/OASIS/FS7/sub-OAS30258/mri/aseg.mgz",
+        "/media/neuropsycad/disk12t/VascoDiogo/OASIS/FS7/sub-OAS30297/mri/aseg.mgz"
     ]
 }

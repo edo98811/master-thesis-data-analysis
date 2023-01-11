@@ -32,3 +32,17 @@ def dice_coefficient(mask1, mask2):
     # Return the dice coefficient
     return dice
 
+def dice_coefficient(mask1, mask2):
+    # Convert the data to binary arrays (0 or 1)
+    mask1 = mask1.astype(bool)
+    mask2 = mask2.astype(bool)
+
+    # Calculate the dice coefficient
+    intersection = mask1 & mask2
+    if mask1.sum() or mask2.sum() > 0:
+        dice = 2 * intersection.sum() / (mask1.sum() + mask2.sum())
+    else:
+        dice = 0
+
+    # Return the dice coefficient
+    return dice

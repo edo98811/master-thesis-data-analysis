@@ -45,7 +45,6 @@ def list_files(dir,filename):
     r_img = []
 
     for root, dirs, files in os.walk(dir):
-
         for name in files:
             if name == filename:
                 r_img.append(os.path.join(root, name))
@@ -65,7 +64,6 @@ def write_txt(list, filename):
 def load_dict(filename):
     with open(filename, "r") as infile:
         img_dict = json.load(infile)
-
     return img_dict
 
 def convert_img(img_list):
