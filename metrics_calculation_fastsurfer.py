@@ -6,26 +6,7 @@ import os
 import numpy as np
 
 def main():
-    # save all the useful images paths, should work with any path
-    basepath_fastsurfer = "/media/neuropsycad/disk12t/EdoardoFilippiMasterThesis/FastSurfer_output/"
-    images_list_fastsurfer_tmp = dm.list_files(basepath_fastsurfer, "aseg.mgz")
-    basepath_freesurfer = "/media/neuropsycad/disk12t/VascoDiogo/OASIS/FS7/"
-    images_list_freesurfer_tmp = dm.list_files(basepath_freesurfer, "aseg.mgz")
-
-    images_list_fastsurfer = []
-    images_list_freesurfer = []
-    for image_path_free in images_list_freesurfer_tmp:
-        for image_path_fast in images_list_fastsurfer_tmp:
-            if ''.join(image_path_fast).split('/')[-3] == ''.join(image_path_free).split('/')[-3]:
-                images_list_freesurfer.append(image_path_fast)
-                images_list_fastsurfer.append(image_path_free)
-
-    del images_list_freesurfer_tmp, images_list_fastsurfer_tmp
-    # after this i should only have the paths to the images i have processed
-
-    dm.write_dict({"free": images_list_freesurfer, "fast": images_list_fastsurfer}, "aseg_paths.json")
-
-    print("saved")
+    #images_list_freesurfer, images_list_fastsurfer = images_paths()
     metrics = {
         # "image":{
         #     "dice": list,
@@ -35,7 +16,9 @@ def main():
         #      },
         # "image2":
     }
-
+    images = dm.load_dict("aseg_paths.json")
+    images_list_freesurfer = images["free"]
+    images_list_fastsurfer = images["fast"]
 
     for image_path_free, image_path_fast in zip(images_list_fastsurfer, images_list_freesurfer):
         subj = ''.join(images_list_freesurfer[0]).split('/')[-3]
@@ -76,6 +59,29 @@ def metrics_calculation(image_fast, image_free, subj):
     return {subj:{"dice_z": dice_z, "hd_z": hd_z,
     "dice_x": dice_x, "hd_x": hd_x,
     "dice_y": dice_y, "hd_y": hd_y}}
+
+def images_paths():
+    # save all the useful images paths, should work with any path
+    basepath_fastsurfer = "/media/neuropsycad/disk12t/EdoardoFilippiMasterThesis/FastSurfer_output/"
+    images_list_fastsurfer_tmp = dm.list_files(basepath_fastsurfer, "aseg.mgz")
+    basepath_freesurfer = "/media/neuropsycad/disk12t/VascoDiogo/OASIS/FS7/"
+    images_list_freesurfer_tmp = dm.list_files(basepath_freesurfer, "aseg.mgz")
+
+    images_list_fastsurfer = []
+    images_list_freesurfer = []
+    for image_path_free in images_list_freesurfer_tmp:
+        for image_path_fast in images_list_fastsurfer_tmp:
+            if ''.join(image_path_fast).split('/')[-3] == ''.join(image_path_free).split('/')[-3]:
+                images_list_freesurfer.append(image_path_fast)
+                images_list_fastsurfer.append(image_path_free)
+
+    del images_list_freesurfer_tmp, images_list_fastsurfer_tmp
+    # after this i should only have the paths to the images i have processed
+
+    dm.write_dict({"free": images_list_freesurfer, "fast": images_list_fastsurfer}, "aseg_paths.json")
+
+    print("saved")
+    return images_list_freesurfer, images_list_fastsurfer
 
 if __name__ == "__main__":
     main()
