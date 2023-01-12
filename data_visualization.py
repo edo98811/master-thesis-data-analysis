@@ -123,6 +123,7 @@ def plot_dice_labels(class_n, dice_scores):
     plt.title('Average dice score over 10 subjects')
     plt.ylabel('Dice score')
     plt.xlabel('class')
+    plt.xticks(class_n_filtered)
 
     # show the plot
     plt.show()
