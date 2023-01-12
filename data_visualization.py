@@ -1,6 +1,7 @@
 import matplotlib.pyplot as plt
 import torch
 import numpy as np
+import re
 def see_random_slice(img):
     torch.manual_seed(42)
     fig = plt.figure(figsize=(9, 9))
@@ -87,7 +88,7 @@ def plot_dice_labels(class_n, dice_scores):
 
     # load the freesurfer labels description
     labels = extract_data("freesurfer_labels.txt")
-
+    print(labels)
     # select only the labels that i need
     labels_needed =[]
     for class_number in class_n:
