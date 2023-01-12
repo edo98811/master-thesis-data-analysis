@@ -115,6 +115,7 @@ def plot_dice_labels(class_n, dice_scores):
 
     # x axis
     x_axis =[i for i in range(len(class_n_filtered))]
+    x_ticks_list = map(str, class_n_filtered)
 
 
     plt.bar(x_axis, dice_scores_filtered)
@@ -123,7 +124,8 @@ def plot_dice_labels(class_n, dice_scores):
     plt.title('Average dice score over 10 subjects')
     plt.ylabel('Dice score')
     plt.xlabel('class')
-    plt.xticks(map(str, class_n_filtered))
+
+    plt.xticks(x_ticks_list)
 
     # show the plot
     plt.show()
