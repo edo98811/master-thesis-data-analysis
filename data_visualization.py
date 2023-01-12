@@ -92,7 +92,7 @@ def plot_dice_labels(class_n, dice_scores):
     labels = extract_data("freesurfer_labels.txt")
     dm.write_dict(labels,"freesurfer_labels.json")
 
-    print(labels)
+    print(class_n)
     # select only the labels that i need
     labels_needed =[]
     for class_number in class_n:
