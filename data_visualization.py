@@ -87,7 +87,7 @@ def plot_dice_labels(class_n, dice_scores):
     for i,value in enumerate(dice_scores):
         if value != 0:
             class_n_filtered.append(class_n[i])
-            dice_scores_filtered.append(class_n[i])
+            dice_scores_filtered.append(dice_scores[i])
 
     # indexes = [i for i,value in enumerate(dice_scores) if value == 0]
     # print(dice_scores)
