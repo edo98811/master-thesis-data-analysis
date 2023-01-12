@@ -115,8 +115,8 @@ def plot_dice_labels(class_n, dice_scores):
 
     # x axis
     x_axis =[i for i in range(len(class_n_filtered))]
-    x_ticks_list = map(str, class_n_filtered)
-    print(typer(x_ticks_list))
+    x_ticks_list = list(map(str, class_n_filtered))
+    print(type(x_ticks_list))
 
 
     plt.bar(x_axis, dice_scores_filtered)
