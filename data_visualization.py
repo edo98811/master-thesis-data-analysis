@@ -110,7 +110,7 @@ def plot_dice_labels(class_n, dice_scores):
     # select only the labels that i need
     labels_needed =[]
     for class_number in class_n_filtered:
-        if class_number in labels_keys():
+        if class_number in labels.keys():
             labels_needed.append(labels[class_number])
 
 
