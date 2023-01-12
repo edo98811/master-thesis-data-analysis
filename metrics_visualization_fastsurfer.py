@@ -15,18 +15,22 @@ def main():
         dices = np.zeros(len(data[subj]["dice_x"][0]))
         avg_dice_class_n = []
 
+        # calculate the dice values per class and not per slice
         for class_n in range(len(dices)):
             dice_values_class_n = [data[subj]["dice_x"][i][class_n] for i in range(len(data[subj]["dice_x"][i]))]
             # print(dice_values_class_n)
             avg_dice_class_n.append(dv.avg_dice(dice_values_class_n))
+
         avg_dices.append(avg_dice_class_n)
-        #print(avg_dices_per_class)
+        # only 1 subject
         if count > 0:
             break
-        #for j,slice in enumerate(data[subj]["dice_x"]):
-        #    dices[j] = dv.avg_dice(slice)
 
-        dv.plot_dice(range(len(avg_dice_class_n)), avg_dice_class_n)
+        # plot
+        class_n_list = []
+        for j in range(len(avg_dice_class_n)):
+            class_n_list.append(i)
+        dv.plot_dice(class_n_list, avg_dice_class_n)
 
     
 if __name__ == "__main__":
