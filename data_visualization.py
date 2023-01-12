@@ -68,7 +68,7 @@ def extract_data(file_path):
     data = {}
     with open(file_path, 'r') as f:
         for line in f:
-            match = re.search(r'^(\d+)\s+[\w-]\s+\d+\s+\d+\s+\d+\s+\d+$', line)
+            match = re.search(r'^(\d+)\s+([\w-]+)\s+\d+\s+\d+\s+\d+\s+\d+$', line)
             if match:
                 data[match.group(1)] = match.group(2)
     return data
