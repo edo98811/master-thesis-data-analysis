@@ -31,24 +31,18 @@ def see_data_sample(sample): #only works with image and label
     plt.show()
 
 def avg_dice(subj_data):
-    # all_dice_values = np.nonzero(np.concatenate(subj["dice_x"],subj["dice_y"],subj["dice_z"]))
-    # all_dice_values = np.nonzero(subj["dice_x"] + subj["dice_y"] + subj["dice_z"])
-    # all_dice_values = subj_data[np.nonzero(subj_data)]
-    # do code for calclating the avg dice
+
     all_dice_values = []
     for n in subj_data:
         if n > 0:
             all_dice_values.append(n)
-    #all_dice_values = filter(lambda n: n > 0, subj_data)
-    #print(f"list{list(all_dice_values)}")
-    #avg_dice = np.average(np.array(list(all_dice_values)), axis=None)
-    #print(avg_dice)
 
-    #avg_dice =
     if len(all_dice_values):
-        return sum(all_dice_values) / len(all_dice_values)
+        return sum(all_dice_values) / len(all_dice_values) # returns a number (avg dice for class over shubject)
     else:
         return 0
+
+
 
 def avg_hd(subj):
     # all_dice_values = np.nonzero(np.concatenate(subj["dice_x"],subj["dice_y"],subj["dice_z"]))
@@ -67,7 +61,42 @@ def plot_dice(class_n, dice_scores):
 
     # show the plot
     plt.show()
+def extract_data(file_path):
+    data = {}
+    with open(file_path, 'r') as f:
+        for line in f:
+            match = re.search(r'^(\d+)\s+(\w+)\s+\d+\s+\d+\s+\d+\s+\d+$', line)
+            if match:
+                data[match.group(1)] = match.group(2)
+    return data
+def plot_dice_labels(class_n, dice_scores):
+    """
 
+    :param class_n: [list of int]
+    :param dice_scores: [list of float]
+    :return:
+    """
+    # select only the dice scores and that exist and their labels
+    indexes,dice_scores_filtered = [(i,value) for i,value in enumerate(dice_scores) if value != 0]
+    class_n.pop(indexes)
+
+    # load the freesurfer labels description
+    labels = extract_data("freesurfer_labels.txt")
+
+    # select only the labels that i need
+    labels_needed =[]
+    for class_number in class_n:
+        labels_needed.append(labels[class_number])
+
+    plt.bar(class_n, dice_scores_filtered)
+
+    # set the title and labels
+    plt.title('Average dice score over 10 subjects')
+    plt.ylabel('Dice score')
+    plt.xlabel('class')
+
+    # show the plot
+    plt.show()
     
 def plot_hd(subjects, dice_scores):
 
