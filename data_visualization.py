@@ -77,7 +77,8 @@ def plot_dice_labels(class_n, dice_scores):
     :return:
     """
     # select only the dice scores and that exist and their labels
-    (indexes, dice_scores_filtered) = [(i,value) for i,value in enumerate(dice_scores) if value != 0]
+    indexes = [i for i,value in enumerate(dice_scores) if value != 0]
+    dice_scores_filtered = [value for i, value in enumerate(dice_scores) if value != 0]
     class_n.pop(indexes)
 
     # load the freesurfer labels description
