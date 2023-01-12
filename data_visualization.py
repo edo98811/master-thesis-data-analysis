@@ -113,7 +113,10 @@ def plot_dice_labels(class_n, dice_scores):
         if class_number in labels.keys():
             labels_needed.append(labels[class_number])
 
+
     # x axis
+    print(len(labels_needed))
+    print(len(labels_needed))
     x_axis =[i for i in range(len(class_n_filtered))]
     x_ticks_list = list(map(str, class_n_filtered))
     print(type(x_ticks_list))
