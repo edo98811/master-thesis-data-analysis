@@ -33,6 +33,7 @@ def main():
     dm.write_dict(metrics, "metrics.json")
 
 def metrics_calculation(image_fast, image_free, subj):
+
     dice_z = []
     hd_z = []
     dice_y = []
