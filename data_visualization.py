@@ -80,16 +80,27 @@ def plot_dice_labels(class_n, dice_scores):
     :return:
     """
     # select only the dice scores and that exist and their labels
-    indexes = [i for i,value in enumerate(dice_scores) if value == 0]
-    print(dice_scores)
-    print(indexes)
-    print(len(indexes))
-    for index in indexes:
-        class_n.pop(index)
-    print(class_n)
-    del indexes,index
 
-    dice_scores_filtered = [value for i, value in enumerate(dice_scores) if value != 0]
+    class_n_filtered = []
+    dice_scores_filtered = []
+
+    for i,value in enumerate(dice_scores):
+        if value != 0:
+            class_n_filtered.append(class_n[i])
+            dice_scores_filtered.append(class_n[i])
+
+    # indexes = [i for i,value in enumerate(dice_scores) if value == 0]
+    # print(dice_scores)
+    # print(indexes)
+    # print(len(indexes))
+    #
+    # for index in indexes:
+    #     class_n.pop(index)
+    #
+    # print(class_n)
+    # del indexes,index
+    #
+    # dice_scores_filtered = [value for i, value in enumerate(dice_scores) if value != 0]
 
 
     # load the freesurfer labels description
@@ -98,12 +109,12 @@ def plot_dice_labels(class_n, dice_scores):
 
     # select only the labels that i need
     labels_needed =[]
-    for class_number in class_n:
+    for class_number in class_n_filtered:
         if class_number in labels_keys():
             labels_needed.append(labels[class_number])
 
 
-    plt.bar(class_n, dice_scores_filtered)
+    plt.bar(class_n_filtered, dice_scores)
 
     # set the title and labels
     plt.title('Average dice score over 10 subjects')
