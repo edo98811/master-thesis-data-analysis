@@ -81,8 +81,10 @@ def plot_dice_labels(class_n, dice_scores):
     """
     # select only the dice scores and that exist and their labels
     indexes = [i for i,value in enumerate(dice_scores) if value == 0]
+    print(indexes)
     for index in indexes:
         class_n.pop(index)
+
     del indexes,index
 
     dice_scores_filtered = [value for i, value in enumerate(dice_scores) if value != 0]
@@ -92,11 +94,13 @@ def plot_dice_labels(class_n, dice_scores):
     labels = extract_data("freesurfer_labels.txt")
     dm.write_dict(labels,"freesurfer_labels.json")
 
-    print(class_n)
+    print(len(class_n))
     # select only the labels that i need
     labels_needed =[]
     for class_number in class_n:
-        labels_needed.append(labels[class_number])
+        if class_number in labels_keys():
+            labels_needed.append(labels[class_number])
+
 
     plt.bar(class_n, dice_scores_filtered)
 
