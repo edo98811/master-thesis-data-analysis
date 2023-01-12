@@ -114,7 +114,7 @@ def plot_dice_labels(class_n, dice_scores):
             labels_needed.append(labels[class_number])
 
     # x axis
-    x_axis =[i for i,_ in range(len(class_n_filtered))]
+    x_axis =[i for i in range(len(class_n_filtered))]
 
 
     plt.bar(x_axis, dice_scores_filtered)
