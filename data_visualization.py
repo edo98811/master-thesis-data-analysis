@@ -114,7 +114,7 @@ def plot_dice_labels(class_n, dice_scores):
             labels_needed.append(labels[class_number])
 
 
-    plt.bar(class_n_filtered, dice_scores)
+    plt.bar(class_n_filtered, dice_scores_filtered)
 
     # set the title and labels
     plt.title('Average dice score over 10 subjects')
