@@ -30,7 +30,7 @@ def main():
         class_n_list = []
         for j in range(len(avg_dice_class_n)):
             class_n_list.append(i)
-        dv.plot_dice(class_n_list, avg_dice_class_n)
+        dv.plot_dice_labels(class_n_list, avg_dice_class_n)
 
     
 if __name__ == "__main__":
