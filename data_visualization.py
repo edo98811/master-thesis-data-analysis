@@ -12,6 +12,8 @@ def see_random_slice(img):
         plt.title(f"slice: {random_idx}")
         plt.axis(False)
 
+    plt.show()
+
 
 def see_data_sample(sample): #only works with image and label
 
@@ -28,11 +30,25 @@ def see_data_sample(sample): #only works with image and label
 
     plt.show()
 
-def avg_dice(subj):
+def avg_dice(subj_data):
     # all_dice_values = np.nonzero(np.concatenate(subj["dice_x"],subj["dice_y"],subj["dice_z"]))
-    all_dice_values = np.nonzero(subj["dice_x"] + subj["dice_y"] + subj["dice_z"])
-    print(all_dice_values)
-    return np.average(all_dice_values, axis=None)
+    # all_dice_values = np.nonzero(subj["dice_x"] + subj["dice_y"] + subj["dice_z"])
+    # all_dice_values = subj_data[np.nonzero(subj_data)]
+    # do code for calclating the avg dice
+    all_dice_values = []
+    for n in subj_data:
+        if n > 0:
+            all_dice_values.append(n)
+    #all_dice_values = filter(lambda n: n > 0, subj_data)
+    #print(f"list{list(all_dice_values)}")
+    #avg_dice = np.average(np.array(list(all_dice_values)), axis=None)
+    #print(avg_dice)
+
+    #avg_dice =
+    if len(all_dice_values):
+        return sum(all_dice_values) / len(all_dice_values)
+    else:
+        return 0
 
 def avg_hd(subj):
     # all_dice_values = np.nonzero(np.concatenate(subj["dice_x"],subj["dice_y"],subj["dice_z"]))
@@ -40,14 +56,14 @@ def avg_hd(subj):
     print(all_hd_values)
     return np.average(all_hd_values)
 
-def plot_dice(subjects, dice_scores):
+def plot_dice(class_n, dice_scores):
 
-    plt.bar(subjects, dice_scores)
+    plt.bar(class_n, dice_scores)
 
     # set the title and labels
     plt.title('Average dice score over 10 subjects')
     plt.ylabel('Dice score')
-    plt.xlabel('Subject')
+    plt.xlabel('class')
 
     # show the plot
     plt.show()

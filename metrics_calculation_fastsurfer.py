@@ -21,14 +21,15 @@ def main():
     images_list_fastsurfer = images["fast"]
 
     for image_path_free, image_path_fast in zip(images_list_fastsurfer, images_list_freesurfer):
-        subj = ''.join(images_list_freesurfer[0]).split('/')[-3]
+        subj = ''.join(image_path_free).split('/')[-3]
         image_fast = dm.read_img(image_path_fast).dataobj
         image_free = dm.read_img(image_path_free).dataobj
 
         metrics.update(metrics_calculation(image_fast, image_free, subj))
-        #dv.see_random_slice(image_free)
-        #dv.see_random_slice(image_fast)
+        # dv.see_random_slice(image_free)
+        # dv.see_random_slice(image_fast)
         print(f"subj:{subj} done")
+    # dv.see_random_slice(image_fast)
     dm.write_dict(metrics, "metrics.json")
 
 def metrics_calculation(image_fast, image_free, subj):
@@ -39,26 +40,31 @@ def metrics_calculation(image_fast, image_free, subj):
     dice_x = []
     hd_x = []
 
-    # maybe here it's better to use arrays and not lists
-    for slice_n in range(image_fast.shape[2]):
-        dice_z.append((m.dice_coefficient(image_fast[:,:,slice_n], image_free[:,:,slice_n])))
-        #hd_z.append((m.hausdorff_distance(image_fast[:,:,slice_n], image_free[:,:,slice_n])))
-        #print(f"slice {slice_n} done")
-    print("dim 2 done")
+    n_classes = np.amax(image_free)
+    # dv.see_random_slice(image_fast)
+    print(image_fast.shape)
 
-    for slice_n in range(image_fast.shape[1]):
-        dice_y.append((m.dice_coefficient(image_fast[:,slice_n,:], image_free[:,slice_n,:])))
-        #hd_y.append((m.hausdorff_distance(image_fast[:,slice_n,:], image_free[:,slice_n,:])))
-    print("dim 0 done")
+    # maybe here it's better to use arrays and not lists
+    # for slice_n in range(image_fast.shape[2]):
+    # dice_z.append((m.dice_coefficient(image_fast[:,:,slice_n], image_free[:,:,slice_n])))
+    # hd_z.append((m.hausdorff_distance(image_fast[:,:,slice_n], image_free[:,:,slice_n])))
+    # print(f"slice {slice_n} done")
+    # print("dim 2 done")
+
+    # for slice_n in range(image_fast.shape[1]):
+    # dice_y.append((m.dice_coefficient(image_fast[:,slice_n,:], image_free[:,slice_n,:])))
+    # hd_y.append((m.hausdorff_distance(image_fast[:,slice_n,:], image_free[:,slice_n,:])))
+    # print("dim 0 done")
 
     for slice_n in range(image_fast.shape[0]):
-        dice_x.append((m.dice_coefficient(image_fast[slice_n,:,:], image_free[slice_n,:,:])))
-        #hd_x.append((m.hausdorff_distance(image_fast[slice_n,:,:], image_free[slice_n,:,:])))
+        dice_x.append(m.dice_multiclass(image_fast[slice_n, :, :], image_free[slice_n, :, :],n_classes))
+        # hd_x.append((m.hausdorff_distance(image_fast[slice_n,:,:], image_free[slice_n,:,:])))
+        print(f"slice {slice_n} done, dice scores: {dice_x[-1]} ")
     print("dim 1 done")
 
-    return {subj:{"dice_z": dice_z, "hd_z": hd_z,
-    "dice_x": dice_x, "hd_x": hd_x,
-    "dice_y": dice_y, "hd_y": hd_y}}
+    return {subj: {"dice_z": dice_z, "hd_z": hd_z,
+                   "dice_x": dice_x, "hd_x": hd_x,
+                   "dice_y": dice_y, "hd_y": hd_y}}
 
 def images_paths():
     # save all the useful images paths, should work with any path
