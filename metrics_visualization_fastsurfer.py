@@ -10,7 +10,7 @@ def main():
     count = 0
     for i,subj in enumerate(data.keys()):
         count = count +1
-        print(data[subj]["dice_x"][0])
+        # print(data[subj]["dice_x"][0])
 
         dices = np.zeros(len(data[subj]["dice_x"][0]))
         avg_dice_class_n = []
