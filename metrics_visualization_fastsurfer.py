@@ -17,23 +17,23 @@ def main():
 
         # calculate the dice values per class and not per slice
         for class_n in range(len(dices)):
-            dice_values_class_n = [data[subj]["dice_x"][i][class_n] for i in range(len(data[subj]["dice_x"][i]))]
+            dice_values_class_n = [data[subj]["dice_x"][j][class_n] for j in range(len(data[subj]["dice_x"][j]))]
             # print(dice_values_class_n)
             avg_dice_class_n.append(dv.avg_dice(dice_values_class_n))
 
-        avg_dices.append(avg_dice_class_n)
-
-        # plot
-        class_n_list = []
-        for j in range(len(avg_dice_class_n)):
-            class_n_list.append(j)
-            class_n_list.append(j)
-
-        dv.plot_dice_labels(class_n_list, avg_dice_class_n)
+        avg_dices.append(avg_dice_class_n) # list of lists
 
         # n of subjects
         if count > 10:
             break
+        del avg_dice_class_n
+
+    # plot
+    class_n_list = []
+    for j in range(len(avg_dices[0])):
+        class_n_list.append(j)
+
+    dv.plot_dice_labels(class_n_list,avg_dices)
 
 if __name__ == "__main__":
     main()

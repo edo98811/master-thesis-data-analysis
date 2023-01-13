@@ -34,6 +34,10 @@ def see_data_sample(sample): #only works with image and label
     plt.show()
 
 def avg_dice(subj_data):
+    """
+    :param subj_data: list of values (for one dice)
+    :return: mean
+    """
 
     all_dice_values = []
     for n in subj_data:
@@ -77,11 +81,22 @@ def plot_dice_labels(class_n, dice_scores):
     """
 
     :param class_n: [list of int]
-    :param dice_scores: [list of float]
+    :param dice_scores: [list of float] or [list of lists of float]
     :return:
     """
-    # select only the dice scores and that exist and their labels
 
+
+    # calculates the average for every element of a list (average of all the first elements, second, etc)
+    dice_scores_tmp = []
+    if isinstance(dice_scores, list):
+        for i in range(len(dice_scores[0])):
+            dice_scores_tmp = [dice_scores[j][i] for j in range(len(dice_scores))]
+
+        del dice_scores
+        dice_scores = avg_dice(dice_scores_tmp)
+        del dice_scores_tmp
+
+    # select only the dice scores and that exist and their labels
     class_n_filtered = []
     dice_scores_filtered = []
 
