@@ -31,8 +31,8 @@ def main():
 
         dv.plot_dice_labels(class_n_list, avg_dice_class_n)
 
-        # only 1 subject
-        if count > 0:
+        # n of subjects
+        if count > 10:
             break
 
 if __name__ == "__main__":

@@ -72,6 +72,7 @@ def extract_data(file_path):
             if match:
                 data[match.group(1)] = match.group(2)
     return data
+
 def plot_dice_labels(class_n, dice_scores):
     """
 
@@ -104,8 +105,9 @@ def plot_dice_labels(class_n, dice_scores):
 
 
     # load the freesurfer labels description
-    labels = extract_data("freesurfer_labels.txt")
-    dm.write_dict(labels,"freesurfer_labels.json")
+    #labels = extract_data("freesurfer_labels.txt")
+    #dm.write_dict(labels,"freesurfer_labels.json")
+    dm.load_dict("freesurfer_labels.json")
 
     # select only the labels that i need
     labels_needed =[]
@@ -115,14 +117,10 @@ def plot_dice_labels(class_n, dice_scores):
 
 
     # x axis
-    print(len(labels_needed))
-    print(len(class_n_filtered))
-    x_axis = [i for i in range(len(class_n_filtered))]
+    x_axis =[i for i in range(len(class_n_filtered))]
     x_ticks_list = list(map(str, class_n_filtered))
-    print(type(x_ticks_list))
-    print(len(x_ticks_list))
 
-
+    # plot
     plt.bar(x_axis, dice_scores_filtered)
 
     # set the title and labels
@@ -130,6 +128,7 @@ def plot_dice_labels(class_n, dice_scores):
     plt.ylabel('Dice score')
     plt.xlabel('class')
 
+    # set the region values
     plt.xticks(x_axis,labels_needed,rotation='vertical')
 
     # show the plot
