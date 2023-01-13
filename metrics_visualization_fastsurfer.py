@@ -17,7 +17,7 @@ def main():
 
         # calculate the dice values per class and not per slice
         for class_n in range(len(dices)):
-            dice_values_class_n = [data[subj]["dice_x"][j][class_n] for j in range(len(data[subj]["dice_x"][j]))]
+            dice_values_class_n = [data[subj]["dice_x"][j][class_n] for j in range(len(data[subj]["dice_x"]))]
             # print(dice_values_class_n)
             avg_dice_class_n.append(dv.avg_dice(dice_values_class_n))
 
