@@ -89,11 +89,12 @@ def plot_dice_labels(class_n, dice_scores):
     # calculates the average for every element of a list (average of all the first elements, second, etc)
     dice_scores_tmp = []
     if isinstance(dice_scores, list):
-        for i in range(len(dice_scores[0])):
-            dice_scores_tmp = [dice_scores[j][i] for j in range(len(dice_scores))]
+        for i in range(len(dice_scores[0])): # itera lungo la lunghezza della lista
+            dice_score_tmp = [dice_scores[j][i] for j in range(len(dice_scores))] #prende l'elemento i da tutte le liste (j)
+            dice_scores_tmp.append(avg_dice(dice_score_tmp)) # calcola la media
 
         del dice_scores
-        dice_scores = avg_dice(dice_scores_tmp)
+        dice_scores = dice_scores_tmp
         del dice_scores_tmp
 
     # select only the dice scores and that exist and their labels
