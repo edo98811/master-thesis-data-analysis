@@ -27,11 +27,13 @@ def main():
         class_n_list = []
         for j in range(len(avg_dice_class_n)):
             class_n_list.append(j)
+            class_n_list.append(j)
+
         dv.plot_dice_labels(class_n_list, avg_dice_class_n)
 
         # only 1 subject
         if count > 0:
             break
-    
+
 if __name__ == "__main__":
     main()

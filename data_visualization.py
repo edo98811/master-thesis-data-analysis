@@ -110,16 +110,17 @@ def plot_dice_labels(class_n, dice_scores):
     # select only the labels that i need
     labels_needed =[]
     for class_number in class_n_filtered:
-        if class_number in labels.keys():
-            labels_needed.append(labels[class_number])
+        if str(class_number) in labels.keys():
+            labels_needed.append(labels[str(class_number)])
 
 
     # x axis
     print(len(labels_needed))
-    print(len(labels_needed))
-    x_axis =[i for i in range(len(class_n_filtered))]
+    print(len(class_n_filtered))
+    x_axis = [i for i in range(len(class_n_filtered))]
     x_ticks_list = list(map(str, class_n_filtered))
     print(type(x_ticks_list))
+    print(len(x_ticks_list))
 
 
     plt.bar(x_axis, dice_scores_filtered)
@@ -129,7 +130,7 @@ def plot_dice_labels(class_n, dice_scores):
     plt.ylabel('Dice score')
     plt.xlabel('class')
 
-    plt.xticks(x_ticks_list)
+    plt.xticks(x_axis,labels_needed,rotation='vertical')
 
     # show the plot
     plt.show()
