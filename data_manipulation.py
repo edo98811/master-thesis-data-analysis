@@ -62,7 +62,7 @@ def write_txt(list, filename):
             f.write(item + '\n')
 
 def load_txt(filename):
-    with open("file1.txt", "r") as file:
+    with open(filename, "r") as file:
         data = file.read()
         return data.split("\n")
 
@@ -86,15 +86,18 @@ def convert_img(img_list):
 
 def select_paths_and_save():
 
-    subj_numbers = load_txt("selected_subjects.txt.txt")
+    subj_numbers = load_txt("selected_subjects.txt")
     subj_paths = []
 
     subj_paths_all = load_txt("list_original_images.txt")
 
     for subj_number in subj_numbers:
         for subj_path in subj_paths_all:
-            if subj_number == subj_path.split("/")[-4]:
-                subj_paths.append(subj_path)
+            print(subj_path.split("/")[-4])
+            print(subj_number)
+            if len(subj_path.split("/")) > 3 :
+                if subj_number == subj_path.split("/")[-4]:
+                    subj_paths.append(subj_path)
 
     write_txt(subj_paths, "paths_selected.txt")
     return subj_paths
