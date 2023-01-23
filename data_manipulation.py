@@ -98,6 +98,8 @@ def select_paths_and_save():
             if len(subj_path.split("/")) > 3 :
                 if subj_number == subj_path.split("/")[-4]:
                     subj_paths.append(subj_path)
+            if subj_number == re.search(r"\d+",subj_path.split("/")[-4]):
+                subj_paths.append(subj_path)
 
     write_txt(subj_paths, "paths_selected.txt")
     return subj_paths
