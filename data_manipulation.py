@@ -86,15 +86,15 @@ def convert_img(img_list):
 
 def select_paths_and_save():
 
-    subj_numbers = load_txt("data_needed.txt")
+    subj_numbers = load_txt("selected_subjects.txt.txt")
     subj_paths = []
 
-    subj_paths_all = load_txt("dataset.txt")
+    subj_paths_all = load_txt("list_original_images.txt")
 
     for subj_number in subj_numbers:
         for subj_path in subj_paths_all:
-            if subj_number == subj_path.split("/")[-1]:
+            if subj_number == subj_path.split("/")[-4]:
                 subj_paths.append(subj_path)
 
-    write_txt(subj_paths, "paths_needed.txt")
+    write_txt(subj_paths, "paths_selected.txt")
     return subj_paths
