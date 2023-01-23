@@ -22,12 +22,14 @@ def main():
 
     for image_path_free, image_path_fast in zip(images_list_fastsurfer, images_list_freesurfer):
         subj = ''.join(image_path_free).split('/')[-3]
+
         image_fast = dm.read_img(image_path_fast).dataobj
         image_free = dm.read_img(image_path_free).dataobj
 
         metrics.update(metrics_calculation(image_fast, image_free, subj))
         # dv.see_random_slice(image_free)
         # dv.see_random_slice(image_fast)
+
         print(f"subj:{subj} done")
     # dv.see_random_slice(image_fast)
     dm.write_dict(metrics, "metrics.json")
@@ -77,6 +79,7 @@ def images_paths():
 
     images_list_fastsurfer = []
     images_list_freesurfer = []
+
     for image_path_free in images_list_freesurfer_tmp:
         for image_path_fast in images_list_fastsurfer_tmp:
             if ''.join(image_path_fast).split('/')[-3] == ''.join(image_path_free).split('/')[-3]:

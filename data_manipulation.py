@@ -62,9 +62,9 @@ def write_txt(list, filename):
             f.write(item + '\n')
 
 def load_txt(filename):
-    with open(filename, 'w') as f:
-        for item in list:
-            f.write(item + '\n')
+    with open("file1.txt", "r") as file:
+        data = file.read()
+        return data.split("\n")
 
 def load_dict(filename):
     with open(filename, "r") as infile:
@@ -84,16 +84,17 @@ def convert_img(img_list):
 
 
 
-def all_paths():
+def select_paths_and_save():
 
-    subj_list = []
+    subj_numbers = load_txt("data_needed.txt")
     subj_paths = []
 
-    subj_paths_all = load_txt()
+    subj_paths_all = load_txt("dataset.txt")
 
-        for subj_number in subj_list:
-            for subj_path in subj_paths_all:
-                if subj_number == subj_path.split("/")[-1]:
-                    subj_paths.append(subj_path)
+    for subj_number in subj_numbers:
+        for subj_path in subj_paths_all:
+            if subj_number == subj_path.split("/")[-1]:
+                subj_paths.append(subj_path)
 
-    write_txt(subj_list)
+    write_txt(subj_paths, "paths_needed.txt")
+    return subj_paths
