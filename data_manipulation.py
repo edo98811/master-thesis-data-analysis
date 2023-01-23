@@ -61,6 +61,11 @@ def write_txt(list, filename):
         for item in list:
             f.write(item + '\n')
 
+def load_txt(filename):
+    with open(filename, 'w') as f:
+        for item in list:
+            f.write(item + '\n')
+
 def load_dict(filename):
     with open(filename, "r") as infile:
         img_dict = json.load(infile)
@@ -79,3 +84,16 @@ def convert_img(img_list):
 
 
 
+def all_paths():
+
+    subj_list = []
+    subj_paths = []
+
+    subj_paths_all = load_txt()
+
+        for subj_number in subj_list:
+            for subj_path in subj_paths_all:
+                if subj_number == subj_path.split("/")[-1]:
+                    subj_paths.append(subj_path)
+
+    write_txt(subj_list)
