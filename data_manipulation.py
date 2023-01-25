@@ -95,6 +95,7 @@ def select_paths_and_save():
         for subj_path in subj_paths_all:
             print(subj_path.split("/")[-4])
             print(subj_number)
+
             if len(subj_path.split("/")) > 3 :
                 if subj_number == subj_path.split("/")[-4]:
                     subj_paths.append(subj_path)
