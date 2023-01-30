@@ -43,6 +43,7 @@ cols_aseg = ['SegId','NVoxels','Volume_mm3','StructName','normMean','normStdDev'
 subjs = []
 df_final1 = pd.DataFrame()
 df_final2 = pd.DataFrame()
+
 for s in subjs_path:
     #print(s)
     subjs.append(s.split("/")[1])
@@ -65,10 +66,11 @@ for s in subjs_path:
     vals = []
     for i in range(len(ls)):
         if (i < 16):
-            vals.append(float(re.findall("\d+\.\d+",ls[i])[0]))
+            vals.append(float(re.findall("\d+\.\d+",ls[i])[0])) # prende i numeri con il punto
         else:
-            vals.append(int(re.findall(r"\d+",ls[i])[0]))
-    df1 = pd.DataFrame({'Metric':df1,'value':vals}).T  
+            vals.append(int(re.findall(r"\d+",ls[i])[0])) # prende i numeri senza punto (ci sono tre righe)
+    df1 = pd.DataFrame({'Metric':df1,'value':vals}).T
+
     sub_df = df1.reset_index()
     sub_df.columns = sub_df.iloc[0]
     sub_df2 = sub_df.drop(sub_df.index[0])
