@@ -37,7 +37,8 @@ def stats(subj_paths):
 
             # parte 1
             match = re.search(r"# Measure (\w+),\s*\w+,.*,\s*(\d+| \d+.\d+)\s*,\s*(\w+)", line)
-
+            print(match)
+            print(type(match))
             if match:
                 if first:
                     df_dict[match.group(1)] = [match.group(2)]
