@@ -55,10 +55,9 @@ def stats(subj_paths):
                 print(match)
                 print(match.groups())
                 print(first_1)
-                if first:
+                if first_1:
                     df_dict[match.group(1)] = [match.group(2)]
                     print(df_dict)
-                    first_1 = False
                 else:
                     df_dict[match.group(1)].append(
                         match.group(2))
@@ -66,21 +65,24 @@ def stats(subj_paths):
             #except:
             #    print("error in part one of stats")
             # parte 2
-            try:
-                if not line.startswith("#"):
-                    values = line.strip().split("\t")
-                    if first:
-                        first_2 = False
-                        df_dict[values[4] + " volume"] = [values[3]]
-                    else:
-                        df_dict[f"{values[4]} volume"].append(values[3])
+            #try:
+            if not line.startswith("#"):
+                values = line.strip().split()
+                print(values)
+                if first_2:
+                    df_dict[values[4] + " volume"] = [values[3]]
+                else:
+                    df_dict[f"{values[4]} volume"].append(values[3])
 
 
 
-            except:
-                print("error in part two of stats")
+            # except:
+            #    print("error in part two of stats")
 
-        return pd.DataFrame.from_dict(df_dict, orient='columns')
+        first_2 = False
+        first_1 = False
+        print(df_dict)
+    return pd.DataFrame.from_dict(df_dict, orient='columns')
 
 
 if __name__ == "__main__":
