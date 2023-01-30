@@ -7,7 +7,7 @@ import data_visualization as dv
 # dm.write_txt(images_list["images"], "list_original_images.txt")
 
 def main():
-    dm.select_paths_and_save()
+    dm.select_paths_and_save("AD_dementia_subjects.txt", "AD_dementia_subjects_paths.txt")
 
 
 

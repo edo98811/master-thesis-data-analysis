@@ -4,6 +4,7 @@ import nibabel.freesurfer as fs
 import nibabel as nib
 import os
 import json
+import re
 
 def read_label(label_name, path=""):
     return fs.read_annot(str(path + label_name))
@@ -84,23 +85,22 @@ def convert_img(img_list):
 
 
 
-def select_paths_and_save():
+def select_paths_and_save(original_file, destination_file):
 
-    subj_numbers = load_txt("selected_subjects.txt")
+    subj_numbers = load_txt(original_file)
     subj_paths = []
 
     subj_paths_all = load_txt("list_original_images.txt")
 
     for subj_number in subj_numbers:
         for subj_path in subj_paths_all:
-            print(subj_path.split("/")[-4])
-            print(subj_number)
-
-            if len(subj_path.split("/")) > 3 :
-                if subj_number == subj_path.split("/")[-4]:
+           # print(subj_number)
+           # print(len(subj_path.split("/")))
+            if len(subj_path.split("/")) > 3:
+                match = re.split("sub-", subj_path.split("/")[-4])
+                # print(match)
+                if subj_number == match[1]:
                     subj_paths.append(subj_path)
-            if subj_number == re.search(r"\d+",subj_path.split("/")[-4]):
-                subj_paths.append(subj_path)
 
-    write_txt(subj_paths, "paths_selected.txt")
+    write_txt(subj_paths, destination_file)
     return subj_paths
