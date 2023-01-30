@@ -7,18 +7,22 @@ import re
 
 
 def extract_path(filename, base_path):
-    all_path = []
-
-    for path, subdirs, files in os.walk(base_path):
-        for name in files:
-            all_path.append(os.path.join(path, name))
+    #all_path = []
 
     subjs_path = []
+    for path, subdirs, files in os.walk(base_path):
+        if path.split("/")[-1] == '/stats/':
+            for name in files:
+                print( path + name)
+                # all_path.append(os.path.join(path, name))
+                if name == filename:
+                    subjs_path.append(path + name)
 
-    for p in all_path:
-        if '/stats/' in p:
-            if filename in p:
-                subjs_path.append(p)
+
+    # for p in all_path:
+    #     if '/stats/' in p:
+    #         if filename in p:
+    #             subjs_path.append(p)
 
     return subjs_path
 
