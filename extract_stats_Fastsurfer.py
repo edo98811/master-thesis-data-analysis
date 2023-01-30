@@ -7,14 +7,14 @@ import re
 
 
 def extract_path(filename, base_path):
-    #all_path = []
+    # all_path = []
 
     subjs_path = []
     for path, subdirs, files in os.walk(base_path):
-        #print(path.split("/"))
+        # print(path.split("/"))
         if path.split("/")[-1] == 'stats':
             for name in files:
-                #print(path + name)
+                # print(path + name)
                 # all_path.append(os.path.join(path, name))
                 if name == filename:
                     subjs_path.append(path + "/" + name)
@@ -30,10 +30,9 @@ def extract_path(filename, base_path):
 
 
 def stats(subj_paths):
-
     df_dict = {}
 
-    for n,path in enumerate(subj_paths):
+    for n, path in enumerate(subj_paths):
         print("extracting stats for subject " + str(n + 1) + ", path:" + path)
         with open(path, "r") as file:
             data = file.readlines()
@@ -44,9 +43,11 @@ def stats(subj_paths):
 
             # parte 1
             try:
-                match = re.search(r"# Measure (\w+),\s*\w+,.*,\s*(\d+| \d+.\d+)\s*,\s*(\w+)", line)
-                #print(match)
-                #print(type(match))
+                #match = re.fullmatch(r"^# Measure \s* (\w+),\s*\w+,.*,\s*(\d+| \d+.\d+)\s*,\s*, \w+$", line)
+                match = re.fullmatch(r"^# Measure .+", line)
+
+                # print(match)
+                # print(type(match))
                 if match:
                     if first:
                         df_dict[match.group(1)] = [match.group(2)]
@@ -70,7 +71,6 @@ def stats(subj_paths):
             except:
                 print("error in part two of stats")
 
-
         return pd.DataFrame.from_dict(df_dict, orient='columns')
 
 
@@ -86,5 +86,3 @@ if __name__ == "__main__":
         stats(subj_paths).to_csv("aseg.csv")
     else:
         print("no file found")
-
-
