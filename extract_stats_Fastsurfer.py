@@ -60,10 +60,10 @@ def stats(subj_paths):
 
 
 if __name__ == "__main__":
-    base_path = ''
+    base_path = 'media/neuropsycad/disk12t/EdoardoFilippiMasterThesis/FastSurfer_Output_Comparison_AD'
 
     # the filename of the stats to extract
-    filename = ''
+    filename = 'aseg.stats'
 
     subj_paths = extract_path(filename, base_path)
     stats(subj_paths).to_csv("aseg.csv")
