@@ -1,9 +1,8 @@
 import pandas as pd
-import os
 
 def main():
     path = r"C:\Users\edoar\OneDrive - CLOUDEA S.R.L\Polito Materiale\BIOMEDICA\Tesi\subjs_diagnosis.xlsx"
-    assert os.path.isfile(path)
+
     df = pd.read_excel(path)
 
     # unique_values = df.iloc[:, 1].unique()
