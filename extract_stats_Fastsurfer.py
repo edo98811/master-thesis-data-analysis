@@ -52,7 +52,7 @@ def stats(subj_paths):
                 if first:
                     df_dict[values[4] + " volume"] = [values[3]]
                 else:
-                    df_dict[values[4]].append(values[4])  # mette le misure in due liste e i nomi delle misure anche
+                    df_dict[f"{values[4]} volume"].append(values[3])
 
             first = False
 
