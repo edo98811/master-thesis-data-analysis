@@ -7,7 +7,6 @@ import re
 
 
 def extract_path(filename, base_path):
-
     subjs_path = []
     for path, subdirs, files in os.walk(base_path):
         if path.split("/")[-1] == 'stats':
@@ -38,7 +37,7 @@ def stats(subj_paths):
         for i, line in enumerate(data):
 
             # part 1
-            match = re.match(r"^# Measure (\w+).+(\d+ | \d+\.\d+),\s\w+$", line)
+            match = re.match(r"^# Measure (\w+).+(\d+ | \d+\.\d+),\s.+$", line)
 
             if match:
                 # if it's the first iteration it creates the lists, assumes all the files are the same (which should be)
@@ -50,11 +49,11 @@ def stats(subj_paths):
                         match.group(2))
 
             # part 2
-            if not line.startswith("#"):    # the last table is the only part in which the lines don't start with #
-                values = line.strip().split()   # extracts the words and puts them in lists
+            if not line.startswith("#"):  # the last table is the only part in which the lines don't start with #
+                values = line.strip().split()  # extracts the words and puts them in lists
 
                 if not n:
-                    df_dict[values[4] + " volume"] = [values[3]]
+                    df_dict[values[4] + " volume"] = [values[3]]  # the volume is in column 4(index 3) name in column 5
                 else:
                     df_dict[f"{values[4]} volume"].append(values[3])
 
