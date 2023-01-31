@@ -43,7 +43,6 @@ def stats(subj_paths):
                 # if it's the first iteration it creates the lists, assumes all the files are the same (which should be)
                 if not n:
                     df_dict[match.group(1)] = [match.group(2)]
-                    print(df_dict)
                 else:
                     df_dict[match.group(1)].append(
                         match.group(2))
