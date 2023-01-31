@@ -23,20 +23,26 @@ def extract_path(filename, base_path):
 
 
 def stats(subj_paths):
-    df_dict = {}
+    df_dict = {"subjects": []}
 
     first = True
     for n, path in enumerate(subj_paths):
         print("extracting stats for subject " + str(n + 1) + ", path:" + path)
+
+        # saving the subject name
+        df_dict["subjects"].append(path.split("/")[-3])
+
         with open(path, "r") as file:
             data = file.readlines()
 
+        # iterating along the file
         for i, line in enumerate(data):
 
-            # parte 1
-            match = re.match(r"^# Measure (\w+).+(\d | \d+\.\d+),\s\w+$", line)
+            # part 1
+            match = re.match(r"^# Measure (\w+).+(\d+ | \d+\.\d+),\s\w+$", line)
 
             if match:
+                # if it's the first iteration it creates the lists, assumes all the files are the same (which should be)
                 if first:
                     df_dict[match.group(1)] = [match.group(2)]
                     print(df_dict)
@@ -44,7 +50,7 @@ def stats(subj_paths):
                     df_dict[match.group(1)].append(
                         match.group(2))
 
-            # parte 2
+            # part 2
             if not line.startswith("#"):
                 values = line.strip().split()
                 print(values)
