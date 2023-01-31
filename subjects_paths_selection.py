@@ -9,7 +9,5 @@ import data_visualization as dv
 def main():
     dm.select_paths_and_save("AD_dementia_subjects.txt", "AD_dementia_subjects_paths.txt")
 
-
-
 if __name__ == "__main__":
     main()
