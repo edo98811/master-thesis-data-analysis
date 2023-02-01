@@ -9,8 +9,8 @@ def t_test(base_path, filename1, filename2, column_to_compare):
 
     a = table1.loc[:, column_to_compare]
     b = table2.loc[:, column_to_compare]
-    print(a)
-    print(b)
+    #print(a)
+    #print(b)
 
     t_stat, p_value = stats.ttest_ind(a, b)
 
@@ -20,6 +20,7 @@ def t_test(base_path, filename1, filename2, column_to_compare):
         print(f"p-value: {p_value} - null hypothesis cannot be rejected, means are statistically equal")
     else:
         print(f"p-value: {p_value} - null hypothesis rejected, means are not statistically equal")
+    return
 
 def mann_whitney(base_path, filename1, filename2, column_to_compare):
     table1 = pd.read_csv(base_path + filename1)
@@ -27,17 +28,18 @@ def mann_whitney(base_path, filename1, filename2, column_to_compare):
 
     a = table1.loc[:, column_to_compare]
     b = table2.loc[:, column_to_compare]
-    print(a)
-    print(b)
+    #print(a)
+    #print(b)
 
     t_stat, p_value = stats.mannwhitneyu(a, b)
 
     # p value is the likelihood that these are the same
     print("Mann Whitney")
     if p_value > 0.05:
-        print(f"p-value: {p_value} - null hypothesis cannot be rejected, means are statistically equal")
+        print(f"p-value: {p_value} - null hypothesis cannot be rejected")
     else:
-        print(f"p-value: {p_value} - null hypothesis rejected, means are not statistically equal")
+        print(f"p-value: {p_value} - null hypothesis rejected")
+    return
 
 if __name__ == "__main__":
 
@@ -45,6 +47,11 @@ if __name__ == "__main__":
     filename1 = "Stats_Freesurfer/aseg_AD.csv"
     filename2 = "Stats_FastSurfer/aseg_AD.csv"
     column_to_compare = "Left-Hippocampus volume"
+
+    mann_whitney(base_path, filename1, filename2, column_to_compare)
+    t_test(base_path, filename1, filename2, column_to_compare)
+
+    column_to_compare = "Right-Hippocampus volume"
 
     mann_whitney(base_path, filename1, filename2, column_to_compare)
     t_test(base_path, filename1, filename2, column_to_compare)
