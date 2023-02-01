@@ -27,7 +27,7 @@ def extract_path(filename, base_path, subj_list):
     return subjs_path
 
 
-def stats_aseg(subj_paths, subj_list):
+def stats_aseg(subj_paths):
     df_dict = {"subjects": []}
 
     for n, path in enumerate(subj_paths):
@@ -67,7 +67,7 @@ def stats_aseg(subj_paths, subj_list):
     return pd.DataFrame.from_dict(df_dict, orient='columns')
 
 
-def stats_aparcDTK(subj_paths, subj_list):
+def stats_aparcDTK(subj_paths):
     df_dict = {"subjects": []}
 
     for n, path in enumerate(subj_paths):
@@ -121,72 +121,88 @@ def stats_aparcDTK(subj_paths, subj_list):
 
     return pd.DataFrame.from_dict(df_dict, orient='columns')
 
+def calculate_stats(filename, fileneame_save, base_path, save_path, subj_list):
+
+    subj_paths = extract_path(filename, base_path, subj_list)
+    if subj_paths:
+        print("stats file found for " + str(len(subj_paths)) + " subjects")
+        stats_aseg(subj_paths).to_csv(save_path + fileneame_save, index=False)
+    else:
+        print("no file found")
+
 if __name__ == "__main__":
     base_path = '/media/neuropsycad/disk12t/VascoDiogo/OASIS/FS7/'
     save_path = "/media/neuropsycad/disk12t/EdoardoFilippiMasterThesis/Stats_Freesurfer/"
+
     healthy = dm.load_txt("paths_selected_healthy.txt")
     AD = dm.load_txt("paths_selected_AD.txt")
 
-
-    # aseg
-    filename = 'aseg.stats'
-
-    subj_paths = extract_path(filename, base_path, healthy)
-    if subj_paths:
-        print("stats file found for " + str(len(subj_paths)) + " subjects")
-        stats_aseg(subj_paths, healthy).to_csv(save_path + "aseg_healthy.csv", index=False)
-    else:
-        print("no file found")
-
-    filename = 'aseg.stats'
-
-    subj_paths = extract_path(filename, base_path, AD)
-    if subj_paths:
-        print("stats file found for " + str(len(subj_paths)) + " subjects")
-        stats_aseg(subj_paths, AD).to_csv(save_path + "aseg_AD.csv", index=False)
-    else:
-        print("no file found")
-
-    # AD
-    # left hemisphere
-    # the filename of the stats to extract
-    filename = 'lh.aparc.DKTatlas.stats'
-
-    subj_paths = extract_path(filename, base_path, AD)
-    if subj_paths:
-        print("stats file found for " + str(len(subj_paths)) + " subjects")
-        stats_aparcDTK(subj_paths, AD).to_csv(save_path + "aparcDKT_left_AD.csv", index=False)
-    else:
-        print("no file found")
-
-    # right hemisphere
-    filename = 'rh.aparc.DKTatlas.stats'
-
-    subj_paths = extract_path(filename, base_path, AD)
-    if subj_paths:
-        print("stats file found for " + str(len(subj_paths)) + " subjects")
-        stats_aparcDTK(subj_paths, AD).to_csv(save_path + "aparcDKT_right_AD.csv", index=False)
-    else:
-        print("no file found")
-
-
-    # healthy
-    # left hemisphere
-    filename = 'lh.aparc.DKTatlas.stats'
-
-    subj_paths = extract_path(filename, base_path, healthy)
-    if subj_paths:
-        print("stats file found for " + str(len(subj_paths)) + " subjects")
-        stats_aparcDTK(subj_paths, healthy).to_csv(save_path + "aparcDKT_left_healthy.csv", index=False)
-    else:
-        print("no file found")
-
-    # right hemisphere
-    filename = 'rh.aparc.DKTatlas.stats'
-
-    subj_paths = extract_path(filename, base_path, healthy)
-    if subj_paths:
-        print("stats file found for " + str(len(subj_paths)) + " subjects")
-        stats_aparcDTK(subj_paths, healthy).to_csv(save_path + "aparcDKT_right_healthy.csv", index=False)
-    else:
-        print("no file found")
+    calculate_stats('aseg.stats', "aseg_healthy.csv", base_path, save_path, healthy)
+    calculate_stats('aseg.stats', "aseg_AD.csv", base_path, save_path, AD)
+    calculate_stats('rh.aparc.DKTatlas.stats', "aparcDKT_left_AD.csv.csv", base_path, save_path, AD)
+    calculate_stats('rh.aparc.DKTatlas.stats', "aparcDKT_left_healthy.csv.csv", base_path, save_path, healthy)
+    calculate_stats('lh.aparc.DKTatlas.stats', "aparcDKT_right_AD.csv.csv", base_path, save_path, healthy)
+    calculate_stats('lh.aparc.DKTatlas.stats', "aparcDKT_right_healthy.csv.csv", base_path, save_path, AD)
+    #
+    # # aseg
+    # filename = 'aseg.stats'
+    #
+    # subj_paths = extract_path(filename, base_path, healthy)
+    # if subj_paths:
+    #     print("stats file found for " + str(len(subj_paths)) + " subjects")
+    #     stats_aseg(subj_paths).to_csv(save_path + "aseg_healthy.csv", index=False)
+    # else:
+    #     print("no file found")
+    #
+    # filename = 'aseg.stats'
+    #
+    # subj_paths = extract_path(filename, base_path, AD)
+    # if subj_paths:
+    #     print("stats file found for " + str(len(subj_paths)) + " subjects")
+    #     stats_aseg(subj_paths).to_csv(save_path + "aseg_AD.csv", index=False)
+    # else:
+    #     print("no file found")
+    #
+    # # AD
+    # # left hemisphere
+    # # the filename of the stats to extract
+    # filename = 'lh.aparc.DKTatlas.stats'
+    #
+    # subj_paths = extract_path(filename, base_path, AD)
+    # if subj_paths:
+    #     print("stats file found for " + str(len(subj_paths)) + " subjects")
+    #     stats_aparcDTK(subj_paths).to_csv(save_path + "aparcDKT_left_AD.csv", index=False)
+    # else:
+    #     print("no file found")
+    #
+    # # right hemisphere
+    # filename = 'rh.aparc.DKTatlas.stats'
+    #
+    # subj_paths = extract_path(filename, base_path, AD)
+    # if subj_paths:
+    #     print("stats file found for " + str(len(subj_paths)) + " subjects")
+    #     stats_aparcDTK(subj_paths).to_csv(save_path + "aparcDKT_right_AD.csv", index=False)
+    # else:
+    #     print("no file found")
+    #
+    #
+    # # healthy
+    # # left hemisphere
+    # filename = 'lh.aparc.DKTatlas.stats'
+    #
+    # subj_paths = extract_path(filename, base_path, healthy)
+    # if subj_paths:
+    #     print("stats file found for " + str(len(subj_paths)) + " subjects")
+    #     stats_aparcDTK(subj_paths).to_csv(save_path + "aparcDKT_left_healthy.csv", index=False)
+    # else:
+    #     print("no file found")
+    #
+    # # right hemisphere
+    # filename = 'rh.aparc.DKTatlas.stats'
+    #
+    # subj_paths = extract_path(filename, base_path, healthy)
+    # if subj_paths:
+    #     print("stats file found for " + str(len(subj_paths)) + " subjects")
+    #     stats_aparcDTK(subj_paths).to_csv(save_path + "aparcDKT_right_healthy.csv", index=False)
+    # else:
+    #     print("no file found")

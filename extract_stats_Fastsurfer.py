@@ -103,12 +103,6 @@ def stats_aparcDTK(subj_paths):
 
     dm.write_dict(df_dict, "prova_df_dict.json")
 
-    # if some columns have different length
-    #for key in df_dict.keys():
-    #    if len(df_dict[key]) != n+1:
-    #        for _ in range(10 - len(df_dict[key])):
-    #            df_dict[key].append("NaN")
-
     return pd.DataFrame.from_dict(df_dict, orient='columns')
 
 if __name__ == "__main__":
