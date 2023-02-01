@@ -121,12 +121,15 @@ def stats_aparcDTK(subj_paths):
 
     return pd.DataFrame.from_dict(df_dict, orient='columns')
 
-def calculate_stats(filename, fileneame_save, base_path, save_path, subj_list):
+def calculate_stats(filename, fileneame_save, base_path, save_path, subj_list, type):
 
     subj_paths = extract_path(filename, base_path, subj_list)
     if subj_paths:
         print("stats file found for " + str(len(subj_paths)) + " subjects")
-        stats_aseg(subj_paths).to_csv(save_path + fileneame_save, index=False)
+        if type == 0:
+            stats_aseg(subj_paths).to_csv(save_path + fileneame_save, index=False)
+        elif type == 1:
+            stats_aparcDTK(subj_paths).to_csv(save_path + fileneame_save, index=False)
     else:
         print("no file found")
 
@@ -137,12 +140,12 @@ if __name__ == "__main__":
     healthy = dm.load_txt("paths_selected_healthy.txt")
     AD = dm.load_txt("paths_selected_AD.txt")
 
-    calculate_stats('aseg.stats', "aseg_healthy.csv", base_path, save_path, healthy)
-    calculate_stats('aseg.stats', "aseg_AD.csv", base_path, save_path, AD)
-    calculate_stats('rh.aparc.DKTatlas.stats', "aparcDKT_left_AD.csv.csv", base_path, save_path, AD)
-    calculate_stats('rh.aparc.DKTatlas.stats', "aparcDKT_left_healthy.csv.csv", base_path, save_path, healthy)
-    calculate_stats('lh.aparc.DKTatlas.stats', "aparcDKT_right_AD.csv.csv", base_path, save_path, healthy)
-    calculate_stats('lh.aparc.DKTatlas.stats', "aparcDKT_right_healthy.csv.csv", base_path, save_path, AD)
+    calculate_stats('aseg.stats', "aseg_healthy.csv", base_path, save_path, healthy, 0)
+    calculate_stats('aseg.stats', "aseg_AD.csv", base_path, save_path, AD, 0)
+    calculate_stats('rh.aparc.DKTatlas.stats', "aparcDKT_left_AD.csv.csv", base_path, save_path, AD, 1)
+    calculate_stats('rh.aparc.DKTatlas.stats', "aparcDKT_left_healthy.csv.csv", base_path, save_path, healthy, 1)
+    calculate_stats('lh.aparc.DKTatlas.stats', "aparcDKT_right_AD.csv.csv", base_path, save_path, healthy, 1)
+    calculate_stats('lh.aparc.DKTatlas.stats', "aparcDKT_right_healthy.csv.csv", base_path, save_path, AD, 1)
     #
     # # aseg
     # filename = 'aseg.stats'
