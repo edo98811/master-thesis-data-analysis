@@ -4,11 +4,13 @@ import pandas as pd
 from scipy import stats
 
 def t_test(base_path, filename1, filename2, column_to_compare):
-    table1 = pd.read_csv(base_path + filename1)
-    table2 = pd.read_csv(base_path + filename2)
+    df1 = pd.read_csv(base_path + filename1)
+    df2 = pd.read_csv(base_path + filename2)
 
-    a = table1.loc[:, column_to_compare]
-    b = table2.loc[:, column_to_compare]
+    df1 = df1[df1['subjects'].isin(df2['subjects'].tolist())]
+
+    a = df1.loc[:, column_to_compare]
+    b = df2.loc[:, column_to_compare]
     #print(a)
     #print(b)
 
@@ -23,11 +25,13 @@ def t_test(base_path, filename1, filename2, column_to_compare):
     return
 
 def mann_whitney(base_path, filename1, filename2, column_to_compare):
-    table1 = pd.read_csv(base_path + filename1)
-    table2 = pd.read_csv(base_path + filename2)
+    df1 = pd.read_csv(base_path + filename1)
+    df2 = pd.read_csv(base_path + filename2)
 
-    a = table1.loc[:, column_to_compare]
-    b = table2.loc[:, column_to_compare]
+    df1 = df1[df1['subjects'].isin(df2['subjects'].tolist())]
+
+    a = df1.loc[:, column_to_compare]
+    b = df2.loc[:, column_to_compare]
     #print(a)
     #print(b)
 
