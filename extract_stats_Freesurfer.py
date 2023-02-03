@@ -95,16 +95,11 @@ def stats_aparcDTK(subj_paths):
                 if not n:
                     df_dict[match.group(1)] = [match.group(2)]
                 else:
-                    if match.group(1) not in df_dict.keys():
-                        df_dict[match.group(1)] = ["NaN"]
+                    if match.group(1) in df_dict.keys():
+                        df_dict[match.group(1)].append(match.group(2))
                     else:
-                        if match.group(1) in df_dict.keys():
-                            df_dict[match.group(1)].append(match.group(2))
-                        else:
-                            if f"{values[4]} volume" in df_dict.keys():
-                                df_dict[f"{values[4]} volume"].append(values[3])
-                            else:
-                                df_dict[values[4] + " volume"] = ["NaN", values[3]]
+                        df_dict[match.group(1)] = ["NaN", match.group(2)]
+
 
 
             # part 2
@@ -114,7 +109,10 @@ def stats_aparcDTK(subj_paths):
                 if not n:
                     df_dict[values[0] + " mean thickness"] = [values[2]]  # the volume is in column 4(index 3) name in column 5
                 else:
-                    df_dict[f"{values[0]} mean thickness"].append(values[2])
+                    if f"{values[0]} volume" in df_dict.keys():
+                        df_dict[f"{values[0]} mean thickness"].append(values[3])
+                    else:
+                        df_dict[values[0] + " mean thickness"] = ["NaN", values[3]]
 
         # if some columns have different length
         for key in df_dict.keys():
