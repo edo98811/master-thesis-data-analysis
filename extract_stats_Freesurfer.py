@@ -51,9 +51,10 @@ def stats_aseg(subj_paths):
                 if not n:
                     df_dict[match.group(1)] = [match.group(2)]
                 else:
-                    df_dict[match.group(1)].append(
-                        match.group(2))
-
+                    if match.group(1) in df_dict.keys():
+                        df_dict[match.group(1)].append(match.group(2))
+                    else:
+                        df_dict[match.group(1)] = ["NaN", match.group(2)]
             # part 2
             if not line.startswith("#"):  # the last table is the only part in which the lines don't start with #
                 values = line.strip().split()  # extracts the words and puts them in lists
@@ -61,7 +62,10 @@ def stats_aseg(subj_paths):
                 if not n:
                     df_dict[values[4] + " volume"] = [values[3]]  # the volume is in column 4(index 3) name in column 5
                 else:
-                    df_dict[f"{values[4]} volume"].append(values[3])
+                    if f"{values[4]} volume" in df_dict.keys():
+                        df_dict[f"{values[4]} volume"].append(values[3])
+                    else:
+                        df_dict[values[4] + " volume"] = ["NaN", values[3]]
 
     #dm.write_dict(df_dict,"prova_df_dict.json")
     return pd.DataFrame.from_dict(df_dict, orient='columns')

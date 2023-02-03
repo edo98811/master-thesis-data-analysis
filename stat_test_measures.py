@@ -38,7 +38,7 @@ def mann_whitney(base_path, filename1, filename2, column_to_compare):
     if p_value > 0.05:
         print(f"p-value: {p_value} - null hypothesis cannot be rejected, the datasets have the same distribution")
     else:
-        print(f"p-value: {p_value} - null hypothesis rejected, the datasets have the same distribution")
+        print(f"p-value: {p_value} - null hypothesis rejected, the datasets have a different distribution")
     return
 
 if __name__ == "__main__":
