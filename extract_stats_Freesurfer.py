@@ -137,8 +137,8 @@ if __name__ == "__main__":
     base_path = '/media/neuropsycad/disk12t/VascoDiogo/OASIS/FS7/'
     save_path = "/media/neuropsycad/disk12t/EdoardoFilippiMasterThesis/Stats_Freesurfer/"
 
-    healthy = dm.load_txt("paths_selected_healthy.txt")
-    AD = dm.load_txt("paths_selected_AD.txt")
+    healthy = dm.load_txt("paths_healthy_all.txt")
+    AD = dm.load_txt("paths_AD_dementia_all.txt")
 
     calculate_stats('aseg.stats', "aseg_healthy.csv", base_path, save_path, healthy, 0)
     calculate_stats('aseg.stats', "aseg_AD.csv", base_path, save_path, AD, 0)

@@ -44,8 +44,6 @@ def VascoADNI(path1, path2):
     df.drop(columns=['age', 'sex'], inplace=True)
 
     print(df.head())
-    # weekday = CategoricalDtype(['both', 'left_only', 'right_only'],
-    #                          ordered=True)
 
     with pd.ExcelWriter(
             r"C:\Users\edoar\OneDrive - CLOUDEA S.R.L\Polito Materiale\BIOMEDICA\Tesi\ADNI_merged.xlsx") as writer:

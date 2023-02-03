@@ -7,6 +7,7 @@ import re
 import data_manipulation as dm
 
 def extract_path_all(filename, base_path):
+
     subjs_path = []
     for path, subdirs, files in os.walk(base_path):
         if path.split("/")[-1] == 'stats':
@@ -125,6 +126,7 @@ def stats_aparcDTK(subj_paths):
 def calculate_stats(filename, fileneame_save, base_path, save_path, subj_list, type):
 
     subj_paths = extract_path(filename, base_path, subj_list)
+
     if subj_paths:
         print("stats file found for " + str(len(subj_paths)) + " subjects")
         if type == 0:
@@ -135,18 +137,19 @@ def calculate_stats(filename, fileneame_save, base_path, save_path, subj_list, t
         print("no file found")
 
 if __name__ == "__main__":
-    base_path = '/media/neuropsycad/disk12t/EdoardoFilippiMasterThesis/FastSurfer_Output_Comparison_AD/'
-    save_path = "/media/neuropsycad/disk12t/EdoardoFilippiMasterThesis/Stats_Freesurfer/"
+    base_path_AD = '/media/neuropsycad/disk12t/EdoardoFilippiMasterThesis/FastSurfer_Output_Comparison_AD/'
+    base_path_healthy = '/media/neuropsycad/disk12t/EdoardoFilippiMasterThesis/FastSurfer_Output_Comparison_healthy/'
+    save_path = "/media/neuropsycad/disk12t/EdoardoFilippiMasterThesis/Stats_FastSurfer/"
 
-    healthy = dm.load_txt("paths_selected_healthy.txt")
-    AD = dm.load_txt("paths_selected_AD.txt")
+    healthy = dm.load_txt("paths_healthy_all.txt")
+    AD = dm.load_txt("paths_AD_dementia_all.txt")
 
-    calculate_stats('aseg.stats', "aseg_healthy.csv", base_path, save_path, healthy, 0)
-    calculate_stats('aseg.stats', "aseg_AD.csv", base_path, save_path, AD, 0)
-    calculate_stats('rh.aparc.DKTatlas.stats', "aparcDKT_left_AD.csv.csv", base_path, save_path, AD, 1)
-    calculate_stats('rh.aparc.DKTatlas.stats', "aparcDKT_left_healthy.csv.csv", base_path, save_path, healthy, 1)
-    calculate_stats('lh.aparc.DKTatlas.stats', "aparcDKT_right_AD.csv.csv", base_path, save_path, healthy, 1)
-    calculate_stats('lh.aparc.DKTatlas.stats', "aparcDKT_right_healthy.csv.csv", base_path, save_path, AD, 1)
+    calculate_stats('aseg.stats', "aseg_healthy.csv", base_path_healthy, save_path, healthy, 0)
+    calculate_stats('aseg.stats', "aseg_AD.csv", base_path_AD, save_path, AD, 0)
+    calculate_stats('rh.aparc.DKTatlas.mapped.stats', "aparcDKT_left_AD.csv", base_path_AD, save_path, AD, 1)
+    calculate_stats('rh.aparc.DKTatlas.mapped.stats', "aparcDKT_left_healthy.csv", base_path_healthy, save_path, healthy, 1)
+    calculate_stats('lh.aparc.DKTatlas.mapped.stats', "aparcDKT_right_AD.csv", base_path_AD, save_path, AD, 1)
+    calculate_stats('lh.aparc.DKTatlas.mapped.stats', "aparcDKT_right_healthy.csv", base_path_healthy, save_path, healthy, 1)
 
     # aseg
     # filename = 'aseg.stats'
