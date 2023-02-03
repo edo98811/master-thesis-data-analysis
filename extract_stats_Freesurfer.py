@@ -98,7 +98,13 @@ def stats_aparcDTK(subj_paths):
                     if match.group(1) not in df_dict.keys():
                         df_dict[match.group(1)] = ["NaN"]
                     else:
-                        df_dict[match.group(1)].append(match.group(2))
+                        if match.group(1) in df_dict.keys():
+                            df_dict[match.group(1)].append(match.group(2))
+                        else:
+                            if f"{values[4]} volume" in df_dict.keys():
+                                df_dict[f"{values[4]} volume"].append(values[3])
+                            else:
+                                df_dict[values[4] + " volume"] = ["NaN", values[3]]
 
 
             # part 2
