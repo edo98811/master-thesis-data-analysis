@@ -67,10 +67,16 @@ def stats_aseg(subj_paths):
                     else:
                         df_dict[values[4] + " volume"] = ["NaN", values[3]]
 
-        # if some columns have different length
-        for key in df_dict.keys():
-            if len(df_dict[key]) != n + 1:
-                df_dict[key].append("NaN")
+        # # if some columns have different length
+        # for key in df_dict.keys():
+        #     if len(df_dict[key]) != n + 1:
+        #         df_dict[key].append("NaN")
+
+    # if some columns have different length
+    for key in df_dict.keys():
+       if len(df_dict[key]) != n+1:
+           for _ in range(n+1 - len(df_dict[key])):
+               df_dict[key].append("NaN")
 
     #dm.write_dict(df_dict,"prova_df_dict.json")
     return pd.DataFrame.from_dict(df_dict, orient='columns')
@@ -129,7 +135,7 @@ def stats_aparcDTK(subj_paths):
     # if some columns have different length
     for key in df_dict.keys():
        if len(df_dict[key]) != n+1:
-           for _ in range(10 - len(df_dict[key])):
+           for _ in range(n + 1 - len(df_dict[key])):
                df_dict[key].append("NaN")
 
     return pd.DataFrame.from_dict(df_dict, orient='columns')
