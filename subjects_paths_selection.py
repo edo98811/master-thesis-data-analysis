@@ -7,7 +7,11 @@ import data_visualization as dv
 # dm.write_txt(images_list["images"], "list_original_images.txt")
 
 def main():
-    dm.select_paths_and_save("AD_dementia_subjects.txt", "AD_dementia_subjects_paths.txt")
+    #dir_name = "/media/neuropsycad/disk12t/VascoDiogo/ADNI/"
+    #img_list = dm.list_files_all(dir_name, "001.mgz")
+    #dm.write_txt(img_list, "ADNI_all_paths.txt")
+
+    dm.select_paths_and_save("ADNI_subjects_10.txt", "ADNI_subjects_10_paths.txt", "ADNI_all_paths.txt")
 
 if __name__ == "__main__":
     main()

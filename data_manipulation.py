@@ -12,7 +12,7 @@ def read_label(label_name, path=""):
 def read_img(img_name, path = ""):
     return nib.load(str(path + img_name))
 
-def list_files_all(dir,imgname,filetype="mgz"):
+def list_files_all(dir,imgname):
     """
     input
         imgname = str
@@ -21,7 +21,7 @@ def list_files_all(dir,imgname,filetype="mgz"):
 
     r_img = []
 
-    fl_len = len(filetype.split("."))
+    # fl_len = len(filetype.split("."))
     # print(fl_len)
     # print(dir)
     # print(filetype)
@@ -30,11 +30,7 @@ def list_files_all(dir,imgname,filetype="mgz"):
         #r_all.append(os.path.join(root))
         #print(files)
         for name in files:
-            l_name = name.split(".")
-            #print(l_name)
-            if len(l_name) < fl_len+1:
-                continue
-            if l_name[-fl_len-1] == imgname:# and l_name[-fl_len:-1] == filetype:
+            if name == imgname:# and l_name[-fl_len:-1] == filetype:
                 r_img.append(os.path.join(root, name))
 
     return r_img
@@ -85,12 +81,12 @@ def convert_img(img_list):
 
 
 
-def select_paths_and_save(original_file, destination_file):
+def select_paths_and_save(subject_to_select, destination_file, all_paths_file):
 
-    subj_numbers = load_txt(original_file)
+    subj_numbers = load_txt(subject_to_select)
     subj_paths = []
 
-    subj_paths_all = load_txt("list_original_images.txt")
+    subj_paths_all = load_txt(all_paths_file)
 
     for subj_number in subj_numbers:
         for subj_path in subj_paths_all:
