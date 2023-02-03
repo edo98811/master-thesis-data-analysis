@@ -67,6 +67,11 @@ def stats_aseg(subj_paths):
                     else:
                         df_dict[values[4] + " volume"] = ["NaN", values[3]]
 
+        # if some columns have different length
+        for key in df_dict.keys():
+            if len(df_dict[key]) != n + 1:
+                df_dict[key].append("NaN")
+
     #dm.write_dict(df_dict,"prova_df_dict.json")
     return pd.DataFrame.from_dict(df_dict, orient='columns')
 
