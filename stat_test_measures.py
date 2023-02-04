@@ -29,9 +29,13 @@ def mann_whitney(base_path, filename1, filename2, column_to_compare):
     df2 = pd.read_csv(base_path + filename2)
 
     df1 = df1[df1['subjects'].isin(df2['subjects'].tolist())]
+    print(df1.head())
+    print(df2.head())
 
     a = df1.loc[:, column_to_compare]
     b = df2.loc[:, column_to_compare]
+
+    df1.to_csv("dataset_uniti_test.csv", index=False)
     #print(a)
     #print(b)
 
