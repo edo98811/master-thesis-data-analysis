@@ -54,7 +54,8 @@ def stats_aseg(subj_paths):
                     if match.group(1) in df_dict.keys():
                         df_dict[match.group(1)].append(match.group(2))
                     else:
-                        df_dict[match.group(1)] = ["NaN", match.group(2)]
+                        df_dict[match.group(1)] = ["NaN" for _ in range(n)] # if there are NaN
+                        df_dict[f"{values[4]} volume"].append(values[3])
             # part 2
             if not line.startswith("#"):  # the last table is the only part in which the lines don't start with #
                 values = line.strip().split()  # extracts the words and puts them in lists
@@ -65,18 +66,19 @@ def stats_aseg(subj_paths):
                     if f"{values[4]} volume" in df_dict.keys():
                         df_dict[f"{values[4]} volume"].append(values[3])
                     else:
-                        df_dict[values[4] + " volume"] = ["NaN", values[3]]
+                        df_dict[values[4] + " volume"] = ["NaN" for _ in range(n)]
+                        df_dict[f"{values[4]} volume"].append(values[3])
 
-        # # if some columns have different length
-        # for key in df_dict.keys():
-        #     if len(df_dict[key]) != n + 1:
-        #         df_dict[key].append("NaN")
+        # if some columns have different length at the end pf a cycle
+        for key in df_dict.keys():
+            if len(df_dict[key]) != n + 1:
+                df_dict[key].append("NaN")
 
-    # if some columns have different length
-    for key in df_dict.keys():
-       if len(df_dict[key]) != n+1:
-           for _ in range(n+1 - len(df_dict[key])):
-               df_dict[key].append("NaN")
+    # # if some columns have different length
+    # for key in df_dict.keys():
+    #    if len(df_dict[key]) != n+1:
+    #        for _ in range(n+1 - len(df_dict[key])):
+    #            df_dict[key].append("NaN")
 
     #dm.write_dict(df_dict,"prova_df_dict.json")
     return pd.DataFrame.from_dict(df_dict, orient='columns')
@@ -109,8 +111,8 @@ def stats_aparcDTK(subj_paths):
                     if match.group(1) in df_dict.keys():
                         df_dict[match.group(1)].append(match.group(2))
                     else:
-                        df_dict[match.group(1)] = ["NaN", match.group(2)]
-
+                        df_dict[match.group(1)] = ["NaN" for _ in range(n)]
+                        df_dict[match.group(1)].append(match.group(2))
 
 
             # part 2
@@ -123,20 +125,21 @@ def stats_aparcDTK(subj_paths):
                     if f"{values[0]} volume" in df_dict.keys():
                         df_dict[f"{values[0]} mean thickness"].append(values[3])
                     else:
-                        df_dict[values[0] + " mean thickness"] = ["NaN", values[3]]
+                        df_dict[values[0] + " mean thickness"] = ["NaN" for _ in range(n)]
+                        df_dict[values[0] + " mean thickness"].append(values[3])
 
-        # # if some columns have different length
-        # for key in df_dict.keys():
-        #     if len(df_dict[key]) != n + 1:
-        #         df_dict[key].append("NaN")
+        # if some columns have different length at the end of a cycle
+        for key in df_dict.keys():
+            if len(df_dict[key]) != n + 1:
+                df_dict[key].append("NaN")
 
     dm.write_dict(df_dict, "prova_df_dict.json")
 
-    # if some columns have different length
-    for key in df_dict.keys():
-       if len(df_dict[key]) != n+1:
-           for _ in range(n + 1 - len(df_dict[key])):
-               df_dict[key].append("NaN")
+    # # if some columns have different length
+    # for key in df_dict.keys():
+    #    if len(df_dict[key]) != n+1:
+    #        for _ in range(n + 1 - len(df_dict[key])):
+    #            df_dict[key].append("NaN")
 
     return pd.DataFrame.from_dict(df_dict, orient='columns')
 
