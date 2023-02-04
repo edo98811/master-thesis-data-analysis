@@ -6,6 +6,7 @@ from scipy import stats
 def t_test(base_path, filename1, filename2, column_to_compare):
     df1 = pd.read_csv(base_path + filename1)
     df2 = pd.read_csv(base_path + filename2)
+    print(base_path + filename1 + filename2)
 
     df1 = df1[df1['subjects'].isin(df2['subjects'].tolist())]
 
@@ -27,7 +28,8 @@ def t_test(base_path, filename1, filename2, column_to_compare):
 def mann_whitney(base_path, filename1, filename2, column_to_compare):
     df1 = pd.read_csv(base_path + filename1)
     df2 = pd.read_csv(base_path + filename2)
-
+    print(base_path + filename1 + filename2)
+    
     df1 = df1[df1['subjects'].isin(df2['subjects'].tolist())]
     print(df1.head())
     print(df2.head())

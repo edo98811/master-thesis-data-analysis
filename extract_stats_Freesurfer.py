@@ -174,10 +174,10 @@ if __name__ == "__main__":
 
     calculate_stats('aseg.stats', "aseg_healthy.csv", base_path, save_path, healthy, 0)
     calculate_stats('aseg.stats', "aseg_AD.csv", base_path, save_path, AD, 0)
-    calculate_stats('rh.aparc.DKTatlas.stats', "aparcDKT_left_AD.csv", base_path, save_path, AD, 1)
-    calculate_stats('rh.aparc.DKTatlas.stats', "aparcDKT_left_healthy.csv", base_path, save_path, healthy, 1)
-    calculate_stats('lh.aparc.DKTatlas.stats', "aparcDKT_right_AD.csv", base_path, save_path, healthy, 1)
-    calculate_stats('lh.aparc.DKTatlas.stats', "aparcDKT_right_healthy.csv", base_path, save_path, AD, 1)
+    calculate_stats('lh.aparc.DKTatlas.stats', "aparcDKT_left_AD.csv", base_path, save_path, AD, 1)
+    calculate_stats('lh.aparc.DKTatlas.stats', "aparcDKT_left_healthy.csv", base_path, save_path, healthy, 1)
+    calculate_stats('rh.aparc.DKTatlas.stats', "aparcDKT_right_AD.csv", base_path, save_path, AD, 1)
+    calculate_stats('rh.aparc.DKTatlas.stats', "aparcDKT_right_healthy.csv", base_path, save_path, healthy, 1)
 
     #
     # # aseg
