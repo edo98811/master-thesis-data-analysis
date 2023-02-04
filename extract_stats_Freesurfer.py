@@ -120,13 +120,23 @@ def stats_aparcDTK(subj_paths):
                 values = line.strip().split()  # extracts the words and puts them in lists
 
                 if not n:
-                    df_dict[values[0] + " mean thickness"] = [values[2]]  # the volume is in column 4(index 3) name in column 5
+                    df_dict[values[0] + " mean thickness"] = [values[3]]  # the thickness is in column 4(index 3) name in column 5
                 else:
-                    if f"{values[0]} volume" in df_dict.keys():
+                    if f"{values[0]} mean thickness" in df_dict.keys():
                         df_dict[f"{values[0]} mean thickness"].append(values[3])
                     else:
                         df_dict[values[0] + " mean thickness"] = ["NaN" for _ in range(n)]
                         df_dict[values[0] + " mean thickness"].append(values[3])
+
+                if not n:
+                    df_dict[values[0] + " mean area"] = [
+                        values[2]]  # the area is in column 3(index 2) name in column 5
+                else:
+                    if f"{values[0]} mean area" in df_dict.keys():
+                        df_dict[f"{values[0]} mean area"].append(values[2])
+                    else:
+                        df_dict[values[0] + " mean area"] = ["NaN" for _ in range(n)]
+                        df_dict[values[0] + " mean area"].append(values[2])
 
         # if some columns have different length at the end of a cycle
         for key in df_dict.keys():
