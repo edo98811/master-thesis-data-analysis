@@ -82,7 +82,9 @@ def convert_img(img_list):
 
 
 def select_paths_and_save(subject_to_select, destination_file, all_paths_file):
-
+    """
+        given a list of subjects numbers and a list of paths selects the paths of the original images of the subjects in the list
+    """
     subj_numbers = load_txt(subject_to_select)
     subj_paths = []
 
@@ -90,11 +92,8 @@ def select_paths_and_save(subject_to_select, destination_file, all_paths_file):
 
     for subj_number in subj_numbers:
         for subj_path in subj_paths_all:
-           # print(subj_number)
-           # print(len(subj_path.split("/")))
             if len(subj_path.split("/")) > 3:
                 match = re.split("sub-", subj_path.split("/")[-4])
-                # print(match)
                 if subj_number == match[1]:
                     subj_paths.append(subj_path)
 
