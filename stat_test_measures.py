@@ -8,7 +8,6 @@ def t_test(base_path, filename1, filename2, column_to_compare):
     df2 = pd.read_csv(base_path + filename2)
 
     df1 = df1[df1['subjects'].isin(df2['subjects'].tolist())]
-    df2 = df2[df2['subjects'].isin(df1['subjects'].tolist())]
 
     a = df1.loc[:, column_to_compare]
     b = df2.loc[:, column_to_compare]
@@ -30,7 +29,6 @@ def mann_whitney(base_path, filename1, filename2, column_to_compare):
     df2 = pd.read_csv(base_path + filename2)
 
     df1 = df1[df1['subjects'].isin(df2['subjects'].tolist())]
-    df2 = df2[df2['subjects'].isin(df1['subjects'].tolist())]
 
     a = df1.loc[:, column_to_compare]
     b = df2.loc[:, column_to_compare]

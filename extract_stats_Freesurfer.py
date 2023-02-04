@@ -55,7 +55,7 @@ def stats_aseg(subj_paths):
                         df_dict[match.group(1)].append(match.group(2))
                     else:
                         df_dict[match.group(1)] = ["NaN" for _ in range(n)] # if there are NaN
-                        df_dict[f"{values[4]} volume"].append(values[3])
+                        df_dict[f"{values[1]} volume"].append(values[2])
             # part 2
             if not line.startswith("#"):  # the last table is the only part in which the lines don't start with #
                 values = line.strip().split()  # extracts the words and puts them in lists

@@ -6,8 +6,8 @@ import csv
 import re
 import data_manipulation as dm
 
-def extract_path_all(filename, base_path):
 
+def extract_path_all(filename, base_path):
     subjs_path = []
     for path, subdirs, files in os.walk(base_path):
         if path.split("/")[-1] == 'stats':
@@ -19,6 +19,7 @@ def extract_path_all(filename, base_path):
         return False
 
     return subjs_path
+
 
 def extract_path(filename, base_path, subj_list):
     subj_list_numbers = []
@@ -39,6 +40,8 @@ def extract_path(filename, base_path, subj_list):
         return False
 
     return subjs_path
+
+
 def stats_aseg(subj_paths):
     df_dict = {"subjects": []}
 
@@ -80,7 +83,7 @@ def stats_aseg(subj_paths):
             if len(df_dict[key]) != n + 1:
                 df_dict[key].append("NaN")
 
-    #dm.write_dict(df_dict,"prova_df_dict.json")
+    # dm.write_dict(df_dict,"prova_df_dict.json")
     return pd.DataFrame.from_dict(df_dict, orient='columns')
 
 
@@ -116,9 +119,24 @@ def stats_aparcDTK(subj_paths):
                 values = line.strip().split()  # extracts the words and puts them in lists
 
                 if not n:
-                    df_dict[values[0] + " mean thickness"] = [values[2]]  # the volume is in column 4(index 3) name in column 5
+                    df_dict[values[0] + " mean thickness"] = [values[3]]  # the thickness is in column 4(index 3) name in column 5
                 else:
-                    df_dict[f"{values[0]} mean thickness"].append(values[2])
+                    if f"{values[0]} mean thickness" in df_dict.keys():
+                        df_dict[f"{values[0]} mean thickness"].append(values[3])
+                    else:
+                        df_dict[values[0] + " mean thickness"] = ["NaN" for _ in range(n)]
+                        df_dict[values[0] + " mean thickness"].append(values[3])
+
+                if not n:
+                    df_dict[values[0] + " mean area"] = [
+                        values[2]]  # the area is in column 3(index 2) name in column 5
+                else:
+                    if f"{values[0]} mean area" in df_dict.keys():
+                        df_dict[f"{values[0]} mean area"].append(values[2])
+                    else:
+                        df_dict[values[0] + " mean area"] = ["NaN" for _ in range(n)]
+                        df_dict[values[0] + " mean area"].append(values[2])
+
 
         # if some columns have different length
         for key in df_dict.keys():
@@ -128,8 +146,9 @@ def stats_aparcDTK(subj_paths):
     dm.write_dict(df_dict, "prova_df_dict.json")
 
     return pd.DataFrame.from_dict(df_dict, orient='columns')
-def calculate_stats(filename, fileneame_save, base_path, save_path, subj_list, type):
 
+
+def calculate_stats(filename, fileneame_save, base_path, save_path, subj_list, type):
     subj_paths = extract_path(filename, base_path, subj_list)
 
     if subj_paths:
@@ -140,6 +159,7 @@ def calculate_stats(filename, fileneame_save, base_path, save_path, subj_list, t
             stats_aparcDTK(subj_paths).to_csv(save_path + fileneame_save, index=False)
     else:
         print("no file found")
+
 
 if __name__ == "__main__":
     base_path_AD = '/media/neuropsycad/disk12t/EdoardoFilippiMasterThesis/FastSurfer_Output_Comparison_AD/'
@@ -152,9 +172,11 @@ if __name__ == "__main__":
     calculate_stats('aseg.stats', "aseg_healthy.csv", base_path_healthy, save_path, healthy, 0)
     calculate_stats('aseg.stats', "aseg_AD.csv", base_path_AD, save_path, AD, 0)
     calculate_stats('rh.aparc.DKTatlas.mapped.stats', "aparcDKT_left_AD.csv", base_path_AD, save_path, AD, 1)
-    calculate_stats('rh.aparc.DKTatlas.mapped.stats', "aparcDKT_left_healthy.csv", base_path_healthy, save_path, healthy, 1)
+    calculate_stats('rh.aparc.DKTatlas.mapped.stats', "aparcDKT_left_healthy.csv", base_path_healthy, save_path,
+                    healthy, 1)
     calculate_stats('lh.aparc.DKTatlas.mapped.stats', "aparcDKT_right_AD.csv", base_path_AD, save_path, AD, 1)
-    calculate_stats('lh.aparc.DKTatlas.mapped.stats', "aparcDKT_right_healthy.csv", base_path_healthy, save_path, healthy, 1)
+    calculate_stats('lh.aparc.DKTatlas.mapped.stats', "aparcDKT_right_healthy.csv", base_path_healthy, save_path,
+                    healthy, 1)
 
     # aseg
     # filename = 'aseg.stats'
