@@ -47,7 +47,7 @@ def get_paths_list(subj_numbers, subj_paths_all):
     return subj_paths
 
 def main():
-    save_all_images_paths("/media/neuropsycad/disk12t/VascoDiogo/ADNI/", "paths_OASIS_allL.txt")
+    save_all_images_paths("/media/neuropsycad/disk12t/VascoDiogo/OASIS/FS7/", "paths_OASIS_allL.txt")
     filter_paths_from_table("OASIS_filtered.xlsx", "paths_OASIS_filtered.txt")
     #get_paths("subjects_AD_dementia_10_20.txt", "paths_AD_dementia_10_20.txt", "paths_AD_dementia_all.txt")
 
@@ -59,8 +59,8 @@ def filter_paths_from_table(table_name, destination_file, subj_idx=0):
 
     # if filtered it filters the subjects
     if subj_idx:
-        if len(subj_idx) == 2:
-            subj_list = subj_list[subj_idx[0], subj_idx[0]]
+        if len(subj_idx) == 2 and subj_idx[0] < subj_idx[1]:
+            subj_list = subj_list[subj_idx[0], subj_idx[1]]
 
     subj_paths = get_paths_list(subj_list, subj_paths_all)
     dm.write_txt(subj_paths, destination_file)
