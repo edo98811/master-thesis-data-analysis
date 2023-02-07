@@ -17,6 +17,16 @@ def plot_measures(series1, series2, title, ticklabels):
     plt.legend(['Freesurfer', 'Fastsurfer'])
     plt.show()
 
+def get_column(column_to_compare, df1, df2):
+    if isinstance(column_to_compare, int):
+        a = df1.iloc[:, column_to_compare]
+        b = df2.iloc[:, column_to_compare]
+
+    if isinstance(column_to_compare, str):
+        a = df1.loc[:, column_to_compare]
+        b = df2.loc[:, column_to_compare]
+
+    return a, b
 
 def t_test(base_path, filename1, filename2, column_to_compare):
     df1 = pd.read_csv(base_path + filename1)
@@ -24,6 +34,8 @@ def t_test(base_path, filename1, filename2, column_to_compare):
     print(base_path + filename1 + filename2)
 
     df1 = df1[df1['subjects'].isin(df2['subjects'].tolist())]
+
+    a, b = get_column(column_to_compare, df1, df2)
 
     a = df1.loc[:, column_to_compare]
     b = df2.loc[:, column_to_compare]
@@ -43,7 +55,6 @@ def t_test(base_path, filename1, filename2, column_to_compare):
     print(result)
     return result
 
-
 def mann_whitney(base_path, filename1, filename2, column_to_compare):
     df1 = pd.read_csv(base_path + filename1)
     df2 = pd.read_csv(base_path + filename2)
@@ -53,8 +64,15 @@ def mann_whitney(base_path, filename1, filename2, column_to_compare):
     print(df1.head())
     print(df2.head())
 
-    a = df1.loc[:, column_to_compare]
-    b = df2.loc[:, column_to_compare]
+    a, b = get_column(column_to_compare, df1, df2)
+
+    if isinstance(column_to_compare, int):
+        a = df1.iloc[:, column_to_compare]
+        b = df2.iloc[:, column_to_compare]
+
+    if isinstance(column_to_compare, str):
+        a = df1.loc[:, column_to_compare]
+        b = df2.loc[:, column_to_compare]
 
     df1.to_csv("dataset_uniti_test.csv", index=False)
     # print(a)
@@ -82,7 +100,6 @@ def save(list_line):
         file.append("\n")
     dm.write_txt(file, "test_results.txt")
 
-
 def stat_test(base_path, filename1, filename2, column_to_compare, r_all):
     r1 = mann_whitney(base_path, filename1, filename2, column_to_compare)
     r2 = t_test(base_path, filename1, filename2, column_to_compare)
@@ -93,6 +110,11 @@ def stat_test(base_path, filename1, filename2, column_to_compare, r_all):
 
 
 if __name__ == "__main__":
+    main()
+
+def main():
+    base_path = "/media/neuropsycad/disk12t/EdoardoFilippiMasterThesis/"
+def main_old():
     base_path = "/media/neuropsycad/disk12t/EdoardoFilippiMasterThesis/"
     """
     test order
