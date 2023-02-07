@@ -1,0 +1,60 @@
+aseg_AD.csv Left-Hippocampus volume_mm3
+	p-value: 0.6553614390103917 - null hypothesis cannot be rejected, the datasets have the same distribution
+	p-value: 0.7305401983020712 - null hypothesis cannot be rejected, means are statistically equal
+
+
+aseg_AD.csv Right-Hippocampus volume_mm3
+	p-value: 0.8817307917391243 - null hypothesis cannot be rejected, the datasets have the same distribution
+	p-value: 0.9120800282691625 - null hypothesis cannot be rejected, means are statistically equal
+
+
+aseg_healthy.csv Left-Hippocampus volume_mm3
+	p-value: 0.7352681529274933 - null hypothesis cannot be rejected, the datasets have the same distribution
+	p-value: 0.6736697907690262 - null hypothesis cannot be rejected, means are statistically equal
+
+
+aseg_healthy.csv Right-Hippocampus volume_mm3
+	p-value: 0.9245727283322236 - null hypothesis cannot be rejected, the datasets have the same distribution
+	p-value: 0.845362916517631 - null hypothesis cannot be rejected, means are statistically equal
+
+
+aparcDKT_left_AD.csv parahippocampal_mean_thickness_mm
+	p-value: 0.42488347368209856 - null hypothesis cannot be rejected, the datasets have the same distribution
+	p-value: 0.4103845926768106 - null hypothesis cannot be rejected, means are statistically equal
+
+
+aparcDKT_right_AD.csv parahippocampal_mean_thickness_mm
+	p-value: 0.409311912421515 - null hypothesis cannot be rejected, the datasets have the same distribution
+	p-value: 0.38309998142373347 - null hypothesis cannot be rejected, means are statistically equal
+
+
+aparcDKT_left_healthy.csv parahippocampal_mean_thickness_mm
+	p-value: 0.25589084987527044 - null hypothesis cannot be rejected, the datasets have the same distribution
+	p-value: 0.3176776737372788 - null hypothesis cannot be rejected, means are statistically equal
+
+
+aparcDKT_right_healthy.csv parahippocampal_mean_thickness_mm
+	p-value: 0.481846813543768 - null hypothesis cannot be rejected, the datasets have the same distribution
+	p-value: 0.5402504450311902 - null hypothesis cannot be rejected, means are statistically equal
+
+
+aparcDKT_left_AD.csv parahippocampal_mean_area_mm2
+	p-value: 0.022251086530990616 - null hypothesis rejected, the datasets have a different distribution
+	p-value: 0.01489081730043381 - null hypothesis rejected, means are not statistically equal
+
+
+aparcDKT_right_AD.csv parahippocampal_mean_area_mm2
+	p-value: 0.0029183698369589697 - null hypothesis rejected, the datasets have a different distribution
+	p-value: 0.0016870952133961944 - null hypothesis rejected, means are not statistically equal
+
+
+aparcDKT_left_healthy.csv parahippocampal_mean_area_mm2
+	p-value: 0.046740071546850455 - null hypothesis rejected, the datasets have a different distribution
+	p-value: 0.02666659034331652 - null hypothesis rejected, means are not statistically equal
+
+
+aparcDKT_right_healthy.csv parahippocampal_mean_area_mm2
+	p-value: 0.2182759031735212 - null hypothesis cannot be rejected, the datasets have the same distribution
+	p-value: 0.12337035991185209 - null hypothesis cannot be rejected, means are statistically equal
+
+

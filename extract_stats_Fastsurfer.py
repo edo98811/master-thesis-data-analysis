@@ -74,9 +74,9 @@ def stats_aseg(subj_paths):
                 values = line.strip().split()  # extracts the words and puts them in lists
 
                 if not n:
-                    df_dict[values[4] + " volume"] = [values[3]]  # the volume is in column 4(index 3) name in column 5
+                    df_dict[values[4] + " volume_mm3"] = [values[3]]  # the volume_mm3 is in column 4(index 3) name in column 5
                 else:
-                    df_dict[f"{values[4]} volume"].append(values[3])
+                    df_dict[f"{values[4]} volume_mm3"].append(values[3])
 
         # if some columns have different length
         for key in df_dict.keys():
@@ -119,23 +119,23 @@ def stats_aparcDTK(subj_paths):
                 values = line.strip().split()  # extracts the words and puts them in lists
 
                 if not n:
-                    df_dict[values[0] + " mean thickness"] = [values[3]]  # the thickness is in column 4(index 3) name in column 5
+                    df_dict[values[0] + "_mean_thickness_mm"] = [values[4]]  # the thickness is in column 4(index 3) name in column 5
                 else:
-                    if f"{values[0]} mean thickness" in df_dict.keys():
-                        df_dict[f"{values[0]} mean thickness"].append(values[3])
+                    if f"{values[0]}_mean_thickness_mm" in df_dict.keys():
+                        df_dict[f"{values[0]}_mean_thickness_mm"].append(values[4])
                     else:
-                        df_dict[values[0] + " mean thickness"] = ["NaN" for _ in range(n)]
-                        df_dict[values[0] + " mean thickness"].append(values[3])
+                        df_dict[values[0] + "_mean_thickness_mm"] = ["NaN" for _ in range(n)]
+                        df_dict[values[0] + "_mean_thickness_mm"].append(values[4])
 
                 if not n:
-                    df_dict[values[0] + " mean area"] = [
+                    df_dict[values[0] + "_mean_area_mm2"] = [
                         values[2]]  # the area is in column 3(index 2) name in column 5
                 else:
-                    if f"{values[0]} mean area" in df_dict.keys():
-                        df_dict[f"{values[0]} mean area"].append(values[2])
+                    if f"{values[0]}_mean_area_mm2" in df_dict.keys():
+                        df_dict[f"{values[0]}_mean_area_mm2"].append(values[2])
                     else:
-                        df_dict[values[0] + " mean area"] = ["NaN" for _ in range(n)]
-                        df_dict[values[0] + " mean area"].append(values[2])
+                        df_dict[values[0] + "_mean_area_mm2"] = ["NaN" for _ in range(n)]
+                        df_dict[values[0] + "_mean_area_mm2"].append(values[2])
 
 
         # if some columns have different length
@@ -143,7 +143,7 @@ def stats_aparcDTK(subj_paths):
             if len(df_dict[key]) != n + 1:
                 df_dict[key].append("NaN")
 
-    dm.write_dict(df_dict, "prova_df_dict.json")
+    # dm.write_dict(df_dict, "prova_df_dict.json")
 
     return pd.DataFrame.from_dict(df_dict, orient='columns')
 
