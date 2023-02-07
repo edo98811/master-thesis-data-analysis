@@ -1,6 +1,211 @@
+aseg_AD.csv BrainSegNotVent
+	p-value: 0.5978625674290079 - null hypothesis cannot be rejected, the datasets have the same distribution
+	p-value: 0.7591582758680071 - null hypothesis cannot be rejected, means are statistically equal
+
+
+aseg_AD.csv VentricleChoroidVol
+	p-value: 0.7971974192691748 - null hypothesis cannot be rejected, the datasets have the same distribution
+	p-value: 0.9722475544318256 - null hypothesis cannot be rejected, means are statistically equal
+
+
+aseg_AD.csv lhCortex
+	p-value: 0.29767675447218034 - null hypothesis cannot be rejected, the datasets have the same distribution
+	p-value: 0.3075740386944723 - null hypothesis cannot be rejected, means are statistically equal
+
+
+aseg_AD.csv rhCortex
+	p-value: 0.20845355458876536 - null hypothesis cannot be rejected, the datasets have the same distribution
+	p-value: 0.35834479679208575 - null hypothesis cannot be rejected, means are statistically equal
+
+
+aseg_AD.csv Cortex
+	p-value: 0.23932370336933684 - null hypothesis cannot be rejected, the datasets have the same distribution
+	p-value: 0.32865407017712545 - null hypothesis cannot be rejected, means are statistically equal
+
+
+aseg_AD.csv lhCerebralWhiteMatter
+	p-value: 0.9460839766250224 - null hypothesis cannot be rejected, the datasets have the same distribution
+	p-value: 0.8733178445210129 - null hypothesis cannot be rejected, means are statistically equal
+
+
+aseg_AD.csv rhCerebralWhiteMatter
+	p-value: 0.5978625674290079 - null hypothesis cannot be rejected, the datasets have the same distribution
+	p-value: 0.7329962009351756 - null hypothesis cannot be rejected, means are statistically equal
+
+
+aseg_AD.csv CerebralWhiteMatter
+	p-value: 0.8604309737352772 - null hypothesis cannot be rejected, the datasets have the same distribution
+	p-value: 0.9293092999146547 - null hypothesis cannot be rejected, means are statistically equal
+
+
+aseg_AD.csv SubCortGray
+	p-value: 0.3507022236669548 - null hypothesis cannot be rejected, the datasets have the same distribution
+	p-value: 0.45858427702596927 - null hypothesis cannot be rejected, means are statistically equal
+
+
+aseg_AD.csv TotalGray
+	p-value: 0.3234817459216911 - null hypothesis cannot be rejected, the datasets have the same distribution
+	p-value: 0.46100915799319386 - null hypothesis cannot be rejected, means are statistically equal
+
+
+aseg_AD.csv SupraTentorial
+	p-value: 0.5427717015170068 - null hypothesis cannot be rejected, the datasets have the same distribution
+	p-value: 0.7049873812045346 - null hypothesis cannot be rejected, means are statistically equal
+
+
+aseg_AD.csv SupraTentorialNotVent
+	p-value: 0.4569506196695641 - null hypothesis cannot be rejected, the datasets have the same distribution
+	p-value: 0.7071826465098854 - null hypothesis cannot be rejected, means are statistically equal
+
+
+aseg_AD.csv Mask
+	p-value: 0.00027451078428318386 - null hypothesis rejected, the datasets have a different distribution
+	p-value: 3.3970058178695275e-05 - null hypothesis rejected, means are not statistically equal
+
+
+aseg_AD.csv BrainSegVol
+	p-value: 0.6553614390103917 - null hypothesis cannot be rejected, the datasets have the same distribution
+	p-value: 0.3498666201308491 - null hypothesis cannot be rejected, means are statistically equal
+
+
+aseg_AD.csv MaskVol
+	p-value: 0.0006219975867469958 - null hypothesis rejected, the datasets have a different distribution
+	p-value: 0.0023176771674480665 - null hypothesis rejected, means are not statistically equal
+
+
+aseg_AD.csv EstimatedTotalIntraCranialVol
+	p-value: 0.42488347368209856 - null hypothesis cannot be rejected, the datasets have the same distribution
+	p-value: 0.3623367788321339 - null hypothesis cannot be rejected, means are statistically equal
+
+
+aseg_AD.csv Left-Lateral-Ventricle volume_mm3
+	p-value: 0.9245727283322236 - null hypothesis cannot be rejected, the datasets have the same distribution
+	p-value: 0.828636052064811 - null hypothesis cannot be rejected, means are statistically equal
+
+
+aseg_AD.csv Left-Inf-Lat-Vent volume_mm3
+	p-value: 0.8392322130718609 - null hypothesis cannot be rejected, the datasets have the same distribution
+	p-value: 0.9309143556973796 - null hypothesis cannot be rejected, means are statistically equal
+
+
+aseg_AD.csv Left-Cerebellum-White-Matter volume_mm3
+	p-value: 0.5427717015170068 - null hypothesis cannot be rejected, the datasets have the same distribution
+	p-value: 0.6995909221137689 - null hypothesis cannot be rejected, means are statistically equal
+
+
+aseg_AD.csv Left-Cerebellum-Cortex volume_mm3
+	p-value: 0.6948910198677665 - null hypothesis cannot be rejected, the datasets have the same distribution
+	p-value: 0.8571710835750656 - null hypothesis cannot be rejected, means are statistically equal
+
+
+aseg_AD.csv Left-Thalamus volume_mm3
+	p-value: 0.33691523838231996 - null hypothesis cannot be rejected, the datasets have the same distribution
+	p-value: 0.45378541553789253 - null hypothesis cannot be rejected, means are statistically equal
+
+
+aseg_AD.csv Left-Caudate volume_mm3
+	p-value: 0.7763905055505131 - null hypothesis cannot be rejected, the datasets have the same distribution
+	p-value: 0.8425965177876173 - null hypothesis cannot be rejected, means are statistically equal
+
+
+aseg_AD.csv Left-Putamen volume_mm3
+	p-value: 0.9245727283322236 - null hypothesis cannot be rejected, the datasets have the same distribution
+	p-value: 0.8443542252212586 - null hypothesis cannot be rejected, means are statistically equal
+
+
+aseg_AD.csv Left-Pallidum volume_mm3
+	p-value: 0.9676346083712113 - null hypothesis cannot be rejected, the datasets have the same distribution
+	p-value: 0.8257647113111364 - null hypothesis cannot be rejected, means are statistically equal
+
+
+aseg_AD.csv 3rd-Ventricle volume_mm3
+	p-value: 0.7352681529274933 - null hypothesis cannot be rejected, the datasets have the same distribution
+	p-value: 0.9672574385673197 - null hypothesis cannot be rejected, means are statistically equal
+
+
+aseg_AD.csv 4th-Ventricle volume_mm3
+	p-value: 0.9460839766250224 - null hypothesis cannot be rejected, the datasets have the same distribution
+	p-value: 0.8037953476663278 - null hypothesis cannot be rejected, means are statistically equal
+
+
+aseg_AD.csv Brain-Stem volume_mm3
+	p-value: 0.8181494613881999 - null hypothesis cannot be rejected, the datasets have the same distribution
+	p-value: 0.8425349521486564 - null hypothesis cannot be rejected, means are statistically equal
+
+
 aseg_AD.csv Left-Hippocampus volume_mm3
 	p-value: 0.6553614390103917 - null hypothesis cannot be rejected, the datasets have the same distribution
 	p-value: 0.7305401983020712 - null hypothesis cannot be rejected, means are statistically equal
+
+
+aseg_AD.csv Left-Amygdala volume_mm3
+	p-value: 0.25029679750351186 - null hypothesis cannot be rejected, the datasets have the same distribution
+	p-value: 0.1520466627837038 - null hypothesis cannot be rejected, means are statistically equal
+
+
+aseg_AD.csv CSF volume_mm3
+	p-value: 0.507505297961912 - null hypothesis cannot be rejected, the datasets have the same distribution
+	p-value: 0.7432735323885558 - null hypothesis cannot be rejected, means are statistically equal
+
+
+aseg_AD.csv Left-Accumbens-area volume_mm3
+	p-value: 0.09090738325062647 - null hypothesis cannot be rejected, the datasets have the same distribution
+	p-value: 0.07002464798138686 - null hypothesis cannot be rejected, means are statistically equal
+
+
+aseg_AD.csv Left-VentralDC volume_mm3
+	p-value: 0.00904539678500551 - null hypothesis rejected, the datasets have a different distribution
+	p-value: 0.004776987579961542 - null hypothesis rejected, means are not statistically equal
+
+
+aseg_AD.csv Left-vessel volume_mm3
+	p-value: 8.006545033944715e-09 - null hypothesis rejected, the datasets have a different distribution
+	p-value: 3.205119650916373e-13 - null hypothesis rejected, means are not statistically equal
+
+
+aseg_AD.csv Left-choroid-plexus volume_mm3
+	p-value: 0.04112359406047486 - null hypothesis rejected, the datasets have a different distribution
+	p-value: 0.048393719335230734 - null hypothesis rejected, means are not statistically equal
+
+
+aseg_AD.csv Right-Lateral-Ventricle volume_mm3
+	p-value: 0.7149798814655983 - null hypothesis cannot be rejected, the datasets have the same distribution
+	p-value: 0.9194651583839527 - null hypothesis cannot be rejected, means are statistically equal
+
+
+aseg_AD.csv Right-Inf-Lat-Vent volume_mm3
+	p-value: 0.9460839766250224 - null hypothesis cannot be rejected, the datasets have the same distribution
+	p-value: 0.8907362648952935 - null hypothesis cannot be rejected, means are statistically equal
+
+
+aseg_AD.csv Right-Cerebellum-White-Matter volume_mm3
+	p-value: 0.2616164678785774 - null hypothesis cannot be rejected, the datasets have the same distribution
+	p-value: 0.2720894554154107 - null hypothesis cannot be rejected, means are statistically equal
+
+
+aseg_AD.csv Right-Cerebellum-Cortex volume_mm3
+	p-value: 0.9676346083712113 - null hypothesis cannot be rejected, the datasets have the same distribution
+	p-value: 0.875345320757269 - null hypothesis cannot be rejected, means are statistically equal
+
+
+aseg_AD.csv Right-Thalamus volume_mm3
+	p-value: 0.2616164678785774 - null hypothesis cannot be rejected, the datasets have the same distribution
+	p-value: 0.22350329908404654 - null hypothesis cannot be rejected, means are statistically equal
+
+
+aseg_AD.csv Right-Caudate volume_mm3
+	p-value: 0.285304715907688 - null hypothesis cannot be rejected, the datasets have the same distribution
+	p-value: 0.2541816312116313 - null hypothesis cannot be rejected, means are statistically equal
+
+
+aseg_AD.csv Right-Putamen volume_mm3
+	p-value: 0.7971974192691748 - null hypothesis cannot be rejected, the datasets have the same distribution
+	p-value: 0.692205730238696 - null hypothesis cannot be rejected, means are statistically equal
+
+
+aseg_AD.csv Right-Pallidum volume_mm3
+	p-value: 0.7971974192691748 - null hypothesis cannot be rejected, the datasets have the same distribution
+	p-value: 0.9204284370307092 - null hypothesis cannot be rejected, means are statistically equal
 
 
 aseg_AD.csv Right-Hippocampus volume_mm3
@@ -8,9 +213,304 @@ aseg_AD.csv Right-Hippocampus volume_mm3
 	p-value: 0.9120800282691625 - null hypothesis cannot be rejected, means are statistically equal
 
 
+aseg_AD.csv Right-Amygdala volume_mm3
+	p-value: 0.2732851201810752 - null hypothesis cannot be rejected, the datasets have the same distribution
+	p-value: 0.20190129981420496 - null hypothesis cannot be rejected, means are statistically equal
+
+
+aseg_AD.csv Right-Accumbens-area volume_mm3
+	p-value: 0.44074988359834266 - null hypothesis cannot be rejected, the datasets have the same distribution
+	p-value: 0.4477982535240346 - null hypothesis cannot be rejected, means are statistically equal
+
+
+aseg_AD.csv Right-VentralDC volume_mm3
+	p-value: 0.023903145867558404 - null hypothesis rejected, the datasets have a different distribution
+	p-value: 0.013447188245747059 - null hypothesis rejected, means are not statistically equal
+
+
+aseg_AD.csv Right-vessel volume_mm3
+	p-value: 8.006545033944715e-09 - null hypothesis rejected, the datasets have a different distribution
+	p-value: 8.579514529241776e-08 - null hypothesis rejected, means are not statistically equal
+
+
+aseg_AD.csv Right-choroid-plexus volume_mm3
+	p-value: 0.23932370336933684 - null hypothesis cannot be rejected, the datasets have the same distribution
+	p-value: 0.23387946985237512 - null hypothesis cannot be rejected, means are statistically equal
+
+
+aseg_AD.csv 5th-Ventricle volume_mm3
+	p-value: 1.0 - null hypothesis cannot be rejected, the datasets have the same distribution
+	p-value: nan - null hypothesis rejected, means are not statistically equal
+
+
+aseg_AD.csv WM-hypointensities volume_mm3
+	p-value: 0.9892089047911196 - null hypothesis cannot be rejected, the datasets have the same distribution
+	p-value: 0.9078272063969756 - null hypothesis cannot be rejected, means are statistically equal
+
+
+aseg_AD.csv Left-WM-hypointensities volume_mm3
+	p-value: 1.0 - null hypothesis cannot be rejected, the datasets have the same distribution
+	p-value: nan - null hypothesis rejected, means are not statistically equal
+
+
+aseg_AD.csv Right-WM-hypointensities volume_mm3
+	p-value: 1.0 - null hypothesis cannot be rejected, the datasets have the same distribution
+	p-value: nan - null hypothesis rejected, means are not statistically equal
+
+
+aseg_AD.csv non-WM-hypointensities volume_mm3
+	p-value: 1.0 - null hypothesis cannot be rejected, the datasets have the same distribution
+	p-value: nan - null hypothesis rejected, means are not statistically equal
+
+
+aseg_AD.csv Left-non-WM-hypointensities volume_mm3
+	p-value: 1.0 - null hypothesis cannot be rejected, the datasets have the same distribution
+	p-value: nan - null hypothesis rejected, means are not statistically equal
+
+
+aseg_AD.csv Right-non-WM-hypointensities volume_mm3
+	p-value: 1.0 - null hypothesis cannot be rejected, the datasets have the same distribution
+	p-value: nan - null hypothesis rejected, means are not statistically equal
+
+
+aseg_AD.csv Optic-Chiasm volume_mm3
+	p-value: 8.006545033944715e-09 - null hypothesis rejected, the datasets have a different distribution
+	p-value: 3.9608696403367613e-25 - null hypothesis rejected, means are not statistically equal
+
+
+aseg_AD.csv CC_Posterior volume_mm3
+	p-value: 0.7971974192691748 - null hypothesis cannot be rejected, the datasets have the same distribution
+	p-value: 0.764110519663723 - null hypothesis cannot be rejected, means are statistically equal
+
+
+aseg_AD.csv CC_Mid_Posterior volume_mm3
+	p-value: 0.8181494613881999 - null hypothesis cannot be rejected, the datasets have the same distribution
+	p-value: 0.8467605070765035 - null hypothesis cannot be rejected, means are statistically equal
+
+
+aseg_AD.csv CC_Central volume_mm3
+	p-value: 9.277956784594506e-05 - null hypothesis rejected, the datasets have a different distribution
+	p-value: 9.162639064625159e-06 - null hypothesis rejected, means are not statistically equal
+
+
+aseg_AD.csv CC_Mid_Anterior volume_mm3
+	p-value: 0.5978625674290079 - null hypothesis cannot be rejected, the datasets have the same distribution
+	p-value: 0.19263393382352792 - null hypothesis cannot be rejected, means are statistically equal
+
+
+aseg_AD.csv CC_Anterior volume_mm3
+	p-value: 0.1555699325877425 - null hypothesis cannot be rejected, the datasets have the same distribution
+	p-value: 0.16140902797909554 - null hypothesis cannot be rejected, means are statistically equal
+
+
+aseg_healthy.csv BrainSegNotVent
+	p-value: 0.5427717015170068 - null hypothesis cannot be rejected, the datasets have the same distribution
+	p-value: 0.6781353333094562 - null hypothesis cannot be rejected, means are statistically equal
+
+
+aseg_healthy.csv VentricleChoroidVol
+	p-value: 0.7352681529274933 - null hypothesis cannot be rejected, the datasets have the same distribution
+	p-value: 0.9070948045226144 - null hypothesis cannot be rejected, means are statistically equal
+
+
+aseg_healthy.csv lhCortex
+	p-value: 0.1555699325877425 - null hypothesis cannot be rejected, the datasets have the same distribution
+	p-value: 0.17279805805679144 - null hypothesis cannot be rejected, means are statistically equal
+
+
+aseg_healthy.csv rhCortex
+	p-value: 0.17192970543827346 - null hypothesis cannot be rejected, the datasets have the same distribution
+	p-value: 0.1772905142696195 - null hypothesis cannot be rejected, means are statistically equal
+
+
+aseg_healthy.csv Cortex
+	p-value: 0.1555699325877425 - null hypothesis cannot be rejected, the datasets have the same distribution
+	p-value: 0.17162336679662593 - null hypothesis cannot be rejected, means are statistically equal
+
+
+aseg_healthy.csv lhCerebralWhiteMatter
+	p-value: 0.9245727283322236 - null hypothesis cannot be rejected, the datasets have the same distribution
+	p-value: 0.8691578111858961 - null hypothesis cannot be rejected, means are statistically equal
+
+
+aseg_healthy.csv rhCerebralWhiteMatter
+	p-value: 0.8392322130718609 - null hypothesis cannot be rejected, the datasets have the same distribution
+	p-value: 0.8196737975779043 - null hypothesis cannot be rejected, means are statistically equal
+
+
+aseg_healthy.csv CerebralWhiteMatter
+	p-value: 0.8817307917391243 - null hypothesis cannot be rejected, the datasets have the same distribution
+	p-value: 0.8445173134245514 - null hypothesis cannot be rejected, means are statistically equal
+
+
+aseg_healthy.csv SubCortGray
+	p-value: 0.42488347368209856 - null hypothesis cannot be rejected, the datasets have the same distribution
+	p-value: 0.6294774330741691 - null hypothesis cannot be rejected, means are statistically equal
+
+
+aseg_healthy.csv TotalGray
+	p-value: 0.2732851201810752 - null hypothesis cannot be rejected, the datasets have the same distribution
+	p-value: 0.32565299685248883 - null hypothesis cannot be rejected, means are statistically equal
+
+
+aseg_healthy.csv SupraTentorial
+	p-value: 0.4569506196695641 - null hypothesis cannot be rejected, the datasets have the same distribution
+	p-value: 0.630836429382086 - null hypothesis cannot be rejected, means are statistically equal
+
+
+aseg_healthy.csv SupraTentorialNotVent
+	p-value: 0.5608516966002302 - null hypothesis cannot be rejected, the datasets have the same distribution
+	p-value: 0.6246387003158577 - null hypothesis cannot be rejected, means are statistically equal
+
+
+aseg_healthy.csv Mask
+	p-value: 0.00017936378528946248 - null hypothesis rejected, the datasets have a different distribution
+	p-value: 6.624558317749646e-05 - null hypothesis rejected, means are not statistically equal
+
+
+aseg_healthy.csv BrainSegVol
+	p-value: 0.1332831707493199 - null hypothesis cannot be rejected, the datasets have the same distribution
+	p-value: 0.03487363383751257 - null hypothesis rejected, means are not statistically equal
+
+
+aseg_healthy.csv MaskVol
+	p-value: 0.019292379706561613 - null hypothesis rejected, the datasets have a different distribution
+	p-value: 0.09464785429603088 - null hypothesis cannot be rejected, means are statistically equal
+
+
+aseg_healthy.csv EstimatedTotalIntraCranialVol
+	p-value: 0.14041971470550127 - null hypothesis cannot be rejected, the datasets have the same distribution
+	p-value: 0.10003189804299675 - null hypothesis cannot be rejected, means are statistically equal
+
+
+aseg_healthy.csv Left-Lateral-Ventricle volume_mm3
+	p-value: 0.6948910198677665 - null hypothesis cannot be rejected, the datasets have the same distribution
+	p-value: 0.9176275182847887 - null hypothesis cannot be rejected, means are statistically equal
+
+
+aseg_healthy.csv Left-Inf-Lat-Vent volume_mm3
+	p-value: 0.7557428276359095 - null hypothesis cannot be rejected, the datasets have the same distribution
+	p-value: 0.8531606437327806 - null hypothesis cannot be rejected, means are statistically equal
+
+
+aseg_healthy.csv Left-Cerebellum-White-Matter volume_mm3
+	p-value: 0.40935585574217404 - null hypothesis cannot be rejected, the datasets have the same distribution
+	p-value: 0.42772519283170896 - null hypothesis cannot be rejected, means are statistically equal
+
+
+aseg_healthy.csv Left-Cerebellum-Cortex volume_mm3
+	p-value: 0.7763905055505131 - null hypothesis cannot be rejected, the datasets have the same distribution
+	p-value: 0.8551579196702337 - null hypothesis cannot be rejected, means are statistically equal
+
+
+aseg_healthy.csv Left-Thalamus volume_mm3
+	p-value: 0.379331935127312 - null hypothesis cannot be rejected, the datasets have the same distribution
+	p-value: 0.29181295606590807 - null hypothesis cannot be rejected, means are statistically equal
+
+
+aseg_healthy.csv Left-Caudate volume_mm3
+	p-value: 0.7763905055505131 - null hypothesis cannot be rejected, the datasets have the same distribution
+	p-value: 0.6752089574942676 - null hypothesis cannot be rejected, means are statistically equal
+
+
+aseg_healthy.csv Left-Putamen volume_mm3
+	p-value: 0.5792183523134169 - null hypothesis cannot be rejected, the datasets have the same distribution
+	p-value: 0.6497699533786341 - null hypothesis cannot be rejected, means are statistically equal
+
+
+aseg_healthy.csv Left-Pallidum volume_mm3
+	p-value: 0.4734806277722057 - null hypothesis cannot be rejected, the datasets have the same distribution
+	p-value: 0.31829923561464896 - null hypothesis cannot be rejected, means are statistically equal
+
+
+aseg_healthy.csv 3rd-Ventricle volume_mm3
+	p-value: 0.7557428276359095 - null hypothesis cannot be rejected, the datasets have the same distribution
+	p-value: 0.8049028765086685 - null hypothesis cannot be rejected, means are statistically equal
+
+
+aseg_healthy.csv 4th-Ventricle volume_mm3
+	p-value: 0.9460839766250224 - null hypothesis cannot be rejected, the datasets have the same distribution
+	p-value: 0.9892753227148667 - null hypothesis cannot be rejected, means are statistically equal
+
+
+aseg_healthy.csv Brain-Stem volume_mm3
+	p-value: 0.9892089047911196 - null hypothesis cannot be rejected, the datasets have the same distribution
+	p-value: 0.9570484044987393 - null hypothesis cannot be rejected, means are statistically equal
+
+
 aseg_healthy.csv Left-Hippocampus volume_mm3
 	p-value: 0.7352681529274933 - null hypothesis cannot be rejected, the datasets have the same distribution
 	p-value: 0.6736697907690262 - null hypothesis cannot be rejected, means are statistically equal
+
+
+aseg_healthy.csv Left-Amygdala volume_mm3
+	p-value: 0.10172863141500606 - null hypothesis cannot be rejected, the datasets have the same distribution
+	p-value: 0.13210484046796214 - null hypothesis cannot be rejected, means are statistically equal
+
+
+aseg_healthy.csv CSF volume_mm3
+	p-value: 0.5608516966002302 - null hypothesis cannot be rejected, the datasets have the same distribution
+	p-value: 0.5576961458051999 - null hypothesis cannot be rejected, means are statistically equal
+
+
+aseg_healthy.csv Left-Accumbens-area volume_mm3
+	p-value: 0.009786486727077014 - null hypothesis rejected, the datasets have a different distribution
+	p-value: 0.012802787984335819 - null hypothesis rejected, means are not statistically equal
+
+
+aseg_healthy.csv Left-VentralDC volume_mm3
+	p-value: 0.04986369021054049 - null hypothesis rejected, the datasets have a different distribution
+	p-value: 0.11203530353408273 - null hypothesis cannot be rejected, means are statistically equal
+
+
+aseg_healthy.csv Left-vessel volume_mm3
+	p-value: 8.006545033944715e-09 - null hypothesis rejected, the datasets have a different distribution
+	p-value: 4.5916067362124926e-08 - null hypothesis rejected, means are not statistically equal
+
+
+aseg_healthy.csv Left-choroid-plexus volume_mm3
+	p-value: 0.189543984158981 - null hypothesis cannot be rejected, the datasets have the same distribution
+	p-value: 0.19137290425714107 - null hypothesis cannot be rejected, means are statistically equal
+
+
+aseg_healthy.csv Right-Lateral-Ventricle volume_mm3
+	p-value: 0.7763905055505131 - null hypothesis cannot be rejected, the datasets have the same distribution
+	p-value: 0.90370276216568 - null hypothesis cannot be rejected, means are statistically equal
+
+
+aseg_healthy.csv Right-Inf-Lat-Vent volume_mm3
+	p-value: 0.9031164959895642 - null hypothesis cannot be rejected, the datasets have the same distribution
+	p-value: 0.946779026445234 - null hypothesis cannot be rejected, means are statistically equal
+
+
+aseg_healthy.csv Right-Cerebellum-White-Matter volume_mm3
+	p-value: 0.9245727283322236 - null hypothesis cannot be rejected, the datasets have the same distribution
+	p-value: 0.8229672428976309 - null hypothesis cannot be rejected, means are statistically equal
+
+
+aseg_healthy.csv Right-Cerebellum-Cortex volume_mm3
+	p-value: 0.8604309737352772 - null hypothesis cannot be rejected, the datasets have the same distribution
+	p-value: 0.9471451964056912 - null hypothesis cannot be rejected, means are statistically equal
+
+
+aseg_healthy.csv Right-Thalamus volume_mm3
+	p-value: 0.2616164678785774 - null hypothesis cannot be rejected, the datasets have the same distribution
+	p-value: 0.20819436069513997 - null hypothesis cannot be rejected, means are statistically equal
+
+
+aseg_healthy.csv Right-Caudate volume_mm3
+	p-value: 0.42488347368209856 - null hypothesis cannot be rejected, the datasets have the same distribution
+	p-value: 0.45732019339136487 - null hypothesis cannot be rejected, means are statistically equal
+
+
+aseg_healthy.csv Right-Putamen volume_mm3
+	p-value: 0.7149798814655983 - null hypothesis cannot be rejected, the datasets have the same distribution
+	p-value: 0.7621097953949156 - null hypothesis cannot be rejected, means are statistically equal
+
+
+aseg_healthy.csv Right-Pallidum volume_mm3
+	p-value: 0.5249869101903615 - null hypothesis cannot be rejected, the datasets have the same distribution
+	p-value: 0.45316104950904945 - null hypothesis cannot be rejected, means are statistically equal
 
 
 aseg_healthy.csv Right-Hippocampus volume_mm3
@@ -18,9 +518,614 @@ aseg_healthy.csv Right-Hippocampus volume_mm3
 	p-value: 0.845362916517631 - null hypothesis cannot be rejected, means are statistically equal
 
 
+aseg_healthy.csv Right-Amygdala volume_mm3
+	p-value: 0.022269911309813137 - null hypothesis rejected, the datasets have a different distribution
+	p-value: 0.031622476277244946 - null hypothesis rejected, means are not statistically equal
+
+
+aseg_healthy.csv Right-Accumbens-area volume_mm3
+	p-value: 0.04112359406047486 - null hypothesis rejected, the datasets have a different distribution
+	p-value: 0.09739235035080172 - null hypothesis cannot be rejected, means are statistically equal
+
+
+aseg_healthy.csv Right-VentralDC volume_mm3
+	p-value: 0.12643061736676814 - null hypothesis cannot be rejected, the datasets have the same distribution
+	p-value: 0.12104930528456948 - null hypothesis cannot be rejected, means are statistically equal
+
+
+aseg_healthy.csv Right-vessel volume_mm3
+	p-value: 8.006545033944715e-09 - null hypothesis rejected, the datasets have a different distribution
+	p-value: 1.0658251017392479e-07 - null hypothesis rejected, means are not statistically equal
+
+
+aseg_healthy.csv Right-choroid-plexus volume_mm3
+	p-value: 0.11985556595924766 - null hypothesis cannot be rejected, the datasets have the same distribution
+	p-value: 0.1455970626245954 - null hypothesis cannot be rejected, means are statistically equal
+
+
+aseg_healthy.csv 5th-Ventricle volume_mm3
+	p-value: 1.0 - null hypothesis cannot be rejected, the datasets have the same distribution
+	p-value: nan - null hypothesis rejected, means are not statistically equal
+
+
+aseg_healthy.csv WM-hypointensities volume_mm3
+	p-value: 0.7971974192691748 - null hypothesis cannot be rejected, the datasets have the same distribution
+	p-value: 0.9289719997811583 - null hypothesis cannot be rejected, means are statistically equal
+
+
+aseg_healthy.csv Left-WM-hypointensities volume_mm3
+	p-value: 1.0 - null hypothesis cannot be rejected, the datasets have the same distribution
+	p-value: nan - null hypothesis rejected, means are not statistically equal
+
+
+aseg_healthy.csv Right-WM-hypointensities volume_mm3
+	p-value: 1.0 - null hypothesis cannot be rejected, the datasets have the same distribution
+	p-value: nan - null hypothesis rejected, means are not statistically equal
+
+
+aseg_healthy.csv non-WM-hypointensities volume_mm3
+	p-value: 1.0 - null hypothesis cannot be rejected, the datasets have the same distribution
+	p-value: nan - null hypothesis rejected, means are not statistically equal
+
+
+aseg_healthy.csv Left-non-WM-hypointensities volume_mm3
+	p-value: 1.0 - null hypothesis cannot be rejected, the datasets have the same distribution
+	p-value: nan - null hypothesis rejected, means are not statistically equal
+
+
+aseg_healthy.csv Right-non-WM-hypointensities volume_mm3
+	p-value: 1.0 - null hypothesis cannot be rejected, the datasets have the same distribution
+	p-value: nan - null hypothesis rejected, means are not statistically equal
+
+
+aseg_healthy.csv Optic-Chiasm volume_mm3
+	p-value: 8.006545033944715e-09 - null hypothesis rejected, the datasets have a different distribution
+	p-value: 6.726656932129421e-24 - null hypothesis rejected, means are not statistically equal
+
+
+aseg_healthy.csv CC_Posterior volume_mm3
+	p-value: 0.6750141566504884 - null hypothesis cannot be rejected, the datasets have the same distribution
+	p-value: 0.6435180020977784 - null hypothesis cannot be rejected, means are statistically equal
+
+
+aseg_healthy.csv CC_Mid_Posterior volume_mm3
+	p-value: 0.4734806277722057 - null hypothesis cannot be rejected, the datasets have the same distribution
+	p-value: 0.5637035349770185 - null hypothesis cannot be rejected, means are statistically equal
+
+
+aseg_healthy.csv CC_Central volume_mm3
+	p-value: 1.2505163702974243e-05 - null hypothesis rejected, the datasets have a different distribution
+	p-value: 4.709727354630008e-07 - null hypothesis rejected, means are not statistically equal
+
+
+aseg_healthy.csv CC_Mid_Anterior volume_mm3
+	p-value: 0.21840551261012597 - null hypothesis cannot be rejected, the datasets have the same distribution
+	p-value: 0.05009646392147455 - null hypothesis cannot be rejected, means are statistically equal
+
+
+aseg_healthy.csv CC_Anterior volume_mm3
+	p-value: 0.1635957256111319 - null hypothesis cannot be rejected, the datasets have the same distribution
+	p-value: 0.27298299840782214 - null hypothesis cannot be rejected, means are statistically equal
+
+
+aparcDKT_left_AD.csv Cortex, MeanThickness
+	p-value: 6.795615128173358e-08 - null hypothesis rejected, the datasets have a different distribution
+	p-value: 1.0624907136317248e-33 - null hypothesis rejected, means are not statistically equal
+
+
+aparcDKT_left_AD.csv BrainSeg, BrainSegVol
+	p-value: 0.19883449020829447 - null hypothesis cannot be rejected, the datasets have the same distribution
+	p-value: 0.29829216709912754 - null hypothesis cannot be rejected, means are statistically equal
+
+
+aparcDKT_left_AD.csv BrainSegNotVent, BrainSegVolNotVent
+	p-value: 0.5978625674290079 - null hypothesis cannot be rejected, the datasets have the same distribution
+	p-value: 0.7451272284301251 - null hypothesis cannot be rejected, means are statistically equal
+
+
+aparcDKT_left_AD.csv BrainSegNotVentSurf, BrainSegVolNotVentSurf
+	p-value: 6.795615128173358e-08 - null hypothesis rejected, the datasets have a different distribution
+	p-value: 4.0445535389911244e-23 - null hypothesis rejected, means are not statistically equal
+
+
+aparcDKT_left_AD.csv Cortex, CortexVol
+	p-value: 6.795615128173358e-08 - null hypothesis rejected, the datasets have a different distribution
+	p-value: 6.320128251693362e-23 - null hypothesis rejected, means are not statistically equal
+
+
+aparcDKT_left_AD.csv SupraTentorial, SupraTentorialVol
+	p-value: 0.21840551261012597 - null hypothesis cannot be rejected, the datasets have the same distribution
+	p-value: 0.32485112790882875 - null hypothesis cannot be rejected, means are statistically equal
+
+
+aparcDKT_left_AD.csv SupraTentorialNotVent, SupraTentorialVolNotVent
+	p-value: 6.795615128173358e-08 - null hypothesis rejected, the datasets have a different distribution
+	p-value: 2.1696064779218335e-18 - null hypothesis rejected, means are not statistically equal
+
+
+aparcDKT_left_AD.csv EstimatedTotalIntraCranialVol, eTIV
+	p-value: 6.795615128173358e-08 - null hypothesis rejected, the datasets have a different distribution
+	p-value: 9.457870463056479e-30 - null hypothesis rejected, means are not statistically equal
+
+
+aparcDKT_left_AD.csv caudalanteriorcingulate_mean_thickness_mm
+	p-value: 6.795615128173358e-08 - null hypothesis rejected, the datasets have a different distribution
+	p-value: 4.724006340004725e-18 - null hypothesis rejected, means are not statistically equal
+
+
+aparcDKT_left_AD.csv caudalanteriorcingulate_mean_area_mm2
+	p-value: 6.786038616738627e-08 - null hypothesis rejected, the datasets have a different distribution
+	p-value: 2.0074166840883914e-22 - null hypothesis rejected, means are not statistically equal
+
+
+aparcDKT_left_AD.csv caudalmiddlefrontal_mean_thickness_mm
+	p-value: 6.795615128173358e-08 - null hypothesis rejected, the datasets have a different distribution
+	p-value: 5.307141072458002e-23 - null hypothesis rejected, means are not statistically equal
+
+
+aparcDKT_left_AD.csv caudalmiddlefrontal_mean_area_mm2
+	p-value: 6.786038616738627e-08 - null hypothesis rejected, the datasets have a different distribution
+	p-value: 2.1020324019913022e-23 - null hypothesis rejected, means are not statistically equal
+
+
+aparcDKT_left_AD.csv cuneus_mean_thickness_mm
+	p-value: 6.795615128173358e-08 - null hypothesis rejected, the datasets have a different distribution
+	p-value: 1.888701423461134e-31 - null hypothesis rejected, means are not statistically equal
+
+
+aparcDKT_left_AD.csv cuneus_mean_area_mm2
+	p-value: 6.795615128173358e-08 - null hypothesis rejected, the datasets have a different distribution
+	p-value: 2.652143796699923e-29 - null hypothesis rejected, means are not statistically equal
+
+
+aparcDKT_left_AD.csv entorhinal_mean_thickness_mm
+	p-value: 6.747849737359913e-08 - null hypothesis rejected, the datasets have a different distribution
+	p-value: 3.6577494547296394e-25 - null hypothesis rejected, means are not statistically equal
+
+
+aparcDKT_left_AD.csv entorhinal_mean_area_mm2
+	p-value: 6.786038616738627e-08 - null hypothesis rejected, the datasets have a different distribution
+	p-value: 1.5994715123239553e-27 - null hypothesis rejected, means are not statistically equal
+
+
+aparcDKT_left_AD.csv fusiform_mean_thickness_mm
+	p-value: 6.795615128173358e-08 - null hypothesis rejected, the datasets have a different distribution
+	p-value: 5.879146558470223e-30 - null hypothesis rejected, means are not statistically equal
+
+
+aparcDKT_left_AD.csv fusiform_mean_area_mm2
+	p-value: 6.795615128173358e-08 - null hypothesis rejected, the datasets have a different distribution
+	p-value: 2.2075270482159893e-24 - null hypothesis rejected, means are not statistically equal
+
+
+aparcDKT_left_AD.csv inferiorparietal_mean_thickness_mm
+	p-value: 6.795615128173358e-08 - null hypothesis rejected, the datasets have a different distribution
+	p-value: 1.6660419810896126e-28 - null hypothesis rejected, means are not statistically equal
+
+
+aparcDKT_left_AD.csv inferiorparietal_mean_area_mm2
+	p-value: 6.786038616738627e-08 - null hypothesis rejected, the datasets have a different distribution
+	p-value: 5.831257090255389e-28 - null hypothesis rejected, means are not statistically equal
+
+
+aparcDKT_left_AD.csv inferiortemporal_mean_thickness_mm
+	p-value: 6.795615128173358e-08 - null hypothesis rejected, the datasets have a different distribution
+	p-value: 1.850452285786941e-27 - null hypothesis rejected, means are not statistically equal
+
+
+aparcDKT_left_AD.csv inferiortemporal_mean_area_mm2
+	p-value: 6.786038616738627e-08 - null hypothesis rejected, the datasets have a different distribution
+	p-value: 3.206805529969256e-29 - null hypothesis rejected, means are not statistically equal
+
+
+aparcDKT_left_AD.csv isthmuscingulate_mean_thickness_mm
+	p-value: 6.786038616738627e-08 - null hypothesis rejected, the datasets have a different distribution
+	p-value: 1.3262056325847243e-25 - null hypothesis rejected, means are not statistically equal
+
+
+aparcDKT_left_AD.csv isthmuscingulate_mean_area_mm2
+	p-value: 6.77647383397644e-08 - null hypothesis rejected, the datasets have a different distribution
+	p-value: 3.2441286019363517e-24 - null hypothesis rejected, means are not statistically equal
+
+
+aparcDKT_left_AD.csv lateraloccipital_mean_thickness_mm
+	p-value: 6.786038616738627e-08 - null hypothesis rejected, the datasets have a different distribution
+	p-value: 6.878411098108193e-26 - null hypothesis rejected, means are not statistically equal
+
+
+aparcDKT_left_AD.csv lateraloccipital_mean_area_mm2
+	p-value: 6.77647383397644e-08 - null hypothesis rejected, the datasets have a different distribution
+	p-value: 1.9301315182261806e-25 - null hypothesis rejected, means are not statistically equal
+
+
+aparcDKT_left_AD.csv lateralorbitofrontal_mean_thickness_mm
+	p-value: 6.786038616738627e-08 - null hypothesis rejected, the datasets have a different distribution
+	p-value: 4.119136691732232e-30 - null hypothesis rejected, means are not statistically equal
+
+
+aparcDKT_left_AD.csv lateralorbitofrontal_mean_area_mm2
+	p-value: 6.795615128173358e-08 - null hypothesis rejected, the datasets have a different distribution
+	p-value: 9.522797668922232e-33 - null hypothesis rejected, means are not statistically equal
+
+
+aparcDKT_left_AD.csv lingual_mean_thickness_mm
+	p-value: 6.795615128173358e-08 - null hypothesis rejected, the datasets have a different distribution
+	p-value: 1.8576238383674646e-31 - null hypothesis rejected, means are not statistically equal
+
+
+aparcDKT_left_AD.csv lingual_mean_area_mm2
+	p-value: 6.786038616738627e-08 - null hypothesis rejected, the datasets have a different distribution
+	p-value: 3.0519789804841955e-21 - null hypothesis rejected, means are not statistically equal
+
+
+aparcDKT_left_AD.csv medialorbitofrontal_mean_thickness_mm
+	p-value: 6.786038616738627e-08 - null hypothesis rejected, the datasets have a different distribution
+	p-value: 1.3827704264645963e-29 - null hypothesis rejected, means are not statistically equal
+
+
+aparcDKT_left_AD.csv medialorbitofrontal_mean_area_mm2
+	p-value: 6.795615128173358e-08 - null hypothesis rejected, the datasets have a different distribution
+	p-value: 9.990749467036721e-26 - null hypothesis rejected, means are not statistically equal
+
+
+aparcDKT_left_AD.csv middletemporal_mean_thickness_mm
+	p-value: 6.795615128173358e-08 - null hypothesis rejected, the datasets have a different distribution
+	p-value: 8.637453211917314e-28 - null hypothesis rejected, means are not statistically equal
+
+
+aparcDKT_left_AD.csv middletemporal_mean_area_mm2
+	p-value: 6.786038616738627e-08 - null hypothesis rejected, the datasets have a different distribution
+	p-value: 7.46564522840673e-28 - null hypothesis rejected, means are not statistically equal
+
+
 aparcDKT_left_AD.csv parahippocampal_mean_thickness_mm
+	p-value: 6.77647383397644e-08 - null hypothesis rejected, the datasets have a different distribution
+	p-value: 3.612730934844262e-30 - null hypothesis rejected, means are not statistically equal
+
+
+aparcDKT_left_AD.csv parahippocampal_mean_area_mm2
+	p-value: 6.786038616738627e-08 - null hypothesis rejected, the datasets have a different distribution
+	p-value: 5.927394273366276e-30 - null hypothesis rejected, means are not statistically equal
+
+
+aparcDKT_left_AD.csv paracentral_mean_thickness_mm
+	p-value: 6.795615128173358e-08 - null hypothesis rejected, the datasets have a different distribution
+	p-value: 8.515826655384985e-29 - null hypothesis rejected, means are not statistically equal
+
+
+aparcDKT_left_AD.csv paracentral_mean_area_mm2
+	p-value: 6.795615128173358e-08 - null hypothesis rejected, the datasets have a different distribution
+	p-value: 2.4204312056958813e-29 - null hypothesis rejected, means are not statistically equal
+
+
+aparcDKT_left_AD.csv parsopercularis_mean_thickness_mm
+	p-value: 6.795615128173358e-08 - null hypothesis rejected, the datasets have a different distribution
+	p-value: 4.057761898348603e-25 - null hypothesis rejected, means are not statistically equal
+
+
+aparcDKT_left_AD.csv parsopercularis_mean_area_mm2
+	p-value: 6.786038616738627e-08 - null hypothesis rejected, the datasets have a different distribution
+	p-value: 9.99356614794233e-28 - null hypothesis rejected, means are not statistically equal
+
+
+aparcDKT_left_AD.csv parsorbitalis_mean_thickness_mm
+	p-value: 6.77647383397644e-08 - null hypothesis rejected, the datasets have a different distribution
+	p-value: 6.61655233904099e-30 - null hypothesis rejected, means are not statistically equal
+
+
+aparcDKT_left_AD.csv parsorbitalis_mean_area_mm2
+	p-value: 6.795615128173358e-08 - null hypothesis rejected, the datasets have a different distribution
+	p-value: 5.978722845022121e-22 - null hypothesis rejected, means are not statistically equal
+
+
+aparcDKT_left_AD.csv parstriangularis_mean_thickness_mm
+	p-value: 6.795615128173358e-08 - null hypothesis rejected, the datasets have a different distribution
+	p-value: 5.713051142302515e-27 - null hypothesis rejected, means are not statistically equal
+
+
+aparcDKT_left_AD.csv parstriangularis_mean_area_mm2
+	p-value: 6.795615128173358e-08 - null hypothesis rejected, the datasets have a different distribution
+	p-value: 6.521679757400475e-25 - null hypothesis rejected, means are not statistically equal
+
+
+aparcDKT_left_AD.csv pericalcarine_mean_thickness_mm
+	p-value: 6.77647383397644e-08 - null hypothesis rejected, the datasets have a different distribution
+	p-value: 3.1633097084702968e-25 - null hypothesis rejected, means are not statistically equal
+
+
+aparcDKT_left_AD.csv pericalcarine_mean_area_mm2
+	p-value: 6.786038616738627e-08 - null hypothesis rejected, the datasets have a different distribution
+	p-value: 6.081548207625226e-16 - null hypothesis rejected, means are not statistically equal
+
+
+aparcDKT_left_AD.csv postcentral_mean_thickness_mm
+	p-value: 6.795615128173358e-08 - null hypothesis rejected, the datasets have a different distribution
+	p-value: 7.151946189497492e-31 - null hypothesis rejected, means are not statistically equal
+
+
+aparcDKT_left_AD.csv postcentral_mean_area_mm2
+	p-value: 6.786038616738627e-08 - null hypothesis rejected, the datasets have a different distribution
+	p-value: 2.1216297911078025e-31 - null hypothesis rejected, means are not statistically equal
+
+
+aparcDKT_left_AD.csv posteriorcingulate_mean_thickness_mm
+	p-value: 6.795615128173358e-08 - null hypothesis rejected, the datasets have a different distribution
+	p-value: 1.0394489266152432e-25 - null hypothesis rejected, means are not statistically equal
+
+
+aparcDKT_left_AD.csv posteriorcingulate_mean_area_mm2
+	p-value: 6.795615128173358e-08 - null hypothesis rejected, the datasets have a different distribution
+	p-value: 4.056632527107463e-28 - null hypothesis rejected, means are not statistically equal
+
+
+aparcDKT_left_AD.csv precentral_mean_thickness_mm
+	p-value: 6.795615128173358e-08 - null hypothesis rejected, the datasets have a different distribution
+	p-value: 8.295441385847905e-31 - null hypothesis rejected, means are not statistically equal
+
+
+aparcDKT_left_AD.csv precentral_mean_area_mm2
+	p-value: 6.795615128173358e-08 - null hypothesis rejected, the datasets have a different distribution
+	p-value: 9.972822383216762e-34 - null hypothesis rejected, means are not statistically equal
+
+
+aparcDKT_left_AD.csv precuneus_mean_thickness_mm
+	p-value: 6.786038616738627e-08 - null hypothesis rejected, the datasets have a different distribution
+	p-value: 5.591986384906942e-28 - null hypothesis rejected, means are not statistically equal
+
+
+aparcDKT_left_AD.csv precuneus_mean_area_mm2
+	p-value: 6.786038616738627e-08 - null hypothesis rejected, the datasets have a different distribution
+	p-value: 3.4414089039820183e-28 - null hypothesis rejected, means are not statistically equal
+
+
+aparcDKT_left_AD.csv rostralanteriorcingulate_mean_thickness_mm
+	p-value: 6.786038616738627e-08 - null hypothesis rejected, the datasets have a different distribution
+	p-value: 2.114659683531407e-22 - null hypothesis rejected, means are not statistically equal
+
+
+aparcDKT_left_AD.csv rostralanteriorcingulate_mean_area_mm2
+	p-value: 6.795615128173358e-08 - null hypothesis rejected, the datasets have a different distribution
+	p-value: 6.4630651560780945e-21 - null hypothesis rejected, means are not statistically equal
+
+
+aparcDKT_left_AD.csv rostralmiddlefrontal_mean_thickness_mm
+	p-value: 6.786038616738627e-08 - null hypothesis rejected, the datasets have a different distribution
+	p-value: 2.262458435099711e-28 - null hypothesis rejected, means are not statistically equal
+
+
+aparcDKT_left_AD.csv rostralmiddlefrontal_mean_area_mm2
+	p-value: 6.786038616738627e-08 - null hypothesis rejected, the datasets have a different distribution
+	p-value: 1.1185109939208516e-23 - null hypothesis rejected, means are not statistically equal
+
+
+aparcDKT_left_AD.csv superiorfrontal_mean_thickness_mm
+	p-value: 6.786038616738627e-08 - null hypothesis rejected, the datasets have a different distribution
+	p-value: 4.950054188951736e-30 - null hypothesis rejected, means are not statistically equal
+
+
+aparcDKT_left_AD.csv superiorfrontal_mean_area_mm2
+	p-value: 6.795615128173358e-08 - null hypothesis rejected, the datasets have a different distribution
+	p-value: 2.5080744968852577e-29 - null hypothesis rejected, means are not statistically equal
+
+
+aparcDKT_left_AD.csv superiorparietal_mean_thickness_mm
+	p-value: 6.795615128173358e-08 - null hypothesis rejected, the datasets have a different distribution
+	p-value: 1.6677675206438762e-26 - null hypothesis rejected, means are not statistically equal
+
+
+aparcDKT_left_AD.csv superiorparietal_mean_area_mm2
+	p-value: 6.786038616738627e-08 - null hypothesis rejected, the datasets have a different distribution
+	p-value: 1.1585835297882833e-25 - null hypothesis rejected, means are not statistically equal
+
+
+aparcDKT_left_AD.csv superiortemporal_mean_thickness_mm
+	p-value: 6.795615128173358e-08 - null hypothesis rejected, the datasets have a different distribution
+	p-value: 1.084146755945141e-31 - null hypothesis rejected, means are not statistically equal
+
+
+aparcDKT_left_AD.csv superiortemporal_mean_area_mm2
+	p-value: 6.786038616738627e-08 - null hypothesis rejected, the datasets have a different distribution
+	p-value: 8.195063203433714e-32 - null hypothesis rejected, means are not statistically equal
+
+
+aparcDKT_left_AD.csv supramarginal_mean_thickness_mm
+	p-value: 6.795615128173358e-08 - null hypothesis rejected, the datasets have a different distribution
+	p-value: 1.2308028541652855e-22 - null hypothesis rejected, means are not statistically equal
+
+
+aparcDKT_left_AD.csv supramarginal_mean_area_mm2
+	p-value: 6.795615128173358e-08 - null hypothesis rejected, the datasets have a different distribution
+	p-value: 6.502641902815922e-24 - null hypothesis rejected, means are not statistically equal
+
+
+aparcDKT_left_AD.csv transversetemporal_mean_thickness_mm
+	p-value: 6.795615128173358e-08 - null hypothesis rejected, the datasets have a different distribution
+	p-value: 2.0932871885961986e-24 - null hypothesis rejected, means are not statistically equal
+
+
+aparcDKT_left_AD.csv transversetemporal_mean_area_mm2
+	p-value: 6.77647383397644e-08 - null hypothesis rejected, the datasets have a different distribution
+	p-value: 2.1745239987405987e-22 - null hypothesis rejected, means are not statistically equal
+
+
+aparcDKT_left_AD.csv insula_mean_thickness_mm
+	p-value: 6.786038616738627e-08 - null hypothesis rejected, the datasets have a different distribution
+	p-value: 3.219043965456487e-32 - null hypothesis rejected, means are not statistically equal
+
+
+aparcDKT_left_AD.csv insula_mean_area_mm2
+	p-value: nan - null hypothesis rejected, the datasets have a different distribution
+	p-value: nan - null hypothesis rejected, means are not statistically equal
+
+
+aparcDKT_right_AD.csv Cortex, MeanThickness
+	p-value: 0.004702532763389892 - null hypothesis rejected, the datasets have a different distribution
+	p-value: 0.004094782828857082 - null hypothesis rejected, means are not statistically equal
+
+
+aparcDKT_right_AD.csv BrainSeg, BrainSegVol
+	p-value: 0.4734806277722057 - null hypothesis cannot be rejected, the datasets have the same distribution
+	p-value: 0.7443060014283704 - null hypothesis cannot be rejected, means are statistically equal
+
+
+aparcDKT_right_AD.csv BrainSegNotVent, BrainSegVolNotVent
+	p-value: 0.5978625674290079 - null hypothesis cannot be rejected, the datasets have the same distribution
+	p-value: 0.7451272284301251 - null hypothesis cannot be rejected, means are statistically equal
+
+
+aparcDKT_right_AD.csv BrainSegNotVentSurf, BrainSegVolNotVentSurf
+	p-value: 0.5608516966002302 - null hypothesis cannot be rejected, the datasets have the same distribution
+	p-value: 0.7377419234595933 - null hypothesis cannot be rejected, means are statistically equal
+
+
+aparcDKT_right_AD.csv Cortex, CortexVol
+	p-value: 0.21840551261012597 - null hypothesis cannot be rejected, the datasets have the same distribution
+	p-value: 0.3157431394079279 - null hypothesis cannot be rejected, means are statistically equal
+
+
+aparcDKT_right_AD.csv SupraTentorial, SupraTentorialVol
+	p-value: 0.4569506196695641 - null hypothesis cannot be rejected, the datasets have the same distribution
+	p-value: 0.6076434907801435 - null hypothesis cannot be rejected, means are statistically equal
+
+
+aparcDKT_right_AD.csv SupraTentorialNotVent, SupraTentorialVolNotVent
+	p-value: 0.4569506196695641 - null hypothesis cannot be rejected, the datasets have the same distribution
+	p-value: 0.7149519672066004 - null hypothesis cannot be rejected, means are statistically equal
+
+
+aparcDKT_right_AD.csv EstimatedTotalIntraCranialVol, eTIV
 	p-value: 0.42488347368209856 - null hypothesis cannot be rejected, the datasets have the same distribution
-	p-value: 0.4103845926768106 - null hypothesis cannot be rejected, means are statistically equal
+	p-value: 0.3623367788321339 - null hypothesis cannot be rejected, means are statistically equal
+
+
+aparcDKT_right_AD.csv caudalanteriorcingulate_mean_thickness_mm
+	p-value: 0.4903139142298173 - null hypothesis cannot be rejected, the datasets have the same distribution
+	p-value: 0.605334781704204 - null hypothesis cannot be rejected, means are statistically equal
+
+
+aparcDKT_right_AD.csv caudalanteriorcingulate_mean_area_mm2
+	p-value: 0.14407765823123816 - null hypothesis cannot be rejected, the datasets have the same distribution
+	p-value: 0.1526396703256575 - null hypothesis cannot be rejected, means are statistically equal
+
+
+aparcDKT_right_AD.csv caudalmiddlefrontal_mean_thickness_mm
+	p-value: 0.009779613198315931 - null hypothesis rejected, the datasets have a different distribution
+	p-value: 0.00810775367578744 - null hypothesis rejected, means are not statistically equal
+
+
+aparcDKT_right_AD.csv caudalmiddlefrontal_mean_area_mm2
+	p-value: 0.11046535505885872 - null hypothesis cannot be rejected, the datasets have the same distribution
+	p-value: 0.11185656923555422 - null hypothesis cannot be rejected, means are statistically equal
+
+
+aparcDKT_right_AD.csv cuneus_mean_thickness_mm
+	p-value: 0.07640334489786882 - null hypothesis cannot be rejected, the datasets have the same distribution
+	p-value: 0.11259986995574722 - null hypothesis cannot be rejected, means are statistically equal
+
+
+aparcDKT_right_AD.csv cuneus_mean_area_mm2
+	p-value: 0.10749486521489623 - null hypothesis cannot be rejected, the datasets have the same distribution
+	p-value: 0.08311887727921899 - null hypothesis cannot be rejected, means are statistically equal
+
+
+aparcDKT_right_AD.csv entorhinal_mean_thickness_mm
+	p-value: 0.6948910198677665 - null hypothesis cannot be rejected, the datasets have the same distribution
+	p-value: 0.6286516774768419 - null hypothesis cannot be rejected, means are statistically equal
+
+
+aparcDKT_right_AD.csv entorhinal_mean_area_mm2
+	p-value: 0.08100324590993967 - null hypothesis cannot be rejected, the datasets have the same distribution
+	p-value: 0.08658073470065497 - null hypothesis cannot be rejected, means are statistically equal
+
+
+aparcDKT_right_AD.csv fusiform_mean_thickness_mm
+	p-value: 0.07419814096923526 - null hypothesis cannot be rejected, the datasets have the same distribution
+	p-value: 0.04735006974358116 - null hypothesis rejected, means are not statistically equal
+
+
+aparcDKT_right_AD.csv fusiform_mean_area_mm2
+	p-value: 0.14784658271436188 - null hypothesis cannot be rejected, the datasets have the same distribution
+	p-value: 0.18159911986564342 - null hypothesis cannot be rejected, means are statistically equal
+
+
+aparcDKT_right_AD.csv inferiorparietal_mean_thickness_mm
+	p-value: 0.189543984158981 - null hypothesis cannot be rejected, the datasets have the same distribution
+	p-value: 0.2393145058006482 - null hypothesis cannot be rejected, means are statistically equal
+
+
+aparcDKT_right_AD.csv inferiorparietal_mean_area_mm2
+	p-value: 0.6750141566504884 - null hypothesis cannot be rejected, the datasets have the same distribution
+	p-value: 0.8560595733477198 - null hypothesis cannot be rejected, means are statistically equal
+
+
+aparcDKT_right_AD.csv inferiortemporal_mean_thickness_mm
+	p-value: 0.026540425397951716 - null hypothesis rejected, the datasets have a different distribution
+	p-value: 0.04560901358502473 - null hypothesis rejected, means are not statistically equal
+
+
+aparcDKT_right_AD.csv inferiortemporal_mean_area_mm2
+	p-value: 0.6167085812602031 - null hypothesis cannot be rejected, the datasets have the same distribution
+	p-value: 0.4909853527789716 - null hypothesis cannot be rejected, means are statistically equal
+
+
+aparcDKT_right_AD.csv isthmuscingulate_mean_thickness_mm
+	p-value: 0.40935585574217404 - null hypothesis cannot be rejected, the datasets have the same distribution
+	p-value: 0.434691384121492 - null hypothesis cannot be rejected, means are statistically equal
+
+
+aparcDKT_right_AD.csv isthmuscingulate_mean_area_mm2
+	p-value: 0.011873078340004112 - null hypothesis rejected, the datasets have a different distribution
+	p-value: 0.005428650216188654 - null hypothesis rejected, means are not statistically equal
+
+
+aparcDKT_right_AD.csv lateraloccipital_mean_thickness_mm
+	p-value: 0.09090738325062647 - null hypothesis cannot be rejected, the datasets have the same distribution
+	p-value: 0.08956652010648979 - null hypothesis cannot be rejected, means are statistically equal
+
+
+aparcDKT_right_AD.csv lateraloccipital_mean_area_mm2
+	p-value: 0.07643094557954021 - null hypothesis cannot be rejected, the datasets have the same distribution
+	p-value: 0.056034601474009425 - null hypothesis cannot be rejected, means are statistically equal
+
+
+aparcDKT_right_AD.csv lateralorbitofrontal_mean_thickness_mm
+	p-value: 0.0005087635111127225 - null hypothesis rejected, the datasets have a different distribution
+	p-value: 0.0003434149346151575 - null hypothesis rejected, means are not statistically equal
+
+
+aparcDKT_right_AD.csv lateralorbitofrontal_mean_area_mm2
+	p-value: 0.06009862379409443 - null hypothesis cannot be rejected, the datasets have the same distribution
+	p-value: 0.2282975548499998 - null hypothesis cannot be rejected, means are statistically equal
+
+
+aparcDKT_right_AD.csv lingual_mean_thickness_mm
+	p-value: 0.06007458876094348 - null hypothesis cannot be rejected, the datasets have the same distribution
+	p-value: 0.034851967552957545 - null hypothesis rejected, means are not statistically equal
+
+
+aparcDKT_right_AD.csv lingual_mean_area_mm2
+	p-value: 0.5978625674290079 - null hypothesis cannot be rejected, the datasets have the same distribution
+	p-value: 0.6532112371485079 - null hypothesis cannot be rejected, means are statistically equal
+
+
+aparcDKT_right_AD.csv medialorbitofrontal_mean_thickness_mm
+	p-value: 0.06009862379409443 - null hypothesis cannot be rejected, the datasets have the same distribution
+	p-value: 0.041784340669666645 - null hypothesis rejected, means are not statistically equal
+
+
+aparcDKT_right_AD.csv medialorbitofrontal_mean_area_mm2
+	p-value: 0.1555699325877425 - null hypothesis cannot be rejected, the datasets have the same distribution
+	p-value: 0.24397471474163154 - null hypothesis cannot be rejected, means are statistically equal
+
+
+aparcDKT_right_AD.csv middletemporal_mean_thickness_mm
+	p-value: 0.0720454304673439 - null hypothesis cannot be rejected, the datasets have the same distribution
+	p-value: 0.1210484059020169 - null hypothesis cannot be rejected, means are statistically equal
+
+
+aparcDKT_right_AD.csv middletemporal_mean_area_mm2
+	p-value: 0.7971694992046494 - null hypothesis cannot be rejected, the datasets have the same distribution
+	p-value: 0.9379085498252708 - null hypothesis cannot be rejected, means are statistically equal
 
 
 aparcDKT_right_AD.csv parahippocampal_mean_thickness_mm
@@ -28,24 +1133,354 @@ aparcDKT_right_AD.csv parahippocampal_mean_thickness_mm
 	p-value: 0.38309998142373347 - null hypothesis cannot be rejected, means are statistically equal
 
 
-aparcDKT_left_healthy.csv parahippocampal_mean_thickness_mm
-	p-value: 0.25589084987527044 - null hypothesis cannot be rejected, the datasets have the same distribution
-	p-value: 0.3176776737372788 - null hypothesis cannot be rejected, means are statistically equal
-
-
-aparcDKT_right_healthy.csv parahippocampal_mean_thickness_mm
-	p-value: 0.481846813543768 - null hypothesis cannot be rejected, the datasets have the same distribution
-	p-value: 0.5402504450311902 - null hypothesis cannot be rejected, means are statistically equal
-
-
-aparcDKT_left_AD.csv parahippocampal_mean_area_mm2
-	p-value: 0.022251086530990616 - null hypothesis rejected, the datasets have a different distribution
-	p-value: 0.01489081730043381 - null hypothesis rejected, means are not statistically equal
-
-
 aparcDKT_right_AD.csv parahippocampal_mean_area_mm2
 	p-value: 0.0029183698369589697 - null hypothesis rejected, the datasets have a different distribution
 	p-value: 0.0016870952133961944 - null hypothesis rejected, means are not statistically equal
+
+
+aparcDKT_right_AD.csv paracentral_mean_thickness_mm
+	p-value: 0.41703335552864307 - null hypothesis cannot be rejected, the datasets have the same distribution
+	p-value: 0.44971654512946413 - null hypothesis cannot be rejected, means are statistically equal
+
+
+aparcDKT_right_AD.csv paracentral_mean_area_mm2
+	p-value: 0.04679161534600049 - null hypothesis rejected, the datasets have a different distribution
+	p-value: 0.07581484782157134 - null hypothesis cannot be rejected, means are statistically equal
+
+
+aparcDKT_right_AD.csv parsopercularis_mean_thickness_mm
+	p-value: 0.058278780701183024 - null hypothesis cannot be rejected, the datasets have the same distribution
+	p-value: 0.03032370267863 - null hypothesis rejected, means are not statistically equal
+
+
+aparcDKT_right_AD.csv parsopercularis_mean_area_mm2
+	p-value: 0.11355139298344043 - null hypothesis cannot be rejected, the datasets have the same distribution
+	p-value: 0.1496942780570434 - null hypothesis cannot be rejected, means are statistically equal
+
+
+aparcDKT_right_AD.csv parsorbitalis_mean_thickness_mm
+	p-value: 0.11046535505885872 - null hypothesis cannot be rejected, the datasets have the same distribution
+	p-value: 0.09478170283995581 - null hypothesis cannot be rejected, means are statistically equal
+
+
+aparcDKT_right_AD.csv parsorbitalis_mean_area_mm2
+	p-value: 0.8710631990792786 - null hypothesis cannot be rejected, the datasets have the same distribution
+	p-value: 0.9640374883097735 - null hypothesis cannot be rejected, means are statistically equal
+
+
+aparcDKT_right_AD.csv parstriangularis_mean_thickness_mm
+	p-value: 0.012811793956250412 - null hypothesis rejected, the datasets have a different distribution
+	p-value: 0.012655158594814536 - null hypothesis rejected, means are not statistically equal
+
+
+aparcDKT_right_AD.csv parstriangularis_mean_area_mm2
+	p-value: 0.9892089047911196 - null hypothesis cannot be rejected, the datasets have the same distribution
+	p-value: 0.7802628570422184 - null hypothesis cannot be rejected, means are statistically equal
+
+
+aparcDKT_right_AD.csv pericalcarine_mean_thickness_mm
+	p-value: 0.06381748795906395 - null hypothesis cannot be rejected, the datasets have the same distribution
+	p-value: 0.09524598285679822 - null hypothesis cannot be rejected, means are statistically equal
+
+
+aparcDKT_right_AD.csv pericalcarine_mean_area_mm2
+	p-value: 0.5249674713729339 - null hypothesis cannot be rejected, the datasets have the same distribution
+	p-value: 0.9798610396102829 - null hypothesis cannot be rejected, means are statistically equal
+
+
+aparcDKT_right_AD.csv postcentral_mean_thickness_mm
+	p-value: 0.19412753434712282 - null hypothesis cannot be rejected, the datasets have the same distribution
+	p-value: 0.2634460853609579 - null hypothesis cannot be rejected, means are statistically equal
+
+
+aparcDKT_right_AD.csv postcentral_mean_area_mm2
+	p-value: 0.3507022236669548 - null hypothesis cannot be rejected, the datasets have the same distribution
+	p-value: 0.41939610902907154 - null hypothesis cannot be rejected, means are statistically equal
+
+
+aparcDKT_right_AD.csv posteriorcingulate_mean_thickness_mm
+	p-value: 0.13679713412107813 - null hypothesis cannot be rejected, the datasets have the same distribution
+	p-value: 0.1175697247734819 - null hypothesis cannot be rejected, means are statistically equal
+
+
+aparcDKT_right_AD.csv posteriorcingulate_mean_area_mm2
+	p-value: 0.6456073208433126 - null hypothesis cannot be rejected, the datasets have the same distribution
+	p-value: 0.7657298146876901 - null hypothesis cannot be rejected, means are statistically equal
+
+
+aparcDKT_right_AD.csv precentral_mean_thickness_mm
+	p-value: 0.364841654608659 - null hypothesis cannot be rejected, the datasets have the same distribution
+	p-value: 0.3658285293915803 - null hypothesis cannot be rejected, means are statistically equal
+
+
+aparcDKT_right_AD.csv precentral_mean_area_mm2
+	p-value: 0.9784187713228342 - null hypothesis cannot be rejected, the datasets have the same distribution
+	p-value: 0.8537893737936759 - null hypothesis cannot be rejected, means are statistically equal
+
+
+aparcDKT_right_AD.csv precuneus_mean_thickness_mm
+	p-value: 0.1367787233744998 - null hypothesis cannot be rejected, the datasets have the same distribution
+	p-value: 0.2234534561570281 - null hypothesis cannot be rejected, means are statistically equal
+
+
+aparcDKT_right_AD.csv precuneus_mean_area_mm2
+	p-value: 0.5978625674290079 - null hypothesis cannot be rejected, the datasets have the same distribution
+	p-value: 0.6297717163684016 - null hypothesis cannot be rejected, means are statistically equal
+
+
+aparcDKT_right_AD.csv rostralanteriorcingulate_mean_thickness_mm
+	p-value: 0.1635759682797857 - null hypothesis cannot be rejected, the datasets have the same distribution
+	p-value: 0.32007682322544656 - null hypothesis cannot be rejected, means are statistically equal
+
+
+aparcDKT_right_AD.csv rostralanteriorcingulate_mean_area_mm2
+	p-value: 0.7352681529274933 - null hypothesis cannot be rejected, the datasets have the same distribution
+	p-value: 0.7779208695511142 - null hypothesis cannot be rejected, means are statistically equal
+
+
+aparcDKT_right_AD.csv rostralmiddlefrontal_mean_thickness_mm
+	p-value: 0.0003559207815842164 - null hypothesis rejected, the datasets have a different distribution
+	p-value: 0.00013605028454321473 - null hypothesis rejected, means are not statistically equal
+
+
+aparcDKT_right_AD.csv rostralmiddlefrontal_mean_area_mm2
+	p-value: 0.7971881138618718 - null hypothesis cannot be rejected, the datasets have the same distribution
+	p-value: 0.7086340245770393 - null hypothesis cannot be rejected, means are statistically equal
+
+
+aparcDKT_right_AD.csv superiorfrontal_mean_thickness_mm
+	p-value: 0.0036340670406379227 - null hypothesis rejected, the datasets have a different distribution
+	p-value: 0.0024225376819041445 - null hypothesis rejected, means are not statistically equal
+
+
+aparcDKT_right_AD.csv superiorfrontal_mean_area_mm2
+	p-value: 0.49033426450951045 - null hypothesis cannot be rejected, the datasets have the same distribution
+	p-value: 0.6696065660268093 - null hypothesis cannot be rejected, means are statistically equal
+
+
+aparcDKT_right_AD.csv superiorparietal_mean_thickness_mm
+	p-value: 0.08833709065125678 - null hypothesis cannot be rejected, the datasets have the same distribution
+	p-value: 0.2288970721021861 - null hypothesis cannot be rejected, means are statistically equal
+
+
+aparcDKT_right_AD.csv superiorparietal_mean_area_mm2
+	p-value: 0.39417090995164517 - null hypothesis cannot be rejected, the datasets have the same distribution
+	p-value: 0.3737786432250495 - null hypothesis cannot be rejected, means are statistically equal
+
+
+aparcDKT_right_AD.csv superiortemporal_mean_thickness_mm
+	p-value: 0.06785528430878243 - null hypothesis cannot be rejected, the datasets have the same distribution
+	p-value: 0.05216427315777048 - null hypothesis cannot be rejected, means are statistically equal
+
+
+aparcDKT_right_AD.csv superiortemporal_mean_area_mm2
+	p-value: 0.49033426450951045 - null hypothesis cannot be rejected, the datasets have the same distribution
+	p-value: 0.45073402012967845 - null hypothesis cannot be rejected, means are statistically equal
+
+
+aparcDKT_right_AD.csv supramarginal_mean_thickness_mm
+	p-value: 0.04381110080988691 - null hypothesis rejected, the datasets have a different distribution
+	p-value: 0.13634351739302736 - null hypothesis cannot be rejected, means are statistically equal
+
+
+aparcDKT_right_AD.csv supramarginal_mean_area_mm2
+	p-value: 0.20845355458876536 - null hypothesis cannot be rejected, the datasets have the same distribution
+	p-value: 0.24713893316006702 - null hypothesis cannot be rejected, means are statistically equal
+
+
+aparcDKT_right_AD.csv transversetemporal_mean_thickness_mm
+	p-value: 0.2732851201810752 - null hypothesis cannot be rejected, the datasets have the same distribution
+	p-value: 0.3600757196917762 - null hypothesis cannot be rejected, means are statistically equal
+
+
+aparcDKT_right_AD.csv transversetemporal_mean_area_mm2
+	p-value: 0.228585187040668 - null hypothesis cannot be rejected, the datasets have the same distribution
+	p-value: 0.19516322481823872 - null hypothesis cannot be rejected, means are statistically equal
+
+
+aparcDKT_right_AD.csv insula_mean_thickness_mm
+	p-value: 0.6167085812602031 - null hypothesis cannot be rejected, the datasets have the same distribution
+	p-value: 0.7052536397943518 - null hypothesis cannot be rejected, means are statistically equal
+
+
+aparcDKT_right_AD.csv insula_mean_area_mm2
+	p-value: 0.7763905055505131 - null hypothesis cannot be rejected, the datasets have the same distribution
+	p-value: 0.827422044484381 - null hypothesis cannot be rejected, means are statistically equal
+
+
+aparcDKT_left_healthy.csv Cortex, MeanThickness
+	p-value: 0.0004155021525085159 - null hypothesis rejected, the datasets have a different distribution
+	p-value: 0.00019238815799614597 - null hypothesis rejected, means are not statistically equal
+
+
+aparcDKT_left_healthy.csv BrainSeg, BrainSegVol
+	p-value: 0.5608516966002302 - null hypothesis cannot be rejected, the datasets have the same distribution
+	p-value: 0.674773307378078 - null hypothesis cannot be rejected, means are statistically equal
+
+
+aparcDKT_left_healthy.csv BrainSegNotVent, BrainSegVolNotVent
+	p-value: 0.5427717015170068 - null hypothesis cannot be rejected, the datasets have the same distribution
+	p-value: 0.6719882297172313 - null hypothesis cannot be rejected, means are statistically equal
+
+
+aparcDKT_left_healthy.csv BrainSegNotVentSurf, BrainSegVolNotVentSurf
+	p-value: 0.5427717015170068 - null hypothesis cannot be rejected, the datasets have the same distribution
+	p-value: 0.6676131226083778 - null hypothesis cannot be rejected, means are statistically equal
+
+
+aparcDKT_left_healthy.csv Cortex, CortexVol
+	p-value: 0.1555699325877425 - null hypothesis cannot be rejected, the datasets have the same distribution
+	p-value: 0.16769002585682535 - null hypothesis cannot be rejected, means are statistically equal
+
+
+aparcDKT_left_healthy.csv SupraTentorial, SupraTentorialVol
+	p-value: 0.42488347368209856 - null hypothesis cannot be rejected, the datasets have the same distribution
+	p-value: 0.5869039789883821 - null hypothesis cannot be rejected, means are statistically equal
+
+
+aparcDKT_left_healthy.csv SupraTentorialNotVent, SupraTentorialVolNotVent
+	p-value: 0.5427717015170068 - null hypothesis cannot be rejected, the datasets have the same distribution
+	p-value: 0.6286323175286879 - null hypothesis cannot be rejected, means are statistically equal
+
+
+aparcDKT_left_healthy.csv EstimatedTotalIntraCranialVol, eTIV
+	p-value: 0.14041971470550127 - null hypothesis cannot be rejected, the datasets have the same distribution
+	p-value: 0.10003189804299675 - null hypothesis cannot be rejected, means are statistically equal
+
+
+aparcDKT_left_healthy.csv caudalanteriorcingulate_mean_thickness_mm
+	p-value: 0.07643094557954021 - null hypothesis cannot be rejected, the datasets have the same distribution
+	p-value: 0.1884781954208036 - null hypothesis cannot be rejected, means are statistically equal
+
+
+aparcDKT_left_healthy.csv caudalanteriorcingulate_mean_area_mm2
+	p-value: 0.019281043289390523 - null hypothesis rejected, the datasets have a different distribution
+	p-value: 0.12267626783705832 - null hypothesis cannot be rejected, means are statistically equal
+
+
+aparcDKT_left_healthy.csv caudalmiddlefrontal_mean_thickness_mm
+	p-value: 0.02844021683144146 - null hypothesis rejected, the datasets have a different distribution
+	p-value: 0.042202802249632576 - null hypothesis rejected, means are not statistically equal
+
+
+aparcDKT_left_healthy.csv caudalmiddlefrontal_mean_area_mm2
+	p-value: 0.23932370336933684 - null hypothesis cannot be rejected, the datasets have the same distribution
+	p-value: 0.3586823833280395 - null hypothesis cannot be rejected, means are statistically equal
+
+
+aparcDKT_left_healthy.csv cuneus_mean_thickness_mm
+	p-value: 0.6262956887695503 - null hypothesis cannot be rejected, the datasets have the same distribution
+	p-value: 0.5218793462459922 - null hypothesis cannot be rejected, means are statistically equal
+
+
+aparcDKT_left_healthy.csv cuneus_mean_area_mm2
+	p-value: 0.5427338441435716 - null hypothesis cannot be rejected, the datasets have the same distribution
+	p-value: 0.30242387309789814 - null hypothesis cannot be rejected, means are statistically equal
+
+
+aparcDKT_left_healthy.csv entorhinal_mean_thickness_mm
+	p-value: 0.9460763999037595 - null hypothesis cannot be rejected, the datasets have the same distribution
+	p-value: 0.9318077006756212 - null hypothesis cannot be rejected, means are statistically equal
+
+
+aparcDKT_left_healthy.csv entorhinal_mean_area_mm2
+	p-value: 0.00279346841322297 - null hypothesis rejected, the datasets have a different distribution
+	p-value: 0.0014749465708018765 - null hypothesis rejected, means are not statistically equal
+
+
+aparcDKT_left_healthy.csv fusiform_mean_thickness_mm
+	p-value: 0.023863588958492925 - null hypothesis rejected, the datasets have a different distribution
+	p-value: 0.030987650324647887 - null hypothesis rejected, means are not statistically equal
+
+
+aparcDKT_left_healthy.csv fusiform_mean_area_mm2
+	p-value: 0.5792183523134169 - null hypothesis cannot be rejected, the datasets have the same distribution
+	p-value: 0.5597114610627696 - null hypothesis cannot be rejected, means are statistically equal
+
+
+aparcDKT_left_healthy.csv inferiorparietal_mean_thickness_mm
+	p-value: 0.003962838919572439 - null hypothesis rejected, the datasets have a different distribution
+	p-value: 0.005725013304498033 - null hypothesis rejected, means are not statistically equal
+
+
+aparcDKT_left_healthy.csv inferiorparietal_mean_area_mm2
+	p-value: 0.7352681529274933 - null hypothesis cannot be rejected, the datasets have the same distribution
+	p-value: 0.6301257589313916 - null hypothesis cannot be rejected, means are statistically equal
+
+
+aparcDKT_left_healthy.csv inferiortemporal_mean_thickness_mm
+	p-value: 1.6959257305120723e-05 - null hypothesis rejected, the datasets have a different distribution
+	p-value: 1.9118764446571734e-06 - null hypothesis rejected, means are not statistically equal
+
+
+aparcDKT_left_healthy.csv inferiortemporal_mean_area_mm2
+	p-value: 0.20358146825719148 - null hypothesis cannot be rejected, the datasets have the same distribution
+	p-value: 0.19984844842039895 - null hypothesis cannot be rejected, means are statistically equal
+
+
+aparcDKT_left_healthy.csv isthmuscingulate_mean_thickness_mm
+	p-value: 0.0564817918922385 - null hypothesis cannot be rejected, the datasets have the same distribution
+	p-value: 0.07820747030949193 - null hypothesis cannot be rejected, means are statistically equal
+
+
+aparcDKT_left_healthy.csv isthmuscingulate_mean_area_mm2
+	p-value: 0.1555505435968249 - null hypothesis cannot be rejected, the datasets have the same distribution
+	p-value: 0.19113889520694188 - null hypothesis cannot be rejected, means are statistically equal
+
+
+aparcDKT_left_healthy.csv lateraloccipital_mean_thickness_mm
+	p-value: 0.018599201820036344 - null hypothesis rejected, the datasets have a different distribution
+	p-value: 0.01120328139247702 - null hypothesis rejected, means are not statistically equal
+
+
+aparcDKT_left_healthy.csv lateraloccipital_mean_area_mm2
+	p-value: 0.5978625674290079 - null hypothesis cannot be rejected, the datasets have the same distribution
+	p-value: 0.6132657179629015 - null hypothesis cannot be rejected, means are statistically equal
+
+
+aparcDKT_left_healthy.csv lateralorbitofrontal_mean_thickness_mm
+	p-value: 7.40063598353908e-05 - null hypothesis rejected, the datasets have a different distribution
+	p-value: 1.9351401419176035e-05 - null hypothesis rejected, means are not statistically equal
+
+
+aparcDKT_left_healthy.csv lateralorbitofrontal_mean_area_mm2
+	p-value: 0.030456013219421724 - null hypothesis rejected, the datasets have a different distribution
+	p-value: 0.03904693165137966 - null hypothesis rejected, means are not statistically equal
+
+
+aparcDKT_left_healthy.csv lingual_mean_thickness_mm
+	p-value: 0.051429260925065 - null hypothesis cannot be rejected, the datasets have the same distribution
+	p-value: 0.0623211026671085 - null hypothesis cannot be rejected, means are statistically equal
+
+
+aparcDKT_left_healthy.csv lingual_mean_area_mm2
+	p-value: 0.42488347368209856 - null hypothesis cannot be rejected, the datasets have the same distribution
+	p-value: 0.4834903028087538 - null hypothesis cannot be rejected, means are statistically equal
+
+
+aparcDKT_left_healthy.csv medialorbitofrontal_mean_thickness_mm
+	p-value: 0.018582636196951385 - null hypothesis rejected, the datasets have a different distribution
+	p-value: 0.02719697513268705 - null hypothesis rejected, means are not statistically equal
+
+
+aparcDKT_left_healthy.csv medialorbitofrontal_mean_area_mm2
+	p-value: 0.06990495962221413 - null hypothesis cannot be rejected, the datasets have the same distribution
+	p-value: 0.1250790513773208 - null hypothesis cannot be rejected, means are statistically equal
+
+
+aparcDKT_left_healthy.csv middletemporal_mean_thickness_mm
+	p-value: 0.0034768548310861254 - null hypothesis rejected, the datasets have a different distribution
+	p-value: 0.0017341678537255499 - null hypothesis rejected, means are not statistically equal
+
+
+aparcDKT_left_healthy.csv middletemporal_mean_area_mm2
+	p-value: 0.8286674993184342 - null hypothesis cannot be rejected, the datasets have the same distribution
+	p-value: 0.7131290084245443 - null hypothesis cannot be rejected, means are statistically equal
+
+
+aparcDKT_left_healthy.csv parahippocampal_mean_thickness_mm
+	p-value: 0.25589084987527044 - null hypothesis cannot be rejected, the datasets have the same distribution
+	p-value: 0.3176776737372788 - null hypothesis cannot be rejected, means are statistically equal
 
 
 aparcDKT_left_healthy.csv parahippocampal_mean_area_mm2
@@ -53,8 +1488,523 @@ aparcDKT_left_healthy.csv parahippocampal_mean_area_mm2
 	p-value: 0.02666659034331652 - null hypothesis rejected, means are not statistically equal
 
 
+aparcDKT_left_healthy.csv paracentral_mean_thickness_mm
+	p-value: 0.14782757601331015 - null hypothesis cannot be rejected, the datasets have the same distribution
+	p-value: 0.17276860855441628 - null hypothesis cannot be rejected, means are statistically equal
+
+
+aparcDKT_left_healthy.csv paracentral_mean_area_mm2
+	p-value: 0.22348587060674963 - null hypothesis cannot be rejected, the datasets have the same distribution
+	p-value: 0.16426738878561056 - null hypothesis cannot be rejected, means are statistically equal
+
+
+aparcDKT_left_healthy.csv parsopercularis_mean_thickness_mm
+	p-value: 0.14041971470550127 - null hypothesis cannot be rejected, the datasets have the same distribution
+	p-value: 0.09151648438228512 - null hypothesis cannot be rejected, means are statistically equal
+
+
+aparcDKT_left_healthy.csv parsopercularis_mean_area_mm2
+	p-value: 0.5978453896644239 - null hypothesis cannot be rejected, the datasets have the same distribution
+	p-value: 0.6245654348096188 - null hypothesis cannot be rejected, means are statistically equal
+
+
+aparcDKT_left_healthy.csv parsorbitalis_mean_thickness_mm
+	p-value: 0.009786486727077014 - null hypothesis rejected, the datasets have a different distribution
+	p-value: 0.007312157708160857 - null hypothesis rejected, means are not statistically equal
+
+
+aparcDKT_left_healthy.csv parsorbitalis_mean_area_mm2
+	p-value: 0.4016540795106561 - null hypothesis cannot be rejected, the datasets have the same distribution
+	p-value: 0.3219653940175551 - null hypothesis cannot be rejected, means are statistically equal
+
+
+aparcDKT_left_healthy.csv parstriangularis_mean_thickness_mm
+	p-value: 0.03370099333559285 - null hypothesis rejected, the datasets have a different distribution
+	p-value: 0.04155473054833954 - null hypothesis rejected, means are not statistically equal
+
+
+aparcDKT_left_healthy.csv parstriangularis_mean_area_mm2
+	p-value: 0.9245727283322236 - null hypothesis cannot be rejected, the datasets have the same distribution
+	p-value: 0.9351002047414416 - null hypothesis cannot be rejected, means are statistically equal
+
+
+aparcDKT_left_healthy.csv pericalcarine_mean_thickness_mm
+	p-value: 0.23910324879005618 - null hypothesis cannot be rejected, the datasets have the same distribution
+	p-value: 0.37800975550234994 - null hypothesis cannot be rejected, means are statistically equal
+
+
+aparcDKT_left_healthy.csv pericalcarine_mean_area_mm2
+	p-value: 0.6948910198677665 - null hypothesis cannot be rejected, the datasets have the same distribution
+	p-value: 0.4339676660167622 - null hypothesis cannot be rejected, means are statistically equal
+
+
+aparcDKT_left_healthy.csv postcentral_mean_thickness_mm
+	p-value: 0.016044147443192585 - null hypothesis rejected, the datasets have a different distribution
+	p-value: 0.011318547952404256 - null hypothesis rejected, means are not statistically equal
+
+
+aparcDKT_left_healthy.csv postcentral_mean_area_mm2
+	p-value: 0.1332831707493199 - null hypothesis cannot be rejected, the datasets have the same distribution
+	p-value: 0.14990347984653818 - null hypothesis cannot be rejected, means are statistically equal
+
+
+aparcDKT_left_healthy.csv posteriorcingulate_mean_thickness_mm
+	p-value: 0.14407765823123816 - null hypothesis cannot be rejected, the datasets have the same distribution
+	p-value: 0.18683178437653034 - null hypothesis cannot be rejected, means are statistically equal
+
+
+aparcDKT_left_healthy.csv posteriorcingulate_mean_area_mm2
+	p-value: 0.9568492840003371 - null hypothesis cannot be rejected, the datasets have the same distribution
+	p-value: 0.9972601735863083 - null hypothesis cannot be rejected, means are statistically equal
+
+
+aparcDKT_left_healthy.csv precentral_mean_thickness_mm
+	p-value: 0.06011064176288863 - null hypothesis cannot be rejected, the datasets have the same distribution
+	p-value: 0.0798061484682825 - null hypothesis cannot be rejected, means are statistically equal
+
+
+aparcDKT_left_healthy.csv precentral_mean_area_mm2
+	p-value: 0.6553463181427222 - null hypothesis cannot be rejected, the datasets have the same distribution
+	p-value: 0.6273634678888753 - null hypothesis cannot be rejected, means are statistically equal
+
+
+aparcDKT_left_healthy.csv precuneus_mean_thickness_mm
+	p-value: 0.009776177322436389 - null hypothesis rejected, the datasets have a different distribution
+	p-value: 0.008065324289025424 - null hypothesis rejected, means are not statistically equal
+
+
+aparcDKT_left_healthy.csv precuneus_mean_area_mm2
+	p-value: 0.8604309737352772 - null hypothesis cannot be rejected, the datasets have the same distribution
+	p-value: 0.9204005162335498 - null hypothesis cannot be rejected, means are statistically equal
+
+
+aparcDKT_left_healthy.csv rostralanteriorcingulate_mean_thickness_mm
+	p-value: 0.11043192467864313 - null hypothesis cannot be rejected, the datasets have the same distribution
+	p-value: 0.10224795387849037 - null hypothesis cannot be rejected, means are statistically equal
+
+
+aparcDKT_left_healthy.csv rostralanteriorcingulate_mean_area_mm2
+	p-value: 0.3234363510452939 - null hypothesis cannot be rejected, the datasets have the same distribution
+	p-value: 0.5916330884510916 - null hypothesis cannot be rejected, means are statistically equal
+
+
+aparcDKT_left_healthy.csv rostralmiddlefrontal_mean_thickness_mm
+	p-value: 0.00017923823281582683 - null hypothesis rejected, the datasets have a different distribution
+	p-value: 8.900038361535241e-05 - null hypothesis rejected, means are not statistically equal
+
+
+aparcDKT_left_healthy.csv rostralmiddlefrontal_mean_area_mm2
+	p-value: 0.6553614390103917 - null hypothesis cannot be rejected, the datasets have the same distribution
+	p-value: 0.722764739295924 - null hypothesis cannot be rejected, means are statistically equal
+
+
+aparcDKT_left_healthy.csv superiorfrontal_mean_thickness_mm
+	p-value: 9.263885186619606e-05 - null hypothesis rejected, the datasets have a different distribution
+	p-value: 0.00016776958694871734 - null hypothesis rejected, means are not statistically equal
+
+
+aparcDKT_left_healthy.csv superiorfrontal_mean_area_mm2
+	p-value: 0.1805773768084653 - null hypothesis cannot be rejected, the datasets have the same distribution
+	p-value: 0.29247743885515254 - null hypothesis cannot be rejected, means are statistically equal
+
+
+aparcDKT_left_healthy.csv superiorparietal_mean_thickness_mm
+	p-value: 0.0005084542359523916 - null hypothesis rejected, the datasets have a different distribution
+	p-value: 7.772637338792253e-05 - null hypothesis rejected, means are not statistically equal
+
+
+aparcDKT_left_healthy.csv superiorparietal_mean_area_mm2
+	p-value: 0.2616164678785774 - null hypothesis cannot be rejected, the datasets have the same distribution
+	p-value: 0.2588007550899724 - null hypothesis cannot be rejected, means are statistically equal
+
+
+aparcDKT_left_healthy.csv superiortemporal_mean_thickness_mm
+	p-value: 0.07641714519355082 - null hypothesis cannot be rejected, the datasets have the same distribution
+	p-value: 0.05094545111379048 - null hypothesis cannot be rejected, means are statistically equal
+
+
+aparcDKT_left_healthy.csv superiortemporal_mean_area_mm2
+	p-value: 0.6948910198677665 - null hypothesis cannot be rejected, the datasets have the same distribution
+	p-value: 0.6827683742834452 - null hypothesis cannot be rejected, means are statistically equal
+
+
+aparcDKT_left_healthy.csv supramarginal_mean_thickness_mm
+	p-value: 0.003964538568592338 - null hypothesis rejected, the datasets have a different distribution
+	p-value: 0.003880226103670865 - null hypothesis rejected, means are not statistically equal
+
+
+aparcDKT_left_healthy.csv supramarginal_mean_area_mm2
+	p-value: 0.4569295081276411 - null hypothesis cannot be rejected, the datasets have the same distribution
+	p-value: 0.49754413505360073 - null hypothesis cannot be rejected, means are statistically equal
+
+
+aparcDKT_left_healthy.csv transversetemporal_mean_thickness_mm
+	p-value: 0.401698248274715 - null hypothesis cannot be rejected, the datasets have the same distribution
+	p-value: 0.3687376102673532 - null hypothesis cannot be rejected, means are statistically equal
+
+
+aparcDKT_left_healthy.csv transversetemporal_mean_area_mm2
+	p-value: 0.37179620294534876 - null hypothesis cannot be rejected, the datasets have the same distribution
+	p-value: 0.5289947417867584 - null hypothesis cannot be rejected, means are statistically equal
+
+
+aparcDKT_left_healthy.csv insula_mean_thickness_mm
+	p-value: 0.5978110275549384 - null hypothesis cannot be rejected, the datasets have the same distribution
+	p-value: 0.5995294410785699 - null hypothesis cannot be rejected, means are statistically equal
+
+
+aparcDKT_left_healthy.csv insula_mean_area_mm2
+	p-value: 0.26159409395595723 - null hypothesis cannot be rejected, the datasets have the same distribution
+	p-value: 0.3745084636014365 - null hypothesis cannot be rejected, means are statistically equal
+
+
+aparcDKT_right_healthy.csv Cortex, MeanThickness
+	p-value: 0.0011159472351770113 - null hypothesis rejected, the datasets have a different distribution
+	p-value: 0.002716335307679922 - null hypothesis rejected, means are not statistically equal
+
+
+aparcDKT_right_healthy.csv BrainSeg, BrainSegVol
+	p-value: 0.5608516966002302 - null hypothesis cannot be rejected, the datasets have the same distribution
+	p-value: 0.674773307378078 - null hypothesis cannot be rejected, means are statistically equal
+
+
+aparcDKT_right_healthy.csv BrainSegNotVent, BrainSegVolNotVent
+	p-value: 0.5427717015170068 - null hypothesis cannot be rejected, the datasets have the same distribution
+	p-value: 0.6719882297172313 - null hypothesis cannot be rejected, means are statistically equal
+
+
+aparcDKT_right_healthy.csv BrainSegNotVentSurf, BrainSegVolNotVentSurf
+	p-value: 0.5427717015170068 - null hypothesis cannot be rejected, the datasets have the same distribution
+	p-value: 0.6676131226083778 - null hypothesis cannot be rejected, means are statistically equal
+
+
+aparcDKT_right_healthy.csv Cortex, CortexVol
+	p-value: 0.1555699325877425 - null hypothesis cannot be rejected, the datasets have the same distribution
+	p-value: 0.16769002585682535 - null hypothesis cannot be rejected, means are statistically equal
+
+
+aparcDKT_right_healthy.csv SupraTentorial, SupraTentorialVol
+	p-value: 0.42488347368209856 - null hypothesis cannot be rejected, the datasets have the same distribution
+	p-value: 0.5869039789883821 - null hypothesis cannot be rejected, means are statistically equal
+
+
+aparcDKT_right_healthy.csv SupraTentorialNotVent, SupraTentorialVolNotVent
+	p-value: 0.5427717015170068 - null hypothesis cannot be rejected, the datasets have the same distribution
+	p-value: 0.6286323175286879 - null hypothesis cannot be rejected, means are statistically equal
+
+
+aparcDKT_right_healthy.csv EstimatedTotalIntraCranialVol, eTIV
+	p-value: 0.14041971470550127 - null hypothesis cannot be rejected, the datasets have the same distribution
+	p-value: 0.10003189804299675 - null hypothesis cannot be rejected, means are statistically equal
+
+
+aparcDKT_right_healthy.csv caudalanteriorcingulate_mean_thickness_mm
+	p-value: 0.7047909287978514 - null hypothesis cannot be rejected, the datasets have the same distribution
+	p-value: 0.7493726552273887 - null hypothesis cannot be rejected, means are statistically equal
+
+
+aparcDKT_right_healthy.csv caudalanteriorcingulate_mean_area_mm2
+	p-value: 0.4903139142298173 - null hypothesis cannot be rejected, the datasets have the same distribution
+	p-value: 0.5445309457951057 - null hypothesis cannot be rejected, means are statistically equal
+
+
+aparcDKT_right_healthy.csv caudalmiddlefrontal_mean_thickness_mm
+	p-value: 0.019292379706561613 - null hypothesis rejected, the datasets have a different distribution
+	p-value: 0.03600882344021211 - null hypothesis rejected, means are not statistically equal
+
+
+aparcDKT_right_healthy.csv caudalmiddlefrontal_mean_area_mm2
+	p-value: 0.2616164678785774 - null hypothesis cannot be rejected, the datasets have the same distribution
+	p-value: 0.3819086867868996 - null hypothesis cannot be rejected, means are statistically equal
+
+
+aparcDKT_right_healthy.csv cuneus_mean_thickness_mm
+	p-value: 0.40935585574217404 - null hypothesis cannot be rejected, the datasets have the same distribution
+	p-value: 0.410826713314989 - null hypothesis cannot be rejected, means are statistically equal
+
+
+aparcDKT_right_healthy.csv cuneus_mean_area_mm2
+	p-value: 0.189543984158981 - null hypothesis cannot be rejected, the datasets have the same distribution
+	p-value: 0.152568794474669 - null hypothesis cannot be rejected, means are statistically equal
+
+
+aparcDKT_right_healthy.csv entorhinal_mean_thickness_mm
+	p-value: 0.33691523838231996 - null hypothesis cannot be rejected, the datasets have the same distribution
+	p-value: 0.537127016922616 - null hypothesis cannot be rejected, means are statistically equal
+
+
+aparcDKT_right_healthy.csv entorhinal_mean_area_mm2
+	p-value: 0.009038922463011455 - null hypothesis rejected, the datasets have a different distribution
+	p-value: 0.00892652258486698 - null hypothesis rejected, means are not statistically equal
+
+
+aparcDKT_right_healthy.csv fusiform_mean_thickness_mm
+	p-value: 0.05310312455977325 - null hypothesis cannot be rejected, the datasets have the same distribution
+	p-value: 0.08098507400631501 - null hypothesis cannot be rejected, means are statistically equal
+
+
+aparcDKT_right_healthy.csv fusiform_mean_area_mm2
+	p-value: 0.6167581690888283 - null hypothesis cannot be rejected, the datasets have the same distribution
+	p-value: 0.6460967030770249 - null hypothesis cannot be rejected, means are statistically equal
+
+
+aparcDKT_right_healthy.csv inferiorparietal_mean_thickness_mm
+	p-value: 0.05145113729003637 - null hypothesis cannot be rejected, the datasets have the same distribution
+	p-value: 0.1026580611249258 - null hypothesis cannot be rejected, means are statistically equal
+
+
+aparcDKT_right_healthy.csv inferiorparietal_mean_area_mm2
+	p-value: 0.3234817459216911 - null hypothesis cannot be rejected, the datasets have the same distribution
+	p-value: 0.33785855150783395 - null hypothesis cannot be rejected, means are statistically equal
+
+
+aparcDKT_right_healthy.csv inferiortemporal_mean_thickness_mm
+	p-value: 0.00978304966654761 - null hypothesis rejected, the datasets have a different distribution
+	p-value: 0.010250730986219108 - null hypothesis rejected, means are not statistically equal
+
+
+aparcDKT_right_healthy.csv inferiortemporal_mean_area_mm2
+	p-value: 0.22869435423745565 - null hypothesis cannot be rejected, the datasets have the same distribution
+	p-value: 0.24958440611643715 - null hypothesis cannot be rejected, means are statistically equal
+
+
+aparcDKT_right_healthy.csv isthmuscingulate_mean_thickness_mm
+	p-value: 0.19883449020829447 - null hypothesis cannot be rejected, the datasets have the same distribution
+	p-value: 0.1462180796302298 - null hypothesis cannot be rejected, means are statistically equal
+
+
+aparcDKT_right_healthy.csv isthmuscingulate_mean_area_mm2
+	p-value: 0.0055560170938241706 - null hypothesis rejected, the datasets have a different distribution
+	p-value: 0.008050213031478584 - null hypothesis rejected, means are not statistically equal
+
+
+aparcDKT_right_healthy.csv lateraloccipital_mean_thickness_mm
+	p-value: 0.019292379706561613 - null hypothesis rejected, the datasets have a different distribution
+	p-value: 0.014115519090192428 - null hypothesis rejected, means are not statistically equal
+
+
+aparcDKT_right_healthy.csv lateraloccipital_mean_area_mm2
+	p-value: 0.9676346083712113 - null hypothesis cannot be rejected, the datasets have the same distribution
+	p-value: 0.8098618407078897 - null hypothesis cannot be rejected, means are statistically equal
+
+
+aparcDKT_right_healthy.csv lateralorbitofrontal_mean_thickness_mm
+	p-value: 3.9338830691943574e-07 - null hypothesis rejected, the datasets have a different distribution
+	p-value: 2.161718654274869e-09 - null hypothesis rejected, means are not statistically equal
+
+
+aparcDKT_right_healthy.csv lateralorbitofrontal_mean_area_mm2
+	p-value: 0.042463686878456995 - null hypothesis rejected, the datasets have a different distribution
+	p-value: 0.039857543629693376 - null hypothesis rejected, means are not statistically equal
+
+
+aparcDKT_right_healthy.csv lingual_mean_thickness_mm
+	p-value: 0.12976779922212534 - null hypothesis cannot be rejected, the datasets have the same distribution
+	p-value: 0.15011524877785554 - null hypothesis cannot be rejected, means are statistically equal
+
+
+aparcDKT_right_healthy.csv lingual_mean_area_mm2
+	p-value: 0.7971974192691748 - null hypothesis cannot be rejected, the datasets have the same distribution
+	p-value: 0.713701135136473 - null hypothesis cannot be rejected, means are statistically equal
+
+
+aparcDKT_right_healthy.csv medialorbitofrontal_mean_thickness_mm
+	p-value: 0.007110802077889268 - null hypothesis rejected, the datasets have a different distribution
+	p-value: 0.008343225935721198 - null hypothesis rejected, means are not statistically equal
+
+
+aparcDKT_right_healthy.csv medialorbitofrontal_mean_area_mm2
+	p-value: 0.31687503948747564 - null hypothesis cannot be rejected, the datasets have the same distribution
+	p-value: 0.14213317670228276 - null hypothesis cannot be rejected, means are statistically equal
+
+
+aparcDKT_right_healthy.csv middletemporal_mean_thickness_mm
+	p-value: 0.01099594551509417 - null hypothesis rejected, the datasets have a different distribution
+	p-value: 0.04809000526778203 - null hypothesis rejected, means are not statistically equal
+
+
+aparcDKT_right_healthy.csv middletemporal_mean_area_mm2
+	p-value: 0.9245727283322236 - null hypothesis cannot be rejected, the datasets have the same distribution
+	p-value: 0.8461922341761725 - null hypothesis cannot be rejected, means are statistically equal
+
+
+aparcDKT_right_healthy.csv parahippocampal_mean_thickness_mm
+	p-value: 0.481846813543768 - null hypothesis cannot be rejected, the datasets have the same distribution
+	p-value: 0.5402504450311902 - null hypothesis cannot be rejected, means are statistically equal
+
+
 aparcDKT_right_healthy.csv parahippocampal_mean_area_mm2
 	p-value: 0.2182759031735212 - null hypothesis cannot be rejected, the datasets have the same distribution
 	p-value: 0.12337035991185209 - null hypothesis cannot be rejected, means are statistically equal
+
+
+aparcDKT_right_healthy.csv paracentral_mean_thickness_mm
+	p-value: 0.44070701014537317 - null hypothesis cannot be rejected, the datasets have the same distribution
+	p-value: 0.6045194941608687 - null hypothesis cannot be rejected, means are statistically equal
+
+
+aparcDKT_right_healthy.csv paracentral_mean_area_mm2
+	p-value: 0.025632348562057285 - null hypothesis rejected, the datasets have a different distribution
+	p-value: 0.02122784976317829 - null hypothesis rejected, means are not statistically equal
+
+
+aparcDKT_right_healthy.csv parsopercularis_mean_thickness_mm
+	p-value: 0.03484932129151174 - null hypothesis rejected, the datasets have a different distribution
+	p-value: 0.03536343098643432 - null hypothesis rejected, means are not statistically equal
+
+
+aparcDKT_right_healthy.csv parsopercularis_mean_area_mm2
+	p-value: 0.379331935127312 - null hypothesis cannot be rejected, the datasets have the same distribution
+	p-value: 0.3360047560073257 - null hypothesis cannot be rejected, means are statistically equal
+
+
+aparcDKT_right_healthy.csv parsorbitalis_mean_thickness_mm
+	p-value: 0.002043372975473293 - null hypothesis rejected, the datasets have a different distribution
+	p-value: 0.0017441718055053424 - null hypothesis rejected, means are not statistically equal
+
+
+aparcDKT_right_healthy.csv parsorbitalis_mean_area_mm2
+	p-value: 0.9245727283322236 - null hypothesis cannot be rejected, the datasets have the same distribution
+	p-value: 0.9222811858894905 - null hypothesis cannot be rejected, means are statistically equal
+
+
+aparcDKT_right_healthy.csv parstriangularis_mean_thickness_mm
+	p-value: 0.0006868221882035613 - null hypothesis rejected, the datasets have a different distribution
+	p-value: 0.0034403453711852046 - null hypothesis rejected, means are not statistically equal
+
+
+aparcDKT_right_healthy.csv parstriangularis_mean_area_mm2
+	p-value: 0.41705520872462964 - null hypothesis cannot be rejected, the datasets have the same distribution
+	p-value: 0.476325565379226 - null hypothesis cannot be rejected, means are statistically equal
+
+
+aparcDKT_right_healthy.csv pericalcarine_mean_thickness_mm
+	p-value: 0.3719084455678654 - null hypothesis cannot be rejected, the datasets have the same distribution
+	p-value: 0.34827066008868557 - null hypothesis cannot be rejected, means are statistically equal
+
+
+aparcDKT_right_healthy.csv pericalcarine_mean_area_mm2
+	p-value: 0.7763905055505131 - null hypothesis cannot be rejected, the datasets have the same distribution
+	p-value: 0.640456947054727 - null hypothesis cannot be rejected, means are statistically equal
+
+
+aparcDKT_right_healthy.csv postcentral_mean_thickness_mm
+	p-value: 0.011877054634334595 - null hypothesis rejected, the datasets have a different distribution
+	p-value: 0.014121314682796161 - null hypothesis rejected, means are not statistically equal
+
+
+aparcDKT_right_healthy.csv postcentral_mean_area_mm2
+	p-value: 0.26159409395595723 - null hypothesis cannot be rejected, the datasets have the same distribution
+	p-value: 0.18375319528722733 - null hypothesis cannot be rejected, means are statistically equal
+
+
+aparcDKT_right_healthy.csv posteriorcingulate_mean_thickness_mm
+	p-value: 0.1264128277809867 - null hypothesis cannot be rejected, the datasets have the same distribution
+	p-value: 0.1405330696412645 - null hypothesis cannot be rejected, means are statistically equal
+
+
+aparcDKT_right_healthy.csv posteriorcingulate_mean_area_mm2
+	p-value: 0.7048965347842663 - null hypothesis cannot be rejected, the datasets have the same distribution
+	p-value: 0.7017643004508956 - null hypothesis cannot be rejected, means are statistically equal
+
+
+aparcDKT_right_healthy.csv precentral_mean_thickness_mm
+	p-value: 0.5978625674290079 - null hypothesis cannot be rejected, the datasets have the same distribution
+	p-value: 0.8945244091305272 - null hypothesis cannot be rejected, means are statistically equal
+
+
+aparcDKT_right_healthy.csv precentral_mean_area_mm2
+	p-value: 0.7557428276359095 - null hypothesis cannot be rejected, the datasets have the same distribution
+	p-value: 0.6826929911057927 - null hypothesis cannot be rejected, means are statistically equal
+
+
+aparcDKT_right_healthy.csv precuneus_mean_thickness_mm
+	p-value: 0.13321034424389688 - null hypothesis cannot be rejected, the datasets have the same distribution
+	p-value: 0.23172241667064905 - null hypothesis cannot be rejected, means are statistically equal
+
+
+aparcDKT_right_healthy.csv precuneus_mean_area_mm2
+	p-value: 0.8286595864682549 - null hypothesis cannot be rejected, the datasets have the same distribution
+	p-value: 0.9468326840616996 - null hypothesis cannot be rejected, means are statistically equal
+
+
+aparcDKT_right_healthy.csv rostralanteriorcingulate_mean_thickness_mm
+	p-value: 0.25025235660625345 - null hypothesis cannot be rejected, the datasets have the same distribution
+	p-value: 0.3086715254908723 - null hypothesis cannot be rejected, means are statistically equal
+
+
+aparcDKT_right_healthy.csv rostralanteriorcingulate_mean_area_mm2
+	p-value: 0.9892078924125333 - null hypothesis cannot be rejected, the datasets have the same distribution
+	p-value: 0.925859081617963 - null hypothesis cannot be rejected, means are statistically equal
+
+
+aparcDKT_right_healthy.csv rostralmiddlefrontal_mean_thickness_mm
+	p-value: 0.00019943096470077107 - null hypothesis rejected, the datasets have a different distribution
+	p-value: 0.00021510445131534483 - null hypothesis rejected, means are not statistically equal
+
+
+aparcDKT_right_healthy.csv rostralmiddlefrontal_mean_area_mm2
+	p-value: 0.9245727283322236 - null hypothesis cannot be rejected, the datasets have the same distribution
+	p-value: 0.6898642138759765 - null hypothesis cannot be rejected, means are statistically equal
+
+
+aparcDKT_right_healthy.csv superiorfrontal_mean_thickness_mm
+	p-value: 5.8912066707222565e-05 - null hypothesis rejected, the datasets have a different distribution
+	p-value: 1.7163144476791362e-05 - null hypothesis rejected, means are not statistically equal
+
+
+aparcDKT_right_healthy.csv superiorfrontal_mean_area_mm2
+	p-value: 0.1805773768084653 - null hypothesis cannot be rejected, the datasets have the same distribution
+	p-value: 0.2560392826616873 - null hypothesis cannot be rejected, means are statistically equal
+
+
+aparcDKT_right_healthy.csv superiorparietal_mean_thickness_mm
+	p-value: 0.0046966941804710985 - null hypothesis rejected, the datasets have a different distribution
+	p-value: 0.012656016824201605 - null hypothesis rejected, means are not statistically equal
+
+
+aparcDKT_right_healthy.csv superiorparietal_mean_area_mm2
+	p-value: 0.9892089047911196 - null hypothesis cannot be rejected, the datasets have the same distribution
+	p-value: 0.9016116374360319 - null hypothesis cannot be rejected, means are statistically equal
+
+
+aparcDKT_right_healthy.csv superiortemporal_mean_thickness_mm
+	p-value: 0.046781305663789866 - null hypothesis rejected, the datasets have a different distribution
+	p-value: 0.09903563353122953 - null hypothesis cannot be rejected, means are statistically equal
+
+
+aparcDKT_right_healthy.csv superiortemporal_mean_area_mm2
+	p-value: 0.5249869101903615 - null hypothesis cannot be rejected, the datasets have the same distribution
+	p-value: 0.5143397606711988 - null hypothesis cannot be rejected, means are statistically equal
+
+
+aparcDKT_right_healthy.csv supramarginal_mean_thickness_mm
+	p-value: 0.08338612823291194 - null hypothesis cannot be rejected, the datasets have the same distribution
+	p-value: 0.1347544931229971 - null hypothesis cannot be rejected, means are statistically equal
+
+
+aparcDKT_right_healthy.csv supramarginal_mean_area_mm2
+	p-value: 0.364841654608659 - null hypothesis cannot be rejected, the datasets have the same distribution
+	p-value: 0.37679093502021777 - null hypothesis cannot be rejected, means are statistically equal
+
+
+aparcDKT_right_healthy.csv transversetemporal_mean_thickness_mm
+	p-value: 0.6263118769750422 - null hypothesis cannot be rejected, the datasets have the same distribution
+	p-value: 0.7022408701495609 - null hypothesis cannot be rejected, means are statistically equal
+
+
+aparcDKT_right_healthy.csv transversetemporal_mean_area_mm2
+	p-value: 0.5337843231987365 - null hypothesis cannot be rejected, the datasets have the same distribution
+	p-value: 0.7738062590934937 - null hypothesis cannot be rejected, means are statistically equal
+
+
+aparcDKT_right_healthy.csv insula_mean_thickness_mm
+	p-value: 0.27922839368237196 - null hypothesis cannot be rejected, the datasets have the same distribution
+	p-value: 0.4312123439088814 - null hypothesis cannot be rejected, means are statistically equal
+
+
+aparcDKT_right_healthy.csv insula_mean_area_mm2
+	p-value: 0.6651442881817691 - null hypothesis cannot be rejected, the datasets have the same distribution
+	p-value: 0.6713543250469438 - null hypothesis cannot be rejected, means are statistically equal
 
 
