@@ -4,7 +4,7 @@ from scipy import stats
 import matplotlib.pyplot as plt
 import numpy as np
 
-ROWS_TO_PLOT = range(140, 150) # from the statistical test csv file
+ROWS_TO_PLOT ={52,53,54,55} # from the statistical test csv file
 N_SUBPLOTS = 4
 N_PLOT_ROWS = 1
 
@@ -80,7 +80,10 @@ def plot_measures(series1, series2, title, ticklabels, ax=None):
         ax = plt.figure
 
     ax.plot(x, series1, 'ro', x, series2, 'bo')
-    ax.vlines(x, ymin=min(pd.concat([series1, series2])), ymax=max(pd.concat([series1, series2])), linestyles='dotted')
+    y_min = min(pd.concat([series1, series2]))
+    y_max = max(pd.concat([series1, series2]))
+    diff = y_max-y_min
+    ax.vlines(x, ymin=y_min-diff, ymax=y_max+diff, linestyles='dotted')
     ax.set_xticks(range(1, len(ticklabels) + 1), labels=ticklabels, rotation=45, ha="right")
     # ax.xticks(range(1, 21), labels=ticklabels, rotation=70, ha="center")
     ax.title.set_text(title)
@@ -92,6 +95,6 @@ def plot_measures(series1, series2, title, ticklabels, ax=None):
 
 if __name__ == "__main__":
     base_path = "/media/neuropsycad/disk12t/EdoardoFilippiMasterThesis/"
-    csv = "utilities/test_results.csv"
+    csv = "test_results.csv"
 
     plot_from_csv(base_path, csv)
