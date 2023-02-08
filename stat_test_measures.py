@@ -4,18 +4,41 @@ from scipy import stats
 import matplotlib.pyplot as plt
 import numpy as np
 
+"""
+description 
+    before running
+        have the tables created using the fastsrfer and freesurfer stat script, they dont need to be the same subjects because 
+        here only subjects that exist in both tables are used 
+        for each comparison that you want to run the file must be selected and also the columns that have the stats you want to comppare
+        the columns can be chosen both by number or by name 
+        
+    main
+        the only need here is to call the stat test function providing all the necessary parameters
+        the output of the function must be saved in a list or a single value (it is a dictionary and can be saved using the 
+        save_csv function)
+        
+    stat test
+        input 
+            basepath 
+            filename 1
+            filename 2
+            column to compare
+            
+        output 
+            stat test data structure 
+        
+        runs the statistical tests and saves the output in a dictionary, the name of the statistic compard is saved even if nmumbers are used 
+        as indexes
+            
+    mann_whitney
+        
+    t test
+        
+    save to csv 
+    
+    
+"""
 SIGNIFICANCE_THRESHOLD = 0.05
-
-
-def plot_measures(series1, series2, title, ticklabels):
-    x = np.linspace(1, 20, num=20)
-
-    plt.plot(x, series1, 'ro', x, series2, 'bo')
-    plt.vlines(x, ymin=0, ymax=4000, linestyles='dotted')
-    plt.xticks(range(1, 21), labels=ticklabels, rotation=70, ha="center")
-    plt.title(title)
-    plt.legend(['Freesurfer', 'Fastsurfer'])
-    plt.show()
 
 
 def get_column(column_to_compare, df1, df2):
@@ -33,78 +56,54 @@ def get_column(column_to_compare, df1, df2):
 def t_test(base_path, filename1, filename2, column_to_compare):
     df1 = pd.read_csv(base_path + filename1)
     df2 = pd.read_csv(base_path + filename2)
-    # print(base_path + filename1 + filename2)
 
+    # se includo ADNI devo aggiungere roba
     df1 = df1[df1['subjects'].isin(df2['subjects'].tolist())]
-
     a, b = get_column(column_to_compare, df1, df2)
 
-    # a = df1.loc[:, column_to_compare]
-    # b = df2.loc[:, column_to_compare]
-    # # print(a)
-    # # print(b)
-
     if "NaN" in a or "NaN" in b:
+        print("could not compute")
         return "result could not be computed", "NaN", "NaN"
 
     t_stat, p_value = stats.ttest_ind(a, b)
 
-    # p value is the likelihood that these are the same
-    # print("t test")
     if p_value > 0.05:
         result = f"p-value: {p_value} - null hypothesis cannot be rejected, means are statistically equal"
         outcome = 0
     else:
         result = f"p-value: {p_value} - null hypothesis rejected, means are not statistically equal"
         outcome = 1
-        # plot_measures(a, b, column_to_compare, df1.loc[:, "subjects"].tolist())
 
-    # print(result)
     return result, p_value, outcome
 
 
 def mann_whitney(base_path, filename1, filename2, column_to_compare):
     df1 = pd.read_csv(base_path + filename1)
     df2 = pd.read_csv(base_path + filename2)
-    # print(base_path + filename1 + filename2)
+    # se includo ADNI devo aggiungere roba
 
     df1 = df1[df1['subjects'].isin(df2['subjects'].tolist())]
-    # p rint(df1.head())
-    # print(df2.head())
-
     a, b = get_column(column_to_compare, df1, df2)
 
     if "NaN" in a or "NaN" in b:
         return "result could not be computed", "NaN", "NaN"
 
-    # if isinstance(column_to_compare, int):
-    #     a = df1.iloc[:, column_to_compare]
-    #     b = df2.iloc[:, column_to_compare]
-    #
-    # if isinstance(column_to_compare, str):
-    #     a = df1.loc[:, column_to_compare]
-    #     b = df2.loc[:, column_to_compare]
-
     df1.to_csv("dataset_uniti_test.csv", index=False)
-    # print(a)
-    # print(b)
 
     t_stat, p_value = stats.mannwhitneyu(a, b)
 
     # p value is the likelihood that these are the same
-    # print("Mann Whitney")
     if p_value > 0.05:
         result = f"p-value: {p_value} - null hypothesis cannot be rejected, the datasets have the same distribution"
         outcome = 0
     else:
         result = f"p-value: {p_value} - null hypothesis rejected, the datasets have a different distribution"
         outcome = 1
-        # plot_measures(a, b, column_to_compare, df1.loc[:, "subjects"].tolist())
-    # print(result)
+
     return result, p_value, outcome
 
 
-def save(list_line):
+def save_txt(list_line):
     file = []
     for item in list_line:
         file.append(item["name"])
@@ -114,7 +113,7 @@ def save(list_line):
     dm.write_txt(file, "test_results.txt")
 
 
-def save_csv(list_line):
+def save_csv(base_path, list_line):
     df = pd.DataFrame()
 
     for item in list_line:
@@ -127,7 +126,7 @@ def save_csv(list_line):
                                           "significance_threshold_used": SIGNIFICANCE_THRESHOLD
                                           }, index=[item["name"]])])
 
-    df.to_csv("test_results.csv")  # , index=False
+    df.to_csv(base_path + "test_results.csv")  # , index=False
 
 
 def stat_test(base_path, filename1, filename2, column_to_compare, r_all):
@@ -204,7 +203,7 @@ def main():
     for column_to_compare in range(2, max_len):
         stat_test(base_path, filename1, filename2, column_to_compare, r_all)
 
-    save_csv(r_all)
+    save_csv(base_path, r_all)
 
 
 def main_old():
