@@ -56,7 +56,7 @@ mann_whitney <- function(base_path, filename1, filename2, column_to_compare) {
     t_stat = wilcox.test(a, b)$statistic
     p_value = wilcox.test(a, b)$p.value
 
-    if (p_value == NA){
+    if (is.na(p_value)){
         result = paste("result could not be computed")
         outcome = -1    
     } else if (p_value > 0.05) {
@@ -91,7 +91,7 @@ t_test <- function(base_path, filename1, filename2, column_to_compare) {
     t.test = t.test(a, b)
     p_value = t.test$p.value
 
-    if (p_value == NA){
+    if (is.na(p_value)){
         result = paste("result could not be computed")
         outcome = -1    
     } else if (p_value > 0.05) {
