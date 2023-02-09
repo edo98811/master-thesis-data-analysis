@@ -45,8 +45,8 @@ mann_whitney <- function(base_path, filename1, filename2, column_to_compare) {
     # result = get_column(column_to_compare, df1, df2)
     # a = result$a
     # b = result$b
-    a = df1[column_to_compare]
-    b = df2[column_to_compare]
+    a = tail(df1[, column_to_compare], n = -1)
+    b = tail(df2[, column_to_compare], n = -1)
     p_value = NA
     
     if (any(is.na(c(a,b)))) {
@@ -79,8 +79,8 @@ t_test <- function(base_path, filename1, filename2, column_to_compare) {
     # result = get_column(column_to_compare, df1, df2)
     # a = result$a
     # b = result$b
-    a = df1[column_to_compare]
-    b = df2[column_to_compare]
+    a = tail(df1[, column_to_compare], n = -1)
+    b = tail(df2[, column_to_compare], n = -1)
     p_value = NA
     
     if (any(is.na(c(a, b)))) {
