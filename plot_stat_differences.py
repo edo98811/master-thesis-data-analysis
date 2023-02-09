@@ -4,9 +4,9 @@ from scipy import stats
 import matplotlib.pyplot as plt
 import numpy as np
 
-ROWS_TO_PLOT ={52,53,54,55} # from the statistical test csv file
+ROWS_TO_PLOT = range(132,152)  # from the statistical test csv file
 N_SUBPLOTS = 4
-N_PLOT_ROWS = 1
+N_PLOT_ROWS = 2
 
 
 def get_column(column_to_compare, df1, df2):
@@ -43,6 +43,7 @@ def plot_from_csv(base_path, csv):
                 if not plots % N_SUBPLOTS:
                     fig, axs = plt.subplots(N_PLOT_ROWS, int(N_SUBPLOTS / N_PLOT_ROWS), figsize=(40, 20))
                     axs = axs.ravel()
+                    plt.subplots_adjust(hspace=0.6)
                     # mng = plt.get_current_fig_manager()
                     # mng.full_screen_toggle()
 
@@ -52,6 +53,7 @@ def plot_from_csv(base_path, csv):
 
             if plots >= 29:  # to avoid plotting too much
                 break
+
     plt.show()
 
 
@@ -71,7 +73,7 @@ def plot(axes, row, base_path):
 
     a, b = get_column(column_to_compare, df1, df2)
     if len(a) == len(b) and len(a) == len(df1.loc[:, "subjects"].tolist()):
-        plot_measures(a, b, row[0].replace(" ","\n"), df1.loc[:, "subjects"].tolist(), axes)
+        plot_measures(a, b, row[0].replace(" ", "\n"), df1.loc[:, "subjects"].tolist(), axes)
 
 
 def plot_measures(series1, series2, title, ticklabels, ax=None):
@@ -82,8 +84,9 @@ def plot_measures(series1, series2, title, ticklabels, ax=None):
     ax.plot(x, series1, 'ro', x, series2, 'bo')
     y_min = min(pd.concat([series1, series2]))
     y_max = max(pd.concat([series1, series2]))
-    diff = y_max-y_min
-    ax.vlines(x, ymin=y_min-diff, ymax=y_max+diff, linestyles='dotted')
+    diff = y_max - y_min
+    ax.vlines(x, ymin=y_min - diff, ymax=y_max + diff, linestyles='dotted')
+    ax.vlines(x, ymin=series1, ymax=series2)
     ax.set_xticks(range(1, len(ticklabels) + 1), labels=ticklabels, rotation=45, ha="right")
     # ax.xticks(range(1, 21), labels=ticklabels, rotation=70, ha="center")
     ax.title.set_text(title)

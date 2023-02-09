@@ -145,7 +145,7 @@ def plot_dice_labels(class_n, dice_scores):
     plt.xlabel('class')
 
     # set the region values
-    plt.xticks(x_axis,labels_needed,rotation='vertical')
+    plt.xticks(x_axis,labels_needed,rotation='60', ha='right')
 
     # show the plot
     plt.show()

@@ -203,7 +203,8 @@ def main():
     for column_to_compare in range(2, max_len):
         stat_test(base_path, filename1, filename2, column_to_compare, r_all)
 
-    save_csv(base_path, r_all)
+    save_csv(base_path,
+             r_all)
 
 
 def main_old():

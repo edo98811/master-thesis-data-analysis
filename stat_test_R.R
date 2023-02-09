@@ -15,7 +15,7 @@ save_csv <- function(base_path, list_line) {
                                 row.names = item$name))
     }
     
-    write.csv(df, file = paste(base_path, "test_results.csv", sep=""))
+    write.csv(df, file = paste(base_path, "test_results_R.csv", sep=""))
 }
 
 # i think i can delete this
@@ -50,8 +50,8 @@ mann_whitney <- function(base_path, filename1, filename2, column_to_compare) {
         return(c("result could not be computed", "NaN", "NaN"))
     }
     
-    t_stat <- mannwhitneyu(a, b)$statistic
-    p_value <- mannwhitneyu(a, b)$p.value
+    t_stat <- wilcox.test(a, b)$statistic
+    p_value <- wilcox.test(a, b)$p.value
     
     if (p_value > 0.05) {
         result <- paste("p-value:", p_value, "- null hypothesis cannot be rejected, the datasets have the same distribution")
@@ -61,7 +61,7 @@ mann_whitney <- function(base_path, filename1, filename2, column_to_compare) {
         outcome <- 1
     }
     
-  return(list(result=result, p_value=p.value, outcome=outcome))
+  return(list(result=result, p_value=p_value, outcome=outcome))
 }
 
 t_test <- function(base_path, filename1, filename2, column_to_compare) {
@@ -80,17 +80,17 @@ t_test <- function(base_path, filename1, filename2, column_to_compare) {
   }
   
   t.test <- t.test(a, b)
-  p.value <- t.test$p.value
+  p_value <- t.test$p.value
   
-  if (p.value > 0.05) {
-    result <- paste("p-value:", p.value, "- null hypothesis cannot be rejected, means are statistically equal")
+  if (p_value > 0.05) {
+    result <- paste("p-value:", p_value, "- null hypothesis cannot be rejected, means are statistically equal")
     outcome <- 0
   } else {
-    result <- paste("p-value:", p.value, "- null hypothesis rejected, means are not statistically equal")
+    result <- paste("p-value:", p_value, "- null hypothesis rejected, means are not statistically equal")
     outcome <- 1
   }
   
-  return(list(result=result, p_value=p.value, outcome=outcome))
+  return(list(result=result, p_value=p_value, outcome=outcome))
 }
 
 
