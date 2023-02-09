@@ -88,7 +88,7 @@ t_test <- function(base_path, filename1, filename2, column_to_compare) {
     if (p_value == NA){
         result <- paste("result could not be computed")
         outcome <- -1    
-    if (p_value > 0.05) {
+    } if (p_value > 0.05) {
         result <- paste("p-value:", p_value, "- null hypothesis cannot be rejected, means are statistically equal")
         outcome <- 0
     } else {
