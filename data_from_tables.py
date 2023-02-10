@@ -2,27 +2,35 @@ import pandas as pd
 from pandas.api.types import CategoricalDtype
 
 
-def HelenaOASIS():
-    path = r"C:\Users\edoar\OneDrive - CLOUDEA S.R.L\Polito Materiale\BIOMEDICA\Tesi\subjs_diagnosis.xlsx"
+def HelenaOASIS(path):
 
     df = pd.read_excel(path)
+    df = df.drop_duplicates(subset=df.columns[1])
 
-    # unique_values = df.iloc[:, 1].unique()
+    # rename the "Subject" column to "ID"
+    df = df.rename(columns={"Subject": "ID"})
 
-    filtered_df = df.drop_duplicates(subset=df.columns[1])
+    # set the "ID" column as the index of the dataframe
+    df.set_index("ID", inplace=True)
+    print(df.head())
 
     # create a table for rows where the fourth column is "healthy"
-    healthy_df = filtered_df[filtered_df.iloc[:, 8] == "Cognitively normal"]
+    healthy_df = df[df.loc[:, "dx1"] == "Cognitively normal"]
 
     # create a table for rows where the fourth column is not "healthy"
-    others_df = filtered_df[filtered_df.iloc[:, 8] != "Cognitively normal"]
+    others_df = df[df.loc[:, "dx1"] != "Cognitively normal"]
     # others_df = filtered_df[filtered_df.iloc[:, 8] == "AD Dementia"]
 
-    with pd.ExcelWriter(
-            r"C:\Users\edoar\OneDrive - CLOUDEA S.R.L\Polito Materiale\BIOMEDICA\Tesi\subj_diagnosis_filtered.xlsx") as writer:
-        healthy_df.to_excel(writer, sheet_name='Healthy')
-        others_df.to_excel(writer, sheet_name='Not Healthy')
 
+
+
+    # with pd.ExcelWriter(
+    #         r"C:\Users\edoar\OneDrive - CLOUDEA S.R.L\Polito Materiale\BIOMEDICA\Tesi\OASIS_filtered.xlsx") as writer:
+    #     healthy_df.to_excel(writer, sheet_name='Healthy')
+    #     others_df.to_excel(writer, sheet_name='Not Healthy')
+
+    healthy_df.to_csv(r"C:\Users\edoar\OneDrive - CLOUDEA S.R.L\Polito Materiale\BIOMEDICA\Tesi\OASIS_filtered_healthy.csv")
+    others_df.to_csv(r"C:\Users\edoar\OneDrive - CLOUDEA S.R.L\Polito Materiale\BIOMEDICA\Tesi\OASIS_filtered_not_healthy.csv")
 
 def VascoADNI(path1, path2):
     df1 = pd.read_excel(path1, index_col=None, usecols='A:J')
@@ -45,11 +53,15 @@ def VascoADNI(path1, path2):
 
     print(df.head())
 
-    with pd.ExcelWriter(
-            r"C:\Users\edoar\OneDrive - CLOUDEA S.R.L\Polito Materiale\BIOMEDICA\Tesi\ADNI_merged.xlsx") as writer:
-        df.to_excel(writer)
+    # with pd.ExcelWriter(
+    #         r"C:\Users\edoar\OneDrive - CLOUDEA S.R.L\Polito Materiale\BIOMEDICA\Tesi\ADNI_merged.xlsx") as writer:
+    #     df.to_excel(writer)
+
+    df.to_csv(r"C:\Users\edoar\OneDrive - CLOUDEA S.R.L\Polito Materiale\BIOMEDICA\Tesi\ADNI_filtered.csv")
 
 
 if __name__ == "__main__":
-    VascoADNI(r"C:\Users\edoar\OneDrive - CLOUDEA S.R.L\Polito Materiale\BIOMEDICA\Tesi\PopulationCharacteristics.xlsx",
-              r"C:\Users\edoar\OneDrive - CLOUDEA S.R.L\Polito Materiale\BIOMEDICA\Tesi\subjs_demographic_cognitive_data.xlsx")
+    # VascoADNI(r"C:\Users\edoar\OneDrive - CLOUDEA S.R.L\Polito Materiale\BIOMEDICA\Tesi\PopulationCharacteristics.xlsx",
+    #           r"C:\Users\edoar\OneDrive - CLOUDEA S.R.L\Polito Materiale\BIOMEDICA\Tesi\subjs_demographic_cognitive_data.xlsx")
+
+    HelenaOASIS(r"C:\Users\edoar\OneDrive - CLOUDEA S.R.L\Polito Materiale\BIOMEDICA\Tesi\subjs_diagnosis.xlsx")
