@@ -2,7 +2,7 @@ import pandas as pd
 from pandas.api.types import CategoricalDtype
 
 
-def HelenaFilesOASIS():
+def HelenaOASIS():
     path = r"C:\Users\edoar\OneDrive - CLOUDEA S.R.L\Polito Materiale\BIOMEDICA\Tesi\subjs_diagnosis.xlsx"
 
     df = pd.read_excel(path)
@@ -41,7 +41,7 @@ def VascoADNI(path1, path2):
     df['_merge'] = df['_merge'].astype(merge_type)
     df.sort_values(by='_merge', inplace=True)
 
-    df.drop(columns=['age', 'sex'], inplace=True)
+    # df.drop(columns=['age', 'sex'], inplace=True)
 
     print(df.head())
 
