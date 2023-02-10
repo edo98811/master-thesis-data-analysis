@@ -2,47 +2,65 @@ import data_manipulation as dm
 import data_visualization as dv
 import pandas as pd
 
-# POTREI AGGIUNGERE QUI COME COSTANTI ALCUNE COSE COME IL BASE PATH ETC
+# useful constants
+PROCESSED_PATH = ""
+BASE_PATH = ""
+FREESURFER_PATH = ""
 
+def main():
+
+    paths = dm.list_files(FREESURFER_PATH, "001.mgz")
+    # paths = dm.load_txt("")
+
+    dm.write_txt(paths, "test_OASIS_paths_all.txt")
+    paths_on_table = filter_paths(paths, "OASIS_filtered.xlsx")
+
+    dm.write_txt(paths_on_table, "test_OASIS_paths_on_table.txt")
+    check_processed(paths_on_table, PROCESSED_PATH)
+
+    dm.write_txt(paths_on_table, "test_OASIS_processed_check.txt")
+
+    filter_paths("/media/neuropsycad/disk12t/VascoDiogo/OASIS/FS7/")
+    filter_paths_from_table("OASIS_filtered.xlsx", "paths_OASIS_filtered.txt")
 
 """
 functions 
-    get_paths_all: returns all the paths of the files that are named in a certain way in the folder
+
+    (get_paths_all: returns all the paths of the files that are named in a certain way in the folder
         - input -> str (base_path)
-        - output -> list (paths list)
+        - output -> list (paths list)) 
+        or use dm. list_files
     
-    filter_paths: filter according to txt file or list of subj numbers       
-        - input -> list(paths list) , str or list (source as text file name or subj number list) 
-        - output -> list (paths list filtered)
-        
-    filter_paths_from_table: filters according to all the subjects number present in an excel table (as index)      
-        - input -> list (paths list), str( path to excel), *int (subj index in the table)
+    filter_paths: filter according to txt file or list of subj numbers or excel table       
+        - input -> list(paths list) , str or list (source as text file name or subj number list),  *int or str(subj index in the table)
         - output -> list (paths list filtered)
         
     check processed: check if the subjects in the list have already been processed
-        - input -> list (paths list), str (folder)
+        - input -> list (paths list), str (folder o check)
         - output -> list (paths list filtered) 
+        
+    to use this just load a text file with all the info or call the function to lsearch for all the images from a base path 
+    after to ilter it call the filter function passing as arguments 
 """
 
 
-def get_all_paths(base_path):
-    paths_list = dm.list_files_all(dir_name, "001.mgz")
+# def get_all_paths(base_path):
+#     paths_list = dm.list_files(dir_name, "001.mgz")
+#
+#     return paths_list
 
-    return paths_list
 
-
-def filter_paths(subj_paths_all, source):
-
+def filter_paths(subj_paths_all, source, subj_index="subjects"):
     if source.split(".")[-1] == "txt":  # load from txt
         subj_numbers = dm.load_txt(source)
 
     elif source.split(".")[-1] == "xlsx":  # load from table
         table = pd.load_excel(aource)
-        subj_numbers = table["subjects"].values.tolist()
+        subj_numbers = table[subj_index].values.tolist()
 
     elif source.split(".")[-1] == "csv":
         table = pd.load_csv(source)
-        subj_numbers = table["subjects"].values.tolist()
+        subj_numbers = table[subj_index].values.tolist()
 
     elif type(source) is list:  # if list
         subj_numbers = source
@@ -61,6 +79,31 @@ def filter_paths(subj_paths_all, source):
     return subj_paths_filtered
 
 
+def check_processed(subj_paths_filtered, processed_path):
+    subjs = set()
+
+    for subj_path_filtered in subj_paths_filtered:
+        subjs.add(subj_path_filtered.split("/")[-4])
+
+    for root, dirs, files in os.walk(PROCESSED_PATH):
+        for dir in dirs:
+            if dir in subjs:
+                for i, subj_path_filtered in enumerate(subj_paths_filtered):
+                    if dir == subj_path_filtered.split("/")[-4]:
+                        subj_paths_filtered[i] = f"subj {dir} already processed"
+
+
+
+if __name__ == "__main__":
+    main()
+
+
+def main_old():
+    save_all_images_paths("/media/neuropsycad/disk12t/VascoDiogo/OASIS/FS7/", "paths_OASIS_allL.txt")
+    filter_paths_from_table("OASIS_filtered.xlsx", "paths_OASIS_filtered.txt")
+    # get_paths("subjects_AD_dementia_10_20.txt", "paths_AD_dementia_10_20.txt", "paths_AD_dementia_all.txt")
+
+
 def filter_paths_from_table(table_name, destination_file, subj_idx=0):
     subj_paths_all = load_text(paths_list)
     table = pd.load_excel(table_name)
@@ -74,33 +117,6 @@ def filter_paths_from_table(table_name, destination_file, subj_idx=0):
     subj_paths = filter_paths(subj_list, subj_paths_all)
 
     dm.write_txt(subj_paths, destination_file)
-
-
-def check_processed(subj_paths_filtered, processed_path):
-    subjs = set()
-
-    for subj_path_filtered in subj_paths_filtered:
-        subjs.add(subj_path_filtered.split("/")[-4])
-
-    for root, dirs, files in os.walk(processed_path):
-        for dir in dirs:
-            if dir in subjs:
-                for i, subj_path_filtered in enumerate(subj_paths_filtered):
-                    if dir == subj_path_filtered.split("/")[-4]:
-                        subj_paths_filtered[i] = f"subj {dir} already processed"
-
-def main():
-    save_all_images_paths("/media/neuropsycad/disk12t/VascoDiogo/OASIS/FS7/", "paths_OASIS_allL.txt")
-    filter_paths_from_table("OASIS_filtered.xlsx", "paths_OASIS_filtered.txt")
-
-def main_old():
-    save_all_images_paths("/media/neuropsycad/disk12t/VascoDiogo/OASIS/FS7/", "paths_OASIS_allL.txt")
-    filter_paths_from_table("OASIS_filtered.xlsx", "paths_OASIS_filtered.txt")
-    # get_paths("subjects_AD_dementia_10_20.txt", "paths_AD_dementia_10_20.txt", "paths_AD_dementia_all.txt")
-
-
-if __name__ == "__main__":
-    main()
 
 
 ### OLD STUFF

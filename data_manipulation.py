@@ -12,28 +12,29 @@ def read_label(label_name, path=""):
 def read_img(img_name, path = ""):
     return nib.load(str(path + img_name))
 
-def list_files_all(dir,imgname):
-    """
-    input
-        imgname = str
-        filetype = str, default = nii.gz
-    """
+# def list_files_all(dir,filename):
+#     """
+#     input
+#         imgname = str
+#         filetype = str, default = nii.gz
+#     """
+#
+#     r_img = []
+#
+#     # fl_len = len(filetype.split("."))
+#     # print(fl_len)
+#     # print(dir)
+#     # print(filetype)
+#     # print(filetype.split("."))
+#     for root, dirs, files in os.walk(dir):
+#         #r_all.append(os.path.join(root))
+#         #print(files)
+#         for name in files:
+#             if name == filename:# and l_name[-fl_len:-1] == filetype:
+#                 r_img.append(os.path.join(root, name))
+#
+#     return r_img
 
-    r_img = []
-
-    # fl_len = len(filetype.split("."))
-    # print(fl_len)
-    # print(dir)
-    # print(filetype)
-    # print(filetype.split("."))
-    for root, dirs, files in os.walk(dir):
-        #r_all.append(os.path.join(root))
-        #print(files)
-        for name in files:
-            if name == imgname:# and l_name[-fl_len:-1] == filetype:
-                r_img.append(os.path.join(root, name))
-
-    return r_img
 def list_files(dir,filename):
     """
     input
