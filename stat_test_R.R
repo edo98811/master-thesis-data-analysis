@@ -15,7 +15,7 @@ save_csv <- function(base_path, list_line) {
                                 row.names = item$name))
     }
     
-    write.csv(df, file = paste(base_path, "test_results_R.csv", sep=""))
+   write.csv(df, paste0(base_path, "test_resutl_R.csv"), row.names=TRUE)
 }
 
 # i think i can delete this
@@ -48,7 +48,8 @@ mann_whitney <- function(base_path, filename1, filename2, column_to_compare) {
     a = tail(df1[, column_to_compare], n = -1)
     b = tail(df2[, column_to_compare], n = -1)
     p_value = NA
-    
+    print(a)
+
     if (any(is.na(c(a,b)))) {
         return(c("result could not be computed", "NaN", "NaN"))
     }
@@ -187,4 +188,5 @@ max_len <- min(ncol(read.csv(file.path(base_path, filename1))), ncol(read.csv(fi
 for (column_to_compare in 2:(max_len - 1)) {
     stat_test(base_path, filename1, filename2, column_to_compare, r_all)
 }
-write.csv(r_all, paste0(base_path, "results.csv"), row.names=FALSE)
+
+save_csv(base_path, r_all)

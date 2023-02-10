@@ -4,7 +4,7 @@ from scipy import stats
 import matplotlib.pyplot as plt
 import numpy as np
 
-ROWS_TO_PLOT = range(132,152)  # from the statistical test csv file
+ROWS_TO_PLOT = range(91,100)  # from the statistical test csv file
 N_SUBPLOTS = 4
 N_PLOT_ROWS = 2
 

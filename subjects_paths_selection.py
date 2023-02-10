@@ -1,27 +1,26 @@
 import data_manipulation as dm
 import data_visualization as dv
 import pandas as pd
+import re
+import os
 
 # useful constants
-PROCESSED_PATH = ""
-BASE_PATH = ""
-FREESURFER_PATH = ""
+PROCESSED_PATH = "/media/neuropsycad/disk12t/EdoardoFilippiMasterThesis/FastSurfer_Output_Comparison_healthy"
+BASE_PATH = "/media/neuropsycad/disk12t/EdoardoFilippiMasterThesis/"
+FREESURFER_PATH = "/media/neuropsycad/disk12t/VascoDiogo/OASIS/FS7/"
 
 def main():
-
     paths = dm.list_files(FREESURFER_PATH, "001.mgz")
     # paths = dm.load_txt("")
 
-    dm.write_txt(paths, "test_OASIS_paths_all.txt")
-    paths_on_table = filter_paths(paths, "OASIS_filtered.xlsx")
+    dm.write_txt(paths, BASE_PATH + "test_OASIS_paths_all.txt")
+    paths_on_table = filter_paths(paths, "OASIS_filtered_healthy.csv", subj_index=0)
 
-    dm.write_txt(paths_on_table, "test_OASIS_paths_on_table.txt")
+    dm.write_txt(paths_on_table, BASE_PATH + "test_OASIS_paths_on_table.txt")
     check_processed(paths_on_table, PROCESSED_PATH)
 
-    dm.write_txt(paths_on_table, "test_OASIS_processed_check.txt")
+    dm.write_txt(paths_on_table, BASE_PATH + "test_OASIS_processed_check.txt")
 
-    filter_paths("/media/neuropsycad/disk12t/VascoDiogo/OASIS/FS7/")
-    filter_paths_from_table("OASIS_filtered.xlsx", "paths_OASIS_filtered.txt")
 
 """
 functions 
@@ -40,7 +39,11 @@ functions
         - output -> list (paths list filtered) 
         
     to use this just load a text file with all the info or call the function to lsearch for all the images from a base path 
-    after to ilter it call the filter function passing as arguments 
+    after to ilter it call the filter function passing as arguments , for all the functions the input subjects to check ar ethe numbers not the paths 
+    
+        filter_paths("/media/neuropsycad/disk12t/VascoDiogo/OASIS/FS7/")
+    filter_paths_from_table("OASIS_filtered.xlsx", "paths_OASIS_filtered.txt")
+    
 """
 
 
@@ -48,19 +51,27 @@ functions
 #     paths_list = dm.list_files(dir_name, "001.mgz")
 #
 #     return paths_list
-
+da scrivere
+def count_subjs():
+    pass
 
 def filter_paths(subj_paths_all, source, subj_index="subjects"):
     if source.split(".")[-1] == "txt":  # load from txt
-        subj_numbers = dm.load_txt(source)
+        subj_numbers = dm.load_txt(BASE_PATH + source)
 
     elif source.split(".")[-1] == "xlsx":  # load from table
-        table = pd.load_excel(aource)
-        subj_numbers = table[subj_index].values.tolist()
+        table = pd.read_excel(BASE_PATH + source)
+        if isinstance(subj_index, int):
+            subj_numbers = table.iloc[:, subj_index].values.tolist()
+        else:
+            subj_numbers = table.loc[:, subj_index].values.tolist()
 
     elif source.split(".")[-1] == "csv":
-        table = pd.load_csv(source)
-        subj_numbers = table[subj_index].values.tolist()
+        table = pd.read_csv(BASE_PATH + source)
+        if isinstance(subj_index, int):
+            subj_numbers = table.iloc[:, subj_index].values.tolist()
+        else:
+            subj_numbers = table.loc[:, subj_index].values.tolist()
 
     elif type(source) is list:  # if list
         subj_numbers = source
@@ -88,10 +99,11 @@ def check_processed(subj_paths_filtered, processed_path):
     for root, dirs, files in os.walk(PROCESSED_PATH):
         for dir in dirs:
             if dir in subjs:
-                for i, subj_path_filtered in enumerate(subj_paths_filtered):
-                    if dir == subj_path_filtered.split("/")[-4]:
-                        subj_paths_filtered[i] = f"subj {dir} already processed"
 
+                for i, subj_path_filtered in enumerate(subj_paths_filtered):
+                    if len(subj_path_filtered.split("/")) > 3:
+                        if dir == subj_path_filtered.split("/")[-4]:
+                            subj_paths_filtered[i] = f"{dir} already processed"
 
 
 if __name__ == "__main__":
@@ -105,7 +117,7 @@ def main_old():
 
 
 def filter_paths_from_table(table_name, destination_file, subj_idx=0):
-    subj_paths_all = load_text(paths_list)
+    subj_paths_all = dm.load_txt(paths_list)
     table = pd.load_excel(table_name)
     subj_list = table["subjects"].values.tolist()
 
