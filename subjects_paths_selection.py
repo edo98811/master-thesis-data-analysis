@@ -51,7 +51,9 @@ functions
 #     paths_list = dm.list_files(dir_name, "001.mgz")
 #
 #     return paths_list
-da scrivere
+
+
+# da scrivere
 def count_subjs():
     pass
 
