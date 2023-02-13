@@ -10,7 +10,7 @@ BASE_PATH = "/media/neuropsycad/disk12t/EdoardoFilippiMasterThesis/"
 FREESURFER_PATH = "/media/neuropsycad/disk12t/VascoDiogo/OASIS/FS7/"
 # FREESURFER_PATH = "/media/neuropsycad/disk12t/VascoDiogo/ADNI"
 TABLE_FILENAME = "text_and_csv_files/OASIS_filtered_healthy.csv"
-FINAL_FILENAME = "text_and_csv_files/OASIS_processed_check_healthy.txt"
+FINAL_FILENAME = "text_and_csv_files/test_OASIS_table.csv"
 
 
 def main():
@@ -114,12 +114,13 @@ def check_processed(subj_paths_filtered):
 
                 for i, subj_path_filtered in enumerate(subj_paths_filtered):
                     if len(subj_path_filtered.split("/")) > 3:
-                        if dir == subj_path_filtered.split("/")[-4]:
+                        match = re.split("sub-", subj_path_filtered.split("/")[-4])
+                        if dir == match[1]:
                             subj_paths_filtered[i] = f"{dir} already processed"
 
 
 def create_table(_paths_on_table):
-    table = pd.read_excel(BASE_PATH + TABLE_FILENAME)
+    table = pd.read_csv(BASE_PATH + TABLE_FILENAME)
 
     # create the dictionary that will turn into a table
     df_dict = {
@@ -132,10 +133,11 @@ def create_table(_paths_on_table):
 
     # populates the dictionary
     for index, row in table.iterrows():
-        for i, paths_on_table in enumerate(paths_on_table):
+        for i, path_on_table in enumerate(_paths_on_table):
             if len(path_on_table.split("/")) > 3:
-                if row.index == path_on_table.split("/")[-4]:
-                    df_dict["ID"].append(row.index)
+
+                if row["ID"] == path_on_table.split("/")[-4]:
+                    df_dict["ID"].append(row["ID"])
                     df_dict["path"].append(path_on_table)
                     df_dict["age"].append(row["ageAtEntry"])
                     df_dict["main_condition"].append(row["dx1"])
@@ -147,7 +149,7 @@ def create_table(_paths_on_table):
 
     # adds the paths
     # interate though all the rows to create a set of the subjects
-    for i, subj_path_filtered in enumerate(df.index.tolist()):
+    for i, subj_path_filtered in enumerate(df["ID"].tolist()):
         df[i, "processed"] = "no"
         subjs.add(subj_path_filtered)
 
@@ -157,7 +159,7 @@ def create_table(_paths_on_table):
             if dir in subjs:
 
                 # quando trova il soggetto nella crtela modifica il dataframe
-                for i, subj_path_filtered in enumerate(df.index.tolist()):
+                for i, subj_path_filtered in enumerate(df["ID"].tolist()):
                     if dir == subj_path_filtered:
                         df[i, "processed"] = "yes"
                         break
