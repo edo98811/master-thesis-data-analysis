@@ -8,20 +8,19 @@ import os
 PROCESSED_PATH = "/media/neuropsycad/disk12t/EdoardoFilippiMasterThesis/FastSurfer_Output_Comparison_healthy"
 BASE_PATH = "/media/neuropsycad/disk12t/EdoardoFilippiMasterThesis/"
 FREESURFER_PATH = "/media/neuropsycad/disk12t/VascoDiogo/OASIS/FS7/"
+# FREESURFER_PATH = "/media/neuropsycad/disk12t/VascoDiogo/ADNI"
 
 def main():
     paths = dm.list_files(FREESURFER_PATH, "001.mgz")
     # paths = dm.load_txt("")
 
-    dm.write_txt(paths, BASE_PATH + "test_OASIS_paths_all.txt")
-    paths_on_table = filter_paths(paths, "OASIS_filtered_healthy.csv", subj_index=0)
+    # dm.write_txt(paths, BASE_PATH + "test_OASIS_paths_all.txt")
+    paths_on_table = filter_paths(paths, "text_and_csv_files/OASIS_filtered_healthy.csv", subj_index=0)
 
-    dm.write_txt(paths_on_table, BASE_PATH + "test_OASIS_paths_on_table.txt")
+    # dm.write_txt(paths_on_table, BASE_PATH + "text_and_csv_files/test_OASIS_paths_on_table.txt")
     check_processed(paths_on_table, PROCESSED_PATH)
 
-    dm.write_txt(paths_on_table, BASE_PATH + "test_OASIS_processed_check.txt")
-
-
+    dm.write_txt(paths_on_table, BASE_PATH + "text_and_csv_files/OASIS_processed_check_healthy.txt")
 """
 functions 
 
