@@ -1,8 +1,5 @@
 import data_manipulation as dm
-import data_visualization as dv
 import metrics as m
-from os.path import dirname
-import os
 import numpy as np
 
 def main():
@@ -16,7 +13,7 @@ def main():
         #      },
         # "image2":
     }
-    images = dm.load_dict("aseg_paths.json")
+    images = dm.load_dict("../old scripts/aseg_paths.json")
     images_list_freesurfer = images["free"]
     images_list_fastsurfer = images["fast"]
 
@@ -89,7 +86,7 @@ def images_paths():
     del images_list_freesurfer_tmp, images_list_fastsurfer_tmp
     # after this i should only have the paths to the images i have processed
 
-    dm.write_dict({"free": images_list_freesurfer, "fast": images_list_fastsurfer}, "aseg_paths.json")
+    dm.write_dict({"free": images_list_freesurfer, "fast": images_list_fastsurfer}, "../old scripts/aseg_paths.json")
 
     print("saved")
     return images_list_freesurfer, images_list_fastsurfer

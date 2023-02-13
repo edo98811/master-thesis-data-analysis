@@ -4,8 +4,49 @@ from scipy import stats
 import matplotlib.pyplot as plt
 import numpy as np
 
+BASE_PATH = "/media/neuropsycad/disk12t/EdoardoFilippiMasterThesis/"
+
+def main():
+
+    r_all = []
+
+    filename1 = "Stats_Freesurfer/aseg.csv"
+    filename2 = "Stats_FastSurfer/aseg.csv"
+
+    max_len = min(len(pd.read_csv(base_path + filename1).axes[1]), len(pd.read_csv(base_path + filename2).axes[1]))
+    for column_to_compare in range(2, max_len):
+        stat_test(base_path, filename1, filename2, column_to_compare, r_all)
+
+    filename1 = "Stats_Freesurfer/aseg.csv"
+    filename2 = "Stats_FastSurfer/aseg.csv"
+
+    max_len = min(len(pd.read_csv(base_path + filename1).axes[1]), len(pd.read_csv(base_path + filename2).axes[1]))
+    for column_to_compare in range(2, max_len):
+        stat_test(base_path, filename1, filename2, column_to_compare, r_all)
+
+    filename1 = "Stats_Freesurfer/aparcDKT_left_AD.csv"
+    filename2 = "Stats_FastSurfer/aparcDKT_left_AD.csv"
+
 """
 description 
+
+    PART 3: 
+
+        
+    stat test: runs the statistical tests and saves the output in a dictionary, the name of the statistic compard is saved even if nmumbers are used  as indexes
+        - input 
+            basepath 
+            filename 1
+            filename 2
+            column to compare
+            
+        - output 
+            stat test data structure 
+        
+
+        
+    save to csv 
+        
     before running
         have the tables created using the fastsrfer and freesurfer stat script, they dont need to be the same subjects because 
         here only subjects that exist in both tables are used 
@@ -16,23 +57,6 @@ description
         the only need here is to call the stat test function providing all the necessary parameters
         the output of the function must be saved in a list or a single value (it is a dictionary and can be saved using the 
         save_csv function)
-        
-    stat test
-        input 
-            basepath 
-            filename 1
-            filename 2
-            column to compare
-            
-        output 
-            stat test data structure 
-        
-        runs the statistical tests and saves the output in a dictionary, the name of the statistic compard is saved even if nmumbers are used 
-        as indexes
-            
-    mann_whitney
-        
-    t test
         
     save to csv 
     
@@ -156,7 +180,7 @@ def stat_test(base_path, filename1, filename2, column_to_compare, r_all):
                                  "outcome": o2}})
 
 
-def main():
+def main_old_2():
     base_path = "/media/neuropsycad/disk12t/EdoardoFilippiMasterThesis/"
 
     r_all = []
