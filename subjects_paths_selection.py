@@ -114,8 +114,7 @@ def check_processed(subj_paths_filtered):
 
                 for i, subj_path_filtered in enumerate(subj_paths_filtered):
                     if len(subj_path_filtered.split("/")) > 3:
-                        match = re.split("sub-", subj_path_filtered.split("/")[-4])
-                        if dir == match[1]:
+                        if dir == subj_path_filtered.split("/")[-4]:
                             subj_paths_filtered[i] = f"{dir} already processed"
 
 
@@ -135,8 +134,8 @@ def create_table(_paths_on_table):
     for index, row in table.iterrows():
         for i, path_on_table in enumerate(_paths_on_table):
             if len(path_on_table.split("/")) > 3:
-
-                if row["ID"] == path_on_table.split("/")[-4]:
+                match = re.split("sub-", path_on_table.split("/")[-4])
+                if row["ID"] == match[1]:
                     df_dict["ID"].append(row["ID"])
                     df_dict["path"].append(path_on_table)
                     df_dict["age"].append(row["ageAtEntry"])
@@ -150,18 +149,18 @@ def create_table(_paths_on_table):
     # adds the paths
     # interate though all the rows to create a set of the subjects
     for i, subj_path_filtered in enumerate(df["ID"].tolist()):
-        df[i, "processed"] = "no"
-        subjs.add(subj_path_filtered)
+        df.loc[i, "processed"] = "no"
+        subjs.add("sub-" + subj_path_filtered)
+
 
     # iterate though all the directories in the processed path
     for root, dirs, files in os.walk(PROCESSED_PATH):
         for dir in dirs:
             if dir in subjs:
-
                 # quando trova il soggetto nella crtela modifica il dataframe
                 for i, subj_path_filtered in enumerate(df["ID"].tolist()):
-                    if dir == subj_path_filtered:
-                        df[i, "processed"] = "yes"
+                    if dir == "sub-" + subj_path_filtered:
+                        df.loc[i, "processed"] = "yes"
                         break
 
     return df
