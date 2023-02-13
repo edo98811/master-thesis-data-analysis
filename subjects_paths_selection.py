@@ -5,12 +5,12 @@ import re
 import os
 
 # useful constants
-PROCESSED_PATH = "/media/neuropsycad/disk12t/EdoardoFilippiMasterThesis/FastSurfer_Output_Comparison_healthy"
+PROCESSED_PATH = "/media/neuropsycad/disk12t/EdoardoFilippiMasterThesis/FastSurfer_Output_ADNI"
 BASE_PATH = "/media/neuropsycad/disk12t/EdoardoFilippiMasterThesis/"
-FREESURFER_PATH = "/media/neuropsycad/disk12t/VascoDiogo/OASIS/FS7/"
-# FREESURFER_PATH = "/media/neuropsycad/disk12t/VascoDiogo/ADNI"
-TABLE_FILENAME = "text_and_csv_files/OASIS_filtered_healthy.csv"
-FINAL_FILENAME = "text_and_csv_files/test_OASIS_table.csv"
+# FREESURFER_PATH = "/media/neuropsycad/disk12t/VascoDiogo/OASIS/FS7/"
+FREESURFER_PATH = "/media/neuropsycad/disk12t/VascoDiogo/ADNI"
+TABLE_FILENAME = "text_and_csv_files/ADNI_filtered.csv"
+FINAL_FILENAME = "text_and_csv_files/test_ADNI_table.csv"
 
 
 def main():
@@ -25,8 +25,8 @@ def main():
     #
     # dm.write_txt(paths_on_table, BASE_PATH + FINAL_FILENAME)
 
-    df = create_table(paths_on_table)
-    df.to_csv(BASE_PATH + FINAL_FILENAME)
+    df = create_table_ADNI(paths_on_table)
+    df.to_csv(BASE_PATH + FINAL_FILENAME, index=False)
 
 """
 functions 
@@ -117,7 +117,52 @@ def check_processed(subj_paths_filtered):
                         if dir == subj_path_filtered.split("/")[-4]:
                             subj_paths_filtered[i] = f"{dir} already processed"
 
+def create_table_ADNI(_paths_on_table):
+    table = pd.read_csv(BASE_PATH + TABLE_FILENAME)
 
+    # create the dictionary that will turn into a table
+    df_dict = {
+        "ID": [],
+        "path": [],
+        "age": [],
+        "main_condition": [],
+        "processed": []
+    }
+
+    # populates the dictionary
+    for index, row in table.iterrows():
+        for i, path_on_table in enumerate(_paths_on_table):
+            if len(path_on_table.split("/")) > 3:
+                match = re.split("sub-", path_on_table.split("/")[-4])
+                if row["ID"] == match[1] and (row["_merge"] == "both" or row["_merge"] == "right_only"):
+                    df_dict["ID"].append(row["ID"])
+                    df_dict["path"].append(path_on_table)
+                    df_dict["age"].append(row["age"])
+                    df_dict["main_condition"].append(row["diagnosis"])
+                    df_dict["processed"] = "no"
+
+    df = pd.DataFrame.from_dict(df_dict)
+
+    subjs = set()
+
+    # adds the paths
+    # interate though all the rows to create a set of the subjects
+    for i, subj_path_filtered in enumerate(df["ID"].tolist()):
+        df.loc[i, "processed"] = "no"
+        subjs.add("sub-" + subj_path_filtered)
+
+
+    # iterate though all the directories in the processed path
+    for root, dirs, files in os.walk(PROCESSED_PATH):
+        for dir in dirs:
+            if dir in subjs:
+                # quando trova il soggetto nella crtela modifica il dataframe
+                for i, subj_path_filtered in enumerate(df["ID"].tolist()):
+                    if dir == "sub-" + subj_path_filtered:
+                        df.loc[i, "processed"] = "yes"
+                        break
+
+    return df
 def create_table(_paths_on_table):
     table = pd.read_csv(BASE_PATH + TABLE_FILENAME)
 
