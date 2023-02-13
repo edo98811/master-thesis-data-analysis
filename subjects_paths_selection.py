@@ -9,18 +9,25 @@ PROCESSED_PATH = "/media/neuropsycad/disk12t/EdoardoFilippiMasterThesis/FastSurf
 BASE_PATH = "/media/neuropsycad/disk12t/EdoardoFilippiMasterThesis/"
 FREESURFER_PATH = "/media/neuropsycad/disk12t/VascoDiogo/OASIS/FS7/"
 # FREESURFER_PATH = "/media/neuropsycad/disk12t/VascoDiogo/ADNI"
+TABLE_FILENAME = "text_and_csv_files/OASIS_filtered_healthy.csv"
+FINAL_FILENAME = "text_and_csv_files/OASIS_processed_check_healthy.txt"
+
 
 def main():
     paths = dm.list_files(FREESURFER_PATH, "001.mgz")
     # paths = dm.load_txt("")
 
     # dm.write_txt(paths, BASE_PATH + "test_OASIS_paths_all.txt")
-    paths_on_table = filter_paths(paths, "text_and_csv_files/OASIS_filtered_healthy.csv", subj_index=0)
+    paths_on_table = filter_paths(paths, TABLE_FILENAME, subj_index=0)
 
     # dm.write_txt(paths_on_table, BASE_PATH + "text_and_csv_files/test_OASIS_paths_on_table.txt")
-    check_processed(paths_on_table, PROCESSED_PATH)
+    # check_processed(paths_on_table, PROCESSED_PATH)
+    #
+    # dm.write_txt(paths_on_table, BASE_PATH + FINAL_FILENAME)
 
-    dm.write_txt(paths_on_table, BASE_PATH + "text_and_csv_files/OASIS_processed_check_healthy.txt")
+    df = create_table(paths_on_table)
+    df.to_csv(BASE_PATH + FINAL_FILENAME)
+
 """
 functions 
 
@@ -38,14 +45,17 @@ functions
         - output -> list (paths list filtered) 
         
     to use this just load a text file with all the info or call the function to lsearch for all the images from a base path 
-    after to ilter it call the filter function passing as arguments , for all the functions the input subjects to check ar ethe numbers not the paths 
+    after to ilter it call the filter function passing as arguments , for all the functions the input subjects to check 
+    are numbers not the paths 
     
-        filter_paths("/media/neuropsycad/disk12t/VascoDiogo/OASIS/FS7/")
-    filter_paths_from_table("OASIS_filtered.xlsx", "paths_OASIS_filtered.txt")
-    
+    if i want to use this to select some files for exmple and check that they havent been processed yet i would wave them in a 
+    txt, on for each line, then load it, and filter first according to te table, if i want to know if they exist and then according 
+    to the condition if they have already been processed
 """
 
 
+# filter_paths("/media/neuropsycad/disk12t/VascoDiogo/OASIS/FS7/")
+# filter_paths_from_table("OASIS_filtered.xlsx", "paths_OASIS_filtered.txt")
 # def get_all_paths(base_path):
 #     paths_list = dm.list_files(dir_name, "001.mgz")
 #
@@ -56,7 +66,8 @@ functions
 def count_subjs():
     pass
 
-def filter_paths(subj_paths_all, source, subj_index="subjects"):
+
+def filter_paths(subj_paths_all, source, subj_index=0):
     if source.split(".")[-1] == "txt":  # load from txt
         subj_numbers = dm.load_txt(BASE_PATH + source)
 
@@ -91,7 +102,7 @@ def filter_paths(subj_paths_all, source, subj_index="subjects"):
     return subj_paths_filtered
 
 
-def check_processed(subj_paths_filtered, processed_path):
+def check_processed(subj_paths_filtered):
     subjs = set()
 
     for subj_path_filtered in subj_paths_filtered:
@@ -105,6 +116,57 @@ def check_processed(subj_paths_filtered, processed_path):
                     if len(subj_path_filtered.split("/")) > 3:
                         if dir == subj_path_filtered.split("/")[-4]:
                             subj_paths_filtered[i] = f"{dir} already processed"
+
+
+def create_table(_paths_on_table):
+    table = pd.read_excel(BASE_PATH + TABLE_FILENAME)
+
+    # create the dictionary that will turn into a table
+    df_dict = {
+        "ID": [],
+        "path": [],
+        "age": [],
+        "main_condition": [],
+        "processed": []
+    }
+
+    # populates the dictionary
+    for index, row in table.iterrows():
+        for i, paths_on_table in enumerate(paths_on_table):
+            if len(path_on_table.split("/")) > 3:
+                if row.index == path_on_table.split("/")[-4]:
+                    df_dict["ID"].append(row.index)
+                    df_dict["path"].append(path_on_table)
+                    df_dict["age"].append(row["ageAtEntry"])
+                    df_dict["main_condition"].append(row["dx1"])
+                    df_dict["processed"] = "no"
+
+    df = pd.DataFrame.from_dict(df_dict)
+
+    subjs = set()
+
+    # adds the paths
+    # interate though all the rows to create a set of the subjects
+    for i, subj_path_filtered in enumerate(df.index.tolist()):
+        df[i, "processed"] = "no"
+        subjs.add(subj_path_filtered)
+
+    # iterate though all the directories in the processed path
+    for root, dirs, files in os.walk(PROCESSED_PATH):
+        for dir in dirs:
+            if dir in subjs:
+
+                # quando trova il soggetto nella crtela modifica il dataframe
+                for i, subj_path_filtered in enumerate(df.index.tolist()):
+                    if dir == subj_path_filtered:
+                        df[i, "processed"] = "yes"
+                        break
+
+    return df
+    # dm.write_txt(paths_on_table, BASE_PATH + "text_and_csv_files/test_OASIS_paths_on_table.txt")
+    # check_processed(paths_on_table, PROCESSED_PATH)
+
+    # dm.write_txt(paths_on_table, BASE_PATH + FINAL_FILENAME)
 
 
 if __name__ == "__main__":

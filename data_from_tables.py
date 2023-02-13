@@ -15,10 +15,10 @@ def HelenaOASIS(path):
     print(df.head())
 
     # create a table for rows where the fourth column is "healthy"
-    healthy_df = df[df.loc[:, "dx1"] == "Cognitively normal"]
+    # healthy_df = df[df.loc[:, "dx1"] == "Cognitively normal"]
 
     # create a table for rows where the fourth column is not "healthy"
-    others_df = df[df.loc[:, "dx1"] != "Cognitively normal"]
+    # others_df = df[df.loc[:, "dx1"] != "Cognitively normal"]
     # others_df = filtered_df[filtered_df.iloc[:, 8] == "AD Dementia"]
 
 
@@ -29,8 +29,8 @@ def HelenaOASIS(path):
     #     healthy_df.to_excel(writer, sheet_name='Healthy')
     #     others_df.to_excel(writer, sheet_name='Not Healthy')
 
-    healthy_df.to_csv(r"C:\Users\edoar\OneDrive - CLOUDEA S.R.L\Polito Materiale\BIOMEDICA\Tesi\OASIS_filtered_healthy.csv")
-    others_df.to_csv(r"C:\Users\edoar\OneDrive - CLOUDEA S.R.L\Polito Materiale\BIOMEDICA\Tesi\OASIS_filtered_not_healthy.csv")
+    df.to_csv(r"C:\Users\edoar\OneDrive - CLOUDEA S.R.L\Polito Materiale\BIOMEDICA\Tesi\OASIS_filtered_all.csv")
+    # others_df.to_csv(r"C:\Users\edoar\OneDrive - CLOUDEA S.R.L\Polito Materiale\BIOMEDICA\Tesi\OASIS_filtered_not_healthy.csv")
 
 def VascoADNI(path1, path2):
     df1 = pd.read_excel(path1, index_col=None, usecols='A:J')
