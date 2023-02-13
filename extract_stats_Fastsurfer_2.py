@@ -13,7 +13,7 @@ TABLE_PATH = '/media/neuropsycad/disk12t/EdoardoFilippiMasterThesis/text_and_csv
 
 def main():
 
-    table = pd.load_csv(TABLE_PATH)
+    table = pd.read_csv(TABLE_PATH)
     subjects_list = table.query("processed=='yes'")["ID"]
 
     # note: 0-> aseg, 1-> apark
@@ -74,6 +74,7 @@ def extract_path_all(filename, base_path):
 def extract_path(filename, base_path, subj_list):
     # set of all the subbjects for easier computation
     subj_list_numbers = set(subj_list)
+    print(subj_list)
 
     # creates a list with all the subjects that are in the list
     # for s in subj_list:
