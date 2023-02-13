@@ -7,19 +7,19 @@ import re
 import data_manipulation as dm
 
 BASE_PATH = '/media/neuropsycad/disk12t/EdoardoFilippiMasterThesis/FastSurfer_Output/'
-SAVE_PATH = '/media/neuropsycad/disk12t/EdoardoFilippiMasterThesis/Stats_Fastsurfer_2/'
+SAVE_PATH = '/media/neuropsycad/disk12t/EdoardoFilippiMasterThesis/Stats_FastSurfer_2/'
 TABLE_PATH = '/media/neuropsycad/disk12t/EdoardoFilippiMasterThesis/text_and_csv_files/test_OASIS_table.csv'
 
 
 def main():
 
     table = pd.read_csv(TABLE_PATH)
-    subjects_list = table.query("processed=='yes'")["ID"]
+    subjects_list = table.query("processed=='yes'")["ID"].tolist()
 
     # note: 0-> aseg, 1-> apark
     calculate_stats('aseg.stats', "aseg.csv", subjects_list, 0)
-    calculate_stats('lh.aparc.DKTatlas.mapped.stats', "aparcDKT.csv", subjects_list, 1)
-    calculate_stats('rh.aparc.DKTatlas.mapped.stats', "aparcDKT.csv", subjects_list, 1)
+    calculate_stats('lh.aparc.DKTatlas.mapped.stats', "aparcDKT_left.csv", subjects_list, 1)
+    calculate_stats('rh.aparc.DKTatlas.mapped.stats', "aparcDKT_right.csv", subjects_list, 1)
 
 """
     
@@ -71,9 +71,11 @@ def extract_path_all(filename, base_path):
     return subjs_path
 
 
-def extract_path(filename, base_path, subj_list):
+def extract_path(filename, subj_list):
     # set of all the subbjects for easier computation
-    subj_list_numbers = set(subj_list)
+    subj_list_numbers = set()
+    for subj in subj_list:
+        subj_list_numbers.add("sub-" + subj)
     print(subj_list)
 
     # creates a list with all the subjects that are in the list
@@ -83,7 +85,7 @@ def extract_path(filename, base_path, subj_list):
     # print(subj_list_numbers)
 
     paths_found = []
-    for path, subdirs, files in os.walk(base_path):
+    for path, subdirs, files in os.walk(BASE_PATH):
         if path.split("/")[-1] == 'stats' and path.split("/")[-2] in subj_list_numbers:
             for name in files:
                 if name == filename:
