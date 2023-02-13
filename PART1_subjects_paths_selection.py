@@ -5,12 +5,12 @@ import re
 import os
 
 # useful constants
-PROCESSED_PATH = "/media/neuropsycad/disk12t/EdoardoFilippiMasterThesis/FastSurfer_Output_ADNI"
+PROCESSED_PATH = "/media/neuropsycad/disk12t/EdoardoFilippiMasterThesis/FastSurfer_Output"
 BASE_PATH = "/media/neuropsycad/disk12t/EdoardoFilippiMasterThesis/"
-# FREESURFER_PATH = "/media/neuropsycad/disk12t/VascoDiogo/OASIS/FS7/"
-FREESURFER_PATH = "/media/neuropsycad/disk12t/VascoDiogo/ADNI"
-TABLE_FILENAME = "text_and_csv_files/ADNI_filtered.csv"
-FINAL_FILENAME = "text_and_csv_files/test_ADNI_table.csv"
+FREESURFER_PATH = "/media/neuropsycad/disk12t/VascoDiogo/OASIS/FS7/"
+# FREESURFER_PATH = "/media/neuropsycad/disk12t/VascoDiogo/ADNI"
+TABLE_FILENAME = "text_and_csv_files/OASIS_filtered.csv"
+FINAL_FILENAME = "text_and_csv_files/test_OASIs_table.csv"
 
 
 def main():
@@ -25,7 +25,7 @@ def main():
     #
     # dm.write_txt(paths_on_table, BASE_PATH + FINAL_FILENAME)
 
-    df = create_table_ADNI(paths_on_table)
+    df = create_table(paths_on_table)
     df.to_csv(BASE_PATH + FINAL_FILENAME, index=False)
 
 
@@ -44,6 +44,10 @@ def main():
     check processed: check if the subjects in the list have already been processed
         - input -> list (paths list), str (folder o check)
         - output -> list (paths list filtered) 
+    
+    create table 
+    
+    create table ADNI
         
     to use this just load a text file with all the info or call the function to lsearch for all the images from a base path 
     after to ilter it call the filter function passing as arguments , for all the functions the input subjects to check 
