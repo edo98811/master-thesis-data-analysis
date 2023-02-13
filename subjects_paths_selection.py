@@ -127,6 +127,7 @@ def create_table_ADNI(_paths_on_table):
         "age": [],
         "main_condition": [],
         "processed": []
+        "processed_path": []
     }
 
     # populates the dictionary
@@ -139,7 +140,8 @@ def create_table_ADNI(_paths_on_table):
                     df_dict["path"].append(path_on_table)
                     df_dict["age"].append(row["age"])
                     df_dict["main_condition"].append(row["diagnosis"])
-                    df_dict["processed"] = "no"
+                    df_dict["processed"].append("no")
+                    df_dict["processed_path"].append("")
 
     df = pd.DataFrame.from_dict(df_dict)
 
@@ -160,6 +162,7 @@ def create_table_ADNI(_paths_on_table):
                 for i, subj_path_filtered in enumerate(df["ID"].tolist()):
                     if dir == "sub-" + subj_path_filtered:
                         df.loc[i, "processed"] = "yes"
+                        df.loc[i, "processed_path"] = root + "/" + dir
                         break
 
     return df
@@ -172,7 +175,8 @@ def create_table(_paths_on_table):
         "path": [],
         "age": [],
         "main_condition": [],
-        "processed": []
+        "processed": [],
+        "processed_path": []
     }
 
     # populates the dictionary
@@ -185,7 +189,8 @@ def create_table(_paths_on_table):
                     df_dict["path"].append(path_on_table)
                     df_dict["age"].append(row["ageAtEntry"])
                     df_dict["main_condition"].append(row["dx1"])
-                    df_dict["processed"] = "no"
+                    df_dict["processed"].append("no")
+                    df_dict["processed_path"].append("")
 
     df = pd.DataFrame.from_dict(df_dict)
 
@@ -206,6 +211,7 @@ def create_table(_paths_on_table):
                 for i, subj_path_filtered in enumerate(df["ID"].tolist()):
                     if dir == "sub-" + subj_path_filtered:
                         df.loc[i, "processed"] = "yes"
+                        df.loc[i, "processed_path"] = root + "/" + dir
                         break
 
     return df
