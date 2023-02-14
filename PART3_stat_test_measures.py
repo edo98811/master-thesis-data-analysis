@@ -5,49 +5,18 @@ import matplotlib.pyplot as plt
 import numpy as np
 
 BASE_PATH = "/media/neuropsycad/disk12t/EdoardoFilippiMasterThesis/"
+SUBJ_TABLE = ""
 
 
 def main():
     r_all = []
+    subj_table = pd.read_csv(SUBJ_TABLE)
 
-    df1 = pd.read_csv("Stats_Freesurfer/aseg.csv")
-    df2 = pd.read_csv("Stats_FastSurfer/aseg.csv")
+    queries = ["'main_condition'=='Cognitively Normal'",
+               "'main_condition'!='Cognitively Normal'"]
 
-    max_len = min(len(df1.axes[1]), len(df2.axes[1]))
+    stat_test(queries, "Stats_FreeSurfer/aseg.csv", "Stats_FastSurfer/aseg.csv", subj_table, r_all)
 
-    subjects_list = df2.query("dx1=='Cognitively Normal'")["ID"].tolist()
-    for column_to_compare in range(2, max_len):
-        stat_test(BASE_PATH, df1, df2, column_to_compare, r_all, subjects_list)
-
-    subjects_list = df2.query("dx1!='Cognitively Normal'")["ID"].tolist()
-    for column_to_compare in range(2, max_len):
-        stat_test(BASE_PATH, df1, df2, column_to_compare, r_all, subjects_list)
-
-    df1 = pd.read_csv("Stats_Freesurfer/aparcDKT_right.csv")
-    df2 = pd.read_csv("Stats_FastSurfer/aparcDKT_right.csv")
-
-    max_len = min(len(df1.axes[1]), len(df2.axes[1]))
-
-    subjects_list = df2.query("dx1=='Cognitively Normal'")["ID"].tolist()
-    for column_to_compare in range(2, max_len):
-        stat_test(BASE_PATH, df1, df2, column_to_compare, r_all, subjects_list)
-
-    subjects_list = df2.query("dx1!='Cognitively Normal'")["ID"].tolist()
-    for column_to_compare in range(2, max_len):
-        stat_test(BASE_PATH, df1, df2, column_to_compare, r_all, subjects_list)
-
-    df1 = pd.read_csv("Stats_Freesurfer/aparcDKT_left.csv")
-    df2 = pd.read_csv("Stats_FastSurfer/aparcDKT_left.csv")
-
-    max_len = min(len(df1.axes[1]), len(df2.axes[1]))
-
-    subjects_list = df2.query("dx1=='Cognitively Normal'")["ID"].tolist()
-    for column_to_compare in range(2, max_len):
-        stat_test(BASE_PATH, df1, df2, column_to_compare, r_all, subjects_list)
-
-    subjects_list = df2.query("dx1!='Cognitively Normal'")["ID"].tolist()
-    for column_to_compare in range(2, max_len):
-        stat_test(BASE_PATH, df1, df2, column_to_compare, r_all, subjects_list)
 """
 description 
 
@@ -85,29 +54,59 @@ description
 """
 SIGNIFICANCE_THRESHOLD = 0.05
 
+def stat_test(_queries, _df1_path, _df2_path, _subj_table, r_all):
+    # input: query, df1 name, df2 name, subj_table, list of all test results
+    _df1 = pd.read_csv(BASE_PATH + _df1_path)
+    _df2 = pd.read_csv(BASE_PATH + _df2_path)
 
-def stat_test(base_path, filename1, filename2, column_to_compare, subjs_list, r_all):
-    df1 = pd.read_csv(base_path + filename1)
-    df2 = pd.read_csv(base_path + filename2)
+    table_tested_name = _df1_path.split(".")[-2]
 
-    r1, p1, o1 = mann_whitney(df1, df2, column_to_compare)
-    r2, p2, o2 = t_test(df1, df2, column_to_compare)
+    max_len = min(len(_df1.axes[1]), len(_df2.axes[1]))
+    for query in _queries:
+        subjects_list = _subj_table.query(query)["ID"].tolist()
+        _df1 = _df1.loc[_df1['ID'].isin([subjects_list])]
+        _df2 = _df2.loc[_df2['ID'].isin([subjects_list])]
+        for column_to_compare in range(2, max_len):
+
+            r1, p1, o1 = mann_whitney(_df1, _df2, column_to_compare)
+            r2, p2, o2 = t_test(_df1, _df2, column_to_compare)
+
+            if isinstance(column_to_compare, int):
+                column_to_compare_name = _df1.columns[column_to_compare]
+
+                r_all.append({"name": f"{table_tested_name} {column_to_compare_name}",
+                              "mann_whitney": {"result": r1,
+                                               "p_value": p1,
+                                               "outcome": o1},
+                              "t_test": {"result": r2,
+                                         "p_value": p2,
+                                         "outcome": o2}})
+
+            if isinstance(column_to_compare, str):
+                r_all.append({"name": f"{table_tested_name} {column_to_compare}",
+                              "mann_whitney": {"result": r1,
+                                               "p_value": p1,
+                                               "outcome": o1},
+                              "t_test": {"result": r2,
+                                         "p_value": p2,
+                                         "outcome": o2}})
+def stat_test_old(_df1, _df2, column_to_compare, file_tested_name, r_all):
+    r1, p1, o1 = mann_whitney(_df1, _df2, column_to_compare)
+    r2, p2, o2 = t_test(_df1, _df2, column_to_compare)
 
     if isinstance(column_to_compare, int):
-        df_example = pd.read_csv(base_path + filename2)
-        column_to_compare_name = df_example.columns[column_to_compare]
+        column_to_compare_name = _df1.columns[column_to_compare]
 
-        r_all.append({"name": f"{filename1.split('/')[-1]} {column_to_compare_name}",
+        r_all.append({"name": f"{file_tested_name} {column_to_compare_name}",
                       "mann_whitney": {"result": r1,
                                        "p_value": p1,
                                        "outcome": o1},
                       "t_test": {"result": r2,
                                  "p_value": p2,
                                  "outcome": o2}})
-        del df_example
 
     if isinstance(column_to_compare, str):
-        r_all.append({"name": f"{filename1.split('/')[-1]} {column_to_compare}",
+        r_all.append({"name": f"{file_tested_name} {column_to_compare}",
                       "mann_whitney": {"result": r1,
                                        "p_value": p1,
                                        "outcome": o1},
@@ -116,10 +115,10 @@ def stat_test(base_path, filename1, filename2, column_to_compare, subjs_list, r_
                                  "outcome": o2}})
 
 
-def save_csv(base_path, list_line):
+def save_csv(list_to_save):
     df = pd.DataFrame()
 
-    for item in list_line:
+    for item in list_to_save:
         df = pd.concat([df, pd.DataFrame({"mann_whitney p_value": item["mann_whitney"]["p_value"],
                                           "mann_whitney outcome": item["mann_whitney"]["outcome"],
                                           "mann_whitney message": item["mann_whitney"]["result"],
@@ -129,7 +128,7 @@ def save_csv(base_path, list_line):
                                           "significance_threshold_used": SIGNIFICANCE_THRESHOLD
                                           }, index=[item["name"]])])
 
-    df.to_csv(base_path + "test_results.csv")  # , index=False
+    df.to_csv(BASE_PATH + "test_results.csv")  # , index=False
 
 
 def get_column(column_to_compare, df1, df2):
@@ -143,7 +142,7 @@ def get_column(column_to_compare, df1, df2):
 
     return a, b
 
-
+# TODO: rendere più corto questo codice dei t test etc
 def t_test(df1, df2, column_to_compare):
     a, b = get_column(column_to_compare, df1, df2)
 
@@ -183,226 +182,281 @@ def mann_whitney(df1, df2, column_to_compare):
 
     return result, p_value, outcome
 
-## OLD FILES
-def save_txt(list_line):
-    file = []
-    for item in list_line:
-        file.append(item["name"])
-        file.append("\t" + item["mann_whitney"])
-        file.append("\t" + item["t_test"])
-        file.append("\n")
-    dm.write_txt(file, "old scripts/test_results.txt")
-
-
-def main_old_2():
-    base_path = "/media/neuropsycad/disk12t/EdoardoFilippiMasterThesis/"
-
-    r_all = []
-
-    filename1 = "Stats_Freesurfer/aseg_AD.csv"
-    filename2 = "Stats_FastSurfer/aseg_AD.csv"
-
-    max_len = min(len(pd.read_csv(base_path + filename1).axes[1]), len(pd.read_csv(base_path + filename2).axes[1]))
-    for column_to_compare in range(2, max_len):
-        stat_test(base_path, filename1, filename2, column_to_compare, r_all)
-
-    filename1 = "Stats_Freesurfer/aseg_healthy.csv"
-    filename2 = "Stats_FastSurfer/aseg_healthy.csv"
-
-    max_len = min(len(pd.read_csv(base_path + filename1).axes[1]), len(pd.read_csv(base_path + filename2).axes[1]))
-    for column_to_compare in range(2, max_len):
-        stat_test(base_path, filename1, filename2, column_to_compare, r_all)
-
-    filename1 = "Stats_Freesurfer/aparcDKT_left_AD.csv"
-    filename2 = "Stats_FastSurfer/aparcDKT_left_AD.csv"
-
-    max_len = min(len(pd.read_csv(base_path + filename1).axes[1]), len(pd.read_csv(base_path + filename2).axes[1]))
-    for column_to_compare in range(2, max_len):
-        stat_test(base_path, filename1, filename2, column_to_compare, r_all)
-
-    filename1 = "Stats_Freesurfer/aparcDKT_right_AD.csv"
-    filename2 = "Stats_FastSurfer/aparcDKT_right_AD.csv"
-
-    max_len = min(len(pd.read_csv(base_path + filename1).axes[1]), len(pd.read_csv(base_path + filename2).axes[1]))
-    for column_to_compare in range(2, max_len):
-        stat_test(base_path, filename1, filename2, column_to_compare, r_all)
-
-    filename1 = "Stats_Freesurfer/aparcDKT_left_healthy.csv"
-    filename2 = "Stats_FastSurfer/aparcDKT_left_healthy.csv"
-
-    max_len = min(len(pd.read_csv(base_path + filename1).axes[1]), len(pd.read_csv(base_path + filename2).axes[1]))
-    for column_to_compare in range(2, max_len):
-        stat_test(base_path, filename1, filename2, column_to_compare, r_all)
-
-    filename1 = "Stats_Freesurfer/aparcDKT_right_healthy.csv"
-    filename2 = "Stats_FastSurfer/aparcDKT_right_healthy.csv"
-
-    max_len = min(len(pd.read_csv(base_path + filename1).axes[1]), len(pd.read_csv(base_path + filename2).axes[1]))
-    for column_to_compare in range(2, max_len):
-        stat_test(base_path, filename1, filename2, column_to_compare, r_all)
-
-    save_csv(base_path,
-             r_all)
-
-
 def main_old():
-    base_path = "/media/neuropsycad/disk12t/EdoardoFilippiMasterThesis/"
-    """
-    test order
-    aseg 
-        AD left hippocampus volume
-        AD right hippocampus volume
-        healthy left hippocampus volume
-        healthy right hippocampus volume
-        
-    aparc 
-        AD left parahippocampal thickness
-        AD right parahippocampal thickness
-        healthy left parahippocampal thickness
-        healthy right parahippocampal thickness
-    
-    """
     r_all = []
 
-    filename1 = "Stats_Freesurfer/aseg_AD.csv"
-    filename2 = "Stats_FastSurfer/aseg_AD.csv"
+    # load subjects info table and select processed subjects
+    subj_table = pd.read_csv(SUBJ_TABLE)
 
-    column_to_compare = "Left-Hippocampus volume_mm3"
+    # TODO: aggiungere subjects info in a table
 
-    r1 = mann_whitney(base_path, filename1, filename2, column_to_compare)
-    r2 = t_test(base_path, filename1, filename2, column_to_compare)
+    # filter results
+    df1 = pd.read_csv(BASE_PATH + "Stats_Freesurfer/aseg.csv")
+    df2 = pd.read_csv(BASE_PATH + "Stats_FastSurfer/aseg.csv")
 
-    r_all.append({"name": f"{filename1.split('/')[-1]} {column_to_compare}",
-                  "mann_whitney": r1,
-                  "t_test": r2})
+    table_name = df1.split(".")[-2]
 
-    column_to_compare = "Left-Hippocampus volume_mm3"
+    max_len = min(len(df1.axes[1]), len(df2.axes[1]))
+    subjects_list = subj_table.query("'main_condition'=='Cognitively Normal'")["ID"].tolist()
+    df1 = df1.loc[df1['ID'].isin([subjects_list])]
+    df2 = df2.loc[df2['ID'].isin([subjects_list])]
+    for column_to_compare in range(2, max_len):
+        stat_test(df1, df2, column_to_compare, table_name, r_all)
+    subjects_list = subj_table.query("'main_condition'=!='Cognitively Normal'")["ID"].tolist()
+    df1 = df1.loc[df1['ID'].isin([subjects_list])]
+    df2 = df2.loc[df2['ID'].isin([subjects_list])]
+    for column_to_compare in range(2, max_len):
+        stat_test(df1, df2, column_to_compare, table_name, r_all)
 
-    r1 = mann_whitney(base_path, filename1, filename2, column_to_compare)
-    r2 = t_test(base_path, filename1, filename2, column_to_compare)
+    df1 = pd.read_csv("Stats_Freesurfer/aparcDKT_right.csv")
+    df2 = pd.read_csv("Stats_FastSurfer/aparcDKT_right.csv")
 
-    r_all.append({"name": f"{filename1.split('/')[-1]} {column_to_compare}",
-                  "mann_whitney": r1,
-                  "t_test": r2})
-    column_to_compare = "Right-Hippocampus volume_mm3"
+    max_len = min(len(df1.axes[1]), len(df2.axes[1]))
 
-    r1 = mann_whitney(base_path, filename1, filename2, column_to_compare)
-    r2 = t_test(base_path, filename1, filename2, column_to_compare)
+    subjects_list = df2.query("dx1=='Cognitively Normal'")["ID"].tolist()
+    for column_to_compare in range(2, max_len):
+        stat_test(df1, df2, column_to_compare, table_name, r_all)
 
-    r_all.append({"name": f"{filename1.split('/')[-1]} {column_to_compare}",
-                  "mann_whitney": r1,
-                  "t_test": r2})
+    subjects_list = df2.query("dx1!='Cognitively Normal'")["ID"].tolist()
+    for column_to_compare in range(2, max_len):
+        stat_test(df1, df2, column_to_compare, table_name, r_all)
 
-    filename1 = "Stats_Freesurfer/aseg_healthy.csv"
-    filename2 = "Stats_FastSurfer/aseg_healthy.csv"
+    df1 = pd.read_csv("Stats_Freesurfer/aparcDKT_left.csv")
+    df2 = pd.read_csv("Stats_FastSurfer/aparcDKT_left.csv")
 
-    column_to_compare = "Left-Hippocampus volume_mm3"
+    max_len = min(len(df1.axes[1]), len(df2.axes[1]))
 
-    r1 = mann_whitney(base_path, filename1, filename2, column_to_compare)
-    r2 = t_test(base_path, filename1, filename2, column_to_compare)
+    subjects_list = df2.query("dx1=='Cognitively Normal'")["ID"].tolist()
+    for column_to_compare in range(2, max_len):
+        stat_test(df1, df2, column_to_compare, r_all, table_name)
 
-    r_all.append({"name": f"{filename1.split('/')[-1]} {column_to_compare}",
-                  "mann_whitney": r1,
-                  "t_test": r2})
+    subjects_list = df2.query("dx1!='Cognitively Normal'")["ID"].tolist()
+    for column_to_compare in range(2, max_len):
+        stat_test(df1, df2, column_to_compare, r_all, table_name)
 
-    column_to_compare = "Right-Hippocampus volume_mm3"
+    save_csv(r_all)
 
-    r1 = mann_whitney(base_path, filename1, filename2, column_to_compare)
-    r2 = t_test(base_path, filename1, filename2, column_to_compare)
 
-    r_all.append({"name": f"{filename1.split('/')[-1]} {column_to_compare}",
-                  "mann_whitney": r1,
-                  "t_test": r2})
-
-    filename1 = "Stats_Freesurfer/aparcDKT_left_AD.csv"
-    filename2 = "Stats_FastSurfer/aparcDKT_left_AD.csv"
-    column_to_compare = "parahippocampal_mean_thickness_mm"
-
-    r1 = mann_whitney(base_path, filename1, filename2, column_to_compare)
-    r2 = t_test(base_path, filename1, filename2, column_to_compare)
-
-    r_all.append({"name": f"{filename1.split('/')[-1]} {column_to_compare}",
-                  "mann_whitney": r1,
-                  "t_test": r2})
-
-    filename1 = "Stats_Freesurfer/aparcDKT_right_AD.csv"
-    filename2 = "Stats_FastSurfer/aparcDKT_right_AD.csv"
-    column_to_compare = "parahippocampal_mean_thickness_mm"
-
-    r1 = mann_whitney(base_path, filename1, filename2, column_to_compare)
-    r2 = t_test(base_path, filename1, filename2, column_to_compare)
-
-    r_all.append({"name": f"{filename1.split('/')[-1]} {column_to_compare}",
-                  "mann_whitney": r1,
-                  "t_test": r2})
-
-    filename1 = "Stats_Freesurfer/aparcDKT_left_healthy.csv"
-    filename2 = "Stats_FastSurfer/aparcDKT_left_healthy.csv"
-    column_to_compare = "parahippocampal_mean_thickness_mm"
-
-    r1 = mann_whitney(base_path, filename1, filename2, column_to_compare)
-    r2 = t_test(base_path, filename1, filename2, column_to_compare)
-
-    r_all.append({"name": f"{filename1.split('/')[-1]} {column_to_compare}",
-                  "mann_whitney": r1,
-                  "t_test": r2})
-
-    filename1 = "Stats_Freesurfer/aparcDKT_right_healthy.csv"
-    filename2 = "Stats_FastSurfer/aparcDKT_right_healthy.csv"
-    column_to_compare = "parahippocampal_mean_thickness_mm"
-
-    r1 = mann_whitney(base_path, filename1, filename2, column_to_compare)
-    r2 = t_test(base_path, filename1, filename2, column_to_compare)
-
-    r_all.append({"name": f"{filename1.split('/')[-1]} {column_to_compare}",
-                  "mann_whitney": r1,
-                  "t_test": r2})
-
-    filename1 = "Stats_Freesurfer/aparcDKT_left_AD.csv"
-    filename2 = "Stats_FastSurfer/aparcDKT_left_AD.csv"
-    column_to_compare = "parahippocampal_mean_area_mm2"
-
-    r1 = mann_whitney(base_path, filename1, filename2, column_to_compare)
-    r2 = t_test(base_path, filename1, filename2, column_to_compare)
-
-    r_all.append({"name": f"{filename1.split('/')[-1]} {column_to_compare}",
-                  "mann_whitney": r1,
-                  "t_test": r2})
-
-    filename1 = "Stats_Freesurfer/aparcDKT_right_AD.csv"
-    filename2 = "Stats_FastSurfer/aparcDKT_right_AD.csv"
-    column_to_compare = "parahippocampal_mean_area_mm2"
-
-    r1 = mann_whitney(base_path, filename1, filename2, column_to_compare)
-    r2 = t_test(base_path, filename1, filename2, column_to_compare)
-
-    r_all.append({"name": f"{filename1.split('/')[-1]} {column_to_compare}",
-                  "mann_whitney": r1,
-                  "t_test": r2})
-
-    filename1 = "Stats_Freesurfer/aparcDKT_left_healthy.csv"
-    filename2 = "Stats_FastSurfer/aparcDKT_left_healthy.csv"
-    column_to_compare = "parahippocampal_mean_area_mm2"
-
-    r1 = mann_whitney(base_path, filename1, filename2, column_to_compare)
-    r2 = t_test(base_path, filename1, filename2, column_to_compare)
-
-    r_all.append({"name": f"{filename1.split('/')[-1]} {column_to_compare}",
-                  "mann_whitney": r1,
-                  "t_test": r2})
-
-    filename1 = "Stats_Freesurfer/aparcDKT_right_healthy.csv"
-    filename2 = "Stats_FastSurfer/aparcDKT_right_healthy.csv"
-    column_to_compare = "parahippocampal_mean_area_mm2"
-
-    r1 = mann_whitney(base_path, filename1, filename2, column_to_compare)
-    r2 = t_test(base_path, filename1, filename2, column_to_compare)
-
-    r_all.append({"name": f"{filename1.split('/')[-1]} {column_to_compare}",
-                  "mann_whitney": r1,
-                  "t_test": r2})
-
-    # save(r_all)
+## OLD FILES
+# def save_txt(list_line):
+#     file = []
+#     for item in list_line:
+#         file.append(item["name"])
+#         file.append("\t" + item["mann_whitney"])
+#         file.append("\t" + item["t_test"])
+#         file.append("\n")
+#     dm.write_txt(file, "old scripts/test_results.txt")
+#
+#
+# def main_old_2():
+#     base_path = "/media/neuropsycad/disk12t/EdoardoFilippiMasterThesis/"
+#
+#     r_all = []
+#
+#     filename1 = "Stats_Freesurfer/aseg_AD.csv"
+#     filename2 = "Stats_FastSurfer/aseg_AD.csv"
+#
+#     max_len = min(len(pd.read_csv(base_path + filename1).axes[1]), len(pd.read_csv(base_path + filename2).axes[1]))
+#     for column_to_compare in range(2, max_len):
+#         stat_test(base_path, filename1, filename2, column_to_compare, r_all)
+#
+#     filename1 = "Stats_Freesurfer/aseg_healthy.csv"
+#     filename2 = "Stats_FastSurfer/aseg_healthy.csv"
+#
+#     max_len = min(len(pd.read_csv(base_path + filename1).axes[1]), len(pd.read_csv(base_path + filename2).axes[1]))
+#     for column_to_compare in range(2, max_len):
+#         stat_test(base_path, filename1, filename2, column_to_compare, r_all)
+#
+#     filename1 = "Stats_Freesurfer/aparcDKT_left_AD.csv"
+#     filename2 = "Stats_FastSurfer/aparcDKT_left_AD.csv"
+#
+#     max_len = min(len(pd.read_csv(base_path + filename1).axes[1]), len(pd.read_csv(base_path + filename2).axes[1]))
+#     for column_to_compare in range(2, max_len):
+#         stat_test(base_path, filename1, filename2, column_to_compare, r_all)
+#
+#     filename1 = "Stats_Freesurfer/aparcDKT_right_AD.csv"
+#     filename2 = "Stats_FastSurfer/aparcDKT_right_AD.csv"
+#
+#     max_len = min(len(pd.read_csv(base_path + filename1).axes[1]), len(pd.read_csv(base_path + filename2).axes[1]))
+#     for column_to_compare in range(2, max_len):
+#         stat_test(base_path, filename1, filename2, column_to_compare, r_all)
+#
+#     filename1 = "Stats_Freesurfer/aparcDKT_left_healthy.csv"
+#     filename2 = "Stats_FastSurfer/aparcDKT_left_healthy.csv"
+#
+#     max_len = min(len(pd.read_csv(base_path + filename1).axes[1]), len(pd.read_csv(base_path + filename2).axes[1]))
+#     for column_to_compare in range(2, max_len):
+#         stat_test(base_path, filename1, filename2, column_to_compare, r_all)
+#
+#     filename1 = "Stats_Freesurfer/aparcDKT_right_healthy.csv"
+#     filename2 = "Stats_FastSurfer/aparcDKT_right_healthy.csv"
+#
+#     max_len = min(len(pd.read_csv(base_path + filename1).axes[1]), len(pd.read_csv(base_path + filename2).axes[1]))
+#     for column_to_compare in range(2, max_len):
+#         stat_test(base_path, filename1, filename2, column_to_compare, r_all)
+#
+#     save_csv(base_path,
+#              r_all)
+#
+#
+# def main_old():
+#     base_path = "/media/neuropsycad/disk12t/EdoardoFilippiMasterThesis/"
+#     """
+#     test order
+#     aseg
+#         AD left hippocampus volume
+#         AD right hippocampus volume
+#         healthy left hippocampus volume
+#         healthy right hippocampus volume
+#
+#     aparc
+#         AD left parahippocampal thickness
+#         AD right parahippocampal thickness
+#         healthy left parahippocampal thickness
+#         healthy right parahippocampal thickness
+#
+#     """
+#     r_all = []
+#
+#     filename1 = "Stats_Freesurfer/aseg_AD.csv"
+#     filename2 = "Stats_FastSurfer/aseg_AD.csv"
+#
+#     column_to_compare = "Left-Hippocampus volume_mm3"
+#
+#     r1 = mann_whitney(base_path, filename1, filename2, column_to_compare)
+#     r2 = t_test(base_path, filename1, filename2, column_to_compare)
+#
+#     r_all.append({"name": f"{filename1.split('/')[-1]} {column_to_compare}",
+#                   "mann_whitney": r1,
+#                   "t_test": r2})
+#
+#     column_to_compare = "Left-Hippocampus volume_mm3"
+#
+#     r1 = mann_whitney(base_path, filename1, filename2, column_to_compare)
+#     r2 = t_test(base_path, filename1, filename2, column_to_compare)
+#
+#     r_all.append({"name": f"{filename1.split('/')[-1]} {column_to_compare}",
+#                   "mann_whitney": r1,
+#                   "t_test": r2})
+#     column_to_compare = "Right-Hippocampus volume_mm3"
+#
+#     r1 = mann_whitney(base_path, filename1, filename2, column_to_compare)
+#     r2 = t_test(base_path, filename1, filename2, column_to_compare)
+#
+#     r_all.append({"name": f"{filename1.split('/')[-1]} {column_to_compare}",
+#                   "mann_whitney": r1,
+#                   "t_test": r2})
+#
+#     filename1 = "Stats_Freesurfer/aseg_healthy.csv"
+#     filename2 = "Stats_FastSurfer/aseg_healthy.csv"
+#
+#     column_to_compare = "Left-Hippocampus volume_mm3"
+#
+#     r1 = mann_whitney(base_path, filename1, filename2, column_to_compare)
+#     r2 = t_test(base_path, filename1, filename2, column_to_compare)
+#
+#     r_all.append({"name": f"{filename1.split('/')[-1]} {column_to_compare}",
+#                   "mann_whitney": r1,
+#                   "t_test": r2})
+#
+#     column_to_compare = "Right-Hippocampus volume_mm3"
+#
+#     r1 = mann_whitney(base_path, filename1, filename2, column_to_compare)
+#     r2 = t_test(base_path, filename1, filename2, column_to_compare)
+#
+#     r_all.append({"name": f"{filename1.split('/')[-1]} {column_to_compare}",
+#                   "mann_whitney": r1,
+#                   "t_test": r2})
+#
+#     filename1 = "Stats_Freesurfer/aparcDKT_left_AD.csv"
+#     filename2 = "Stats_FastSurfer/aparcDKT_left_AD.csv"
+#     column_to_compare = "parahippocampal_mean_thickness_mm"
+#
+#     r1 = mann_whitney(base_path, filename1, filename2, column_to_compare)
+#     r2 = t_test(base_path, filename1, filename2, column_to_compare)
+#
+#     r_all.append({"name": f"{filename1.split('/')[-1]} {column_to_compare}",
+#                   "mann_whitney": r1,
+#                   "t_test": r2})
+#
+#     filename1 = "Stats_Freesurfer/aparcDKT_right_AD.csv"
+#     filename2 = "Stats_FastSurfer/aparcDKT_right_AD.csv"
+#     column_to_compare = "parahippocampal_mean_thickness_mm"
+#
+#     r1 = mann_whitney(base_path, filename1, filename2, column_to_compare)
+#     r2 = t_test(base_path, filename1, filename2, column_to_compare)
+#
+#     r_all.append({"name": f"{filename1.split('/')[-1]} {column_to_compare}",
+#                   "mann_whitney": r1,
+#                   "t_test": r2})
+#
+#     filename1 = "Stats_Freesurfer/aparcDKT_left_healthy.csv"
+#     filename2 = "Stats_FastSurfer/aparcDKT_left_healthy.csv"
+#     column_to_compare = "parahippocampal_mean_thickness_mm"
+#
+#     r1 = mann_whitney(base_path, filename1, filename2, column_to_compare)
+#     r2 = t_test(base_path, filename1, filename2, column_to_compare)
+#
+#     r_all.append({"name": f"{filename1.split('/')[-1]} {column_to_compare}",
+#                   "mann_whitney": r1,
+#                   "t_test": r2})
+#
+#     filename1 = "Stats_Freesurfer/aparcDKT_right_healthy.csv"
+#     filename2 = "Stats_FastSurfer/aparcDKT_right_healthy.csv"
+#     column_to_compare = "parahippocampal_mean_thickness_mm"
+#
+#     r1 = mann_whitney(base_path, filename1, filename2, column_to_compare)
+#     r2 = t_test(base_path, filename1, filename2, column_to_compare)
+#
+#     r_all.append({"name": f"{filename1.split('/')[-1]} {column_to_compare}",
+#                   "mann_whitney": r1,
+#                   "t_test": r2})
+#
+#     filename1 = "Stats_Freesurfer/aparcDKT_left_AD.csv"
+#     filename2 = "Stats_FastSurfer/aparcDKT_left_AD.csv"
+#     column_to_compare = "parahippocampal_mean_area_mm2"
+#
+#     r1 = mann_whitney(base_path, filename1, filename2, column_to_compare)
+#     r2 = t_test(base_path, filename1, filename2, column_to_compare)
+#
+#     r_all.append({"name": f"{filename1.split('/')[-1]} {column_to_compare}",
+#                   "mann_whitney": r1,
+#                   "t_test": r2})
+#
+#     filename1 = "Stats_Freesurfer/aparcDKT_right_AD.csv"
+#     filename2 = "Stats_FastSurfer/aparcDKT_right_AD.csv"
+#     column_to_compare = "parahippocampal_mean_area_mm2"
+#
+#     r1 = mann_whitney(base_path, filename1, filename2, column_to_compare)
+#     r2 = t_test(base_path, filename1, filename2, column_to_compare)
+#
+#     r_all.append({"name": f"{filename1.split('/')[-1]} {column_to_compare}",
+#                   "mann_whitney": r1,
+#                   "t_test": r2})
+#
+#     filename1 = "Stats_Freesurfer/aparcDKT_left_healthy.csv"
+#     filename2 = "Stats_FastSurfer/aparcDKT_left_healthy.csv"
+#     column_to_compare = "parahippocampal_mean_area_mm2"
+#
+#     r1 = mann_whitney(base_path, filename1, filename2, column_to_compare)
+#     r2 = t_test(base_path, filename1, filename2, column_to_compare)
+#
+#     r_all.append({"name": f"{filename1.split('/')[-1]} {column_to_compare}",
+#                   "mann_whitney": r1,
+#                   "t_test": r2})
+#
+#     filename1 = "Stats_Freesurfer/aparcDKT_right_healthy.csv"
+#     filename2 = "Stats_FastSurfer/aparcDKT_right_healthy.csv"
+#     column_to_compare = "parahippocampal_mean_area_mm2"
+#
+#     r1 = mann_whitney(base_path, filename1, filename2, column_to_compare)
+#     r2 = t_test(base_path, filename1, filename2, column_to_compare)
+#
+#     r_all.append({"name": f"{filename1.split('/')[-1]} {column_to_compare}",
+#                   "mann_whitney": r1,
+#                   "t_test": r2})
+#
+#     # save(r_all)
 
 
 if __name__ == "__main__":

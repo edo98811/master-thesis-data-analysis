@@ -1,10 +1,8 @@
-import zipfile
+
 import os
 import pandas as pd
-import shutil
-import csv
 import re
-import data_manipulation as dm
+
 
 BASE_PATH = '/media/neuropsycad/disk12t/EdoardoFilippiMasterThesis/FastSurfer_Output/'
 SAVE_PATH = '/media/neuropsycad/disk12t/EdoardoFilippiMasterThesis/Stats_FastSurfer_2/'

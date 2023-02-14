@@ -10,7 +10,7 @@ from torch.utils.data import Dataset, DataLoader
 from math import floor
 from torchvision import transforms, utils
 
-# TODO: controllare il tipo di dati
+#  controllare il tipo di dati
 
 class MriDataset(Dataset):
     """Face Landmarks dataset."""
@@ -28,7 +28,7 @@ class MriDataset(Dataset):
 
         files = load_dict(data_file_path)
 
-        # TODO: migliorare questa cosa
+        #: migliorare questa cosa
         self.label_list = files["r_annot"][floor(split[0]*len(files["r_annot"])):floor(split[1]*len(files["r_annot"]))]
         self.dataset_list = files["r_img"][floor(split[0]*len(files["r_annot"])):floor(split[1]*len(files["r_annot"]))]
         self.img_dim = read_img(self.dataset_list[0]).shape[dim] # poi questo adrà modificato
@@ -46,7 +46,8 @@ class MriDataset(Dataset):
         print(img_n)
 
 
-        # FIXME: aggiungere un controllo che i tipi di dati siano corretti, e aggiungere modo piu veloce di fare questo controllo
+        #
+        # aggiungere un controllo che i tipi di dati siano corretti, e aggiungere modo piu veloce di fare questo controllo
         vol_img = read_img(self.dataset_list[img_n]).dataobj
         vol_label = read_img(self.label_list[img_n]).dataobj
 
