@@ -5,17 +5,20 @@ import matplotlib.pyplot as plt
 import numpy as np
 
 BASE_PATH = "/media/neuropsycad/disk12t/EdoardoFilippiMasterThesis/"
-SUBJ_TABLE = ""
+SUBJ_TABLE = "/media/neuropsycad/disk12t/EdoardoFilippiMasterThesis/text_and_csv_files/test_OASIS_table.csv"
 
 
 def main():
     r_all = []
     subj_table = pd.read_csv(SUBJ_TABLE)
 
-    queries = ["'main_condition'=='Cognitively Normal'",
-               "'main_condition'!='Cognitively Normal'"]
+    print(subj_table.head())
+    queries = ["main_condition!='Cognitively normal'"]
 
     stat_test(queries, "Stats_FreeSurfer/aseg.csv", "Stats_FastSurfer/aseg.csv", subj_table, r_all)
+
+    save_csv(r_all, "prova.csv")
+
 
 """
 description 
@@ -54,6 +57,7 @@ description
 """
 SIGNIFICANCE_THRESHOLD = 0.05
 
+
 def stat_test(_queries, _df1_path, _df2_path, _subj_table, r_all):
     # input: query, df1 name, df2 name, subj_table, list of all test results
     _df1 = pd.read_csv(BASE_PATH + _df1_path)
@@ -63,9 +67,17 @@ def stat_test(_queries, _df1_path, _df2_path, _subj_table, r_all):
 
     max_len = min(len(_df1.axes[1]), len(_df2.axes[1]))
     for query in _queries:
+        print(query)
         subjects_list = _subj_table.query(query)["ID"].tolist()
-        _df1 = _df1.loc[_df1['ID'].isin([subjects_list])]
-        _df2 = _df2.loc[_df2['ID'].isin([subjects_list])]
+        for i, s in enumerate(subjects_list):
+            subjects_list[i] = "sub-" + s
+        print(subjects_list)
+        print(_df1.head())
+        _df1 = _df1.loc[_df1['subjects'].isin([subjects_list])]
+        _df2 = _df2.loc[_df2['subjects'].isin([subjects_list])]
+
+        print(_df2.head())
+        print(_df2.head())
         for column_to_compare in range(2, max_len):
 
             r1, p1, o1 = mann_whitney(_df1, _df2, column_to_compare)
@@ -90,6 +102,8 @@ def stat_test(_queries, _df1_path, _df2_path, _subj_table, r_all):
                               "t_test": {"result": r2,
                                          "p_value": p2,
                                          "outcome": o2}})
+
+
 def stat_test_old(_df1, _df2, column_to_compare, file_tested_name, r_all):
     r1, p1, o1 = mann_whitney(_df1, _df2, column_to_compare)
     r2, p2, o2 = t_test(_df1, _df2, column_to_compare)
@@ -115,7 +129,7 @@ def stat_test_old(_df1, _df2, column_to_compare, file_tested_name, r_all):
                                  "outcome": o2}})
 
 
-def save_csv(list_to_save):
+def save_csv(list_to_save, _name):
     df = pd.DataFrame()
 
     for item in list_to_save:
@@ -128,7 +142,7 @@ def save_csv(list_to_save):
                                           "significance_threshold_used": SIGNIFICANCE_THRESHOLD
                                           }, index=[item["name"]])])
 
-    df.to_csv(BASE_PATH + "test_results.csv")  # , index=False
+    df.to_csv(BASE_PATH + _name)  # , index=False
 
 
 def get_column(column_to_compare, df1, df2):
@@ -141,6 +155,7 @@ def get_column(column_to_compare, df1, df2):
         b = df2.loc[:, column_to_compare]
 
     return a, b
+
 
 # TODO: rendere più corto questo codice dei t test etc
 def t_test(df1, df2, column_to_compare):
@@ -181,6 +196,7 @@ def mann_whitney(df1, df2, column_to_compare):
         outcome = 1
 
     return result, p_value, outcome
+
 
 def main_old():
     r_all = []
