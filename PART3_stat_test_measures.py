@@ -5,7 +5,7 @@ import matplotlib.pyplot as plt
 import numpy as np
 
 BASE_PATH = "/media/neuropsycad/disk12t/EdoardoFilippiMasterThesis/"
-SUBJ_TABLE = "/media/neuropsycad/disk12t/EdoardoFilippiMasterThesis/text_and_csv_files/test_OASIS_table.csv"
+SUBJ_TABLE = "/media/neuropsycad/disk12t/EdoardoFilippiMasterThesis/text_and_csv_files/OASIS_table.csv"
 
 
 def main():
@@ -13,11 +13,11 @@ def main():
     subj_table = pd.read_csv(SUBJ_TABLE)
 
     print(subj_table.head())
-    queries = ["main_condition!='Cognitively normal'"]
+    queries = ["main_condition!='Cognitively normal'", "main_condition=='Cognitively normal'"]
 
     stat_test(queries, "Stats_FreeSurfer/aseg.csv", "Stats_FastSurfer/aseg.csv", subj_table, r_all)
 
-    save_csv(r_all, "prova.csv")
+
 
 
 """
@@ -71,17 +71,19 @@ def stat_test(_queries, _df1_path, _df2_path, _subj_table, r_all):
         subjects_list = _subj_table.query(query)["ID"].tolist()
         for i, s in enumerate(subjects_list):
             subjects_list[i] = "sub-" + s
+
         print(subjects_list)
         print(_df1.head())
-        _df1 = _df1.loc[_df1['subjects'].isin([subjects_list])]
-        _df2 = _df2.loc[_df2['subjects'].isin([subjects_list])]
+        _df1 = _df1.loc[_df1['subjects'].isin(subjects_list)]
+        _df2 = _df2.loc[_df2['subjects'].isin(subjects_list)]
 
         print(_df2.head())
         print(_df2.head())
         for column_to_compare in range(2, max_len):
+            a, b = get_column(column_to_compare, _df1, _df2)
 
-            r1, p1, o1 = mann_whitney(_df1, _df2, column_to_compare)
-            r2, p2, o2 = t_test(_df1, _df2, column_to_compare)
+            r1, p1, o1 = mann_whitney(a, b)
+            r2, p2, o2 = t_test(a, b)
 
             if isinstance(column_to_compare, int):
                 column_to_compare_name = _df1.columns[column_to_compare]
@@ -103,6 +105,7 @@ def stat_test(_queries, _df1_path, _df2_path, _subj_table, r_all):
                                          "p_value": p2,
                                          "outcome": o2}})
 
+        save_csv(r_all, f"{query}.csv")
 
 def stat_test_old(_df1, _df2, column_to_compare, file_tested_name, r_all):
     a, b = get_column(column_to_compare, _df1, _df2)

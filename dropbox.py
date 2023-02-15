@@ -36,6 +36,7 @@ def dropbox_upload_file(local_path, local_file, dropbox_file_path, file_from_dat
         local_file_path = pathlib.Path(local_path) / local_file
 
         with local_file_path.open("rb") as f:
+            pass
             # meta = dbx.files_upload(f.read(), dropbox_file_path, mode=dropbox.files.WriteMode("overwrite"))
 
 

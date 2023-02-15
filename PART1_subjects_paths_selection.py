@@ -3,7 +3,7 @@ import data_visualization as dv
 import pandas as pd
 import re
 import os
-import dropbox as dropbox_manager
+# import dropbox as dropbox_manager
 
 # useful constants, can i modify them later?
 PROCESSED_PATH = "/media/neuropsycad/disk12t/EdoardoFilippiMasterThesis/FastSurfer_Output"
@@ -42,6 +42,10 @@ def main():
     df.to_excel(BASE_PATH + FINAL_FILENAME_EXCEL, index=False)
     # dropbox_manager.dropbox_upload_file("", "", ".", df, FINAL_FILENAME_EXCEL)
 
+    #df.to_excel(BASE_PATH + FINAL_FILENAME_EXCEL, index=False)
+    # dropbox_manager.dropbox_upload_file("", "", ".", df, FINAL_FILENAME_EXCEL)
+
+
 
 
 """
@@ -64,12 +68,6 @@ def main():
     
     create table ADNI
         
-    csv_to_excel 
-        args
-        
-        returns
-        
-        
     to use this just load a text file with all the info or call the function to lsearch for all the images from a base path 
     after to ilter it call the filter function passing as arguments , for all the functions the input subjects to check 
     are numbers not the paths 
@@ -86,7 +84,6 @@ def main():
 #     paths_list = dm.list_files(dir_name, "001.mgz")
 #
 #     return paths_list
-
 
 
 # da scrivere

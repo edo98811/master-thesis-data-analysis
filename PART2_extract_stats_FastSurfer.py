@@ -5,8 +5,8 @@ import re
 
 
 BASE_PATH = '/media/neuropsycad/disk12t/EdoardoFilippiMasterThesis/FastSurfer_Output/'
-SAVE_PATH = '/media/neuropsycad/disk12t/EdoardoFilippiMasterThesis/Stats_FastSurfer_2/'
-TABLE_PATH = '/media/neuropsycad/disk12t/EdoardoFilippiMasterThesis/text_and_csv_files/test_OASIS_table.csv'
+SAVE_PATH = '/media/neuropsycad/disk12t/EdoardoFilippiMasterThesis/Stats_FastSurfer/'
+TABLE_PATH = '/media/neuropsycad/disk12t/EdoardoFilippiMasterThesis/text_and_csv_files/OASIS_table.csv'
 
 
 def main():

@@ -8,7 +8,7 @@ import data_manipulation as dm
 
 BASE_PATH = "/media/neuropsycad/disk12t/VascoDiogo/OASIS/FS7/"
 SAVE_PATH = '/media/neuropsycad/disk12t/EdoardoFilippiMasterThesis/Stats_FreeSurfer/'
-TABLE_PATH = '/media/neuropsycad/disk12t/EdoardoFilippiMasterThesis/text_and_csv_files/test_OASIS_table.csv'
+TABLE_PATH = '/media/neuropsycad/disk12t/EdoardoFilippiMasterThesis/text_and_csv_files/OASIS_table.csv'
 
 
 def main():
@@ -20,8 +20,8 @@ def main():
 
     # note: 0-> aseg, 1-> apark
     calculate_stats('aseg.stats', "aseg.csv", subjects_list, 0)
-    calculate_stats('lh.aparc.DKTatlas.mapped.stats', "aparcDKT_left.csv", subjects_list, 1)
-    calculate_stats('rh.aparc.DKTatlas.mapped.stats', "aparcDKT_right.csv", subjects_list, 1)
+    calculate_stats('lh.aparc.DKTatlas.stats', "aparcDKT_left.csv", subjects_list, 1)
+    calculate_stats('rh.aparc.DKTatlas.stats', "aparcDKT_right.csv", subjects_list, 1)
 
 
 """
