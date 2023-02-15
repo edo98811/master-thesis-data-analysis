@@ -16,6 +16,8 @@ def main():
     queries = ["main_condition!='Cognitively normal'", "main_condition=='Cognitively normal'"]
 
     stat_test(queries, "Stats_FreeSurfer/aseg.csv", "Stats_FastSurfer/aseg.csv", subj_table, r_all)
+    stat_test(queries, "Stats_FreeSurfer/aseg.csv", "Stats_FastSurfer/aseg.csv", subj_table, r_all)
+    stat_test(queries, "Stats_FreeSurfer/aseg.csv", "Stats_FastSurfer/aseg.csv", subj_table, r_all)
 
 
 
@@ -28,14 +30,22 @@ description
         
     stat test: runs the statistical tests and saves the output in a dictionary, the name of the statistic compard is saved even if nmumbers are used  as indexes
         - input 
-            basepath 
+            queries list 
             filename 1
             filename 2
+            subjects table
             column to compare
             
         - output 
-            stat test data structure 
+            saves the table wiht the query passed with te query name 
         
+    description 
+        loads the datasets
+        then iterates through all the queries 
+        filter the datasets according to the subjects that are in both taht respect the query
+        for each column performs the test
+        saves the result in a dictionary 
+        converts the dictionary in dataframe and then csv
 
         
     save to csv 
