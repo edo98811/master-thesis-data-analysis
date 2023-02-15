@@ -105,8 +105,10 @@ def stat_test(_queries, _df1_path, _df2_path, _subj_table, r_all):
 
 
 def stat_test_old(_df1, _df2, column_to_compare, file_tested_name, r_all):
-    r1, p1, o1 = mann_whitney(_df1, _df2, column_to_compare)
-    r2, p2, o2 = t_test(_df1, _df2, column_to_compare)
+    a, b = get_column(column_to_compare, _df1, _df2)
+
+    r1, p1, o1 = mann_whitney(a, b)
+    r2, p2, o2 = t_test(a, b)
 
     if isinstance(column_to_compare, int):
         column_to_compare_name = _df1.columns[column_to_compare]
@@ -158,8 +160,8 @@ def get_column(column_to_compare, df1, df2):
 
 
 # TODO: rendere più corto questo codice dei t test etc
-def t_test(df1, df2, column_to_compare):
-    a, b = get_column(column_to_compare, df1, df2)
+def t_test(a, b):
+    # a, b = get_column(column_to_compare, df1, df2)
 
     if "NaN" in a or "NaN" in b:
         print("could not compute")
@@ -177,13 +179,14 @@ def t_test(df1, df2, column_to_compare):
     return result, p_value, outcome
 
 
-def mann_whitney(df1, df2, column_to_compare):
-    a, b = get_column(column_to_compare, df1, df2)
+def mann_whitney(a, b):
+
+    # a, b = get_column(column_to_compare, df1, df2)
 
     if "NaN" in a or "NaN" in b:
         return "result could not be computed", "NaN", "NaN"
 
-    df1.to_csv("dataset_uniti_test.csv", index=False)
+    # df1.to_csv("dataset_uniti_test.csv", index=False)
 
     t_stat, p_value = stats.mannwhitneyu(a, b)
 
@@ -203,8 +206,6 @@ def main_old():
 
     # load subjects info table and select processed subjects
     subj_table = pd.read_csv(SUBJ_TABLE)
-
-    # TODO: aggiungere subjects info in a table
 
     # filter results
     df1 = pd.read_csv(BASE_PATH + "Stats_Freesurfer/aseg.csv")

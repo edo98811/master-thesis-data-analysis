@@ -42,27 +42,6 @@ def main():
     df.to_excel(BASE_PATH + FINAL_FILENAME_EXCEL, index=False)
     # dropbox_manager.dropbox_upload_file("", "", ".", df, FINAL_FILENAME_EXCEL)
 
-    FREESURFER_PATH = "/media/neuropsycad/disk12t/VascoDiogo/ADNI"
-    PROCESSED_PATH = "/media/neuropsycad/disk12t/EdoardoFilippiMasterThesis/FastSurfer_Output_ADNI"
-    TABLE_FILENAME = "text_and_csv_files/ADNI_filtered.csv"
-    FINAL_FILENAME = "text_and_csv_files/ADNI_table.csv"
-    FINAL_FILENAME_EXCEL = "text_and_csv_files/ADNI_table.xlsx"
-    paths = dm.list_files(FREESURFER_PATH, "001.mgz")
-    # paths = dm.load_txt("")
-
-
-    # dm.write_txt(paths, BASE_PATH + "test_OASIS_paths_all.txt")
-    paths_on_table = filter_paths(paths, TABLE_FILENAME, subj_index=0)
-
-    # dm.write_txt(paths_on_table, BASE_PATH + "text_and_csv_files/test_OASIS_paths_on_table.txt")
-    # check_processed(paths_on_table, PROCESSED_PATH)
-    #
-    # dm.write_txt(paths_on_table, BASE_PATH + FINAL_FILENAME)
-
-    df = create_table(paths_on_table)
-    df.to_csv(BASE_PATH + FINAL_FILENAME, index=False)
-    df.to_excel(BASE_PATH + FINAL_FILENAME_EXCEL, index=False)
-    # dropbox_manager.dropbox_upload_file("", "", ".", df, FINAL_FILENAME_EXCEL)
 
 
 """
@@ -85,6 +64,12 @@ def main():
     
     create table ADNI
         
+    csv_to_excel 
+        args
+        
+        returns
+        
+        
     to use this just load a text file with all the info or call the function to lsearch for all the images from a base path 
     after to ilter it call the filter function passing as arguments , for all the functions the input subjects to check 
     are numbers not the paths 
@@ -101,6 +86,7 @@ def main():
 #     paths_list = dm.list_files(dir_name, "001.mgz")
 #
 #     return paths_list
+
 
 
 # da scrivere
