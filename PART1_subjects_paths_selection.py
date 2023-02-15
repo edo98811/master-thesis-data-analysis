@@ -14,8 +14,15 @@ TABLE_FILENAME = "text_and_csv_files/OASIS_filtered.csv"
 FINAL_FILENAME = "text_and_csv_files/OASIS_table.csv"
 FINAL_FILENAME_EXCEL = "text_and_csv_files/OASIS_table.xlsx"
 
-
-
+"""
+PROCESSED_PATH = "/media/neuropsycad/disk12t/EdoardoFilippiMasterThesis/FastSurfer_Output_ADNI"
+BASE_PATH = "/media/neuropsycad/disk12t/EdoardoFilippiMasterThesis/"
+FREESURFER_PATH = "/media/neuropsycad/disk12t/VascoDiogo/ADNI/"
+# FREESURFER_PATH = "/media/neuropsycad/disk12t/VascoDiogo/ADNI"
+TABLE_FILENAME = "text_and_csv_files/ADNI_filtered.csv"
+FINAL_FILENAME = "text_and_csv_files/ADNI_table.csv"
+FINAL_FILENAME_EXCEL = "text_and_csv_files/ADNI_table.xlsx"
+"""
 
 
 def main():
