@@ -14,6 +14,7 @@ TABLE_PATH = '/media/neuropsycad/disk12t/EdoardoFilippiMasterThesis/text_and_csv
 def main():
     table = pd.read_csv(TABLE_PATH)
     subjects_list = table.query("processed=='yes'")["ID"].tolist()
+
     for i, subj in enumerate(subjects_list):
         subjects_list[i] = "sub-" + subj
 

@@ -3,6 +3,7 @@ import data_visualization as dv
 import pandas as pd
 import re
 import os
+import dropbox as dropbox_manager
 
 # useful constants
 PROCESSED_PATH = "/media/neuropsycad/disk12t/EdoardoFilippiMasterThesis/FastSurfer_Output"
@@ -10,7 +11,11 @@ BASE_PATH = "/media/neuropsycad/disk12t/EdoardoFilippiMasterThesis/"
 FREESURFER_PATH = "/media/neuropsycad/disk12t/VascoDiogo/OASIS/FS7/"
 # FREESURFER_PATH = "/media/neuropsycad/disk12t/VascoDiogo/ADNI"
 TABLE_FILENAME = "text_and_csv_files/OASIS_filtered.csv"
-FINAL_FILENAME = "text_and_csv_files/test_OASIs_table.csv"
+FINAL_FILENAME = "text_and_csv_files/OASIS_table.csv"
+FINAL_FILENAME_EXCEL = "text_and_csv_files/OASIS_table.xlsx"
+
+
+
 
 
 def main():
@@ -27,6 +32,30 @@ def main():
 
     df = create_table(paths_on_table)
     df.to_csv(BASE_PATH + FINAL_FILENAME, index=False)
+    df.to_excel(BASE_PATH + FINAL_FILENAME_EXCEL, index=False)
+    # dropbox_manager.dropbox_upload_file("", "", ".", df, FINAL_FILENAME_EXCEL)
+
+    FREESURFER_PATH = "/media/neuropsycad/disk12t/VascoDiogo/ADNI"
+    PROCESSED_PATH = "/media/neuropsycad/disk12t/EdoardoFilippiMasterThesis/FastSurfer_Output_ADNI"
+    TABLE_FILENAME = "text_and_csv_files/ADNI_filtered.csv"
+    FINAL_FILENAME = "text_and_csv_files/ADNI_table.csv"
+    FINAL_FILENAME_EXCEL = "text_and_csv_files/ADNI_table.xlsx"
+    paths = dm.list_files(FREESURFER_PATH, "001.mgz")
+    # paths = dm.load_txt("")
+
+
+    # dm.write_txt(paths, BASE_PATH + "test_OASIS_paths_all.txt")
+    paths_on_table = filter_paths(paths, TABLE_FILENAME, subj_index=0)
+
+    # dm.write_txt(paths_on_table, BASE_PATH + "text_and_csv_files/test_OASIS_paths_on_table.txt")
+    # check_processed(paths_on_table, PROCESSED_PATH)
+    #
+    # dm.write_txt(paths_on_table, BASE_PATH + FINAL_FILENAME)
+
+    df = create_table(paths_on_table)
+    df.to_csv(BASE_PATH + FINAL_FILENAME, index=False)
+    df.to_excel(BASE_PATH + FINAL_FILENAME_EXCEL, index=False)
+    # dropbox_manager.dropbox_upload_file("", "", ".", df, FINAL_FILENAME_EXCEL)
 
 
 """
@@ -72,6 +101,8 @@ def count_subjs():
     pass
 
 
+# filter the subjects according to a table, a list saved in a list or a simple list of subjects+
+# it filters according to the subjects numbers
 def filter_paths(subj_paths_all, source, subj_index=0):
     if source.split(".")[-1] == "txt":  # load from txt
         subj_numbers = dm.load_txt(BASE_PATH + source)
@@ -96,6 +127,7 @@ def filter_paths(subj_paths_all, source, subj_index=0):
     else:
         return False
 
+    # filter paths according to a table that contains the info of the subjects
     subj_paths_filtered = []
     for subj_number in subj_numbers:
         for subj_path in subj_paths_all:
@@ -107,6 +139,7 @@ def filter_paths(subj_paths_all, source, subj_index=0):
     return subj_paths_filtered
 
 
+# checks for the subjects that have already been processed. dovrei fare la stess cosa per ADNI
 def check_processed(subj_paths_filtered):
     subjs = set()
 
