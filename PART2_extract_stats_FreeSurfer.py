@@ -68,13 +68,13 @@ def extract_path(filename, subj_list):
 
 
 def stats_aseg(subj_paths):
-    df_dict = {"subjects": []}
+    df_dict = {"ID": []}
 
     for n, path in enumerate(subj_paths):
         print("extracting stats for subject " + str(n + 1) + ", path:" + path)
 
         # saving the subject name
-        df_dict["subjects"].append(path.split("/")[-3])
+        df_dict["ID"].append(path.split("/")[-3])
 
         # opens file and loads it as list of lines
         with open(path, "r") as file:
@@ -126,13 +126,13 @@ def stats_aseg(subj_paths):
 
 
 def stats_aparcDTK(subj_paths):
-    df_dict = {"subjects": []}
+    df_dict = {"ID": []}
 
     for n, path in enumerate(subj_paths):
         print("extracting stats for subject " + str(n + 1) + ", path:" + path)
 
         # saving the subject name
-        df_dict["subjects"].append(path.split("/")[-3])
+        df_dict["ID"].append(path.split("/")[-3])
 
         # opens file and loads it as list of lines
         with open(path, "r") as file:
