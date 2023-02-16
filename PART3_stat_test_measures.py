@@ -36,7 +36,7 @@ def violin_plots(_queries, _df1_path, _df2_path, _subj_table):
         _df2_filtered = _df2.loc[_df2['ID'].isin(subjects_list)]
 
         # Split violin plot
-        sns.violinplot(data=pd.concat(_df2_filtered, _df1_filtered).iloc[:, 1:6], split=True)
+        sns.violinplot(data=pd.concat([_df2_filtered, _df1_filtered], ignore_index=True).iloc[:, 1:6], split=True)
 
     # table_tested_name = _df1_path.split(".")[-2]
     # normal = df.loc[df['main_condition'] == 'Cognitively normal']
