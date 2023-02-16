@@ -20,10 +20,10 @@ def main():
     stat_test(queries, "Stats_FreeSurfer/aseg.csv", "Stats_FastSurfer/aseg.csv", subj_table, r_all)
     stat_test(queries, "Stats_FreeSurfer/aseg.csv", "Stats_FastSurfer/aseg.csv", subj_table, r_all)
 
-    violin_plots(p)
+    violin_plots(queries, "Stats_FreeSurfer/aseg.csv", "Stats_FastSurfer/aseg.csv", subj_table)
 
 
-def violin_plots(_queries, _df1_path, _df2_path, _subj_table, r_all):
+def violin_plots(_queries, _df1_path, _df2_path, _subj_table):
     _df1 = pd.read_csv(BASE_PATH + _df1_path)
     _df2 = pd.read_csv(BASE_PATH + _df2_path)
     for query in _queries:
