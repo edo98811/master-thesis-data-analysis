@@ -77,17 +77,20 @@ def stat_test(_queries, _df1_path, _df2_path, _subj_table, r_all):
 
     max_len = min(len(_df1.axes[1]), len(_df2.axes[1]))
     for query in _queries:
-        print(query)
+
         subjects_list = _subj_table.query(query)["ID"].tolist()
         for i, s in enumerate(subjects_list):
             subjects_list[i] = "sub-" + s
-
+        print(f"query -> {query} on table returned these values:")
         print(subjects_list)
+        print("dataset 1 not filtered")
         print(_df1.head())
         _df1 = _df1.loc[_df1['subjects'].isin(subjects_list)]
         _df2 = _df2.loc[_df2['subjects'].isin(subjects_list)]
 
+        print("filtered dataset 1 according to subjects returned in querys")
         print(_df2.head())
+        print("filtered dataset 2")
         print(_df2.head())
         for column_to_compare in range(2, max_len):
             a, b = get_column(column_to_compare, _df1, _df2)
