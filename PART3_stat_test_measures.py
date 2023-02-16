@@ -85,21 +85,21 @@ def stat_test(_queries, _df1_path, _df2_path, _subj_table, r_all):
         print(subjects_list)
         print("dataset 1 not filtered")
         print(_df1.head())
-        _df1 = _df1.loc[_df1['subjects'].isin(subjects_list)]
-        _df2 = _df2.loc[_df2['subjects'].isin(subjects_list)]
+        _df1_filtered = _df1.loc[_df1['subjects'].isin(subjects_list)]
+        _df2_filtered = _df2.loc[_df2['subjects'].isin(subjects_list)]
 
         print("filtered dataset 1 according to subjects returned in querys")
-        print(_df2.head())
+        print(_df2_filtered.head())
         print("filtered dataset 2")
-        print(_df2.head())
+        print(_df2_filtered.head())
         for column_to_compare in range(2, max_len):
-            a, b = get_column(column_to_compare, _df1, _df2)
+            a, b = get_column(column_to_compare, _df1_filtered, _df2_filtered)
             if a.any() and b.any():
                 r1, p1, o1 = mann_whitney(a, b)
                 r2, p2, o2 = t_test(a, b)
 
                 if isinstance(column_to_compare, int):
-                    column_to_compare_name = _df1.columns[column_to_compare]
+                    column_to_compare_name = _df1_filtered.columns[column_to_compare]
 
                     r_all.append({"name": f"{table_tested_name} {column_to_compare_name}",
                                   "mann_whitney": {"result": r1,
