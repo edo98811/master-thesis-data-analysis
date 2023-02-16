@@ -3,6 +3,7 @@ import pandas as pd
 from scipy import stats
 import matplotlib.pyplot as plt
 import numpy as np
+import seaborn as sns
 
 BASE_PATH = "/media/neuropsycad/disk12t/EdoardoFilippiMasterThesis/"
 SUBJ_TABLE = "/media/neuropsycad/disk12t/EdoardoFilippiMasterThesis/text_and_csv_files/OASIS_table.csv"
@@ -18,8 +19,6 @@ def main():
     stat_test(queries, "Stats_FreeSurfer/aseg.csv", "Stats_FastSurfer/aseg.csv", subj_table, r_all)
     stat_test(queries, "Stats_FreeSurfer/aseg.csv", "Stats_FastSurfer/aseg.csv", subj_table, r_all)
     stat_test(queries, "Stats_FreeSurfer/aseg.csv", "Stats_FastSurfer/aseg.csv", subj_table, r_all)
-
-
 
 
 """
@@ -86,8 +85,8 @@ def stat_test(_queries, _df1_path, _df2_path, _subj_table, r_all):
         print("dataset 1 not filtered")
         print(_df1.head())
 
-        _df1_filtered = _df1.loc[_df1['subjects'].isin(subjects_list)]
-        _df2_filtered = _df2.loc[_df2['subjects'].isin(subjects_list)]
+        _df1_filtered = _df1.loc[_df1['ID'].isin(subjects_list)]
+        _df2_filtered = _df2.loc[_df2['ID'].isin(subjects_list)]
 
         print("filtered dataset 1 according to subjects returned in querys")
         print(_df2_filtered.head())
@@ -121,34 +120,8 @@ def stat_test(_queries, _df1_path, _df2_path, _subj_table, r_all):
                                              "p_value": p2,
                                              "outcome": o2}})
             else:
-                print(f"no data in category{column_to_compare}")
+                print(f"no data in category {column_to_compare}")
         save_csv(r_all, f"{query}.csv")
-
-def stat_test_old(_df1, _df2, column_to_compare, file_tested_name, r_all):
-    a, b = get_column(column_to_compare, _df1, _df2)
-
-    r1, p1, o1 = mann_whitney(a, b)
-    r2, p2, o2 = t_test(a, b)
-
-    if isinstance(column_to_compare, int):
-        column_to_compare_name = _df1.columns[column_to_compare]
-
-        r_all.append({"name": f"{file_tested_name} {column_to_compare_name}",
-                      "mann_whitney": {"result": r1,
-                                       "p_value": p1,
-                                       "outcome": o1},
-                      "t_test": {"result": r2,
-                                 "p_value": p2,
-                                 "outcome": o2}})
-
-    if isinstance(column_to_compare, str):
-        r_all.append({"name": f"{file_tested_name} {column_to_compare}",
-                      "mann_whitney": {"result": r1,
-                                       "p_value": p1,
-                                       "outcome": o1},
-                      "t_test": {"result": r2,
-                                 "p_value": p2,
-                                 "outcome": o2}})
 
 
 def save_csv(list_to_save, _name):
@@ -179,7 +152,6 @@ def get_column(column_to_compare, df1, df2):
     return a, b
 
 
-# TODO: rendere più corto questo codice dei t test etc
 def t_test(a, b):
     # a, b = get_column(column_to_compare, df1, df2)
 
@@ -200,7 +172,6 @@ def t_test(a, b):
 
 
 def mann_whitney(a, b):
-
     # a, b = get_column(column_to_compare, df1, df2)
 
     if "NaN" in a or "NaN" in b:
@@ -221,60 +192,107 @@ def mann_whitney(a, b):
     return result, p_value, outcome
 
 
-def main_old():
-    r_all = []
+def violin_plots(df, subj_table, plots):
+    normal = df.loc[df['main_condition'] == 'Cognitively normal']
+    not_normal = df.loc[df['main_condition'] != 'Cognitively normal']
 
-    # load subjects info table and select processed subjects
-    subj_table = pd.read_csv(SUBJ_TABLE)
+    # TODO: load age
+    """
+    dataset che mi serve
+    y: età
+    x: area 
+    
+    split: condition 
+    
+    """
 
-    # filter results
-    df1 = pd.read_csv(BASE_PATH + "Stats_Freesurfer/aseg.csv")
-    df2 = pd.read_csv(BASE_PATH + "Stats_FastSurfer/aseg.csv")
+    # Split violin plot
+    sns.violinplot(data=pd.concat([normal, not_normal]).iloc[:, 1:6], split=True)
 
-    table_name = df1.split(".")[-2]
+    # Show the plot
+    plt.show()
 
-    max_len = min(len(df1.axes[1]), len(df2.axes[1]))
-    subjects_list = subj_table.query("'main_condition'=='Cognitively Normal'")["ID"].tolist()
-    df1 = df1.loc[df1['ID'].isin([subjects_list])]
-    df2 = df2.loc[df2['ID'].isin([subjects_list])]
-    for column_to_compare in range(2, max_len):
-        stat_test(df1, df2, column_to_compare, table_name, r_all)
-    subjects_list = subj_table.query("'main_condition'=!='Cognitively Normal'")["ID"].tolist()
-    df1 = df1.loc[df1['ID'].isin([subjects_list])]
-    df2 = df2.loc[df2['ID'].isin([subjects_list])]
-    for column_to_compare in range(2, max_len):
-        stat_test(df1, df2, column_to_compare, table_name, r_all)
-
-    df1 = pd.read_csv("Stats_Freesurfer/aparcDKT_right.csv")
-    df2 = pd.read_csv("Stats_FastSurfer/aparcDKT_right.csv")
-
-    max_len = min(len(df1.axes[1]), len(df2.axes[1]))
-
-    subjects_list = df2.query("dx1=='Cognitively Normal'")["ID"].tolist()
-    for column_to_compare in range(2, max_len):
-        stat_test(df1, df2, column_to_compare, table_name, r_all)
-
-    subjects_list = df2.query("dx1!='Cognitively Normal'")["ID"].tolist()
-    for column_to_compare in range(2, max_len):
-        stat_test(df1, df2, column_to_compare, table_name, r_all)
-
-    df1 = pd.read_csv("Stats_Freesurfer/aparcDKT_left.csv")
-    df2 = pd.read_csv("Stats_FastSurfer/aparcDKT_left.csv")
-
-    max_len = min(len(df1.axes[1]), len(df2.axes[1]))
-
-    subjects_list = df2.query("dx1=='Cognitively Normal'")["ID"].tolist()
-    for column_to_compare in range(2, max_len):
-        stat_test(df1, df2, column_to_compare, r_all, table_name)
-
-    subjects_list = df2.query("dx1!='Cognitively Normal'")["ID"].tolist()
-    for column_to_compare in range(2, max_len):
-        stat_test(df1, df2, column_to_compare, r_all, table_name)
-
-    save_csv(r_all)
+    plots += 1
 
 
 ## OLD FILES
+# def stat_test_old(_df1, _df2, column_to_compare, file_tested_name, r_all):
+#     a, b = get_column(column_to_compare, _df1, _df2)
+#
+#     r1, p1, o1 = mann_whitney(a, b)
+#     r2, p2, o2 = t_test(a, b)
+#
+#     if isinstance(column_to_compare, int):
+#         column_to_compare_name = _df1.columns[column_to_compare]
+#
+#         r_all.append({"name": f"{file_tested_name} {column_to_compare_name}",
+#                       "mann_whitney": {"result": r1,
+#                                        "p_value": p1,
+#                                        "outcome": o1},
+#                       "t_test": {"result": r2,
+#                                  "p_value": p2,
+#                                  "outcome": o2}})
+#
+#     if isinstance(column_to_compare, str):
+#         r_all.append({"name": f"{file_tested_name} {column_to_compare}",
+#                       "mann_whitney": {"result": r1,
+#                                        "p_value": p1,
+#                                        "outcome": o1},
+#                       "t_test": {"result": r2,
+#                                  "p_value": p2,
+#                                  "outcome": o2}})
+
+# def main_old():
+#     r_all = []
+#
+#     # load subjects info table and select processed subjects
+#     subj_table = pd.read_csv(SUBJ_TABLE)
+#
+#     # filter results
+#     df1 = pd.read_csv(BASE_PATH + "Stats_Freesurfer/aseg.csv")
+#     df2 = pd.read_csv(BASE_PATH + "Stats_FastSurfer/aseg.csv")
+#
+#     table_name = df1.split(".")[-2]
+#
+#     max_len = min(len(df1.axes[1]), len(df2.axes[1]))
+#     subjects_list = subj_table.query("'main_condition'=='Cognitively Normal'")["ID"].tolist()
+#     df1 = df1.loc[df1['ID'].isin([subjects_list])]
+#     df2 = df2.loc[df2['ID'].isin([subjects_list])]
+#     for column_to_compare in range(2, max_len):
+#         stat_test(df1, df2, column_to_compare, table_name, r_all)
+#     subjects_list = subj_table.query("'main_condition'=!='Cognitively Normal'")["ID"].tolist()
+#     df1 = df1.loc[df1['ID'].isin([subjects_list])]
+#     df2 = df2.loc[df2['ID'].isin([subjects_list])]
+#     for column_to_compare in range(2, max_len):
+#         stat_test(df1, df2, column_to_compare, table_name, r_all)
+#
+#     df1 = pd.read_csv("Stats_Freesurfer/aparcDKT_right.csv")
+#     df2 = pd.read_csv("Stats_FastSurfer/aparcDKT_right.csv")
+#
+#     max_len = min(len(df1.axes[1]), len(df2.axes[1]))
+#
+#     subjects_list = df2.query("dx1=='Cognitively Normal'")["ID"].tolist()
+#     for column_to_compare in range(2, max_len):
+#         stat_test(df1, df2, column_to_compare, table_name, r_all)
+#
+#     subjects_list = df2.query("dx1!='Cognitively Normal'")["ID"].tolist()
+#     for column_to_compare in range(2, max_len):
+#         stat_test(df1, df2, column_to_compare, table_name, r_all)
+#
+#     df1 = pd.read_csv("Stats_Freesurfer/aparcDKT_left.csv")
+#     df2 = pd.read_csv("Stats_FastSurfer/aparcDKT_left.csv")
+#
+#     max_len = min(len(df1.axes[1]), len(df2.axes[1]))
+#
+#     subjects_list = df2.query("dx1=='Cognitively Normal'")["ID"].tolist()
+#     for column_to_compare in range(2, max_len):
+#         stat_test(df1, df2, column_to_compare, r_all, table_name)
+#
+#     subjects_list = df2.query("dx1!='Cognitively Normal'")["ID"].tolist()
+#     for column_to_compare in range(2, max_len):
+#         stat_test(df1, df2, column_to_compare, r_all, table_name)
+#
+#     save_csv(r_all)
 # def save_txt(list_line):
 #     file = []
 #     for item in list_line:
