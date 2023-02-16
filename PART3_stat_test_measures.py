@@ -85,6 +85,7 @@ def stat_test(_queries, _df1_path, _df2_path, _subj_table, r_all):
         print(subjects_list)
         print("dataset 1 not filtered")
         print(_df1.head())
+
         _df1_filtered = _df1.loc[_df1['subjects'].isin(subjects_list)]
         _df2_filtered = _df2.loc[_df2['subjects'].isin(subjects_list)]
 
@@ -92,6 +93,8 @@ def stat_test(_queries, _df1_path, _df2_path, _subj_table, r_all):
         print(_df2_filtered.head())
         print("filtered dataset 2")
         print(_df2_filtered.head())
+        print("COMPUTING STATS FOR FIRST QUERY...")
+
         for column_to_compare in range(2, max_len):
             a, b = get_column(column_to_compare, _df1_filtered, _df2_filtered)
             if a.any() and b.any():
