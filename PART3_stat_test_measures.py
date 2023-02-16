@@ -20,7 +20,44 @@ def main():
     stat_test(queries, "Stats_FreeSurfer/aseg.csv", "Stats_FastSurfer/aseg.csv", subj_table, r_all)
     stat_test(queries, "Stats_FreeSurfer/aseg.csv", "Stats_FastSurfer/aseg.csv", subj_table, r_all)
 
+    violin_plots(p)
 
+
+def violin_plots(_queries, _df1_path, _df2_path, _subj_table, r_all):
+    _df1 = pd.read_csv(BASE_PATH + _df1_path)
+    _df2 = pd.read_csv(BASE_PATH + _df2_path)
+    for query in _queries:
+
+        subjects_list = _subj_table.query(query)["ID"].tolist()
+        for i, s in enumerate(subjects_list):
+            subjects_list[i] = "sub-" + s
+
+        _df1_filtered = _df1.loc[_df1['ID'].isin(subjects_list)]
+        _df2_filtered = _df2.loc[_df2['ID'].isin(subjects_list)]
+
+        # Split violin plot
+        sns.violinplot(data=pd.concat(_df2_filtered, _df1_filtered).iloc[:, 1:6], split=True)
+
+    # table_tested_name = _df1_path.split(".")[-2]
+    # normal = df.loc[df['main_condition'] == 'Cognitively normal']
+    # not_normal = df.loc[df['main_condition'] != 'Cognitively normal']
+
+    # TODO: load age
+    """
+    dataset che mi serve
+    y: età
+    x: area 
+
+    split: condition 
+
+    """
+
+
+
+    # Show the plot
+    plt.show()
+
+    plots += 1
 """
 description 
 
@@ -192,27 +229,7 @@ def mann_whitney(a, b):
     return result, p_value, outcome
 
 
-def violin_plots(df, subj_table, plots):
-    normal = df.loc[df['main_condition'] == 'Cognitively normal']
-    not_normal = df.loc[df['main_condition'] != 'Cognitively normal']
 
-    # TODO: load age
-    """
-    dataset che mi serve
-    y: età
-    x: area 
-    
-    split: condition 
-    
-    """
-
-    # Split violin plot
-    sns.violinplot(data=pd.concat([normal, not_normal]).iloc[:, 1:6], split=True)
-
-    # Show the plot
-    plt.show()
-
-    plots += 1
 
 
 ## OLD FILES
