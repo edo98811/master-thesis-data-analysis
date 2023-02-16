@@ -13,7 +13,7 @@ def main():
     subj_table = pd.read_csv(SUBJ_TABLE)
 
     print(subj_table.head())
-    queries = ["main_condition!='Cognitively normal'", "main_condition=='Cognitively normal'"]
+    queries = ["main_condition=='Cognitively normal'", "main_condition!='Cognitively normal'"]
 
     stat_test(queries, "Stats_FreeSurfer/aseg.csv", "Stats_FastSurfer/aseg.csv", subj_table, r_all)
     stat_test(queries, "Stats_FreeSurfer/aseg.csv", "Stats_FastSurfer/aseg.csv", subj_table, r_all)
@@ -91,30 +91,31 @@ def stat_test(_queries, _df1_path, _df2_path, _subj_table, r_all):
         print(_df2.head())
         for column_to_compare in range(2, max_len):
             a, b = get_column(column_to_compare, _df1, _df2)
+            if a.any() and b.any():
+                r1, p1, o1 = mann_whitney(a, b)
+                r2, p2, o2 = t_test(a, b)
 
-            r1, p1, o1 = mann_whitney(a, b)
-            r2, p2, o2 = t_test(a, b)
+                if isinstance(column_to_compare, int):
+                    column_to_compare_name = _df1.columns[column_to_compare]
 
-            if isinstance(column_to_compare, int):
-                column_to_compare_name = _df1.columns[column_to_compare]
+                    r_all.append({"name": f"{table_tested_name} {column_to_compare_name}",
+                                  "mann_whitney": {"result": r1,
+                                                   "p_value": p1,
+                                                   "outcome": o1},
+                                  "t_test": {"result": r2,
+                                             "p_value": p2,
+                                             "outcome": o2}})
 
-                r_all.append({"name": f"{table_tested_name} {column_to_compare_name}",
-                              "mann_whitney": {"result": r1,
-                                               "p_value": p1,
-                                               "outcome": o1},
-                              "t_test": {"result": r2,
-                                         "p_value": p2,
-                                         "outcome": o2}})
-
-            if isinstance(column_to_compare, str):
-                r_all.append({"name": f"{table_tested_name} {column_to_compare}",
-                              "mann_whitney": {"result": r1,
-                                               "p_value": p1,
-                                               "outcome": o1},
-                              "t_test": {"result": r2,
-                                         "p_value": p2,
-                                         "outcome": o2}})
-
+                if isinstance(column_to_compare, str):
+                    r_all.append({"name": f"{table_tested_name} {column_to_compare}",
+                                  "mann_whitney": {"result": r1,
+                                                   "p_value": p1,
+                                                   "outcome": o1},
+                                  "t_test": {"result": r2,
+                                             "p_value": p2,
+                                             "outcome": o2}})
+            else:
+                print(f"no data in category{column_to_compare}")
         save_csv(r_all, f"{query}.csv")
 
 def stat_test_old(_df1, _df2, column_to_compare, file_tested_name, r_all):
