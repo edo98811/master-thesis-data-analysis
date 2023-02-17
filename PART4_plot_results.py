@@ -6,7 +6,7 @@ import numpy as np
 import seaborn as sns
 
 ROWS_TO_PLOT = range(91, 100)  # from the statistical test csv file
-N_SUBPLOTS = 4
+N_SUBPLOTS = 10
 N_PLOT_ROWS = 2
 BASE_PATH = "/media/neuropsycad/disk12t/EdoardoFilippiMasterThesis/"
 SUBJ_TABLE = "/media/neuropsycad/disk12t/EdoardoFilippiMasterThesis/text_and_csv_files/OASIS_table.csv"
@@ -59,13 +59,14 @@ def violin_plot(ax, _a, _b):
     # Create a DataFrame with the two Series
     # df = pd.DataFrame({'Freesurfer': _a, 'Fastsurfer': _b})
     df = pd.DataFrame({'Data': pd.concat([_a, _b]),
-                       'Group': ['FreeSurfer'] * len(_a) + ['FastSurfer'] * len(_b)})
+                       'Group': ['FreeSurfer'] * len(_a) + ['FastSurfer'] * len(_b),
+                        "Area": [_a.name] * (len(_a) + len(_b))})
+
 
     # Create a split violin plot
     # sns.violinplot(data=df, split=True)
-    sns.violinplot(ax=ax, data=df,
-                   split=True)
-
+    sns.violinplot(ax=ax, data=df, hue="Group", x="Area", y="Data", split=True)
+    ax.title.set_text(_a.name + queries[0].split("=")[-1])
 
 def violin_preprocsessing():
     plots = 0
@@ -87,7 +88,7 @@ def violin_preprocsessing():
 
             a = _df1_filtered.loc[:,a_column]
             b = _df2_filtered.loc[:,b_column]
-
+            # print(a)
             if a.any() and b.any():
                 if not plots % N_SUBPLOTS:
                     fig, axs = plt.subplots(N_PLOT_ROWS, int(N_SUBPLOTS / N_PLOT_ROWS), figsize=(40, 20))
@@ -121,6 +122,7 @@ def violin_plots(ax, _queries, _df1_path, _df2_path, _subj_table):
         # Split violin plot
         sns.violinplot(ax=ax, data=pd.concat([_df2_filtered, _df1_filtered], ignore_index=True).iloc[:, 1:6],
                        split=True)
+
 
 
 def plot_from_csv(csv):
