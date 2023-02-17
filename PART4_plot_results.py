@@ -57,7 +57,9 @@ DESCRIPTION
 
 def violin_plot(ax, _a, _b):
     # Create a DataFrame with the two Series
-    df = pd.DataFrame({'Freesurfer': _a, 'Fastsurfer': d_b})
+    # df = pd.DataFrame({'Freesurfer': _a, 'Fastsurfer': _b})
+    df = pd.DataFrame({'Data': pd.concat([_a, _b]),
+                       'Group': ['FreeSurfer'] * len(_a) + ['FastSurfer'] * len(_b)})
 
     # Create a split violin plot
     # sns.violinplot(data=df, split=True)
@@ -94,8 +96,8 @@ def violin_preprocsessing():
                     # mng.full_screen_toggle()
 
                 # print(plots % N_SUBPLOTS)
-                if axs:
-                    violin_plot(axs[plots % N_SUBPLOTS], a, b)
+
+                violin_plot(axs[plots % N_SUBPLOTS], a, b)
                 plots += 1
 
             if plots >= 29:  # to avoid plotting too much
