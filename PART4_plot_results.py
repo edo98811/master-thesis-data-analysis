@@ -67,7 +67,7 @@ def violin_plot(ax, _a, _b):
     # sns.violinplot(data=df, split=True)
     sns.violinplot(ax=ax, data=df, hue="Group", x="Area", y="Data", split=True)
     ax.title.set_text(_a.name + "\n"+ queries[0].split("=")[-1])
-    ax.yaxis.set_major_formatter(FormatStrFormatter('{:.3g}'))
+    # ax.yaxis.set_major_formatter(plt.FormatStrFormatter('{:.3g}'))
     ax.set_xlabel([])
 
 def violin_preprocsessing():
