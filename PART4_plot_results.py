@@ -56,7 +56,12 @@ DESCRIPTION
 
 
 def violin_plot(ax, _a, _b):
-    sns.violinplot(ax=ax, data=pd.concat([_a, _b]),
+    # Create a DataFrame with the two Series
+    df = pd.DataFrame({'Freesurfer': _a, 'Fastsurfer': d_b})
+
+    # Create a split violin plot
+    # sns.violinplot(data=df, split=True)
+    sns.violinplot(ax=ax, data=df,
                    split=True)
 
 
