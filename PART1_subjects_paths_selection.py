@@ -52,8 +52,10 @@ def main():
     PART 1: creates the tables and filters the files that need to be then processed
 
     (get_paths_all: returns all the paths of the files that are named in a certain way in the folder
-        - input -> str (base_path)
-        - output -> list (paths list)) 
+        - input -> 
+            str (base_path)
+        - output -> 
+            list (paths list)) 
         or use dm. list_files
     
     filter_paths: filter according to txt file or list of subj numbers or excel table       
@@ -61,7 +63,9 @@ def main():
         - output -> list (paths list filtered)
         
     check processed: check if the subjects in the list have already been processed
-        - input -> list (paths list), str (folder o check)
+        - input -> 
+            list (paths list)
+            str (folder o check)
         - output -> list (paths list filtered) 
     
     create table 

@@ -42,7 +42,6 @@ def violin_plots(_queries, _df1_path, _df2_path, _subj_table):
     # normal = df.loc[df['main_condition'] == 'Cognitively normal']
     # not_normal = df.loc[df['main_condition'] != 'Cognitively normal']
 
-    # TODO: load age
     """
     dataset che mi serve
     y: età
@@ -51,13 +50,8 @@ def violin_plots(_queries, _df1_path, _df2_path, _subj_table):
     split: condition 
 
     """
-
-
-
-    # Show the plot
     plt.show()
 
-    plots += 1
 """
 description 
 
