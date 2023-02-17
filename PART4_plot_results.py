@@ -171,7 +171,7 @@ def get_column(column_to_compare, df1, df2):
 
 
 def plot(axes, row):
-    info = row[0].split(" ")\
+    info = row[0].split(" ")
     filename = info[0]
     column_to_compare = info[1]
 
