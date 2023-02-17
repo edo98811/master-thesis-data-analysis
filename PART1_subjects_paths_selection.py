@@ -181,7 +181,7 @@ def create_table_ADNI(_paths_on_table):
     subjs = set()
 
     # adds the paths
-    # interate though all the rows to create a set of the subjects
+    # iterate though all the rows to create a set of the subjects
     for i, subj_path_filtered in enumerate(df["ID"].tolist()):
         df.loc[i, "processed"] = "no"
         subjs.add("sub-" + subj_path_filtered)

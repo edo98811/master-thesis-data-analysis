@@ -14,9 +14,9 @@ COLUMNS_TO_PLOT = 0
 
 
 def main():
-    csv = "test_results.csv"
-
-    plot_from_csv(csv)
+    # csv = "test_results.csv"
+    #
+    # plot_from_csv(csv)
 
     global subj_table
     subj_table = pd.read_csv(SUBJ_TABLE)
@@ -76,7 +76,10 @@ def violin_preprocsessing():
         _df1_filtered = _df1.loc[_df1['ID'].isin(subjects_list)]  # healthy or not healthy free
         _df2_filtered = _df2.loc[_df2['ID'].isin(subjects_list)]  # healthy or not healthy fast
 
-        for a, b in zip(_df1_filtered.iloc[:, 2:], _df2_filtered.iloc[:, 2:]):
+        for a_column, b_column in zip(_df1_filtered.iloc[:, 2:], _df2_filtered.iloc[:, 2:]):
+
+            a = _df1_filtered.loc[:,a_column]
+            b = _df2_filtered.loc[:,b_column]
 
             if a.any() and b.any():
                 if not plots % N_SUBPLOTS:
@@ -163,7 +166,7 @@ def get_column(column_to_compare, df1, df2):
 
 
 def plot(axes, row):
-    info = row[0].split(" ")
+    info = row[0].split(" ")\
     filename = info[0]
     column_to_compare = info[1]
 
