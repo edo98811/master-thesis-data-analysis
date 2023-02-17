@@ -66,7 +66,9 @@ def violin_plot(ax, _a, _b):
     # Create a split violin plot
     # sns.violinplot(data=df, split=True)
     sns.violinplot(ax=ax, data=df, hue="Group", x="Area", y="Data", split=True)
-    ax.title.set_text(_a.name + queries[0].split("=")[-1])
+    ax.title.set_text(_a.name + "\n"+ queries[0].split("=")[-1])
+    ax.yaxis.set_major_formatter(FormatStrFormatter('{:.3g}'))
+    ax.set_xlabel([])
 
 def violin_preprocsessing():
     plots = 0
@@ -93,6 +95,7 @@ def violin_preprocsessing():
                 if not plots % N_SUBPLOTS:
                     fig, axs = plt.subplots(N_PLOT_ROWS, int(N_SUBPLOTS / N_PLOT_ROWS), figsize=(40, 20))
                     axs = axs.ravel()
+                    plt.subplots_adjust(hspace=0.5)
                     # mng = plt.get_current_fig_manager()
                     # mng.full_screen_toggle()
 
