@@ -60,15 +60,15 @@ def violin_plot(ax, _a, _b):
     # df = pd.DataFrame({'Freesurfer': _a, 'Fastsurfer': _b})
     df = pd.DataFrame({'Data': pd.concat([_a, _b]),
                        'Group': ['FreeSurfer'] * len(_a) + ['FastSurfer'] * len(_b),
-                        "Area": [_a.name] * (len(_a) + len(_b))})
-
+                       "Area": [_a.name] * (len(_a) + len(_b))})
 
     # Create a split violin plot
     # sns.violinplot(data=df, split=True)
     sns.violinplot(ax=ax, data=df, hue="Group", x="Area", y="Data", split=True)
-    ax.title.set_text(_a.name + "\n"+ queries[0].split("=")[-1])
+    ax.title.set_text(_a.name + "\n" + queries[0].split("=")[-1])
     # ax.yaxis.set_major_formatter(plt.FormatStrFormatter('{:.3g}'))
     ax.set_xlabel([])
+
 
 def violin_preprocsessing():
     plots = 0
@@ -88,14 +88,18 @@ def violin_preprocsessing():
 
         for a_column, b_column in zip(_df1_filtered.iloc[:, 2:], _df2_filtered.iloc[:, 2:]):
 
-            a = _df1_filtered.loc[:,a_column]
-            b = _df2_filtered.loc[:,b_column]
+            a = _df1_filtered.loc[:, a_column]
+            b = _df2_filtered.loc[:, b_column]
             # print(a)
             if a.any() and b.any():
                 if not plots % N_SUBPLOTS:
+                    if plots > 1:
+                        handles, labels = ax.get_legend_handles_labels()
+                        fig.legend(handles, labels, loc=(0.95, 0.1), prop={'size': 30})
                     fig, axs = plt.subplots(N_PLOT_ROWS, int(N_SUBPLOTS / N_PLOT_ROWS), figsize=(40, 20))
                     axs = axs.ravel()
                     plt.subplots_adjust(hspace=0.5)
+                    plt.subplots_adjust(wspace=0.2)
                     # mng = plt.get_current_fig_manager()
                     # mng.full_screen_toggle()
 
@@ -126,6 +130,29 @@ def violin_plots(ax, _queries, _df1_path, _df2_path, _subj_table):
         sns.violinplot(ax=ax, data=pd.concat([_df2_filtered, _df1_filtered], ignore_index=True).iloc[:, 1:6],
                        split=True)
 
+
+def bland_altman_plot(data1, data2, title):
+    # Compute mean and difference between two series
+    mean = np.mean([data1, data2], axis=0)
+    diff = data1 - data2
+
+    # Compute mean difference and standard deviation of difference
+    md = np.mean(diff)
+    sd = np.std(diff, axis=0)
+
+    # Create plot
+    fig, ax = plt.subplots()
+    ax.scatter(mean, diff, s=10)
+    ax.axhline(md, color='gray', linestyle='--')
+    ax.axhline(md + 1.96 * sd, color='gray', linestyle='--')
+    ax.axhline(md - 1.96 * sd, color='gray', linestyle='--')
+    ax.set_xlabel('Mean')
+    ax.set_ylabel('Difference')
+    ax.set_title(title)
+    ax.legend(['Mean difference', '95% limits of agreement'])
+
+    # Show plot
+    plt.show()
 
 
 def plot_from_csv(csv):
