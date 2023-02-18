@@ -3,9 +3,12 @@ import data_visualization as dv
 import pandas as pd
 import re
 import os
+
 # import dropbox as dropbox_manager
 
 # useful constants, can i modify them later?
+"""
+ADNI = 0
 PROCESSED_PATH = "/media/neuropsycad/disk12t/EdoardoFilippiMasterThesis/FastSurfer_Output"
 BASE_PATH = "/media/neuropsycad/disk12t/EdoardoFilippiMasterThesis/"
 FREESURFER_PATH = "/media/neuropsycad/disk12t/VascoDiogo/OASIS/FS7/"
@@ -15,6 +18,7 @@ FINAL_FILENAME = "text_and_csv_files/OASIS_table.csv"
 FINAL_FILENAME_EXCEL = "text_and_csv_files/OASIS_table.xlsx"
 
 """
+ADNI = True
 PROCESSED_PATH = "/media/neuropsycad/disk12t/EdoardoFilippiMasterThesis/FastSurfer_Output_ADNI"
 BASE_PATH = "/media/neuropsycad/disk12t/EdoardoFilippiMasterThesis/"
 FREESURFER_PATH = "/media/neuropsycad/disk12t/VascoDiogo/ADNI/"
@@ -22,7 +26,6 @@ FREESURFER_PATH = "/media/neuropsycad/disk12t/VascoDiogo/ADNI/"
 TABLE_FILENAME = "text_and_csv_files/ADNI_filtered.csv"
 FINAL_FILENAME = "text_and_csv_files/ADNI_table.csv"
 FINAL_FILENAME_EXCEL = "text_and_csv_files/ADNI_table.xlsx"
-"""
 
 
 def main():
@@ -39,13 +42,11 @@ def main():
 
     df = create_table(paths_on_table)
     df.to_csv(BASE_PATH + FINAL_FILENAME, index=False)
-    df.to_excel(BASE_PATH + FINAL_FILENAME_EXCEL, index=False)
-    # dropbox_manager.dropbox_upload_file("", "", ".", df, FINAL_FILENAME_EXCEL)
-
     #df.to_excel(BASE_PATH + FINAL_FILENAME_EXCEL, index=False)
     # dropbox_manager.dropbox_upload_file("", "", ".", df, FINAL_FILENAME_EXCEL)
 
-
+    # df.to_excel(BASE_PATH + FINAL_FILENAME_EXCEL, index=False)
+    # dropbox_manager.dropbox_upload_file("", "", ".", df, FINAL_FILENAME_EXCEL)
 
 
 """
@@ -204,14 +205,25 @@ def create_table(_paths_on_table):
     table = pd.read_csv(BASE_PATH + TABLE_FILENAME)
 
     # create the dictionary that will turn into a table
-    df_dict = {
-        "ID": [],
-        "path": [],
-        "age": [],
-        "main_condition": [],
-        "processed": [],
-        "processed_path": []
-    }
+    if ADNI:
+        df_dict = {
+            "ID": [],
+            "path": [],
+            "age": [],
+            "sex": [],
+            "main_condition": [],
+            "processed": [],
+            "processed_path": []
+        }
+    else:
+        df_dict = {
+            "ID": [],
+            "path": [],
+            "age": [],
+            "main_condition": [],
+            "processed": [],
+            "processed_path": []
+        }
 
     # populates the dictionary
     for index, row in table.iterrows():
@@ -219,12 +231,21 @@ def create_table(_paths_on_table):
             if len(path_on_table.split("/")) > 3:
                 match = re.split("sub-", path_on_table.split("/")[-4])
                 if row["ID"] == match[1]:
-                    df_dict["ID"].append(row["ID"])
-                    df_dict["path"].append(path_on_table)
-                    df_dict["age"].append(row["ageAtEntry"])
-                    df_dict["main_condition"].append(row["dx1"])
-                    df_dict["processed"].append("no")
-                    df_dict["processed_path"].append("")
+                    if ADNI and (row["_merge"] == "both" or row["_merge"] == "right_only"):
+                        df_dict["ID"].append(row["ID"])
+                        df_dict["path"].append(path_on_table)
+                        df_dict["age"].append(row["age"])
+                        df_dict["sex"].append(row["sex"])
+                        df_dict["main_condition"].append(row["diagnosis"])
+                        df_dict["processed"].append("no")
+                        df_dict["processed_path"].append("")
+                    elif not ADNI:
+                        df_dict["ID"].append(row["ID"])
+                        df_dict["path"].append(path_on_table)
+                        df_dict["age"].append(row["ageAtEntry"])
+                        df_dict["main_condition"].append(row["dx1"])
+                        df_dict["processed"].append("no")
+                        df_dict["processed_path"].append("")
 
     df = pd.DataFrame.from_dict(df_dict)
 
