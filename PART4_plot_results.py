@@ -94,7 +94,7 @@ def violin_preprocsessing():
             if a.any() and b.any():
                 if not plots % N_SUBPLOTS:
                     if plots > 1:
-                        handles, labels = ax.get_legend_handles_labels()
+                        handles, labels = axs[1].get_legend_handles_labels()
                         fig.legend(handles, labels, loc=(0.95, 0.1), prop={'size': 30})
                     fig, axs = plt.subplots(N_PLOT_ROWS, int(N_SUBPLOTS / N_PLOT_ROWS), figsize=(40, 20))
                     axs = axs.ravel()

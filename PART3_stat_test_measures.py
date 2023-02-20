@@ -16,10 +16,11 @@ def main():
     print(subj_table.head())
     queries = ["main_condition=='Cognitively normal'", "main_condition!='Cognitively normal'"]
 
-    stat_test(queries, "Stats_FreeSurfer/aseg.csv", "Stats_FastSurfer/aseg.csv", subj_table, r_all)
-    stat_test(queries, "Stats_FreeSurfer/aseg.csv", "Stats_FastSurfer/aseg.csv", subj_table, r_all)
-    stat_test(queries, "Stats_FreeSurfer/aseg.csv", "Stats_FastSurfer/aseg.csv", subj_table, r_all)
+    #stat_test(queries, "Stats_FreeSurfer/aseg.csv", "Stats_FastSurfer/aseg.csv", subj_table, r_all)
+    #stat_test(queries, "Stats_FreeSurfer/aseg.csv", "Stats_FastSurfer/aseg.csv", subj_table, r_all)
+    #stat_test(queries, "Stats_FreeSurfer/aseg.csv", "Stats_FastSurfer/aseg.csv", subj_table, r_all)
 
+    bonferroni_correction(queries)
     # violin_plots(queries, "Stats_FreeSurfer/aseg.csv", "Stats_FastSurfer/aseg.csv", subj_table)
 
 
@@ -102,21 +103,21 @@ def bonferroni_correction_param(queries):
         with open(BASE_PATH + query + ".csv") as fp:
             for (count, _) in enumerate(fp, 1):
                 pass
-            print("count")
+            print(count)
             tot += count
 
-     return SIGNIFICANCE_THRESHOLD / tot
+    return SIGNIFICANCE_THRESHOLD / tot
 
 def bonferroni_correction(queries):
     updated_ST = bonferroni_correction_param(queries)
     for query in queries:
         df = pd.read_csv(BASE_PATH + query + ".csv")
-        for i, row in enumerate(df.rows):
-            if row[0] < updated_ST:
-                row[1] = f"p-value: {row[0]} - null hypothesis rejected, means are not statistically equal"
+        for i, row in df.iterrows():
+            if row[1] < updated_ST:
+                row[3] = f"p-value: {row[0]} - null hypothesis rejected, means are not statistically equal"
                 row[2] = 1
-            if row[3] < updated_ST:
-                row[4] = f"p-value: {row[3]} - null hypothesis rejected, the datasets have a different distribution"
+            if row[4] < updated_ST:
+                row[6] = f"p-value: {row[3]} - null hypothesis rejected, the datasets have a different distribution"
                 row[5] = 1
             df.iloc[i,:] = row
         df.to_csv(BASE_PATH + f"{query}_bonferroni_corrected.csv")
