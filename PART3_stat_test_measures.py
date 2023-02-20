@@ -93,10 +93,33 @@ description
         
     save to csv 
     
-    
+    update 20/02 added bonferroni correction 
 """
 SIGNIFICANCE_THRESHOLD = 0.05
+def bonferroni_correction_param(queries):
+    tot = 0
+    for query in queries:
+        with open(BASE_PATH + query + ".csv") as fp:
+            for (count, _) in enumerate(fp, 1):
+                pass
+            print("count")
+            tot += count
 
+     return SIGNIFICANCE_THRESHOLD / tot
+
+def bonferroni_correction(queries):
+    updated_ST = bonferroni_correction_param(queries)
+    for query in queries:
+        df = pd.read_csv(BASE_PATH + query + ".csv")
+        for i, row in enumerate(df.rows):
+            if row[0] < updated_ST:
+                row[1] = f"p-value: {row[0]} - null hypothesis rejected, means are not statistically equal"
+                row[2] = 1
+            if row[3] < updated_ST:
+                row[4] = f"p-value: {row[3]} - null hypothesis rejected, the datasets have a different distribution"
+                row[5] = 1
+            df.iloc[i,:] = row
+        df.to_csv(BASE_PATH + f"{query}_bonferroni_corrected.csv")
 
 def stat_test(_queries, _df1_path, _df2_path, _subj_table, r_all):
     # input: query, df1 name, df2 name, subj_table, list of all test results
@@ -119,7 +142,7 @@ def stat_test(_queries, _df1_path, _df2_path, _subj_table, r_all):
         _df1_filtered = _df1.loc[_df1['ID'].isin(subjects_list)]
         _df2_filtered = _df2.loc[_df2['ID'].isin(subjects_list)]
 
-        print("filtered dataset 1 according to subjects returned in querys")
+        print("filtered dataset 1 according to subjects returned in queries")
         print(_df2_filtered.head())
         print("filtered dataset 2")
         print(_df2_filtered.head())
