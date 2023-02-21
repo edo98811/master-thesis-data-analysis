@@ -153,9 +153,9 @@ def bland_altmann_preprocessing():
             # print(a)
             if a.any() and b.any():
                 if not plots % N_SUBPLOTS:
-                    if plots > 1:
-                        handles, labels = ax.get_legend_handles_labels()
-                        fig.legend(handles, labels, loc=(0.95, 0.1), prop={'size': 30})
+                    #  if plots > 1:
+                        # handles, labels = axs.get_legend_handles_labels()
+                        #                        fig.legend(handles, labels, loc=(0.95, 0.1), prop={'size': 30})
                     fig, axs = plt.subplots(N_PLOT_ROWS, int(N_SUBPLOTS / N_PLOT_ROWS), figsize=(40, 20))
                     axs = axs.ravel()
                     plt.subplots_adjust(hspace=0.5)
@@ -164,8 +164,8 @@ def bland_altmann_preprocessing():
                     # mng.full_screen_toggle()
 
                 # print(plots % N_SUBPLOTS)
-                title = list(_df2_filtered.columns)[a_column]
-                bland_altman_plot(axs[plots % N_SUBPLOTS], a, b, title)
+                # title = list(_df2_filtered.columns)[a_column]
+                bland_altman_plot(axs[plots % N_SUBPLOTS], a, b, "sds")
                 plots += 1
 
             if plots >= 29:  # to avoid plotting too much
@@ -191,8 +191,7 @@ def bland_altman_plot(ax, data1, data2, title):
     ax.set_title(title)
     ax.legend(['Mean difference', '95% limits of agreement'])
 
-    # Show plot
-    plt.show()
+    # Show plotplt.show()
 
 
 def plot_from_csv(csv):
