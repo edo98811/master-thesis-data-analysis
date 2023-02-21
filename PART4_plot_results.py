@@ -6,7 +6,7 @@ import numpy as np
 import seaborn as sns
 
 ROWS_TO_PLOT = range(91, 100)  # from the statistical test csv file
-N_SUBPLOTS = 10
+N_SUBPLOTS = 4
 N_PLOT_ROWS = 2
 BASE_PATH = "/media/neuropsycad/disk12t/EdoardoFilippiMasterThesis/"
 SUBJ_TABLE = "/media/neuropsycad/disk12t/EdoardoFilippiMasterThesis/text_and_csv_files/OASIS_table.csv"
@@ -32,7 +32,8 @@ def main():
     df2_path = "Stats_FastSurfer/aseg.csv"
 
     # violin_plots(queries, "Stats_FreeSurfer/aseg.csv", "Stats_FastSurfer/aseg.csv", subj_table)
-    violin_preprocsessing()
+    #violin_preprocsessing()
+    bland_altmann_preprocessing()
 
 
 """
@@ -129,9 +130,49 @@ def violin_plots(ax, _queries, _df1_path, _df2_path, _subj_table):
         # Split violin plot
         sns.violinplot(ax=ax, data=pd.concat([_df2_filtered, _df1_filtered], ignore_index=True).iloc[:, 1:6],
                        split=True)
+def bland_altmann_preprocessing():
+    plots = 0
+    # plt.ion()
+    _df1 = pd.read_csv(BASE_PATH + df1_path)
+    _df2 = pd.read_csv(BASE_PATH + df2_path)
 
+    for query in queries:
 
-def bland_altman_plot(data1, data2, title):
+        # filter according to the query the subjects in the table with the list of all subjects
+        subjects_list = subj_table.query(query)["ID"].tolist()
+        for i, s in enumerate(subjects_list):
+            subjects_list[i] = "sub-" + s
+
+        _df1_filtered = _df1.loc[_df1['ID'].isin(subjects_list)]  # healthy or not healthy free
+        _df2_filtered = _df2.loc[_df2['ID'].isin(subjects_list)]  # healthy or not healthy fast
+
+        for a_column, b_column in zip(_df1_filtered.iloc[:, 2:], _df2_filtered.iloc[:, 2:]):
+
+            a = _df1_filtered.loc[:, a_column]
+            b = _df2_filtered.loc[:, b_column]
+            # print(a)
+            if a.any() and b.any():
+                if not plots % N_SUBPLOTS:
+                    if plots > 1:
+                        handles, labels = ax.get_legend_handles_labels()
+                        fig.legend(handles, labels, loc=(0.95, 0.1), prop={'size': 30})
+                    fig, axs = plt.subplots(N_PLOT_ROWS, int(N_SUBPLOTS / N_PLOT_ROWS), figsize=(40, 20))
+                    axs = axs.ravel()
+                    plt.subplots_adjust(hspace=0.5)
+                    plt.subplots_adjust(wspace=0.2)
+                    # mng = plt.get_current_fig_manager()
+                    # mng.full_screen_toggle()
+
+                # print(plots % N_SUBPLOTS)
+                title = list(_df2_filtered.columns)[a_column]
+                bland_altman_plot(axs[plots % N_SUBPLOTS], a, b, title)
+                plots += 1
+
+            if plots >= 29:  # to avoid plotting too much
+                break
+
+    plt.show()
+def bland_altman_plot(ax, data1, data2, title):
     # Compute mean and difference between two series
     mean = np.mean([data1, data2], axis=0)
     diff = data1 - data2
@@ -141,7 +182,6 @@ def bland_altman_plot(data1, data2, title):
     sd = np.std(diff, axis=0)
 
     # Create plot
-    fig, ax = plt.subplots()
     ax.scatter(mean, diff, s=10)
     ax.axhline(md, color='gray', linestyle='--')
     ax.axhline(md + 1.96 * sd, color='gray', linestyle='--')

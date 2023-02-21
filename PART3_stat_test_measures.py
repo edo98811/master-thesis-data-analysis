@@ -110,6 +110,7 @@ def bonferroni_correction_param(queries):
 
 def bonferroni_correction(queries):
     updated_ST = bonferroni_correction_param(queries)
+    print(updated_ST)
     for query in queries:
         df = pd.read_csv(BASE_PATH + query + ".csv")
         for i, row in df.iterrows():
