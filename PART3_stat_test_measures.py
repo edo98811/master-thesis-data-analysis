@@ -16,9 +16,9 @@ def main():
     print(subj_table.head())
     queries = ["main_condition=='Cognitively normal'", "main_condition!='Cognitively normal'"]
 
-    #stat_test(queries, "Stats_FreeSurfer/aseg.csv", "Stats_FastSurfer/aseg.csv", subj_table, r_all)
-    #stat_test(queries, "Stats_FreeSurfer/aseg.csv", "Stats_FastSurfer/aseg.csv", subj_table, r_all)
-    #stat_test(queries, "Stats_FreeSurfer/aseg.csv", "Stats_FastSurfer/aseg.csv", subj_table, r_all)
+    # stat_test(queries, "Stats_FreeSurfer/aseg.csv", "Stats_FastSurfer/aseg.csv", subj_table, r_all)
+    # stat_test(queries, "Stats_FreeSurfer/aseg.csv", "Stats_FastSurfer/aseg.csv", subj_table, r_all)
+    # stat_test(queries, "Stats_FreeSurfer/aseg.csv", "Stats_FastSurfer/aseg.csv", subj_table, r_all)
 
     bonferroni_correction(queries)
     # violin_plots(queries, "Stats_FreeSurfer/aseg.csv", "Stats_FastSurfer/aseg.csv", subj_table)
@@ -52,6 +52,7 @@ def violin_plots(_queries, _df1_path, _df2_path, _subj_table):
 
     """
     plt.show()
+
 
 """
 description 
@@ -97,6 +98,8 @@ description
     update 20/02 added bonferroni correction 
 """
 SIGNIFICANCE_THRESHOLD = 0.05
+
+
 def bonferroni_correction_param(queries):
     tot = 0
     for query in queries:
@@ -107,6 +110,7 @@ def bonferroni_correction_param(queries):
             tot += count
 
     return SIGNIFICANCE_THRESHOLD / tot
+
 
 def bonferroni_correction(queries):
     updated_ST = bonferroni_correction_param(queries)
@@ -120,8 +124,9 @@ def bonferroni_correction(queries):
             if row[4] < updated_ST:
                 row[6] = f"p-value: {row[3]} - null hypothesis rejected, the datasets have a different distribution"
                 row[5] = 1
-            df.iloc[i,:] = row
+            df.iloc[i, :] = row
         df.to_csv(BASE_PATH + f"{query}_bonferroni_corrected.csv")
+
 
 def stat_test(_queries, _df1_path, _df2_path, _subj_table, r_all):
     # input: query, df1 name, df2 name, subj_table, list of all test results
@@ -246,9 +251,6 @@ def mann_whitney(a, b):
         outcome = 1
 
     return result, p_value, outcome
-
-
-
 
 
 ## OLD FILES
