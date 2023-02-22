@@ -37,18 +37,19 @@ def main():
     bland_altmann_preprocessing()
 
 
-    df1_path = "Stats_FreeSurfer/aparcDTK_right.csv"
+    df1_path = "Stats_FreeSurfer/aparcDKT_right.csv"
 
-    df2_path = "Stats_FastSurfer/aparcDTK_right.csv"
+    df2_path = "Stats_FastSurfer/aparcDKT_right.csv"
+
 
     # violin_plots(queries, "Stats_FreeSurfer/aseg.csv", "Stats_FastSurfer/aseg.csv", subj_table)
     violin_preprocsessing()
     bland_altmann_preprocessing()
 
 
-    df1_path = "Stats_FreeSurfer/aparcDTK_left.csv"
+    df1_path = "Stats_FreeSurfer/aparcDKT_left.csv"
 
-    df2_path = "Stats_FastSurfer/aparcDTK_left.csv"
+    df2_path = "Stats_FastSurfer/aparcDKT_left.csv"
 
     # violin_plots(queries, "Stats_FreeSurfer/aseg.csv", "Stats_FastSurfer/aseg.csv", subj_table)
     violin_preprocsessing()
@@ -102,13 +103,13 @@ def violin_preprocsessing():
             b = _df2_filtered.loc[:, b_column]
             # print(a)
             if a.any() and b.any():
-                if not plots % _V_BA:
+                if not plots % N_SUBPLOTS_V:
                     if plots > 1:
-                        fig.savefig(BASE_PATH + "/images/img_violin_" + str(plots) + ".png")  # save the figure to file
+                        fig.savefig(BASE_PATH + "/images/img_violin_" + df2_path.split("/")[-1][:-4] + "_" + str(plots) + ".png")  # save the figure to file
                         # plt.close(fig)  # close the figure window
                         # handles, labels = axs[1].get_legend_handles_labels()
                         # fig.legend(handles, labels, loc=(0.95, 0.1), prop={'size': 30})
-                    fig, axs = plt.subplots(N_PLOT_ROWS, int(N_SUBPLOTS_V_BA / N_PLOT_ROWS), figsize=(40, 20))
+                    fig, axs = plt.subplots(N_PLOT_ROWS, int(N_SUBPLOTS_V / N_PLOT_ROWS), figsize=(40, 20))
                     axs = axs.ravel()
                     plt.subplots_adjust(hspace=0.5)
                     plt.subplots_adjust(wspace=0.2)
@@ -117,7 +118,7 @@ def violin_preprocsessing():
 
                 # print(plots % N_SUBPLOTS)
 
-                violin_plot(axs[plots % N_SUBPLOTS_V_BA], a, b)
+                violin_plot(axs[plots % N_SUBPLOTS_V], a, b)
                 plots += 1
 
             if plots >= 10:  # to avoid plotting too much
@@ -162,7 +163,7 @@ def bland_altmann_preprocessing():
             if a.any() and b.any():
                 if not plots % N_SUBPLOTS_BA:
                     if plots > 1:
-                        fig.savefig(BASE_PATH + "/images/img_ba_" + str(plots) + ".png")  # save the figure to file
+                        fig.savefig(BASE_PATH + "/images/img_ba_" + df2_path.split("/")[-1][:-4] + "_" + str(plots) + ".png")  # save the figure to file
                         # handles, labels = ax.get_legend_handles_labels()
                         # fig.legend(handles, labels, loc=(0.95, 0.1), prop={'size': 30})
                     fig, axs = plt.subplots(N_PLOT_ROWS, int(N_SUBPLOTS_BA / N_PLOT_ROWS), figsize=(40, 20))
