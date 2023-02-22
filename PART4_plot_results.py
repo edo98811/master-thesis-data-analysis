@@ -35,7 +35,25 @@ def main():
     violin_preprocsessing()
     bland_altmann_preprocessing()
 
-    plt.show()
+
+    df1_path = "Stats_FreeSurfer/lh.aparc.DKTatlas.stats.csv"
+
+    df2_path = "Stats_FastSurfer/lh.aparc.DKTatlas.stats.csv"
+
+    # violin_plots(queries, "Stats_FreeSurfer/aseg.csv", "Stats_FastSurfer/aseg.csv", subj_table)
+    violin_preprocsessing()
+    bland_altmann_preprocessing()
+
+
+    df1_path = "Stats_FreeSurfer/lh.aparc.DKTatlas.stats.csv"
+
+    df2_path = "Stats_FastSurfer/lh.aparc.DKTatlas.stats.csv"
+
+    # violin_plots(queries, "Stats_FreeSurfer/aseg.csv", "Stats_FastSurfer/aseg.csv", subj_table)
+    violin_preprocsessing()
+    bland_altmann_preprocessing()
+
+   #  plt.show()
 """
 DESCRIPTION
     violin plot 
@@ -85,7 +103,8 @@ def violin_preprocsessing():
             if a.any() and b.any():
                 if not plots % N_SUBPLOTS:
                     if plots > 1:
-                        pass
+                        fig.savefig("img_violin_" + plots + ".png")  # save the figure to file
+                        # plt.close(fig)  # close the figure window
                         # handles, labels = axs[1].get_legend_handles_labels()
                         # fig.legend(handles, labels, loc=(0.95, 0.1), prop={'size': 30})
                     fig, axs = plt.subplots(N_PLOT_ROWS, int(N_SUBPLOTS / N_PLOT_ROWS), figsize=(40, 20))
@@ -142,7 +161,7 @@ def bland_altmann_preprocessing():
             if a.any() and b.any():
                 if not plots % N_SUBPLOTS:
                     if plots > 1:
-                        pass
+                        fig.savefig("img_ba_" + plots + ".png")  # save the figure to file
                         # handles, labels = ax.get_legend_handles_labels()
                         # fig.legend(handles, labels, loc=(0.95, 0.1), prop={'size': 30})
                     fig, axs = plt.subplots(N_PLOT_ROWS, int(N_SUBPLOTS / N_PLOT_ROWS), figsize=(40, 20))
