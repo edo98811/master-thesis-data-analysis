@@ -103,7 +103,7 @@ def violin_preprocsessing():
             if a.any() and b.any():
                 if not plots % N_SUBPLOTS:
                     if plots > 1:
-                        fig.savefig("img_violin_" + plots + ".png")  # save the figure to file
+                        fig.savefig("img_violin_" + str(plots) + ".png")  # save the figure to file
                         # plt.close(fig)  # close the figure window
                         # handles, labels = axs[1].get_legend_handles_labels()
                         # fig.legend(handles, labels, loc=(0.95, 0.1), prop={'size': 30})
@@ -161,7 +161,7 @@ def bland_altmann_preprocessing():
             if a.any() and b.any():
                 if not plots % N_SUBPLOTS:
                     if plots > 1:
-                        fig.savefig("img_ba_" + plots + ".png")  # save the figure to file
+                        fig.savefig("img_ba_" + str(plots) + ".png")  # save the figure to file
                         # handles, labels = ax.get_legend_handles_labels()
                         # fig.legend(handles, labels, loc=(0.95, 0.1), prop={'size': 30})
                     fig, axs = plt.subplots(N_PLOT_ROWS, int(N_SUBPLOTS / N_PLOT_ROWS), figsize=(40, 20))
