@@ -32,12 +32,19 @@ def main():
     df2_path = "Stats_FastSurfer/aseg.csv"
 
     # violin_plots(queries, "Stats_FreeSurfer/aseg.csv", "Stats_FastSurfer/aseg.csv", subj_table)
-    #violin_preprocsessing()
+    violin_preprocsessing()
     bland_altmann_preprocessing()
 
 
 """
 DESCRIPTION
+    violin plot 
+    
+    violin preprocessing 
+    
+    bland altmann plot 
+    
+    bland altmann preprocessing
     
     plot from csv
     
@@ -54,23 +61,6 @@ DESCRIPTION
     a plot for single subects
 
 """
-
-
-def violin_plot(ax, _a, _b):
-    # Create a DataFrame with the two Series
-    # df = pd.DataFrame({'Freesurfer': _a, 'Fastsurfer': _b})
-    df = pd.DataFrame({'Data': pd.concat([_a, _b]),
-                       'Group': ['FreeSurfer'] * len(_a) + ['FastSurfer'] * len(_b),
-                       "Area": [_a.name] * (len(_a) + len(_b))})
-
-    # Create a split violin plot
-    # sns.violinplot(data=df, split=True)
-    sns.violinplot(ax=ax, data=df, hue="Group", x="Area", y="Data", split=True)
-    ax.title.set_text(_a.name + "\n" + queries[0].split("=")[-1])
-    # ax.yaxis.set_major_formatter(plt.FormatStrFormatter('{:.3g}'))
-    ax.set_xlabel("")
-
-
 def violin_preprocsessing():
     plots = 0
     # plt.ion()
@@ -95,8 +85,8 @@ def violin_preprocsessing():
             if a.any() and b.any():
                 if not plots % N_SUBPLOTS:
                     if plots > 1:
-                        handles, labels = axs[1].get_legend_handles_labels()
-                        fig.legend(handles, labels, loc=(0.95, 0.1), prop={'size': 30})
+                        # handles, labels = axs[1].get_legend_handles_labels()
+                        # fig.legend(handles, labels, loc=(0.95, 0.1), prop={'size': 30})
                     fig, axs = plt.subplots(N_PLOT_ROWS, int(N_SUBPLOTS / N_PLOT_ROWS), figsize=(40, 20))
                     axs = axs.ravel()
                     plt.subplots_adjust(hspace=0.5)
@@ -109,27 +99,27 @@ def violin_preprocsessing():
                 violin_plot(axs[plots % N_SUBPLOTS], a, b)
                 plots += 1
 
-            if plots >= 29:  # to avoid plotting too much
+            if plots >= 10:  # to avoid plotting too much
                 break
 
     plt.show()
 
 
-def violin_plots(ax, _queries, _df1_path, _df2_path, _subj_table):
-    _df1 = pd.read_csv(BASE_PATH + _df1_path)
-    _df2 = pd.read_csv(BASE_PATH + _df2_path)
-    for query in _queries:
+def violin_plot(ax, _a, _b):
+    # Create a DataFrame with the two Series
+    # df = pd.DataFrame({'Freesurfer': _a, 'Fastsurfer': _b})
+    df = pd.DataFrame({'Data': pd.concat([_a, _b]),
+                       'Group': ['FreeSurfer'] * len(_a) + ['FastSurfer'] * len(_b),
+                       "Area": [_a.name] * (len(_a) + len(_b))})
 
-        subjects_list = _subj_table.query(query)["ID"].tolist()
-        for i, s in enumerate(subjects_list):
-            subjects_list[i] = "sub-" + s
+    # Create a split violin plot
+    # sns.violinplot(data=df, split=True)
+    sns.violinplot(ax=ax, data=df, hue="Group", x="Area", y="Data", split=True)
+    ax.title.set_text(_a.name + "\n" + queries[0].split("=")[-1])
+    # ax.yaxis.set_major_formatter(plt.FormatStrFormatter('{:.3g}'))
+    ax.set_xlabel("")
 
-        _df1_filtered = _df1.loc[_df1['ID'].isin(subjects_list)]
-        _df2_filtered = _df2.loc[_df2['ID'].isin(subjects_list)]
 
-        # Split violin plot
-        sns.violinplot(ax=ax, data=pd.concat([_df2_filtered, _df1_filtered], ignore_index=True).iloc[:, 1:6],
-                       split=True)
 def bland_altmann_preprocessing():
     plots = 0
     # plt.ion()
@@ -153,9 +143,9 @@ def bland_altmann_preprocessing():
             # print(a)
             if a.any() and b.any():
                 if not plots % N_SUBPLOTS:
-                    #  if plots > 1:
-                        # handles, labels = axs.get_legend_handles_labels()
-                        #                        fig.legend(handles, labels, loc=(0.95, 0.1), prop={'size': 30})
+                    if plots > 1:
+                        # handles, labels = ax.get_legend_handles_labels()
+                        # fig.legend(handles, labels, loc=(0.95, 0.1), prop={'size': 30})
                     fig, axs = plt.subplots(N_PLOT_ROWS, int(N_SUBPLOTS / N_PLOT_ROWS), figsize=(40, 20))
                     axs = axs.ravel()
                     plt.subplots_adjust(hspace=0.5)
@@ -164,18 +154,20 @@ def bland_altmann_preprocessing():
                     # mng.full_screen_toggle()
 
                 # print(plots % N_SUBPLOTS)
-                # title = list(_df2_filtered.columns)[a_column]
-                bland_altman_plot(axs[plots % N_SUBPLOTS], a, b, "sds")
+                title = list(_df2_filtered.columns)[a_column]
+                bland_altman_plot(axs[plots % N_SUBPLOTS], a, b, title)
                 plots += 1
 
-            if plots >= 29:  # to avoid plotting too much
+            if plots >= 10:  # to avoid plotting too much
                 break
 
     plt.show()
-def bland_altman_plot(ax, data1, data2, title):
+
+
+def bland_altman_plot(ax, _a, _b, title):
     # Compute mean and difference between two series
-    mean = np.mean([data1, data2], axis=0)
-    diff = data1 - data2
+    mean = np.mean([_a, _b], axis=0)
+    diff = _a - _b
 
     # Compute mean difference and standard deviation of difference
     md = np.mean(diff)
@@ -191,7 +183,8 @@ def bland_altman_plot(ax, data1, data2, title):
     ax.set_title(title)
     ax.legend(['Mean difference', '95% limits of agreement'])
 
-    # Show plotplt.show()
+    # Show plot
+    plt.show()
 
 
 def plot_from_csv(csv):
@@ -280,6 +273,23 @@ def plot_measures(series1, series2, title, ticklabels, ax=None):
     ax.legend(['Freesurfer', 'Fastsurfer'])
 
     plt.draw()
+
+
+def violin_plots(ax, _queries, _df1_path, _df2_path, _subj_table):
+    _df1 = pd.read_csv(BASE_PATH + _df1_path)
+    _df2 = pd.read_csv(BASE_PATH + _df2_path)
+    for query in _queries:
+
+        subjects_list = _subj_table.query(query)["ID"].tolist()
+        for i, s in enumerate(subjects_list):
+            subjects_list[i] = "sub-" + s
+
+        _df1_filtered = _df1.loc[_df1['ID'].isin(subjects_list)]
+        _df2_filtered = _df2.loc[_df2['ID'].isin(subjects_list)]
+
+        # Split violin plot
+        sns.violinplot(ax=ax, data=pd.concat([_df2_filtered, _df1_filtered], ignore_index=True).iloc[:, 1:6],
+                       split=True)
 
 
 if __name__ == "__main__":
