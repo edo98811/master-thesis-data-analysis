@@ -128,6 +128,25 @@ def bonferroni_correction(queries):
         df.to_csv(BASE_PATH + f"{query}_bonferroni_corrected.csv")
 
 
+def cohens_d(a, b):
+    n1, n2 = len(a), len(b)
+    var1, var2 = np.var(a, ddof=1), np.var(b, ddof=1)
+
+    SDpooled = np.sqrt(((n1 - 1) * var1 + (n2 - 1) * var2) / (n1 + n2 - 2))
+    d = (np.mean(a) - np.mean(b)) / SDpooled
+
+    if d < 0.2:
+        string = "Very small effect size"
+    elif d < 0.5:
+        string = "Small effect size"
+    elif d < 0.8:
+        string = "Medium effect size"
+    else:
+        string = "Large effect size"
+
+    return d, string
+
+
 def stat_test(_queries, _df1_path, _df2_path, _subj_table, r_all):
     # input: query, df1 name, df2 name, subj_table, list of all test results
     _df1 = pd.read_csv(BASE_PATH + _df1_path)
@@ -141,25 +160,27 @@ def stat_test(_queries, _df1_path, _df2_path, _subj_table, r_all):
         subjects_list = _subj_table.query(query)["ID"].tolist()
         for i, s in enumerate(subjects_list):
             subjects_list[i] = "sub-" + s
-        print(f"query -> {query} on table returned these values:")
-        print(subjects_list)
-        print("dataset 1 not filtered")
-        print(_df1.head())
+
+        # print(f"query -> {query} on table returned these values:")
+        # print(subjects_list)
+        # print("dataset 1 not filtered")
+        # print(_df1.head())
 
         _df1_filtered = _df1.loc[_df1['ID'].isin(subjects_list)]
         _df2_filtered = _df2.loc[_df2['ID'].isin(subjects_list)]
 
-        print("filtered dataset 1 according to subjects returned in queries")
-        print(_df2_filtered.head())
-        print("filtered dataset 2")
-        print(_df2_filtered.head())
-        print("COMPUTING STATS FOR FIRST QUERY...")
+        # print("filtered dataset 1 according to subjects returned in queries")
+        # print(_df2_filtered.head())
+        # print("filtered dataset 2")
+        # print(_df2_filtered.head())
+        # print("COMPUTING STATS FOR FIRST QUERY...")
 
         for column_to_compare in range(2, max_len):
             a, b = get_column(column_to_compare, _df1_filtered, _df2_filtered)
             if a.any() and b.any():
                 r1, p1, o1 = mann_whitney(a, b)
                 r2, p2, o2 = t_test(a, b)
+                d, rd = cohens_d(a, b)
 
                 if isinstance(column_to_compare, int):
                     column_to_compare_name = _df1_filtered.columns[column_to_compare]
@@ -170,7 +191,9 @@ def stat_test(_queries, _df1_path, _df2_path, _subj_table, r_all):
                                                    "outcome": o1},
                                   "t_test": {"result": r2,
                                              "p_value": p2,
-                                             "outcome": o2}})
+                                             "outcome": o2},
+                                  "d": {"result": rd,
+                                        "d_value": d}})
 
                 if isinstance(column_to_compare, str):
                     r_all.append({"name": f"{table_tested_name} {column_to_compare}",
@@ -179,7 +202,9 @@ def stat_test(_queries, _df1_path, _df2_path, _subj_table, r_all):
                                                    "outcome": o1},
                                   "t_test": {"result": r2,
                                              "p_value": p2,
-                                             "outcome": o2}})
+                                             "outcome": o2},
+                                  "d": {"result": rd,
+                                        "d_value": d}})
             else:
                 print(f"no data in category {column_to_compare}")
         save_csv(r_all, f"{query}.csv")
@@ -195,6 +220,8 @@ def save_csv(list_to_save, _name):
                                           "t_test p_value": item["t_test"]["p_value"],
                                           "t_test outcome": item["t_test"]["outcome"],
                                           "t_test message": item["t_test"]["result"],
+                                          "cohens d value": item["d"]["d_value"],
+                                          "cohens d result": item["d"]["result"],
                                           "significance_threshold_used": SIGNIFICANCE_THRESHOLD
                                           }, index=[item["name"]])])
 
