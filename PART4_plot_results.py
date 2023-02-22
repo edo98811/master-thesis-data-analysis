@@ -35,7 +35,7 @@ def main():
     violin_preprocsessing()
     bland_altmann_preprocessing()
 
-
+    plt.show()
 """
 DESCRIPTION
     violin plot 
@@ -85,6 +85,7 @@ def violin_preprocsessing():
             if a.any() and b.any():
                 if not plots % N_SUBPLOTS:
                     if plots > 1:
+                        pass
                         # handles, labels = axs[1].get_legend_handles_labels()
                         # fig.legend(handles, labels, loc=(0.95, 0.1), prop={'size': 30})
                     fig, axs = plt.subplots(N_PLOT_ROWS, int(N_SUBPLOTS / N_PLOT_ROWS), figsize=(40, 20))
@@ -101,9 +102,6 @@ def violin_preprocsessing():
 
             if plots >= 10:  # to avoid plotting too much
                 break
-
-    plt.show()
-
 
 def violin_plot(ax, _a, _b):
     # Create a DataFrame with the two Series
@@ -144,6 +142,7 @@ def bland_altmann_preprocessing():
             if a.any() and b.any():
                 if not plots % N_SUBPLOTS:
                     if plots > 1:
+                        pass
                         # handles, labels = ax.get_legend_handles_labels()
                         # fig.legend(handles, labels, loc=(0.95, 0.1), prop={'size': 30})
                     fig, axs = plt.subplots(N_PLOT_ROWS, int(N_SUBPLOTS / N_PLOT_ROWS), figsize=(40, 20))
@@ -154,17 +153,15 @@ def bland_altmann_preprocessing():
                     # mng.full_screen_toggle()
 
                 # print(plots % N_SUBPLOTS)
-                title = list(_df2_filtered.columns)[a_column]
-                bland_altman_plot(axs[plots % N_SUBPLOTS], a, b, title)
+                bland_altman_plot(axs[plots % N_SUBPLOTS], a, b)
                 plots += 1
 
-            if plots >= 10:  # to avoid plotting too much
+            if plots >= 20:  # to avoid plotting too much
                 break
 
-    plt.show()
 
 
-def bland_altman_plot(ax, _a, _b, title):
+def bland_altman_plot(ax, _a, _b):
     # Compute mean and difference between two series
     mean = np.mean([_a, _b], axis=0)
     diff = _a - _b
@@ -180,11 +177,9 @@ def bland_altman_plot(ax, _a, _b, title):
     ax.axhline(md - 1.96 * sd, color='gray', linestyle='--')
     ax.set_xlabel('Mean')
     ax.set_ylabel('Difference')
-    ax.set_title(title)
+    ax.set_title(_a.name + "\n" + queries[0].split("=")[-1])
     ax.legend(['Mean difference', '95% limits of agreement'])
 
-    # Show plot
-    plt.show()
 
 
 def plot_from_csv(csv):
@@ -221,7 +216,6 @@ def plot_from_csv(csv):
             if plots >= 29:  # to avoid plotting too much
                 break
 
-    plt.show()
 
 
 def get_column(column_to_compare, df1, df2):
