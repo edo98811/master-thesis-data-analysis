@@ -16,9 +16,9 @@ def main():
     print(subj_table.head())
     queries = ["main_condition=='Cognitively normal'", "main_condition!='Cognitively normal'"]
 
-    # stat_test(queries, "Stats_FreeSurfer/aseg.csv", "Stats_FastSurfer/aseg.csv", subj_table, r_all)
-    # stat_test(queries, "Stats_FreeSurfer/aseg.csv", "Stats_FastSurfer/aseg.csv", subj_table, r_all)
-    # stat_test(queries, "Stats_FreeSurfer/aseg.csv", "Stats_FastSurfer/aseg.csv", subj_table, r_all)
+    stat_test(queries, "Stats_FreeSurfer/aseg.csv", "Stats_FastSurfer/aseg.csv", subj_table, r_all)
+    stat_test(queries, "Stats_FreeSurfer/aseg.csv", "Stats_FastSurfer/aseg.csv", subj_table, r_all)
+    stat_test(queries, "Stats_FreeSurfer/aseg.csv", "Stats_FastSurfer/aseg.csv", subj_table, r_all)
 
     bonferroni_correction(queries)
     # violin_plots(queries, "Stats_FreeSurfer/aseg.csv", "Stats_FastSurfer/aseg.csv", subj_table)
@@ -220,9 +220,9 @@ def save_csv(list_to_save, _name):
                                           "t_test p_value": item["t_test"]["p_value"],
                                           "t_test outcome": item["t_test"]["outcome"],
                                           "t_test message": item["t_test"]["result"],
+                                          "alpha": SIGNIFICANCE_THRESHOLD,
                                           "cohens d value": item["d"]["d_value"],
-                                          "cohens d result": item["d"]["result"],
-                                          "significance_threshold_used": SIGNIFICANCE_THRESHOLD
+                                          "cohens d result": item["d"]["result"]
                                           }, index=[item["name"]])])
 
     df.to_csv(BASE_PATH + _name)  # , index=False
