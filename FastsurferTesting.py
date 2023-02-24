@@ -89,6 +89,12 @@ class Table:
         return df
 
     def save_csv(self, filename):
+
+        """
+        to csv in basepath + filename
+        :param filename:
+        :return:
+        """
         self.df.to_csv(self.base_path + filename)
 
     # def add_sub(self, subjects_list):
@@ -418,16 +424,16 @@ class Stats:
     def save_stats(self, which=(True, True, True), names=("aseg.csv", "aseg_right.csv", "aseg_left.csv")):
 
         if not os.path.exists(self.data_path + "/" + self.name):
-            os.makedirs(dir_path)
+            os.makedirs(self.data_path + "/" + self.name)
 
         if which[0]:
-            self.df_stats_aseg.to_csv(self.base_path + names[0])
+            self.df_stats_aseg.to_csv(self.data_path + "/" + self.name + "/" + names[0])
         if which[1]:
-            self.df_stats_aparkL.to_csv(self.base_path + names[1])
+            self.df_stats_aparkL.to_csv(self.data_path + "/" + self.name + "/" + names[1])
         if which[2]:
-            self.df_stats_aparkR.to_csv(self.base_path + names[2])
+            self.df_stats_aparkR.to_csv(self.data_path + "/" + self.name + "/" + names[2])
 
-    def __extract_path(self, filename):
+    def __extract_path(self, filename, data_path):
         # set of all the subjects for easier computation
         subj_list_numbers = set(self.subj_list)
 
@@ -438,7 +444,7 @@ class Stats:
         # print(subj_list_numbers)
 
         paths_found = []
-        for path, subdirs, files in os.walk(BASE_PATH):
+        for path, subdirs, files in os.walk(data_path):
             if path.split("/")[-1] == 'stats' and path.split("/")[-2] in subj_list_numbers:
                 for name in files:
                     if name == filename:
@@ -478,6 +484,16 @@ class Comparisons:
     """
 
     def __init__(self, stat_df_1, stat_df_2, name, alpha, base_path, columns_to_test=None, max_plot=500):
+        """
+
+        :param stat_df_1:
+        :param stat_df_2:
+        :param name:
+        :param alpha:
+        :param base_path:
+        :param columns_to_test:
+        :param max_plot:
+        """
         if isinstance(stat_df_1, Stats):
             self.stat_df_1 = stat_df_1
         if isinstance(stat_df_2, Stats):
@@ -500,7 +516,7 @@ class Comparisons:
         self.stat_df_result = None
         self.stat_test(columns_to_test)
 
-    def bonferroni_correction(self):
+    def bonferroni_correction(self, save=False):
         updated_ST = self.bonferroni_correction_param()
         print(updated_ST)
         for i, row in self.stat_df_result.iterrows():
@@ -512,7 +528,8 @@ class Comparisons:
                 row[5] = 1
             row.loc["significance_threshold_used"] = updated_ST
             df.iloc[i, :] = row
-            df.to_csv(self.data_path + f"{query}_bonferroni_corrected.csv")
+            if save == True:
+                df.to_csv(self.data_path + f"{query}_bonferroni_corrected.csv")
 
     def violin(self, columns=None, n_subplots=10, n_rows=2):
         plots = 0
@@ -588,6 +605,15 @@ class Comparisons:
 
             if plots >= 20:  # to avoid plotting too much
                 break
+
+    def save_data(self, filename):
+
+        """
+        to csv in basepath + filename
+        :param filename:
+        :return:
+        """
+        self.stat_df_result.to_csv(self.base_path + filename)
 
     def stat_test(self, columns):
         # input: query, df1 name, df2 name, subj_table, list of all test results
