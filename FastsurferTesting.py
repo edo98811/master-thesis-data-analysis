@@ -1,10 +1,12 @@
 class Table:
     """
-    data:
+    init:
         df =
         processed_path =
         subjects_list =
         base_path =
+
+    attributes
 
     methods
 
@@ -17,6 +19,7 @@ class Table:
         save_csv(self, filename):
 
     """
+
     def __init__(self, df_subj, p_path, b_path):
         self.df = df_subj
         self.processed_path = p_path
@@ -69,7 +72,6 @@ class Table:
     def save_csv(self, filename):
         self.df.to_csv(self.base_path + filename)
 
-
     # def add_sub(self, subjects_list):
     #     for i, s in enumerate(subjects_list):
     #         subjects_list[i] = "sub-" + s
@@ -77,19 +79,51 @@ class Table:
 
 
 class Stats:
-    def __init__(self, df_subj, name, query, b_path):
+    """
+    init
+        df subj
+        name
+        base path
+
+        query (necessary se non vengono dati
+
+        aparcLeft
+        aparcRight
+        aseg
+
+    attributes
+
+    methods
+    """
+
+    def __init__(self, df_subj, name, b_path, query, aseg=False, aparcLeft=False, aparcRight=False):
 
         self.subj_df_obj = df_subj
 
         self.subj_df = df_subj.get_query(query)
         self.subj_list = add_sub(self.subj_df["ID"].tolist())
+
+        # if not query or (not aseg or not aparcLeft or not aparcRight):
+        #     raise " non va bene"
+        self.data_path = self.base_path + "/data"
+        if not os.path.exists(self.data_path):
+            os.makedirs(self.data_path)
+
         self.query = query
         self.name = name
         self.base_path = b_path
-
-        self.df_stats_aseg = save_stats('aseg.stats', 0)
-        self.df_stats_aparkR = save_stats('lh.aparc.DKTatlas.stats', 1)
-        self.df_stats_aparkL = save_stats('rh.aparc.DKTatlas.stats', 1)
+        if aparcLeft:
+            self.df_stats_aparkL = aparcRight
+        else:
+            self.df_stats_aparkL = save_stats('rh.aparc.DKTatlas.stats', 1)
+        if aparcRight:
+            self.df_stats_aparkR = aparcLeft
+        else:
+            self.df_stats_aparkR = save_stats('lh.aparc.DKTatlas.stats', 1)
+        if aseg:
+            self.df_stats_aseg = aseg
+        else:
+            self.df_stats_aseg = save_stats('aseg.stats', 0)
 
     def add_sub(self, list):
         for i, s in enumerate(list):
@@ -109,28 +143,6 @@ class Stats:
                 return stats_aparcDTK(stat_df_paths)
         else:
             print("no file found")
-
-    def __extract_path(self, filename):
-        # set of all the subjects for easier computation
-        subj_list_numbers = set(self.subj_list)
-
-        # creates a list with all the subjects that are in the list
-        # for s in subj_list:
-        #     if len(s.split("/")) > 4:
-        #         subj_list_numbers.add(s.split("/")[-4])
-        # print(subj_list_numbers)
-
-        paths_found = []
-        for path, subdirs, files in os.walk(BASE_PATH):
-            if path.split("/")[-1] == 'stats' and path.split("/")[-2] in subj_list_numbers:
-                for name in files:
-                    if name == filename:
-                        paths_found.append(path + "/" + name)
-
-        if not paths_found:
-            return False
-
-        return paths_found
 
     def stats_aseg(self, subj_paths):
         df_dict = {"ID": []}
@@ -260,6 +272,9 @@ class Stats:
 
     def save_stats(self, which=(True, True, True), names=("aseg.csv", "aseg_right.csv", "aseg_left.csv")):
 
+        if not os.path.exists(self.data_path + "/" + self.name):
+            os.makedirs(dir_path)
+
         if which[0]:
             self.df_stats_aseg.to_csv(self.base_path + names[0])
         if which[1]:
@@ -267,15 +282,68 @@ class Stats:
         if which[2]:
             self.df_stats_aparkR.to_csv(self.base_path + names[2])
 
+    def __extract_path(self, filename):
+        # set of all the subjects for easier computation
+        subj_list_numbers = set(self.subj_list)
+
+        # creates a list with all the subjects that are in the list
+        # for s in subj_list:
+        #     if len(s.split("/")) > 4:
+        #         subj_list_numbers.add(s.split("/")[-4])
+        # print(subj_list_numbers)
+
+        paths_found = []
+        for path, subdirs, files in os.walk(BASE_PATH):
+            if path.split("/")[-1] == 'stats' and path.split("/")[-2] in subj_list_numbers:
+                for name in files:
+                    if name == filename:
+                        paths_found.append(path + "/" + name)
+
+        if not paths_found:
+            return False
+
+        return paths_found
+
 
 class Comparisons:
-    def __init__(self, stat_df_1, stat_df_2, name, alpha, columns_to_test=None, max_plot=500):
+    """
+    init args
+
+    attributes
+        df1
+        df2
+
+        name
+        alpha
+        maxplots
+
+        column list
+        subj list
+
+        stat result
+
+    methods
+        bonferroni correction
+
+        stat test
+
+        violin plot
+
+        bland altmann plot
+    """
+
+    def __init__(self, stat_df_1, stat_df_2, name, alpha, base_path, columns_to_test=None, max_plot=500):
         if isinstance(stat_df_1, Stats):
             self.stat_df_1 = stat_df_1
         if isinstance(stat_df_2, Stats):
             self.stat_df_2 = stat_df_2
         else:
             raise ("stats of the wrong class")
+        self.base_path = base_path
+
+        self.data_path = self.base_path + "/data"
+        if not os.path.exists(self.data_path):
+            os.makedirs(self.data_path)
 
         self.subjects_list = self.df["ID"].tolist()
         self.columns_list = self.df.columns.tolist()
@@ -286,9 +354,6 @@ class Comparisons:
 
         self.stat_df_result = None
         stat_test(columns_to_test)
-
-    def __correction_param(self):
-        return self.alpha / len(self.stat_df_result)
 
     def bonferroni_correction(self):
         updated_ST = bonferroni_correction_param(queries)
@@ -304,7 +369,82 @@ class Comparisons:
                     row[5] = 1
                 row.loc["significance_threshold_used"] = updated_ST
                 df.iloc[i, :] = row
-            df.to_csv(BASE_PATH + f"{query}_bonferroni_corrected.csv")
+            df.to_csv(self.data_path + f"{query}_bonferroni_corrected.csv")
+
+    def violin(self, columns=None, n_subplots=10, n_rows=2):
+        plots = 0
+
+        _df1 = self.stat_df_1
+        _df2 = self.stat_df_2
+
+        if not columns:
+            max_len = min(len(_df1.axes[1]), len(_df2.axes[1]))
+            columns = range(2, max_len)
+
+        for column_to_compare in columns:
+
+            a = _df1.loc[:, column_to_compare]
+            b = _df2.loc[:, column_to_compare]
+            # print(a)
+            if a.any() and b.any():
+                if not plots % n_subplots:
+                    if plots > 1:
+                        fig.savefig(
+                            self.data_path + "/images/img_violin_" + self.name + " - " + stats_2.name + "_" + str(
+                                plots) + ".png")  # save the figure to file
+                        # plt.close(fig)  # close the figure window
+                        # handles, labels = axs[1].get_legend_handles_labels()
+                        # fig.legend(handles, labels, loc=(0.95, 0.1), prop={'size': 30})
+                    fig, axs = plt.subplots(n_rows, int(n_subplots / n_rows), figsize=(40, 20))
+                    axs = axs.ravel()
+                    plt.subplots_adjust(hspace=0.5)
+                    plt.subplots_adjust(wspace=0.2)
+                    # mng = plt.get_current_fig_manager()
+                    # mng.full_screen_toggle()
+
+                # print(plots % N_SUBPLOTS)
+
+                violin_plot(axs[plots % n_subplots], a, b)
+                plots += 1
+
+            if plots >= self.max_plot:  # to avoid plotting too much
+                break
+
+    def bland_altmann(self, columns=None, n_subplots=4, n_rows=2):
+        plots = 0
+
+        _df1 = self.stat_df_1
+        _df2 = self.stat_df_2
+
+        if not columns:
+            max_len = min(len(_df1.axes[1]), len(_df2.axes[1]))
+            columns = range(2, max_len)
+
+        for column_to_compare in columns:
+
+            a = _df1.loc[:, column_to_compare]
+            b = _df2.loc[:, column_to_compare]
+
+            if a.any() and b.any():
+                if not plots % n_subplots:
+                    if plots > 1:
+                        fig.savefig(self.data_path + "/images/img_ba_" + self.name + " - " + stats_2.name + "_" + str(
+                            plots) + ".png")  # save the figure to file
+                        # handles, labels = ax.get_legend_handles_labels()
+                        # fig.legend(handles, labels, loc=(0.95, 0.1), prop={'size': 30})
+                    fig, axs = plt.subplots(n_rows, int(n_subplots / n_rows), figsize=(40, 20))
+                    axs = axs.ravel()
+                    plt.subplots_adjust(hspace=0.5)
+                    plt.subplots_adjust(wspace=0.2)
+                    # mng = plt.get_current_fig_manager()
+                    # mng.full_screen_toggle()
+
+                # print(plots % N_SUBPLOTS)
+                bland_altman_plot(axs[plots % n_subplots], a, b)
+                plots += 1
+
+            if plots >= 20:  # to avoid plotting too much
+                break
 
     def stat_test(self, columns):
         # input: query, df1 name, df2 name, subj_table, list of all test results
@@ -405,7 +545,7 @@ class Comparisons:
                                                                "significance_threshold_used": self.alpha
                                                                }, index=[item["name"]])])
 
-        # df.to_csv(BASE_PATH + _name)  # , index=False
+        # df.to_csv(self.base_path + _name)  # , index=False
 
     def __cohens_d(self, _a, _b):
         n1, n2 = len(a), len(b)
@@ -424,80 +564,6 @@ class Comparisons:
             string = "Large effect size"
 
         return d, string
-
-    def violin(self, columns=None, n_subplots=10, n_rows=2):
-        plots = 0
-
-        _df1 = self.stat_df_1
-        _df2 = self.stat_df_2
-
-        if not columns:
-            max_len = min(len(_df1.axes[1]), len(_df2.axes[1]))
-            columns = range(2, max_len)
-
-        for column_to_compare in columns:
-
-            a = _df1.loc[:, column_to_compare]
-            b = _df2.loc[:, column_to_compare]
-            # print(a)
-            if a.any() and b.any():
-                if not plots % n_subplots:
-                    if plots > 1:
-                        fig.savefig(BASE_PATH + "/images/img_violin_" + self.name + " - " + stats_2.name + "_" + str(
-                            plots) + ".png")  # save the figure to file
-                        # plt.close(fig)  # close the figure window
-                        # handles, labels = axs[1].get_legend_handles_labels()
-                        # fig.legend(handles, labels, loc=(0.95, 0.1), prop={'size': 30})
-                    fig, axs = plt.subplots(n_rows, int(n_subplots / n_rows), figsize=(40, 20))
-                    axs = axs.ravel()
-                    plt.subplots_adjust(hspace=0.5)
-                    plt.subplots_adjust(wspace=0.2)
-                    # mng = plt.get_current_fig_manager()
-                    # mng.full_screen_toggle()
-
-                # print(plots % N_SUBPLOTS)
-
-                violin_plot(axs[plots % n_subplots], a, b)
-                plots += 1
-
-            if plots >= self.max_plot:  # to avoid plotting too much
-                break
-
-    def bland_altmann(self, columns=None, n_subplots=4, n_rows=2):
-        plots = 0
-
-        _df1 = self.stat_df_1
-        _df2 = self.stat_df_2
-
-        if not columns:
-            max_len = min(len(_df1.axes[1]), len(_df2.axes[1]))
-            columns = range(2, max_len)
-
-        for column_to_compare in columns:
-
-            a = _df1.loc[:, column_to_compare]
-            b = _df2.loc[:, column_to_compare]
-
-            if a.any() and b.any():
-                if not plots % n_subplots:
-                    if plots > 1:
-                        fig.savefig(BASE_PATH + "/images/img_ba_" + self.name + " - " + stats_2.name + "_" + str(
-                            plots) + ".png")  # save the figure to file
-                        # handles, labels = ax.get_legend_handles_labels()
-                        # fig.legend(handles, labels, loc=(0.95, 0.1), prop={'size': 30})
-                    fig, axs = plt.subplots(n_rows, int(n_subplots / n_rows), figsize=(40, 20))
-                    axs = axs.ravel()
-                    plt.subplots_adjust(hspace=0.5)
-                    plt.subplots_adjust(wspace=0.2)
-                    # mng = plt.get_current_fig_manager()
-                    # mng.full_screen_toggle()
-
-                # print(plots % N_SUBPLOTS)
-                bland_altman_plot(axs[plots % n_subplots], a, b)
-                plots += 1
-
-            if plots >= 20:  # to avoid plotting too much
-                break
 
     def __violin_plot(self, _ax, _a, _b):
         # Create a DataFrame with the two Series
@@ -542,3 +608,6 @@ class Comparisons:
             b = df2.loc[:, column_to_compare]
 
         return a, b
+
+    def __correction_param(self):
+        return self.alpha / len(self.stat_df_result)
