@@ -353,10 +353,10 @@ class Comparisons:
         self.max_plot = max_plot
 
         self.stat_df_result = None
-        stat_test(columns_to_test)
+        self.stat_test(columns_to_test)
 
     def bonferroni_correction(self):
-        updated_ST = bonferroni_correction_param(queries)
+        updated_ST = self.bonferroni_correction_param()
         print(updated_ST)
         for query in queries:
             df = pd.read_csv(BASE_PATH + query + ".csv")

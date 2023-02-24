@@ -3,16 +3,16 @@ import pandas as pd
 
 ADNI_PATH = ""
 OASIS_PATH = ""
-BASE_PATH = ""
+BASE_PATH = "/media/neuropsycad/disk12t/EdoardoFilippiMasterThesis/"
 FREESURFER_PATH = ""
 
 
 def main():
-    table_oasis = ft.Table(pd.load_csv(BASE_PATH + ""))
+    table = ft.Table(pd.read_csv(BASE_PATH + ""))
 
-    aseg_free = pd.load_csv(BASE_PATH + "")
-    aparcL_free = pd.load_csv(BASE_PATH + "")
-    aparcR_free = pd.load_csv(BASE_PATH + "")
+    aseg_free = pd.read_csv(BASE_PATH + "Stats_FreeSurfer/aseg.csv")
+    aparcL_free = pd.read_csv(BASE_PATH + "Stats_FreeSurfer/aparcDKT_right.csv")
+    aparcR_free = pd.read_csv(BASE_PATH + "Stats_FreeSurfer/aparkDKT_left.csv")
 
     stats_fast_healthy = ft.Stats(table, "healthy_FAST", BASE_PATH, "'main condition'== NC")
     stats_fast_MC = ft.Stats(table, "MC_FAST", BASE_PATH, "'main condition'!= NC")
