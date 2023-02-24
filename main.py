@@ -2,13 +2,13 @@ import FastsurferTesting as ft
 import pandas as pd
 
 ADNI_PATH = ""
-OASIS_PATH = ""
+OASIS_PATH = "/media/neuropsycad/disk12t/VascoDiogo/OASIS/FS7/"
 BASE_PATH = "/media/neuropsycad/disk12t/EdoardoFilippiMasterThesis/"
-FREESURFER_PATH = ""
+
 
 
 def main():
-    table = ft.Table(pd.read_csv(BASE_PATH + ""))
+    table = ft.Table(pd.read_csv(BASE_PATH + "/text_and_csv_files/OASIS_table.csv"), OASIS_PATH, BASE_PATH + "/text_and_csv_files")
 
     aseg_free = pd.read_csv(BASE_PATH + "Stats_FreeSurfer/aseg.csv")
     aparcL_free = pd.read_csv(BASE_PATH + "Stats_FreeSurfer/aparcDKT_right.csv")
