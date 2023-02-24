@@ -1,3 +1,11 @@
+import pandas as pd
+import matplotlib.pyplot as plt
+import os
+import re
+from scipy import stats
+import seaborn as sns
+
+
 class Table:
     """
     init:
@@ -358,17 +366,15 @@ class Comparisons:
     def bonferroni_correction(self):
         updated_ST = self.bonferroni_correction_param()
         print(updated_ST)
-        for query in queries:
-            df = pd.read_csv(BASE_PATH + query + ".csv")
-            for i, row in df.iterrows():
-                if row[1] < updated_ST:
-                    row[3] = f"p-value: {row[0]} - null hypothesis rejected, means are not statistically equal"
-                    row[2] = 1
-                if row[4] < updated_ST:
-                    row[6] = f"p-value: {row[3]} - null hypothesis rejected, the datasets have a different distribution"
-                    row[5] = 1
-                row.loc["significance_threshold_used"] = updated_ST
-                df.iloc[i, :] = row
+        for i, row in self.stat_df_result.iterrows():
+            if row[1] < updated_ST:
+                row[3] = f"p-value: {row[0]} - null hypothesis rejected, means are not statistically equal"
+                row[2] = 1
+            if row[4] < updated_ST:
+                row[6] = f"p-value: {row[3]} - null hypothesis rejected, the datasets have a different distribution"
+                row[5] = 1
+            row.loc["significance_threshold_used"] = updated_ST
+            df.iloc[i, :] = row
             df.to_csv(self.data_path + f"{query}_bonferroni_corrected.csv")
 
     def violin(self, columns=None, n_subplots=10, n_rows=2):
