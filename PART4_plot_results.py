@@ -14,7 +14,7 @@ SUBJ_TABLE = "/media/neuropsycad/disk12t/EdoardoFilippiMasterThesis/text_and_csv
 COLUMNS_TO_PLOT = 0
 
 
-def main():
+def omain():
     # csv = "test_results.csv"
     #
     # plot_from_csv(csv)
@@ -42,10 +42,10 @@ def otherMain():
 
     df2_path = "Stats_FastSurfer/aparcDKT_right.csv"
 
+
     # violin_plots(queries, "Stats_FreeSurfer/aseg.csv", "Stats_FastSurfer/aseg.csv", subj_table)
     violin_preprocsessing()
     bland_altmann_preprocessing()
-
     df1_path = "Stats_FreeSurfer/aparcDKT_left.csv"
 
     df2_path = "Stats_FastSurfer/aparcDKT_left.csv"
@@ -53,7 +53,27 @@ def otherMain():
     # violin_plots(queries, "Stats_FreeSurfer/aseg.csv", "Stats_FastSurfer/aseg.csv", subj_table)
     violin_preprocsessing()
     bland_altmann_preprocessing()
+def main():
+    global subj_table
+    subj_table = pd.read_csv(SUBJ_TABLE)
 
+    print(subj_table.head())
+
+    global queries
+    queries = ["main_condition=='Cognitively normal'", "main_condition!='Cognitively normal'"]
+
+    global df1_path
+
+    global df2_path
+
+    df1_path = "Stats_FreeSurfer/aparcDKT_right.csv"
+
+    df2_path = "Stats_FastSurfer/aparcDKT_right.csv"
+
+
+    # violin_plots(queries, "Stats_FreeSurfer/aseg.csv", "Stats_FastSurfer/aseg.csv", subj_table)
+    violin_preprocsessing()
+    bland_altmann_preprocessing()
 
 #  plt.show()
 """
@@ -99,18 +119,20 @@ def violin_preprocsessing():
         _df1_filtered = _df1.loc[_df1['ID'].isin(subjects_list)]  # healthy or not healthy free
         _df2_filtered = _df2.loc[_df2['ID'].isin(subjects_list)]  # healthy or not healthy fast
 
-        c_names = [_df1_filtered.columns.tolist(), _df2_filtered.columns.tolist()]
 
-        c_names = set(c_names)
+        c_names_list = _df1_filtered.columns
+        c_names_list.intersection(_df2_filtered.columns).tolist()
+
+        c_names = set(c_names_list)
         for c in c_names:
             # a_column, b_column in zip(_df1_filtered.iloc[:, 2:], _df2_filtered.iloc[:, 2:]):
 
-            a = _df1_filtered.loc[:, c]
-            b = _df2_filtered.loc[:, c]
+            a = pd.to_numeric(_df1_filtered.loc[:, c], errors='coerce')
+            b = pd.to_numeric(_df2_filtered.loc[:, c], errors='coerce')
             # print(a)
             # print(b)
             # print(f"{a_column} {b_column}")
-            if a.any() and b.any():
+            if a.any() and b.any() and (a.notnull().all() and b.notnull().all()):
                 if not plots % N_SUBPLOTS_V:
                     if plots > 1:
                         fig.savefig(BASE_PATH + "/images_2/img_violin_" + df2_path.split("/")[-1][:-4] + "_" + str(
@@ -133,7 +155,6 @@ def violin_preprocsessing():
 
             if plots >= 100:  # to avoid plotting too much
                 break
-
 
 def violin_plot(ax, _a, _b):
     # Create a DataFrame with the two Series
@@ -166,21 +187,22 @@ def bland_altmann_preprocessing():
         _df1_filtered = _df1.loc[_df1['ID'].isin(subjects_list)]  # healthy or not healthy free
         _df2_filtered = _df2.loc[_df2['ID'].isin(subjects_list)]  # healthy or not healthy fast
 
-        c_names = [_df1_filtered.columns.tolist(), _df2_filtered.columns.tolist()]
+        c_names_list = _df1_filtered.columns
+        c_names_list.intersection(_df2_filtered.columns).tolist()
 
-        c_names = set(c_names)
+        c_names = set(c_names_list)
         for c in c_names:
             # a_column, b_column in zip(_df1_filtered.iloc[:, 2:], _df2_filtered.iloc[:, 2:]):
 
-            a = _df1_filtered.loc[:, c]
-            b = _df2_filtered.loc[:, c]
+            a = pd.to_numeric(_df1_filtered.loc[:, c], errors='coerce')
+            b = pd.to_numeric(_df2_filtered.loc[:, c], errors='coerce')
             # print(a)
             # print(b)
             # print(f"{a_column} {b_column}")
-            if a.any() and b.any():
+            if a.any() and b.any() and (a.notnull().all() and b.notnull().all()):
                 if not plots % N_SUBPLOTS_BA:
                     if plots > 1:
-                        fig.savefig(BASE_PATH + "/images/img_ba_" + df2_path.split("/")[-1][:-4] + "_" + str(
+                        fig.savefig(BASE_PATH + "/images_2/img_ba_" + df2_path.split("/")[-1][:-4] + "_" + str(
                             plots) + ".png")  # save the figure to file
                         # handles, labels = ax.get_legend_handles_labels()
                         # fig.legend(handles, labels, loc=(0.95, 0.1), prop={'size': 30})

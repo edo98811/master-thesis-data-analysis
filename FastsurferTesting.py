@@ -63,6 +63,7 @@ class Table:
                             break
 
     def get_query(self, query, sub=False, only_processed=True):
+        print (self.df.head())
         """
         :param query:
         :param sub:
