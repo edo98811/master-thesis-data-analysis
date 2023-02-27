@@ -36,16 +36,15 @@ def main():
     violin_preprocsessing()
     bland_altmann_preprocessing()
 
+
 def otherMain():
     df1_path = "Stats_FreeSurfer/aparcDKT_right.csv"
 
     df2_path = "Stats_FastSurfer/aparcDKT_right.csv"
 
-
     # violin_plots(queries, "Stats_FreeSurfer/aseg.csv", "Stats_FastSurfer/aseg.csv", subj_table)
     violin_preprocsessing()
     bland_altmann_preprocessing()
-
 
     df1_path = "Stats_FreeSurfer/aparcDKT_left.csv"
 
@@ -55,7 +54,8 @@ def otherMain():
     violin_preprocsessing()
     bland_altmann_preprocessing()
 
-   #  plt.show()
+
+#  plt.show()
 """
 DESCRIPTION
     violin plot 
@@ -81,6 +81,8 @@ DESCRIPTION
     a plot for single subects
 
 """
+
+
 def violin_preprocsessing():
     plots = 0
     # plt.ion()
@@ -97,17 +99,22 @@ def violin_preprocsessing():
         _df1_filtered = _df1.loc[_df1['ID'].isin(subjects_list)]  # healthy or not healthy free
         _df2_filtered = _df2.loc[_df2['ID'].isin(subjects_list)]  # healthy or not healthy fast
 
-        for a_column, b_column in zip(_df1_filtered.iloc[:, 2:], _df2_filtered.iloc[:, 2:]):
+        c_names = [_df1_filtered.columns.tolist(), _df2_filtered.columns.tolist()]
 
-            a = _df1_filtered.loc[:, a_column]
-            b = _df2_filtered.loc[:, b_column]
+        c_names = set(c_names)
+        for c in c_names:
+            # a_column, b_column in zip(_df1_filtered.iloc[:, 2:], _df2_filtered.iloc[:, 2:]):
+
+            a = _df1_filtered.loc[:, c]
+            b = _df2_filtered.loc[:, c]
             print(a)
             print(b)
             print(f"{a_column} {b_column}")
             if a.any() and b.any():
                 if not plots % N_SUBPLOTS_V:
                     if plots > 1:
-                        fig.savefig(BASE_PATH + "/images/img_violin_" + df2_path.split("/")[-1][:-4] + "_" + str(plots) + ".png")  # save the figure to file
+                        fig.savefig(BASE_PATH + "/images_2/img_violin_" + df2_path.split("/")[-1][:-4] + "_" + str(
+                            plots) + ".png")  # save the figure to file
                         # plt.close(fig)  # close the figure window
                         # handles, labels = axs[1].get_legend_handles_labels()
                         # fig.legend(handles, labels, loc=(0.95, 0.1), prop={'size': 30})
@@ -126,6 +133,7 @@ def violin_preprocsessing():
 
             if plots >= 100:  # to avoid plotting too much
                 break
+
 
 def violin_plot(ax, _a, _b):
     # Create a DataFrame with the two Series
@@ -158,15 +166,22 @@ def bland_altmann_preprocessing():
         _df1_filtered = _df1.loc[_df1['ID'].isin(subjects_list)]  # healthy or not healthy free
         _df2_filtered = _df2.loc[_df2['ID'].isin(subjects_list)]  # healthy or not healthy fast
 
-        for a_column, b_column in zip(_df1_filtered.iloc[:, 2:], _df2_filtered.iloc[:, 2:]):
+        c_names = [_df1_filtered.columns.tolist(), _df2_filtered.columns.tolist()]
 
-            a = _df1_filtered.loc[:, a_column]
-            b = _df2_filtered.loc[:, b_column]
-            # print(a)
+        c_names = set(c_names)
+        for c in c_names:
+            # a_column, b_column in zip(_df1_filtered.iloc[:, 2:], _df2_filtered.iloc[:, 2:]):
+
+            a = _df1_filtered.loc[:, c]
+            b = _df2_filtered.loc[:, c]
+            print(a)
+            print(b)
+            print(f"{a_column} {b_column}")
             if a.any() and b.any():
                 if not plots % N_SUBPLOTS_BA:
                     if plots > 1:
-                        fig.savefig(BASE_PATH + "/images/img_ba_" + df2_path.split("/")[-1][:-4] + "_" + str(plots) + ".png")  # save the figure to file
+                        fig.savefig(BASE_PATH + "/images/img_ba_" + df2_path.split("/")[-1][:-4] + "_" + str(
+                            plots) + ".png")  # save the figure to file
                         # handles, labels = ax.get_legend_handles_labels()
                         # fig.legend(handles, labels, loc=(0.95, 0.1), prop={'size': 30})
                         plt.close()
@@ -183,7 +198,6 @@ def bland_altmann_preprocessing():
 
             if plots >= 400:  # to avoid plotting too much
                 break
-
 
 
 def bland_altman_plot(ax, _a, _b):
@@ -204,7 +218,6 @@ def bland_altman_plot(ax, _a, _b):
     ax.set_ylabel('Difference')
     ax.set_title(_a.name + "\n" + queries[0].split("=")[-1])
     ax.legend(['Mean difference', '95% limits of agreement'])
-
 
 
 def plot_from_csv(csv):
@@ -240,7 +253,6 @@ def plot_from_csv(csv):
 
             if plots >= 29:  # to avoid plotting too much
                 break
-
 
 
 def get_column(column_to_compare, df1, df2):
