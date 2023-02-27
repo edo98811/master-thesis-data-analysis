@@ -101,7 +101,9 @@ def violin_preprocsessing():
 
             a = _df1_filtered.loc[:, a_column]
             b = _df2_filtered.loc[:, b_column]
-            # print(a)
+            print(a)
+            print(b)
+            print(f"{a_column} {b_column}")
             if a.any() and b.any():
                 if not plots % N_SUBPLOTS_V:
                     if plots > 1:
