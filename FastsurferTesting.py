@@ -142,15 +142,15 @@ class Stats:
         if aparcLeft:
             self.df_stats_aparkL = aparcRight
         else:
-            self.df_stats_aparkL = save_stats('rh.aparc.DKTatlas.stats', 1)
+            self.df_stats_aparkL = self.save_stats('rh.aparc.DKTatlas.stats', 1)
         if aparcRight:
             self.df_stats_aparkR = aparcLeft
         else:
-            self.df_stats_aparkR = save_stats('lh.aparc.DKTatlas.stats', 1)
+            self.df_stats_aparkR = self.save_stats('lh.aparc.DKTatlas.stats', 1)
         if aseg:
             self.df_stats_aseg = aseg
         else:
-            self.df_stats_aseg = save_stats('aseg.stats', 0)
+            self.df_stats_aseg = self.save_stats('aseg.stats', 0)
 
     def add_sub(self, list):
         for i, s in enumerate(list):
