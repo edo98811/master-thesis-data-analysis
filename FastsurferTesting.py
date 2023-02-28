@@ -517,20 +517,6 @@ class Comparisons:
         self.stat_df_result = None
         self.stat_test(columns_to_test)
 
-    def bonferroni_correction(self, save=False):
-        updated_ST = self.bonferroni_correction_param()
-        print(updated_ST)
-        for i, row in self.stat_df_result.iterrows():
-            if row[1] < updated_ST:
-                row[3] = f"p-value: {row[0]} - null hypothesis rejected, means are not statistically equal"
-                row[2] = 1
-            if row[4] < updated_ST:
-                row[6] = f"p-value: {row[3]} - null hypothesis rejected, the datasets have a different distribution"
-                row[5] = 1
-            row.loc["significance_threshold_used"] = updated_ST
-            df.iloc[i, :] = row
-            if save == True:
-                df.to_csv(self.data_path + f"{query}_bonferroni_corrected.csv")
 
     def violin(self, columns=None, n_subplots=10, n_rows=2):
         plots = 0
@@ -539,15 +525,18 @@ class Comparisons:
         _df2 = self.stat_df_2
 
         if not columns:
-            max_len = min(len(_df1.axes[1]), len(_df2.axes[1]))
-            columns = range(2, max_len)
+            columns = _df1_filtered.columns
+            columns.intersection(_df2_filtered.columns).tolist()
+        # if not columns:
+        #     max_len = min(len(_df1.axes[1]), len(_df2.axes[1]))
+        #     columns = range(2, max_len)
 
         for column_to_compare in columns:
+            a = pd.to_numeric(_df1_filtered.loc[:, column_to_compare], errors='coerce')
+            b = pd.to_numeric(_df2_filtered.loc[:, column_to_compare], errors='coerce')
+            # a, b = get_column(column_to_compare, _df1_filtered, _df2_filtered)
+            if a.any() and b.any() and (a.notnull().all() and b.notnull().all()):
 
-            a = _df1.loc[:, column_to_compare]
-            b = _df2.loc[:, column_to_compare]
-            # print(a)
-            if a.any() and b.any():
                 if not plots % n_subplots:
                     if plots > 1:
                         fig.savefig(
@@ -576,17 +565,19 @@ class Comparisons:
 
         _df1 = self.stat_df_1
         _df2 = self.stat_df_2
-
         if not columns:
-            max_len = min(len(_df1.axes[1]), len(_df2.axes[1]))
-            columns = range(2, max_len)
+            columns = _df1_filtered.columns
+            columns.intersection(_df2_filtered.columns).tolist()
+        # if not columns:
+        #     max_len = min(len(_df1.axes[1]), len(_df2.axes[1]))
+        #     columns = range(2, max_len)
 
         for column_to_compare in columns:
+            a = pd.to_numeric(_df1_filtered.loc[:, column_to_compare], errors='coerce')
+            b = pd.to_numeric(_df2_filtered.loc[:, column_to_compare], errors='coerce')
+            # a, b = get_column(column_to_compare, _df1_filtered, _df2_filtered)
+            if a.any() and b.any() and (a.notnull().all() and b.notnull().all()):
 
-            a = _df1.loc[:, column_to_compare]
-            b = _df2.loc[:, column_to_compare]
-
-            if a.any() and b.any():
                 if not plots % n_subplots:
                     if plots > 1:
                         fig.savefig(self.data_path + "/images/img_ba_" + self.name + " - " + stats_2.name + "_" + str(
@@ -607,15 +598,6 @@ class Comparisons:
             if plots >= 20:  # to avoid plotting too much
                 break
 
-    def save_data(self, filename):
-
-        """
-        to csv in basepath + filename
-        :param filename:
-        :return:
-        """
-        self.stat_df_result.to_csv(self.base_path + filename)
-
     def stat_test(self, columns):
         # input: query, df1 name, df2 name, subj_table, list of all test results
         _df1 = self.stat_df_1
@@ -624,12 +606,18 @@ class Comparisons:
 
         # se non viene dato un input fa il test per tutte le colonne
         if not columns:
-            max_len = min(len(_df1.axes[1]), len(_df2.axes[1]))
-            columns = range(2, max_len)
+            columns = _df1_filtered.columns
+            columns.intersection(_df2_filtered.columns).tolist()
+        # if not columns:
+        #     max_len = min(len(_df1.axes[1]), len(_df2.axes[1]))
+        #     columns = range(2, max_len)
 
         for column_to_compare in columns:
-            a, b = get_column(column_to_compare, _df1_filtered, _df2_filtered)
-            if a.any() and b.any():
+            a = pd.to_numeric(_df1_filtered.loc[:, column_to_compare], errors='coerce')
+            b = pd.to_numeric(_df2_filtered.loc[:, column_to_compare], errors='coerce')
+            # a, b = get_column(column_to_compare, _df1_filtered, _df2_filtered)
+            if a.any() and b.any() and (a.notnull().all() and b.notnull().all()):
+
                 r1, p1, o1 = __mann_whitney(a, b)
                 r2, p2, o2 = __t_test(a, b)
                 d, rd = __cohens_d(a, b)
@@ -661,6 +649,30 @@ class Comparisons:
             else:
                 print(f"no data in category {column_to_compare}")
             self.__save_dataframe(r_all)
+
+    def bonferroni_correction(self, save=False):
+        updated_ST = self.bonferroni_correction_param()
+        print(updated_ST)
+        for i, row in self.stat_df_result.iterrows():
+            if row[1] < updated_ST:
+                row[3] = f"p-value: {row[0]} - null hypothesis rejected, means are not statistically equal"
+                row[2] = 1
+            if row[4] < updated_ST:
+                row[6] = f"p-value: {row[3]} - null hypothesis rejected, the datasets have a different distribution"
+                row[5] = 1
+            row.loc["significance_threshold_used"] = updated_ST
+            df.iloc[i, :] = row
+            if save == True:
+                df.to_csv(self.data_path + f"{query}_bonferroni_corrected.csv")
+
+    def save_data(self, filename):
+
+        """
+        to csv in basepath + filename
+        :param filename:
+        :return:
+        """
+        self.stat_df_result.to_csv(self.base_path + filename)
 
     def __t_test(self, _a, _b):
         # a, b = get_column(column_to_compare, df1, df2)

@@ -42,7 +42,6 @@ def otherMain():
 
     df2_path = "Stats_FastSurfer/aparcDKT_right.csv"
 
-
     # violin_plots(queries, "Stats_FreeSurfer/aseg.csv", "Stats_FastSurfer/aseg.csv", subj_table)
     violin_preprocsessing()
     bland_altmann_preprocessing()
@@ -53,6 +52,8 @@ def otherMain():
     # violin_plots(queries, "Stats_FreeSurfer/aseg.csv", "Stats_FastSurfer/aseg.csv", subj_table)
     violin_preprocsessing()
     bland_altmann_preprocessing()
+
+
 def main():
     global subj_table
     subj_table = pd.read_csv(SUBJ_TABLE)
@@ -70,10 +71,10 @@ def main():
 
     df2_path = "Stats_FastSurfer/aparcDKT_right.csv"
 
-
     # violin_plots(queries, "Stats_FreeSurfer/aseg.csv", "Stats_FastSurfer/aseg.csv", subj_table)
     violin_preprocsessing()
     bland_altmann_preprocessing()
+
 
 #  plt.show()
 """
@@ -119,7 +120,6 @@ def violin_preprocsessing():
         _df1_filtered = _df1.loc[_df1['ID'].isin(subjects_list)]  # healthy or not healthy free
         _df2_filtered = _df2.loc[_df2['ID'].isin(subjects_list)]  # healthy or not healthy fast
 
-
         c_names_list = _df1_filtered.columns
         c_names_list.intersection(_df2_filtered.columns).tolist()
 
@@ -155,6 +155,7 @@ def violin_preprocsessing():
 
             if plots >= 100:  # to avoid plotting too much
                 break
+
 
 def violin_plot(ax, _a, _b):
     # Create a DataFrame with the two Series
