@@ -127,7 +127,7 @@ class Stats:
         self.subj_df_obj = df_subj
 
         self.subj_df = df_subj.get_query(query)
-        self.subj_list = add_sub(self.subj_df["ID"].tolist())
+        self.subj_list = self.add_sub(self.subj_df["ID"].tolist())
 
         # if not query or (not aseg or not aparcLeft or not aparcRight):
         #     raise " non va bene"
