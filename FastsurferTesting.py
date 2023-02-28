@@ -62,7 +62,7 @@ class Table:
                             df.loc[i, "processed_path"] = root + "/" + dir
                             break
 
-    def get_query(self, query, sub=False, only_processed=True):
+    def get_query(self, query, sub=False, only_processed=False):
         print (self.df.head())
         """
         :param query:

@@ -14,11 +14,11 @@ def main():
     aparcL_free = pd.read_csv(BASE_PATH + "Stats_FreeSurfer/aparcDKT_right.csv")
     aparcR_free = pd.read_csv(BASE_PATH + "Stats_FreeSurfer/aparcDKT_left.csv")
 
-    stats_fast_healthy = ft.Stats(table, "healthy_FAST", BASE_PATH, "'main_condition'== 'Cognitively normal'")
-    stats_fast_MC = ft.Stats(table, "MC_FAST", BASE_PATH, "'main_condition'!= 'Cognitively normal'")
+    stats_fast_healthy = ft.Stats(table, "healthy_FAST", BASE_PATH, "main_condition=='Cognitively normal'")
+    stats_fast_MC = ft.Stats(table, "MC_FAST", BASE_PATH, "main_condition!='Cognitively normal'")
 
-    stats_free_healthy = ft.Stats(table, "healthy_FREE", BASE_PATH, "'main_condition'== 'Cognitively normal'")
-    stats_free_MC = ft.Stats(table, "MC_FREE", BASE_PATH, "'main_condition'!= 'Cognitively normal'", aseg=aseg_free,
+    stats_free_healthy = ft.Stats(table, "healthy_FREE", BASE_PATH, "main_condition=='Cognitively normal'")
+    stats_free_MC = ft.Stats(table, "MC_FREE", BASE_PATH, "main_condition!='Cognitively normal'", aseg=aseg_free,
                              aparcRight=aparcR_free, aparcLeft=aparcL_free)
 
     comp1 = ft.Comparisons(stats_free_MC, stats_fast_MC, "MC_oasis", 0.05, BASE_PATH)
