@@ -129,6 +129,7 @@ class Stats:
         self.subj_df = df_subj.get_query(query)
         self.subj_list = self.add_sub(self.subj_df["ID"].tolist())
 
+        self.base_path = b_path
         # if not query or (not aseg or not aparcLeft or not aparcRight):
         #     raise " non va bene"
         self.data_path = self.base_path + "/data"
@@ -137,7 +138,7 @@ class Stats:
 
         self.query = query
         self.name = name
-        self.base_path = b_path
+
         if aparcLeft:
             self.df_stats_aparkL = aparcRight
         else:
