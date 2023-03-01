@@ -4,7 +4,7 @@ import os
 import re
 from scipy import stats
 import seaborn as sns
-
+import data_manipulation as dm
 
 class Table:
     """
@@ -54,12 +54,12 @@ class Table:
         # iterate though all the directories in the processed path
         for root, dirs, files in os.walk(self.processed_path):
             for dir in dirs:
-                if dir in subjs:
+                if dir in self.subjects_lists:
                     # quando trova il soggetto nella cartella modifica il dataframe
                     for i, subj_path_filtered in enumerate(self.df["ID"].tolist()):
                         if dir == "sub-" + subj_path_filtered:
-                            df.loc[i, "processed"] = "yes"
-                            df.loc[i, "processed_path"] = root + "/" + dir
+                            self.df.loc[i, "processed"] = "yes"
+                            self.df.loc[i, "processed_path"] = root + "/" + dir
                             break
 
     def get_query(self, query, sub=False, only_processed=False):
@@ -132,7 +132,7 @@ class Stats:
         self.base_path = b_path
         # if not query or (not aseg or not aparcLeft or not aparcRight):
         #     raise " non va bene"
-        self.data_path = self.base_path + "/data"
+        self.data_path = self.base_path + "/data_testing"
         if not os.path.exists(self.data_path):
             os.makedirs(self.data_path)
 
@@ -158,16 +158,16 @@ class Stats:
         return list
 
     def save_stats(self, stats_filename, _type):
-        stat_df_paths = __extract_path(stats_filename)
+        stat_df_paths = self.__extract_path(stats_filename)
 
         if stat_df_paths:
             print("stats file found for " + str(len(stat_df_paths)) + " subjects")
             if _type == 0:
                 # stats_aseg(stat_df_paths).to_csv(SAVE_PATH + save_filename, index=False)
-                return stats_aseg(stat_df_paths)
+                return self.stats_aseg(stat_df_paths)
             elif _type == 1:
                 # stats_aparcDTK(stat_df_paths).to_csv(SAVE_PATH + save_filename, index=False)
-                return stats_aparcDTK(stat_df_paths)
+                return self.stats_aparcDTK(stat_df_paths)
         else:
             print("no file found")
 
@@ -426,7 +426,7 @@ class Stats:
     def save_stats(self, which=(True, True, True), names=("aseg.csv", "aseg_right.csv", "aseg_left.csv")):
 
         if not os.path.exists(self.data_path + "/" + self.name):
-            os.makedirs(self.data_path + "/" + self.name)
+            os.makedirs(self.data_path + self.name)
 
         if which[0]:
             self.df_stats_aseg.to_csv(self.data_path + "/" + self.name + "/" + names[0])
@@ -526,15 +526,15 @@ class Comparisons:
         _df2 = self.stat_df_2
 
         if not columns:
-            columns = _df1_filtered.columns
-            columns.intersection(_df2_filtered.columns).tolist()
+            columns = _df1.columns
+            columns = columns.intersection(_df2.columns).tolist()
         # if not columns:
         #     max_len = min(len(_df1.axes[1]), len(_df2.axes[1]))
         #     columns = range(2, max_len)
 
         for column_to_compare in columns:
-            a = pd.to_numeric(_df1_filtered.loc[:, column_to_compare], errors='coerce')
-            b = pd.to_numeric(_df2_filtered.loc[:, column_to_compare], errors='coerce')
+            a = pd.to_numeric(_df1.loc[:, column_to_compare], errors='coerce')
+            b = pd.to_numeric(_df2.loc[:, column_to_compare], errors='coerce')
             # a, b = get_column(column_to_compare, _df1_filtered, _df2_filtered)
             if a.any() and b.any() and (a.notnull().all() and b.notnull().all()):
 
@@ -567,15 +567,15 @@ class Comparisons:
         _df1 = self.stat_df_1
         _df2 = self.stat_df_2
         if not columns:
-            columns = _df1_filtered.columns
-            columns.intersection(_df2_filtered.columns).tolist()
+            columns = _df1.columns
+            columns = columns.intersection(_df2.columns).tolist()
         # if not columns:
         #     max_len = min(len(_df1.axes[1]), len(_df2.axes[1]))
         #     columns = range(2, max_len)
 
         for column_to_compare in columns:
-            a = pd.to_numeric(_df1_filtered.loc[:, column_to_compare], errors='coerce')
-            b = pd.to_numeric(_df2_filtered.loc[:, column_to_compare], errors='coerce')
+            a = pd.to_numeric(_df1.loc[:, column_to_compare], errors='coerce')
+            b = pd.to_numeric(_df2.loc[:, column_to_compare], errors='coerce')
             # a, b = get_column(column_to_compare, _df1_filtered, _df2_filtered)
             if a.any() and b.any() and (a.notnull().all() and b.notnull().all()):
 

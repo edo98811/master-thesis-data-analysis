@@ -75,6 +75,15 @@ def main():
     violin_preprocsessing()
     bland_altmann_preprocessing()
 
+    df1_path = "Stats_FreeSurfer/aparcDKT_left.csv"
+
+    df2_path = "Stats_FastSurfer/aparcDKT_left.csv"
+
+    # violin_plots(queries, "Stats_FreeSurfer/aseg.csv", "Stats_FastSurfer/aseg.csv", subj_table)
+    violin_preprocsessing()
+    bland_altmann_preprocessing()
+
+
 
 #  plt.show()
 """
@@ -121,7 +130,7 @@ def violin_preprocsessing():
         _df2_filtered = _df2.loc[_df2['ID'].isin(subjects_list)]  # healthy or not healthy fast
 
         c_names_list = _df1_filtered.columns
-        c_names_list.intersection(_df2_filtered.columns).tolist()
+        c_names_list = c_names_list.intersection(_df2_filtered.columns).tolist()
 
         c_names = set(c_names_list)
         for c in c_names:
@@ -189,7 +198,7 @@ def bland_altmann_preprocessing():
         _df2_filtered = _df2.loc[_df2['ID'].isin(subjects_list)]  # healthy or not healthy fast
 
         c_names_list = _df1_filtered.columns
-        c_names_list.intersection(_df2_filtered.columns).tolist()
+        c_names_list = c_names_list.intersection(_df2_filtered.columns).tolist()
 
         c_names = set(c_names_list)
         for c in c_names:

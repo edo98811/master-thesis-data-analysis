@@ -13,6 +13,9 @@ def main():
     r_all = []
     subj_table = pd.read_csv(SUBJ_TABLE)
 
+    global updatedST
+    updatedST = SIGNIFICANCE_THRESHOLD
+
     print(subj_table.head())
     queries = ["main_condition=='Cognitively normal'", "main_condition!='Cognitively normal'"]
 
@@ -119,10 +122,10 @@ def bonferroni_correction(queries):
         df = pd.read_csv(BASE_PATH + query + ".csv")
         for i, row in df.iterrows():
             if row[1] < updated_ST:
-                row[3] = f"p-value: {row[0]} - null hypothesis rejected, means are not statistically equal"
+                row[3] = f"p-value: {row[1]} - null hypothesis rejected, means are not statistically equal"
                 row[2] = 1
             if row[4] < updated_ST:
-                row[6] = f"p-value: {row[3]} - null hypothesis rejected, the datasets have a different distribution"
+                row[6] = f"p-value: {row[4]} - null hypothesis rejected, the datasets have a different distribution"
                 row[5] = 1
             df.iloc[i, :] = row
         df.to_csv(BASE_PATH + f"{query}_bonferroni_corrected.csv")
@@ -174,10 +177,18 @@ def stat_test(_queries, _df1_path, _df2_path, _subj_table, r_all):
         # print("filtered dataset 2")
         # print(_df2_filtered.head())
         # print("COMPUTING STATS FOR FIRST QUERY...")
+        c_names_list = _df1_filtered.columns
+        c_names_list = c_names_list.intersection(_df2_filtered.columns).tolist()
 
-        for column_to_compare in range(2, max_len):
-            a, b = get_column(column_to_compare, _df1_filtered, _df2_filtered)
-            if a.any() and b.any():
+        c_names = set(c_names_list)
+        for column_to_compare in c_names:
+            # a_column, b_column in zip(_df1_filtered.iloc[:, 2:], _df2_filtered.iloc[:, 2:]):
+
+            a = pd.to_numeric(_df1_filtered.loc[:, column_to_compare], errors='coerce')
+            b = pd.to_numeric(_df2_filtered.loc[:, column_to_compare], errors='coerce')
+        #for column_to_compare in range(2, max_len):
+            #    a, b = get_column(column_to_compare, _df1_filtered, _df2_filtered)
+            if a.any() and b.any() and (a.notnull().all() and b.notnull().all()):
                 r1, p1, o1 = mann_whitney(a, b)
                 r2, p2, o2 = t_test(a, b)
                 d, rd = cohens_d(a, b)
@@ -206,7 +217,7 @@ def stat_test(_queries, _df1_path, _df2_path, _subj_table, r_all):
                                   "d": {"result": rd,
                                         "d_value": d}})
             else:
-                print(f"no data in category {column_to_compare}")
+                print(f"no data, or some NaN values, in category {column_to_compare}")
         save_csv(r_all, f"{query}.csv")
 
 
@@ -220,7 +231,7 @@ def save_csv(list_to_save, _name):
                                           "t_test p_value": item["t_test"]["p_value"],
                                           "t_test outcome": item["t_test"]["outcome"],
                                           "t_test message": item["t_test"]["result"],
-                                          "alpha": SIGNIFICANCE_THRESHOLD,
+                                          "alpha": updatedST,
                                           "cohens d value": item["d"]["d_value"],
                                           "cohens d result": item["d"]["result"]
                                           }, index=[item["name"]])])
