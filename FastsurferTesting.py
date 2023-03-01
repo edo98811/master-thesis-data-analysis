@@ -103,6 +103,10 @@ class Table:
     #         subjects_list[i] = "sub-" + s
     #     return subjects_list
 
+# todo: modificare query per are in modo che funzioni
+# rileggere le funzioni e aggiungere self tutte le volte che serve
+# implementare le modifiche fatte a altro codice
+
 
 class Stats:
     """
@@ -132,7 +136,7 @@ class Stats:
         self.base_path = b_path
         # if not query or (not aseg or not aparcLeft or not aparcRight):
         #     raise " non va bene"
-        self.data_path = self.base_path + "/data_testing"
+        self.data_path = self.base_path + "data_testing/"
         if not os.path.exists(self.data_path):
             os.makedirs(self.data_path)
 
@@ -425,15 +429,15 @@ class Stats:
 
     def save_stats(self, which=(True, True, True), names=("aseg.csv", "aseg_right.csv", "aseg_left.csv")):
 
-        if not os.path.exists(self.data_path + "/" + self.name):
+        if not os.path.exists(self.data_path + self.name):
             os.makedirs(self.data_path + self.name)
 
         if which[0]:
-            self.df_stats_aseg.to_csv(self.data_path + "/" + self.name + "/" + names[0])
+            self.df_stats_aseg.to_csv(self.data_path + self.name + "/" + names[0])
         if which[1]:
-            self.df_stats_aparkL.to_csv(self.data_path + "/" + self.name + "/" + names[1])
+            self.df_stats_aparkL.to_csv(self.data_path + self.name + "/" + names[1])
         if which[2]:
-            self.df_stats_aparkR.to_csv(self.data_path + "/" + self.name + "/" + names[2])
+            self.df_stats_aparkR.to_csv(self.data_path + self.name + "/" + names[2])
 
     def __extract_path(self, filename, data_path):
         # set of all the subjects for easier computation
