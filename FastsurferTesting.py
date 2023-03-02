@@ -126,9 +126,10 @@ class Stats:
     methods
     """
 
-    def __init__(self, df_subj, name, b_path, query, aseg=False, aparcLeft=False, aparcRight=False):
+    def __init__(self, df_subj, name, b_path, query, p_path= "/media/neuropsycad/disk12t/EdoardoFilippiMasterThesis/FastSurfer_Output", aseg=None, aparcLeft=None, aparcRight=None):
 
         self.subj_df_obj = df_subj
+        self.processed_path = p_path
 
         self.subj_df = df_subj.get_query(query)
         self.subj_list = self.add_sub(self.subj_df["ID"].tolist())
@@ -143,25 +144,25 @@ class Stats:
         self.query = query
         self.name = name
 
-        if aparcLeft:
-            self.df_stats_aparkL = aparcRight
+        if aparcLeft is not None:
+            self.df_stats_aparkL = aparcLeft
         else:
-            self.df_stats_aparkL = self.save_stats('rh.aparc.DKTatlas.stats', 1)
-        if aparcRight:
-            self.df_stats_aparkR = aparcLeft
+            self.df_stats_aparkL = self.extract_stats('rh.aparc.DKTatlas.stats', 1)
+        if aparcRight is not None:
+            self.df_stats_aparkR = aparcRight
         else:
-            self.df_stats_aparkR = self.save_stats('lh.aparc.DKTatlas.stats', 1)
-        if aseg:
+            self.df_stats_aparkR = self.extract_stats('lh.aparc.DKTatlas.stats', 1)
+        if aseg is not None:
             self.df_stats_aseg = aseg
         else:
-            self.df_stats_aseg = self.save_stats('aseg.stats', 0)
+            self.df_stats_aseg = self.extract_stats('aseg.stats', 0)
 
     def add_sub(self, list):
         for i, s in enumerate(list):
             list[i] = "sub-" + s
         return list
 
-    def save_stats(self, stats_filename, _type):
+    def extract_stats(self, stats_filename, _type):
         stat_df_paths = self.__extract_path(stats_filename)
 
         if stat_df_paths:
@@ -439,7 +440,7 @@ class Stats:
         if which[2]:
             self.df_stats_aparkR.to_csv(self.data_path + self.name + "/" + names[2])
 
-    def __extract_path(self, filename, data_path):
+    def __extract_path(self, filename):
         # set of all the subjects for easier computation
         subj_list_numbers = set(self.subj_list)
 
@@ -450,7 +451,7 @@ class Stats:
         # print(subj_list_numbers)
 
         paths_found = []
-        for path, subdirs, files in os.walk(data_path):
+        for path, subdirs, files in os.walk(self.processed_path):
             if path.split("/")[-1] == 'stats' and path.split("/")[-2] in subj_list_numbers:
                 for name in files:
                     if name == filename:
@@ -512,8 +513,8 @@ class Comparisons:
         if not os.path.exists(self.data_path):
             os.makedirs(self.data_path)
 
-        self.subjects_list = self.df["ID"].tolist()
-        self.columns_list = self.df.columns.tolist()
+        self.subjects_list = {self.stat_df_1.subj_df["ID"].tolist() + self.stat_df_2.subj_df["ID"].tolist()}
+        self.columns_list = {self.stat_df_1.subj_df.columns.tolist() + self.stat_df_2.subj_df.columns.tolist()}
 
         self.name = name
         self.alpha = alpha
