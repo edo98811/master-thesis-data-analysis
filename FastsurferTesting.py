@@ -8,7 +8,7 @@ import data_manipulation as dm
 
 import subprocess
 
-#todo altro:
+# todo altro:
 """
 
 - rileggere tutto 
@@ -20,8 +20,11 @@ cose da chiedere
 - quali soggetti dovrei tenere per fastsurfer (che patologie) 
 
 - mettere a posto i nomi dei grafici
-- nei grafici bisogna poter scegliere il tipo di dati 
+- nei grafici bisogna poter scegliere il tipo di dati (adesso prende sempre da aseg)
 - fare in modo che lo scatter plot funzioni su una lista
+
+idee
+    - input nella funzione table anche la struttura delle tabelle per creare la tabella nuova (magari richiamata) 
 
 """
 
@@ -48,13 +51,18 @@ class Table:
 
     """
 
-    def __init__(self, df_subj, p_path, b_path, d_folder="data_testing/"):
-        self.df = df_subj
+    def __init__(self, name, b_path, df_subj, p_path, d_folder="data_testing/"):
+        if df_subj is not None:
+            self.df = df_subj
+        else:
+            self.create_table()
         self.subjects_list = self.df["ID"].tolist()
 
         self.processed_path = p_path
         self.base_path = b_path
         self.data_path = d_folder
+        self.name = name
+
     # def get_query_list(self, query):
     #     """
     #     old
@@ -82,6 +90,10 @@ class Table:
                             self.df.loc[i, "processed_path"] = root + "/" + dir
                             break
 
+    def create_table(self):
+        raise "method not yet implemented"
+        pass
+
     def get_query(self, query, sub=False, only_processed=False):
         # print (self.df.head())
         """
@@ -105,9 +117,8 @@ class Table:
         # df = self.df.loc[df_subj.loc['ID'].isin(subjects_list)]
 
         df = self.df.query(query)
-        # todo: modificare query per fare in modo che funzioni
         if only_processed:
-            df = df.query("processed==yes")
+            df = df.loc[df['processed'] == 'yes']
         return df
 
     def save_csv(self, filename):
@@ -119,10 +130,15 @@ class Table:
         """
         self.df.to_csv(self.data_path + filename)
 
-    # def add_sub(self, subjects_list):
-    #     for i, s in enumerate(subjects_list):
-    #         subjects_list[i] = "sub-" + s
-    #     return subjects_list
+    def start_processing(self):
+        pass
+        # subprocess.
+    """
+    def add_sub(self, subjects_list):
+        for i, s in enumerate(subjects_list):
+            subjects_list[i] = "sub-" + s
+        return subjects_list
+    """
 
 class Stats:
     """
@@ -142,7 +158,9 @@ class Stats:
     methods
     """
 
-    def __init__(self, df_subj, name, query, b_path, d_folder="data_testing/", p_path= "/media/neuropsycad/disk12t/EdoardoFilippiMasterThesis/FastSurfer_Output", aseg=None, aparcLeft=None, aparcRight=None):
+    def __init__(self, name, b_path, df_subj_obj, query, d_folder="data_testing/",
+                 p_path="/media/neuropsycad/disk12t/EdoardoFilippiMasterThesis/FastSurfer_Output", aseg=None,
+                 aparcLeft=None, aparcRight=None):
         """
 
         :param df_subj:
@@ -157,13 +175,13 @@ class Stats:
         """
         # here it is saved the data object of the dataset
         if isinstance(df_subj, Table):
-            self.df_subj_obj = df_subj
+            self.df_subj_obj = df_subj_obj
         else:
             raise "wrong datatype"
 
         # here there is the df only already filtered
-        self.df_subj = df_subj.get_query(query)
-        self.subj_list = self.add_sub(self.df_subj["ID"].tolist())
+        self.df = df_subj.get_query(query)
+        self.subj_list = self.add_sub(self.df["ID"].tolist())
 
         self.processed_path = p_path
         self.base_path = b_path
@@ -197,21 +215,47 @@ class Stats:
             list[i] = "sub-" + s
         return list
 
-    def extract_stats(self, stats_filename, _type):
+    def extract_stats_fast(self, stats_filename, _type):
         stat_df_paths = self.__extract_path(stats_filename)
 
         if stat_df_paths:
             print("stats file found for " + str(len(stat_df_paths)) + " subjects")
             if _type == 0:
                 # __(stat_df_paths).to_csv(SAVE_PATH + save_filename, index=False)
-                return self.__stats_aseg(stat_df_paths)
+                return self.__fast_stats_aseg(stat_df_paths)
             elif _type == 1:
                 # stats_aparcDTK(stat_df_paths).to_csv(SAVE_PATH + save_filename, index=False)
-                return self.__stats_aparcDTK(stat_df_paths)
+                return self.__fast_stats_aparcDTK(stat_df_paths)
         else:
             print("no file found")
 
-    def __stats_aseg(self, subj_paths):
+    def extract_stats_free(self, stats_filename, _type):
+        stat_df_paths = self.__extract_path(stats_filename)
+
+        if stat_df_paths:
+            print("stats file found for " + str(len(stat_df_paths)) + " subjects")
+            if _type == 0:
+                # __(stat_df_paths).to_csv(SAVE_PATH + save_filename, index=False)
+                return self.__free_stats_aseg(stat_df_paths)
+            elif _type == 1:
+                # stats_aparcDTK(stat_df_paths).to_csv(SAVE_PATH + save_filename, index=False)
+                return self.__free_stats_aparcDTK(stat_df_paths)
+        else:
+            print("no file found")
+
+    def save_stats_files(self, which=(True, True, True), names=("aseg.csv", "aseg_right.csv", "aseg_left.csv")):
+
+        if not os.path.exists(self.data_path + self.name):
+            os.makedirs(self.data_path + self.name)
+
+        if which[0]:
+            self.df_stats_aseg.to_csv(self.data_path + self.name + "/" + names[0])
+        if which[1]:
+            self.df_stats_aparcL.to_csv(self.data_path + self.name + "/" + names[1])
+        if which[2]:
+            self.df_stats_aparcR.to_csv(self.data_path + self.name + "/" + names[2])
+
+    def __fast_stats_aseg(self, subj_paths):
         df_dict = {"ID": []}
 
         for n, path in enumerate(subj_paths):
@@ -268,7 +312,7 @@ class Stats:
         # dm.write_dict(df_dict,"prova_df_dict.json")
         return pd.DataFrame.from_dict(df_dict, orient='columns')
 
-    def __stats_aparcDTK(self, subj_paths):
+    def __fast_stats_aparcDTK(self, subj_paths):
         df_dict = {"ID": []}
 
         for n, path in enumerate(subj_paths):
@@ -337,7 +381,7 @@ class Stats:
 
         return pd.DataFrame.from_dict(df_dict, orient='columns')
 
-    def free_stats_aseg(self, subj_paths):
+    def __free_stats_aseg(self, subj_paths):
         df_dict = {"ID": []}
 
         for n, path in enumerate(subj_paths):
@@ -394,7 +438,7 @@ class Stats:
         # dm.write_dict(df_dict,"prova_df_dict.json")
         return pd.DataFrame.from_dict(df_dict, orient='columns')
 
-    def free_stats_aparcDTK(self, subj_paths):
+    def __free_stats_aparcDTK(self, subj_paths):
         df_dict = {"ID": []}
 
         for n, path in enumerate(subj_paths):
@@ -463,18 +507,6 @@ class Stats:
 
         return pd.DataFrame.from_dict(df_dict, orient='columns')
 
-    def save_stats(self, which=(True, True, True), names=("aseg.csv", "aseg_right.csv", "aseg_left.csv")):
-
-        if not os.path.exists(self.data_path + self.name):
-            os.makedirs(self.data_path + self.name)
-
-        if which[0]:
-            self.df_stats_aseg.to_csv(self.data_path + self.name + "/" + names[0])
-        if which[1]:
-            self.df_stats_aparcL.to_csv(self.data_path + self.name + "/" + names[1])
-        if which[2]:
-            self.df_stats_aparcR.to_csv(self.data_path + self.name + "/" + names[2])
-
     def __extract_path(self, filename):
         # set of all the subjects for easier computation
         subj_list_numbers = set(self.subj_list)
@@ -496,6 +528,7 @@ class Stats:
             return False
 
         return paths_found
+
 
 class Comparisons:
     """
@@ -524,7 +557,8 @@ class Comparisons:
         bland altmann plot
     """
 
-    def __init__(self, stat_df_1, stat_df_2, name, alpha, base_path, data_folder, columns_to_test=None, max_plot=500):
+    def __init__(self, name, b_path, stats_df_1, stats_df_2, alpha=0.05, d_folder="data_testing/", columns_to_test=None,
+                 max_plot=500):
         """
 
         :param stat_df_1:
@@ -536,14 +570,16 @@ class Comparisons:
         :param max_plot:
         """
         if isinstance(stat_df_1, Stats):
-            self.stat_df_1 = stat_df_1
-        if isinstance(stat_df_2, Stats):
-            self.stat_df_2 = stat_df_2
+            self.stat_df_1 = stats_df_1
         else:
             raise ("stats of the wrong class")
-        self.base_path = base_path
+        if isinstance(stat_df_2, Stats):
+            self.stat_df_2 = stats_df_2
+        else:
+            raise ("stats of the wrong class")
+        self.base_path = b_path
 
-        self.data_path = data_folder
+        self.data_path = d_folder
         if not os.path.exists(self.data_path):
             os.makedirs(self.data_path)
 
@@ -554,13 +590,13 @@ class Comparisons:
         # self.columns_list = {tmp.extend(self.stat_df_2.df_subj.columns.tolist())}
         # del tmp
 
-        self.subjects_list = {self.stat_df_1.df_subj["ID"].tolist()}.intersection({self.stat_df_2.df_subj["ID"].tolist()})
-        self.columns_list = {self.stat_df_1.df_subj.columns.tolist()}.intersection(
-            {self.stat_df_2.df_subj.columns.tolist()})
+        self.subjects_list = set(self.stat_df_1.df_subj["ID"].tolist()).intersection(
+            set(self.stat_df_2.df_subj["ID"].tolist()))
+        self.columns_list = set(self.stat_df_1.df_subj.columns.tolist()).intersection(
+            set(self.stat_df_2.df_subj.columns.tolist()))
 
         if not self.subjects_list or not self.columns_list:
             raise "datasets dont have elements in common"
-
 
         self.name = name
         self.alpha = alpha
@@ -571,11 +607,18 @@ class Comparisons:
 
         self.updated_alpha = "no correction"
 
-    def violin(self, columns=None, n_subplots=10, n_rows=2):
+    def violin(self, data="aseg", columns=None, n_subplots=10, n_rows=2):
         plots = 0
 
-        _df1 = self.stat_df_1.df_stats_aseg
-        _df2 = self.stat_df_2.df_stats_aseg
+        if data == "aseg":
+            _df1 = self.stat_df_1.df_stats_aseg
+            _df2 = self.stat_df_2.df_stats_aseg
+        elif data == "aparcR":
+            _df1 = self.stat_df_1.df_stats_aparcL
+            _df2 = self.stat_df_2.df_stats_aparcL
+        elif data == "aparcL":
+            _df1 = self.stat_df_1.df_stats_aparcR
+            _df2 = self.stat_df_2.df_stats_aparcR
 
         # if not columns:
         #     columns = _df1.columns
@@ -615,13 +658,21 @@ class Comparisons:
             if plots >= self.max_plot:  # to avoid plotting too much
                 break
 
-    def bland_altmann(self, columns=None, n_subplots=4, n_rows=2):
+    def bland_altmann(self, data="aseg", columns=None, n_subplots=4, n_rows=2):
         plots = 0
 
-        _df1 = self.stat_df_1.df_stats_aseg
-        _df2 = self.stat_df_2.df_stats_aseg
+        if data == "aseg":
+            _df1 = self.stat_df_1.df_stats_aseg
+            _df2 = self.stat_df_2.df_stats_aseg
+        elif data == "aparcR":
+            _df1 = self.stat_df_1.df_stats_aparcL
+            _df2 = self.stat_df_2.df_stats_aparcL
+        elif data == "aparcL":
+            _df1 = self.stat_df_1.df_stats_aparcR
+            _df2 = self.stat_df_2.df_stats_aparcR
+
         if not columns:
-            columns = set(_df1.columns.tolist()).intersection(set(_df2.columns.tolist())) # set with columns
+            columns = set(_df1.columns.tolist()).intersection(set(_df2.columns.tolist()))  # set with columns
             # columns = _df1.columns
             # columns = columns.intersection(_df2.columns).tolist()
         # if not columns:
@@ -632,12 +683,13 @@ class Comparisons:
             a = pd.to_numeric(_df1.loc[:, column_to_compare], errors='coerce')
             b = pd.to_numeric(_df2.loc[:, column_to_compare], errors='coerce')
             # a, b = get_column(column_to_compare, _df1_filtered, _df2_filtered)
-            if a.any() and b.any() and (a.notnull().all() and b.notnull().all()): # for all the fields with numbers
+            if a.any() and b.any() and (a.notnull().all() and b.notnull().all()):  # for all the fields with numbers
 
                 if not plots % n_subplots:
                     if plots > 1:
-                        fig.savefig(self.data_path + self.data_folder + "/images/img_ba_" + self.name + " - " + stats_2.name + "_" + str(
-                            plots) + ".png")  # save the figure to file
+                        fig.savefig(
+                            self.data_path + self.data_folder + "/images/img_ba_" + self.name + " - " + stats_2.name + "_" + str(
+                                plots) + ".png")  # save the figure to file
                         # handles, labels = ax.get_legend_handles_labels()
                         # fig.legend(handles, labels, loc=(0.95, 0.1), prop={'size': 30})
                     fig, axs = plt.subplots(n_rows, int(n_subplots / n_rows), figsize=(40, 20))
@@ -678,7 +730,7 @@ class Comparisons:
 
                 r1, p1, o1 = __mann_whitney(a, b)
                 r2, p2, o2 = __t_test(a, b)
-                d, rd = __cohens_d(a, b) # between two areas
+                d, rd = __cohens_d(a, b)  # between two areas
 
                 if isinstance(column_to_compare, int):
                     column_to_compare_name = _df1_filtered.columns[column_to_compare]
@@ -853,45 +905,54 @@ class Comparisons:
     def __correction_param(self):
         return self.alpha / len(self.stat_df_result)
 
+
 class SummaryPlot:
-    def __init__(self, df1, df2, df3, df4):
+    def __init__(self, name, b_path, stats_df_list, d_folder="data_testing/", max_plot=500):
+        """
+
+        :param name:
+        :param b_path:
+        :param df_list: type:stats
+        :param d_folder:
+        :param max_plot:
+        """
         """
         idea: fare una lina per persone sane, una linea per persone malate, una linea per freesurfer e per fastsurfer
         domande da fare:
             per tutte le aree o solo alcune interessanti?
             quali devo confrontare come soggetti?
         """
-        self.df1 = df1
-        self.df2 = df2
-        self.df3 = df3
-        self.df4 = df4
+        self.df_list = stats_df_list
 
         # else:
         #     raise ("stats of the wrong class")
-        self.base_path = base_path
+        self.base_path = b_path
+        self.data_path = self.base_path + d_folder
 
-        self.data_path = self.base_path + data_folder
         if not os.path.exists(self.data_path):
             os.makedirs(self.data_path)
 
-        self.subjects_list = self.df["ID"].tolist()
-        self.columns_list = self.df.columns.tolist()
+        # self.subjects_list = self.df["ID"].tolist()
+        # self.columns_list = self.df.columns.tolist()
+        # todo: aggiugere lista soggetti
 
         self.name = name
-        self.alpha = alpha
         self.max_plot = max_plot
 
-        self.stat_df_result = None
-        self.stat_test(columns_to_test)
+    def comparison_plot(self, data="aseg", columns=None, n_subplots=10, n_rows=2):
 
-
-    def comparison_plot(self):
         plots = 0
 
-        _df1 = self.stat_df_1
-        _df2 = self.stat_df_2
-        _df3 = self.stat_df_3
-        _df4 = self.stat_df_4
+        df_list = []
+        if data == "aseg":
+            for table in self.df_list:
+                df_list.append(table.df_stats_aseg)
+        elif data == "aparcR":
+            for table in self.df_list:
+                df_list.append(table.df_stats_aparcL)
+        elif data == "aparcL":
+            for table in self.df_list:
+                df_list.append(table.df_stats_aparcR)
 
         if not columns:
             columns = _df1.columns
@@ -901,34 +962,32 @@ class SummaryPlot:
         #     columns = range(2, max_len)
 
         for column_to_compare in columns:
-            a = pd.to_numeric(_df1.loc[:, column_to_compare], errors='coerce')
-            b = pd.to_numeric(_df2.loc[:, column_to_compare], errors='coerce')
-            c = pd.to_numeric(_df2.loc[:, column_to_compare], errors='coerce')
-            d = pd.to_numeric(_df2.loc[:, column_to_compare], errors='coerce')
+            for i, df in table(df_list):
+                series = pd.to_numeric(df.loc[:, column_to_compare], errors='coerce')
+                series.rename = self.df_list[i].name
+                if series.any() and series.notnull().all():
+                    data.append(series)
 
-            a = a.set_axis
             # a, b = get_column(column_to_compare, _df1_filtered, _df2_filtered)
-            if a.any() and b.any() and (a.notnull().all() and b.notnull().all()):
+            if not plots % n_subplots:
+                if plots > 1:
+                    fig.savefig(
+                        self.data_path + "/images/img_violin_" + self.name + " - " + stats_2.name + "_" + str(
+                            plots) + ".png")  # save the figure to file
+                    # plt.close(fig)  # close the figure window
+                    # handles, labels = axs[1].get_legend_handles_labels()
+                    # fig.legend(handles, labels, loc=(0.95, 0.1), prop={'size': 30})
+                fig, axs = plt.subplots(n_rows, int(n_subplots / n_rows), figsize=(40, 20))
+                axs = axs.ravel()
+                plt.subplots_adjust(hspace=0.5)
+                plt.subplots_adjust(wspace=0.2)
+                # mng = plt.get_current_fig_manager()
+                # mng.full_screen_toggle()
 
-                if not plots % n_subplots:
-                    if plots > 1:
-                        fig.savefig(
-                            self.data_path + "/images/img_violin_" + self.name + " - " + stats_2.name + "_" + str(
-                                plots) + ".png")  # save the figure to file
-                        # plt.close(fig)  # close the figure window
-                        # handles, labels = axs[1].get_legend_handles_labels()
-                        # fig.legend(handles, labels, loc=(0.95, 0.1), prop={'size': 30})
-                    fig, axs = plt.subplots(n_rows, int(n_subplots / n_rows), figsize=(40, 20))
-                    axs = axs.ravel()
-                    plt.subplots_adjust(hspace=0.5)
-                    plt.subplots_adjust(wspace=0.2)
-                    # mng = plt.get_current_fig_manager()
-                    # mng.full_screen_toggle()
+            # print(plots % N_SUBPLOTS)
 
-                # print(plots % N_SUBPLOTS)
-
-                self.__scatter_plot(axs[plots % n_subplots], a, b, c, d)
-                plots += 1
+            self.__scatter_plot(axs[plots % n_subplots], df_list)
+            plots += 1
 
             if plots >= self.max_plot:  # to avoid plotting too much
                 break
@@ -939,23 +998,13 @@ class SummaryPlot:
             all'inizio tutti i puntini, ognuno con un colore diverso in base alla serie da cui proviene 
             poi provo a far la linea
         """
-    def __scatter_plot(self, ax, _a, _b, _c, _d):
 
+    def __scatter_plot(self, ax, data):
 
-        ax.scatter(ages, _a, label='Series 1', c='blue')
-
-        # Plot the data for df_stats_2
-        ax.scatter(ages, _b, label='Series 2', c='red')
-
-        # Plot the data for df_stats_3
-        ax.scatter(ages, _c, label='Series 3', c='green')
-
-        # Plot the data for df_stats_4
-        ax.scatter(ages, _d, label='Series 4', c='purple')
+        for series in data:
+            ax.scatter(ages, series, label=series.name)  # mettere il nome della serie e le cose qui
 
         # Add a legend and axis labels
         ax.legend()
         ax.set_xlabel('Age')
         ax.set_ylabel('Data')
-
-
