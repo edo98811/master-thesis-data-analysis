@@ -5,6 +5,7 @@ import re
 from scipy import stats
 import seaborn as sns
 import data_manipulation as dm
+import numpy as np
 
 import subprocess
 
@@ -19,9 +20,8 @@ cose da chiedere
 - script per ogni area (quali sono le aree più importanti) 
 - quali soggetti dovrei tenere per fastsurfer (che patologie) 
 
-- mettere a posto i nomi dei grafici
-- nei grafici bisogna poter scegliere il tipo di dati (adesso prende sempre da aseg)
-- fare in modo che lo scatter plot funzioni su una lista
+- mettere a posto i nomi dei grafici salvati
+- fare il metodo per caricare l'età dei soggetti 
 
 idee
     - input nella funzione table anche la struttura delle tabelle per creare la tabella nuova (magari richiamata) 
@@ -92,7 +92,7 @@ class Table:
 
     def create_table(self):
         raise "method not yet implemented"
-        pass
+        passextr
 
     def get_query(self, query, sub=False, only_processed=False):
         # print (self.df.head())
@@ -200,15 +200,15 @@ class Stats:
         if aparcLeft is not None:
             self.df_stats_aparcL = aparcLeft
         else:
-            self.df_stats_aparcL = self.extract_stats('rh.aparc.DKTatlas.stats', 1)
+            self.df_stats_aparcL = self.extract_stats_fast('rh.aparc.DKTatlas.stats', 1)
         if aparcRight is not None:
             self.df_stats_aparcR = aparcRight
         else:
-            self.df_stats_aparcR = self.extract_stats('lh.aparc.DKTatlas.stats', 1)
+            self.df_stats_aparcR = self.extract_stats_fast('lh.aparc.DKTatlas.stats', 1)
         if aseg is not None:
             self.df_stats_aseg = aseg
         else:
-            self.df_stats_aseg = self.extract_stats('aseg.stats', 0)
+            self.df_stats_aseg = self.extract_stats_fast('aseg.stats', 0)
 
     def add_sub(self, list):
         for i, s in enumerate(list):
@@ -569,11 +569,11 @@ class Comparisons:
         :param columns_to_test:
         :param max_plot:
         """
-        if isinstance(stat_df_1, Stats):
+        if isinstance(stats_df_1, Stats):
             self.stat_df_1 = stats_df_1
         else:
             raise ("stats of the wrong class")
-        if isinstance(stat_df_2, Stats):
+        if isinstance(stats_df_2, Stats):
             self.stat_df_2 = stats_df_2
         else:
             raise ("stats of the wrong class")
@@ -638,7 +638,7 @@ class Comparisons:
                 if not plots % n_subplots:
                     if plots > 1:
                         fig.savefig(
-                            self.data_path + self.data_folder + "/images/img_violin_" + self.name + " - " + stats_2.name + "_" + str(
+                            self.data_path + self.data_folder + "/images/img_violin_" + self.name + " - " + _df1.name + "_" + str(
                                 plots) + ".png")  # save the figure to file
                         # plt.close(fig)  # close the figure window
                         # handles, labels = axs[1].get_legend_handles_labels()
@@ -688,7 +688,7 @@ class Comparisons:
                 if not plots % n_subplots:
                     if plots > 1:
                         fig.savefig(
-                            self.data_path + self.data_folder + "/images/img_ba_" + self.name + " - " + stats_2.name + "_" + str(
+                            self.data_path + self.data_folder + "/images/img_ba_" + self.name + " - " + _df1.name + "_" + str(
                                 plots) + ".png")  # save the figure to file
                         # handles, labels = ax.get_legend_handles_labels()
                         # fig.legend(handles, labels, loc=(0.95, 0.1), prop={'size': 30})
@@ -723,17 +723,17 @@ class Comparisons:
         #     columns = range(2, max_len)
 
         for column_to_compare in columns:
-            a = pd.to_numeric(_df1_filtered.loc[:, column_to_compare], errors='coerce')
-            b = pd.to_numeric(_df2_filtered.loc[:, column_to_compare], errors='coerce')
+            a = pd.to_numeric(_df1.loc[:, column_to_compare], errors='coerce')
+            b = pd.to_numeric(_df2.loc[:, column_to_compare], errors='coerce')
             # a, b = get_column(column_to_compare, _df1_filtered, _df2_filtered)
             if a.any() and b.any() and (a.notnull().all() and b.notnull().all()):
 
-                r1, p1, o1 = __mann_whitney(a, b)
-                r2, p2, o2 = __t_test(a, b)
-                d, rd = __cohens_d(a, b)  # between two areas
+                r1, p1, o1 = self.__mann_whitney(a, b)
+                r2, p2, o2 = self.__t_test(a, b)
+                d, rd = self.__cohens_d(a, b)  # between two areas
 
                 if isinstance(column_to_compare, int):
-                    column_to_compare_name = _df1_filtered.columns[column_to_compare]
+                    column_to_compare_name = _df1.columns[column_to_compare]
 
                     r_all.append({"name": f"{self.name} {column_to_compare_name}",
                                   "mann_whitney": {"result": r1,
@@ -761,7 +761,7 @@ class Comparisons:
             self.__save_dataframe(r_all)
 
     def bonferroni_correction(self, save=False):
-        self.updated_alpha = self.bonferroni_correction_param()
+        self.updated_alpha = self.__correction_param()
         # print(self.updated_alpha)
         for i, row in self.stat_df_result.iterrows():
             if row[1] < self.updated_alpha:
@@ -771,9 +771,9 @@ class Comparisons:
                 row[6] = f"p-value: {row[4]} - null hypothesis rejected, the datasets have a different distribution"
                 row[5] = 1
             row.loc["significance_threshold_used"] = self.updated_alpha
-            df.iloc[i, :] = row
+            self.stat_df_result.iloc[i, :] = row
             if save == True:
-                df.to_csv(self.data_path + f"{query}_bonferroni_corrected.csv")
+                self.stat_df_result.to_csv(self.data_path + f"{self.name}_bonferroni_corrected.csv")
 
     def save_data(self, filename):
 
@@ -841,11 +841,11 @@ class Comparisons:
         # df.to_csv(self.base_path + _name)  # , index=False
 
     def __cohens_d(self, _a, _b):
-        n1, n2 = len(a), len(b)
-        var1, var2 = np.var(a, ddof=1), np.var(b, ddof=1)
+        n1, n2 = len(_a), len(_b)
+        var1, var2 = np.var(_a, ddof=1), np.var(_b, ddof=1)
 
         SDpooled = np.sqrt(((n1 - 1) * var1 + (n2 - 1) * var2) / (n1 + n2 - 2))
-        d = (np.mean(a) - np.mean(b)) / SDpooled
+        d = (np.mean(_a) - np.mean(_b)) / SDpooled
 
         if d < 0.2:
             string = "Very small effect size"
@@ -867,10 +867,10 @@ class Comparisons:
 
         # Create a split violin plot
         # sns.violinplot(data=df, split=True)
-        sns.violinplot(ax=ax, data=df, hue="Group", x="Area", y="Data", split=True)
-        ax.title.set_text(_a.name + "\n" + query.split("=")[-1])
+        sns.violinplot(ax=_ax, data=df, hue="Group", x="Area", y="Data", split=True)
+        _ax.title.set_text(_a.name + "\n" + self.query.split("=")[-1])
         # ax.yaxis.set_major_formatter(plt.FormatStrFormatter('{:.3g}'))
-        ax.set_xlabel("")
+        _ax.set_xlabel("")
 
     def __bland_altman_plot(self, _ax, _a, _b):
         # Compute mean and difference between two series
@@ -882,25 +882,25 @@ class Comparisons:
         sd = np.std(diff, axis=0)
 
         # Create plot
-        ax.scatter(mean, diff, s=10)
-        ax.axhline(md, color='gray', linestyle='--')
-        ax.axhline(md + 1.96 * sd, color='gray', linestyle='--')
-        ax.axhline(md - 1.96 * sd, color='gray', linestyle='--')
-        ax.set_xlabel('Mean')
-        ax.set_ylabel('Difference')
-        ax.set_title(_a.name + "\n" + query.split("=")[-1])
-        ax.legend(['Mean difference', '95% limits of agreement'])
+        _ax.scatter(mean, diff, s=10)
+        _ax.axhline(md, color='gray', linestyle='--')
+        _ax.axhline(md + 1.96 * sd, color='gray', linestyle='--')
+        _ax.axhline(md - 1.96 * sd, color='gray', linestyle='--')
+        _ax.set_xlabel('Mean')
+        _ax.set_ylabel('Difference')
+        _ax.set_title(_a.name + "\n" + self.name)#query.split("=")[-1])
+        _ax.legend(['Mean difference', '95% limits of agreement'])
 
-    def __get_column(self, column_to_compare):
-        if isinstance(column_to_compare, int):
-            a = df1.iloc[:, column_to_compare]
-            b = df2.iloc[:, column_to_compare]
-
-        if isinstance(column_to_compare, str):
-            a = df1.loc[:, column_to_compare]
-            b = df2.loc[:, column_to_compare]
-
-        return a, b
+    # def __get_column(self, column_to_compare):
+    #     if isinstance(column_to_compare, int):
+    #         a = df1.iloc[:, column_to_compare]
+    #         b = df2.iloc[:, column_to_compare]
+    #
+    #     if isinstance(column_to_compare, str):
+    #         a = df1.loc[:, column_to_compare]
+    #         b = df2.loc[:, column_to_compare]
+    #
+    #     return a, b
 
     def __correction_param(self):
         return self.alpha / len(self.stat_df_result)
@@ -955,8 +955,8 @@ class SummaryPlot:
                 df_list.append(table.df_stats_aparcR)
 
         if not columns:
-            columns = _df1.columns
-            columns = columns.intersection(_df2.columns).tolist()
+            columns = df_list[0].columns
+           # columns = columns.intersection(_df2.columns).tolist()
         # if not columns:
         #     max_len = min(len(_df1.axes[1]), len(_df2.axes[1]))
         #     columns = range(2, max_len)
@@ -972,7 +972,7 @@ class SummaryPlot:
             if not plots % n_subplots:
                 if plots > 1:
                     fig.savefig(
-                        self.data_path + "/images/img_violin_" + self.name + " - " + stats_2.name + "_" + str(
+                        self.data_path + "/images/img_violin_" + self.name + " - " + self.name + "_" + str(
                             plots) + ".png")  # save the figure to file
                     # plt.close(fig)  # close the figure window
                     # handles, labels = axs[1].get_legend_handles_labels()
@@ -985,8 +985,8 @@ class SummaryPlot:
                 # mng.full_screen_toggle()
 
             # print(plots % N_SUBPLOTS)
-
-            self.__scatter_plot(axs[plots % n_subplots], df_list)
+            ages = None
+            self.__scatter_plot(axs[plots % n_subplots], df_list, ages)
             plots += 1
 
             if plots >= self.max_plot:  # to avoid plotting too much
@@ -999,7 +999,7 @@ class SummaryPlot:
             poi provo a far la linea
         """
 
-    def __scatter_plot(self, ax, data):
+    def __scatter_plot(self, ax, data, ages):
 
         for series in data:
             ax.scatter(ages, series, label=series.name)  # mettere il nome della serie e le cose qui
