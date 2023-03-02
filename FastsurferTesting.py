@@ -605,7 +605,7 @@ class Comparisons:
         self.stat_df_result = None
         self.stat_test(columns_to_test)
 
-        self.updated_alpha = "no correction"
+        self.updated_alpha = self.__correction_param()
 
     def violin(self, data="aseg", columns=None, n_subplots=10, n_rows=2):
         plots = 0
@@ -761,7 +761,6 @@ class Comparisons:
             self.__save_dataframe(r_all)
 
     def bonferroni_correction(self, save=False):
-        self.updated_alpha = self.__correction_param()
         # print(self.updated_alpha)
         for i, row in self.stat_df_result.iterrows():
             if row[1] < self.updated_alpha:
