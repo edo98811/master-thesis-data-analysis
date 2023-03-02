@@ -8,6 +8,24 @@ import data_manipulation as dm
 
 import subprocess
 
+#todo altro:
+"""
+
+- rileggere tutto 
+- metodo per avviare codice fastsurfer
+
+
+cose da chiedere 
+- script per ogni area (quali sono le aree più importanti) 
+- quali soggetti dovrei tenere per fastsurfer (che patologie) 
+
+- mettere a posto i nomi dei grafici
+- nei grafici bisogna poter scegliere il tipo di dati 
+- fare in modo che lo scatter plot funzioni su una lista
+
+"""
+
+
 class Table:
     """
     init:
@@ -37,7 +55,6 @@ class Table:
         self.processed_path = p_path
         self.base_path = b_path
         self.data_path = d_folder
-
     # def get_query_list(self, query):
     #     """
     #     old
@@ -50,7 +67,6 @@ class Table:
     #         subjects_list[i] = "sub-" + s
     #
     #     self.subjects_list = set(subjects_list)
-
     def update(self):
         # for i, subj_path_filtered in enumerate(df["ID"].tolist()):
         #     subjs.add("sub-" + subj_path_filtered)
@@ -107,22 +123,6 @@ class Table:
     #     for i, s in enumerate(subjects_list):
     #         subjects_list[i] = "sub-" + s
     #     return subjects_list
-
-
-#todo altro:
-"""
-
-- rileggere tutto 
-- metodo per avviare codice fastsurfer
-
-
-cose da chiedere 
-- script per ogni area (quali sono le aree più importanti) 
-- quali soggetti dovrei tenere per fastsurfer (che patologie) 
-
-
-"""
-
 
 class Stats:
     """
@@ -497,7 +497,6 @@ class Stats:
 
         return paths_found
 
-
 class Comparisons:
     """
     init args
@@ -525,7 +524,7 @@ class Comparisons:
         bland altmann plot
     """
 
-    def __init__(self, stat_df_1, stat_df_2, name, alpha, base_path, columns_to_test=None, max_plot=500):
+    def __init__(self, stat_df_1, stat_df_2, name, alpha, base_path, data_folder, columns_to_test=None, max_plot=500):
         """
 
         :param stat_df_1:
@@ -544,7 +543,7 @@ class Comparisons:
             raise ("stats of the wrong class")
         self.base_path = base_path
 
-        self.data_path = self.base_path + "/data"
+        self.data_path = data_folder
         if not os.path.exists(self.data_path):
             os.makedirs(self.data_path)
 
@@ -572,18 +571,17 @@ class Comparisons:
 
         self.updated_alpha = "no correction"
 
-
     def violin(self, columns=None, n_subplots=10, n_rows=2):
         plots = 0
 
-        _df1 = self.stat_df_1
-        _df2 = self.stat_df_2
+        _df1 = self.stat_df_1.df_stats_aseg
+        _df2 = self.stat_df_2.df_stats_aseg
 
         # if not columns:
         #     columns = _df1.columns
         #     columns = columns.intersection(_df2.columns).tolist()
         if not columns:
-            columns = {_df1.columns.tolist()}.intersection({_df2.columns.tolist()}) # set with columns
+            columns = set(_df1.columns.tolist()).intersection(set(_df2.columns.tolist()))
         # if not columns:
         #     max_len = min(len(_df1.axes[1]), len(_df2.axes[1]))
         #     columns = range(2, max_len)
@@ -597,7 +595,7 @@ class Comparisons:
                 if not plots % n_subplots:
                     if plots > 1:
                         fig.savefig(
-                            self.data_path + "/images/img_violin_" + self.name + " - " + stats_2.name + "_" + str(
+                            self.data_path + self.data_folder + "/images/img_violin_" + self.name + " - " + stats_2.name + "_" + str(
                                 plots) + ".png")  # save the figure to file
                         # plt.close(fig)  # close the figure window
                         # handles, labels = axs[1].get_legend_handles_labels()
@@ -620,10 +618,10 @@ class Comparisons:
     def bland_altmann(self, columns=None, n_subplots=4, n_rows=2):
         plots = 0
 
-        _df1 = self.stat_df_1
-        _df2 = self.stat_df_2
+        _df1 = self.stat_df_1.df_stats_aseg
+        _df2 = self.stat_df_2.df_stats_aseg
         if not columns:
-            columns = {_df1.columns.tolist()}.intersection({_df2.columns.tolist()}) # set with columns
+            columns = set(_df1.columns.tolist()).intersection(set(_df2.columns.tolist())) # set with columns
             # columns = _df1.columns
             # columns = columns.intersection(_df2.columns).tolist()
         # if not columns:
@@ -638,7 +636,7 @@ class Comparisons:
 
                 if not plots % n_subplots:
                     if plots > 1:
-                        fig.savefig(self.data_path + "/images/img_ba_" + self.name + " - " + stats_2.name + "_" + str(
+                        fig.savefig(self.data_path + self.data_folder + "/images/img_ba_" + self.name + " - " + stats_2.name + "_" + str(
                             plots) + ".png")  # save the figure to file
                         # handles, labels = ax.get_legend_handles_labels()
                         # fig.legend(handles, labels, loc=(0.95, 0.1), prop={'size': 30})
@@ -656,16 +654,15 @@ class Comparisons:
             if plots >= 20:  # to avoid plotting too much
                 break
 
-
     def stat_test(self, columns):
         # input: query, df1 name, df2 name, subj_table, list of all test results
-        _df1 = self.stat_df_1
-        _df2 = self.stat_df_2
+        _df1 = self.stat_df_1.df_stats_aseg
+        _df2 = self.stat_df_2.df_stats_aseg
         r_all = []
 
         # se non viene dato un input fa il test per tutte le colonne
         if not columns:
-            columns = {_df1.columns.tolist()}.intersection({_df2.columns.tolist()}) # set with columns
+            columns = set(_df1.columns.tolist()).intersection(set(_df2.columns.tolist()))
         # if not columns:
         #     columns = _df1.columns
         #     columns.intersection(_df2_filtered.columns).tolist()
@@ -857,7 +854,7 @@ class Comparisons:
         return self.alpha / len(self.stat_df_result)
 
 class SummaryPlot:
-    def __init__(self):
+    def __init__(self, df1, df2, df3, df4):
         """
         idea: fare una lina per persone sane, una linea per persone malate, una linea per freesurfer e per fastsurfer
         domande da fare:
@@ -908,6 +905,8 @@ class SummaryPlot:
             b = pd.to_numeric(_df2.loc[:, column_to_compare], errors='coerce')
             c = pd.to_numeric(_df2.loc[:, column_to_compare], errors='coerce')
             d = pd.to_numeric(_df2.loc[:, column_to_compare], errors='coerce')
+
+            a = a.set_axis
             # a, b = get_column(column_to_compare, _df1_filtered, _df2_filtered)
             if a.any() and b.any() and (a.notnull().all() and b.notnull().all()):
 
@@ -928,7 +927,7 @@ class SummaryPlot:
 
                 # print(plots % N_SUBPLOTS)
 
-                self.__violin_plot(axs[plots % n_subplots], a, b)
+                self.__scatter_plot(axs[plots % n_subplots], a, b, c, d)
                 plots += 1
 
             if plots >= self.max_plot:  # to avoid plotting too much
@@ -940,7 +939,23 @@ class SummaryPlot:
             all'inizio tutti i puntini, ognuno con un colore diverso in base alla serie da cui proviene 
             poi provo a far la linea
         """
-    def __comparison_plot(self):
-        pass
+    def __scatter_plot(self, ax, _a, _b, _c, _d):
+
+
+        ax.scatter(ages, _a, label='Series 1', c='blue')
+
+        # Plot the data for df_stats_2
+        ax.scatter(ages, _b, label='Series 2', c='red')
+
+        # Plot the data for df_stats_3
+        ax.scatter(ages, _c, label='Series 3', c='green')
+
+        # Plot the data for df_stats_4
+        ax.scatter(ages, _d, label='Series 4', c='purple')
+
+        # Add a legend and axis labels
+        ax.legend()
+        ax.set_xlabel('Age')
+        ax.set_ylabel('Data')
 
 
