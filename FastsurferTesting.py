@@ -157,13 +157,13 @@ class Stats:
         """
         # here it is saved the data object of the dataset
         if isinstance(df_subj, Table):
-            self.subj_df_obj = df_subj
+            self.df_subj_obj = df_subj
         else:
             raise "wrong datatype"
 
         # here there is the df only already filtered
-        self.df = df_subj.get_query(query)
-        self.subj_list = self.add_sub(self.df["ID"].tolist())
+        self.df_subj = df_subj.get_query(query)
+        self.subj_list = self.add_sub(self.df_subj["ID"].tolist())
 
         self.processed_path = p_path
         self.base_path = b_path
@@ -549,15 +549,15 @@ class Comparisons:
             os.makedirs(self.data_path)
 
         # aggiungere controllo che i soggetti siano gli stessi e non diversi
-        # tmp = self.stat_df_1.subj_df["ID"].tolist()
-        # self.subjects_list = {tmp.extend(self.stat_df_2.subj_df["ID"].tolist())}
-        # tmp = self.stat_df_1.subj_df.columns.tolist()
-        # self.columns_list = {tmp.extend(self.stat_df_2.subj_df.columns.tolist())}
+        # tmp = self.stat_df_1.df_subj["ID"].tolist()
+        # self.subjects_list = {tmp.extend(self.stat_df_2.df_subj["ID"].tolist())}
+        # tmp = self.stat_df_1.df_subj.columns.tolist()
+        # self.columns_list = {tmp.extend(self.stat_df_2.df_subj.columns.tolist())}
         # del tmp
 
-        self.subjects_list = {self.stat_df_1.subj_df["ID"].tolist()}.intersection({self.stat_df_2.subj_df["ID"].tolist()})
-        self.columns_list = {self.stat_df_1.subj_df.columns.tolist()}.intersection(
-            {self.stat_df_2.subj_df.columns.tolist()})
+        self.subjects_list = {self.stat_df_1.df_subj["ID"].tolist()}.intersection({self.stat_df_2.df_subj["ID"].tolist()})
+        self.columns_list = {self.stat_df_1.df_subj.columns.tolist()}.intersection(
+            {self.stat_df_2.df_subj.columns.tolist()})
 
         if not self.subjects_list or not self.columns_list:
             raise "datasets dont have elements in common"
