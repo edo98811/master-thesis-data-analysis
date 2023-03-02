@@ -180,8 +180,8 @@ class Stats:
             raise "wrong datatype"
 
         # here there is the df only already filtered
-        self.df = df_subj_obj.get_query(query)
-        self.subj_list = self.add_sub(self.df["ID"].tolist())
+        self.df_subj = df_subj_obj.get_query(query)
+        self.subj_list = self.add_sub(self.df_subj["ID"].tolist())
 
         self.processed_path = p_path
         self.base_path = b_path
