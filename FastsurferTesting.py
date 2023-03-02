@@ -6,6 +6,8 @@ from scipy import stats
 import seaborn as sns
 import data_manipulation as dm
 
+import subprocess
+
 class Table:
     """
     init:
@@ -28,24 +30,26 @@ class Table:
 
     """
 
-    def __init__(self, df_subj, p_path, b_path):
+    def __init__(self, df_subj, p_path, b_path, d_folder="data_testing/"):
         self.df = df_subj
-        self.processed_path = p_path
         self.subjects_list = self.df["ID"].tolist()
+
+        self.processed_path = p_path
         self.base_path = b_path
+        self.data_path = d_folder
 
-    def get_query_list(self, query):
-        """
-        old
-
-        :param query:
-        :return:
-        """
-        subjects_list = self.df.query(query)["ID"].tolist()
-        for i, s in enumerate(subjects_list):
-            subjects_list[i] = "sub-" + s
-
-        self.subjects_list = set(subjects_list)
+    # def get_query_list(self, query):
+    #     """
+    #     old
+    #
+    #     :param query:
+    #     :return:
+    #     """
+    #     subjects_list = self.df.query(query)["ID"].tolist()
+    #     for i, s in enumerate(subjects_list):
+    #         subjects_list[i] = "sub-" + s
+    #
+    #     self.subjects_list = set(subjects_list)
 
     def update(self):
         # for i, subj_path_filtered in enumerate(df["ID"].tolist()):
@@ -63,7 +67,7 @@ class Table:
                             break
 
     def get_query(self, query, sub=False, only_processed=False):
-        print (self.df.head())
+        # print (self.df.head())
         """
         :param query:
         :param sub:
@@ -85,6 +89,7 @@ class Table:
         # df = self.df.loc[df_subj.loc['ID'].isin(subjects_list)]
 
         df = self.df.query(query)
+        # todo: modificare query per fare in modo che funzioni
         if only_processed:
             df = df.query("processed==yes")
         return df
@@ -96,16 +101,27 @@ class Table:
         :param filename:
         :return:
         """
-        self.df.to_csv(self.base_path + filename)
+        self.df.to_csv(self.data_path + filename)
 
     # def add_sub(self, subjects_list):
     #     for i, s in enumerate(subjects_list):
     #         subjects_list[i] = "sub-" + s
     #     return subjects_list
 
-# todo: modificare query per are in modo che funzioni
-# rileggere le funzioni e aggiungere self tutte le volte che serve
-# implementare le modifiche fatte a altro codice
+
+#todo altro:
+"""
+
+- rileggere tutto 
+- metodo per avviare codice fastsurfer
+
+
+cose da chiedere 
+- script per ogni area (quali sono le aree più importanti) 
+- quali soggetti dovrei tenere per fastsurfer (che patologie) 
+
+
+"""
 
 
 class Stats:
@@ -126,32 +142,51 @@ class Stats:
     methods
     """
 
-    def __init__(self, df_subj, name, b_path, query, p_path= "/media/neuropsycad/disk12t/EdoardoFilippiMasterThesis/FastSurfer_Output", aseg=None, aparcLeft=None, aparcRight=None):
+    def __init__(self, df_subj, name, query, b_path, d_folder="data_testing/", p_path= "/media/neuropsycad/disk12t/EdoardoFilippiMasterThesis/FastSurfer_Output", aseg=None, aparcLeft=None, aparcRight=None):
+        """
 
-        self.subj_df_obj = df_subj
+        :param df_subj:
+        :param name:
+        :param query:
+        :param b_path:
+        :param d_folder:
+        :param p_path:
+        :param aseg:
+        :param aparcLeft:
+        :param aparcRight:
+        """
+        # here it is saved the data object of the dataset
+        if isinstance(df_subj, Table):
+            self.subj_df_obj = df_subj
+        else:
+            raise "wrong datatype"
+
+        # here there is the df only already filtered
+        self.df = df_subj.get_query(query)
+        self.subj_list = self.add_sub(self.df["ID"].tolist())
+
         self.processed_path = p_path
-
-        self.subj_df = df_subj.get_query(query)
-        self.subj_list = self.add_sub(self.subj_df["ID"].tolist())
-
         self.base_path = b_path
+        self.data_path = self.base_path + d_folder
+
         # if not query or (not aseg or not aparcLeft or not aparcRight):
         #     raise " non va bene"
-        self.data_path = self.base_path + "data_testing/"
+
         if not os.path.exists(self.data_path):
             os.makedirs(self.data_path)
 
         self.query = query
         self.name = name
 
+        # add control that these data are dataframes
         if aparcLeft is not None:
-            self.df_stats_aparkL = aparcLeft
+            self.df_stats_aparcL = aparcLeft
         else:
-            self.df_stats_aparkL = self.extract_stats('rh.aparc.DKTatlas.stats', 1)
+            self.df_stats_aparcL = self.extract_stats('rh.aparc.DKTatlas.stats', 1)
         if aparcRight is not None:
-            self.df_stats_aparkR = aparcRight
+            self.df_stats_aparcR = aparcRight
         else:
-            self.df_stats_aparkR = self.extract_stats('lh.aparc.DKTatlas.stats', 1)
+            self.df_stats_aparcR = self.extract_stats('lh.aparc.DKTatlas.stats', 1)
         if aseg is not None:
             self.df_stats_aseg = aseg
         else:
@@ -168,15 +203,15 @@ class Stats:
         if stat_df_paths:
             print("stats file found for " + str(len(stat_df_paths)) + " subjects")
             if _type == 0:
-                # stats_aseg(stat_df_paths).to_csv(SAVE_PATH + save_filename, index=False)
-                return self.stats_aseg(stat_df_paths)
+                # __(stat_df_paths).to_csv(SAVE_PATH + save_filename, index=False)
+                return self.__stats_aseg(stat_df_paths)
             elif _type == 1:
                 # stats_aparcDTK(stat_df_paths).to_csv(SAVE_PATH + save_filename, index=False)
-                return self.stats_aparcDTK(stat_df_paths)
+                return self.__stats_aparcDTK(stat_df_paths)
         else:
             print("no file found")
 
-    def stats_aseg(self, subj_paths):
+    def __stats_aseg(self, subj_paths):
         df_dict = {"ID": []}
 
         for n, path in enumerate(subj_paths):
@@ -233,7 +268,7 @@ class Stats:
         # dm.write_dict(df_dict,"prova_df_dict.json")
         return pd.DataFrame.from_dict(df_dict, orient='columns')
 
-    def stats_aparcDTK(self, subj_paths):
+    def __stats_aparcDTK(self, subj_paths):
         df_dict = {"ID": []}
 
         for n, path in enumerate(subj_paths):
@@ -418,7 +453,7 @@ class Stats:
                 if len(df_dict[key]) != n + 1:
                     df_dict[key].append("NaN")
 
-        dm.write_dict(df_dict, "old scripts/prova_df_dict.json")
+        # dm.write_dict(df_dict, "old scripts/prova_df_dict.json")
 
         # # if some columns have different length
         # for key in df_dict.keys():
@@ -436,9 +471,9 @@ class Stats:
         if which[0]:
             self.df_stats_aseg.to_csv(self.data_path + self.name + "/" + names[0])
         if which[1]:
-            self.df_stats_aparkL.to_csv(self.data_path + self.name + "/" + names[1])
+            self.df_stats_aparcL.to_csv(self.data_path + self.name + "/" + names[1])
         if which[2]:
-            self.df_stats_aparkR.to_csv(self.data_path + self.name + "/" + names[2])
+            self.df_stats_aparcR.to_csv(self.data_path + self.name + "/" + names[2])
 
     def __extract_path(self, filename):
         # set of all the subjects for easier computation
@@ -513,8 +548,20 @@ class Comparisons:
         if not os.path.exists(self.data_path):
             os.makedirs(self.data_path)
 
-        self.subjects_list = {self.stat_df_1.subj_df["ID"].tolist() + self.stat_df_2.subj_df["ID"].tolist()}
-        self.columns_list = {self.stat_df_1.subj_df.columns.tolist() + self.stat_df_2.subj_df.columns.tolist()}
+        # aggiungere controllo che i soggetti siano gli stessi e non diversi
+        # tmp = self.stat_df_1.subj_df["ID"].tolist()
+        # self.subjects_list = {tmp.extend(self.stat_df_2.subj_df["ID"].tolist())}
+        # tmp = self.stat_df_1.subj_df.columns.tolist()
+        # self.columns_list = {tmp.extend(self.stat_df_2.subj_df.columns.tolist())}
+        # del tmp
+
+        self.subjects_list = {self.stat_df_1.subj_df["ID"].tolist()}.intersection({self.stat_df_2.subj_df["ID"].tolist()})
+        self.columns_list = {self.stat_df_1.subj_df.columns.tolist()}.intersection(
+            {self.stat_df_2.subj_df.columns.tolist()})
+
+        if not self.subjects_list or not self.columns_list:
+            raise "datasets dont have elements in common"
+
 
         self.name = name
         self.alpha = alpha
@@ -523,6 +570,8 @@ class Comparisons:
         self.stat_df_result = None
         self.stat_test(columns_to_test)
 
+        self.updated_alpha = "no correction"
+
 
     def violin(self, columns=None, n_subplots=10, n_rows=2):
         plots = 0
@@ -530,9 +579,11 @@ class Comparisons:
         _df1 = self.stat_df_1
         _df2 = self.stat_df_2
 
+        # if not columns:
+        #     columns = _df1.columns
+        #     columns = columns.intersection(_df2.columns).tolist()
         if not columns:
-            columns = _df1.columns
-            columns = columns.intersection(_df2.columns).tolist()
+            columns = {_df1.columns.tolist()}.intersection({_df2.columns.tolist()}) # set with columns
         # if not columns:
         #     max_len = min(len(_df1.axes[1]), len(_df2.axes[1]))
         #     columns = range(2, max_len)
@@ -572,8 +623,9 @@ class Comparisons:
         _df1 = self.stat_df_1
         _df2 = self.stat_df_2
         if not columns:
-            columns = _df1.columns
-            columns = columns.intersection(_df2.columns).tolist()
+            columns = {_df1.columns.tolist()}.intersection({_df2.columns.tolist()}) # set with columns
+            # columns = _df1.columns
+            # columns = columns.intersection(_df2.columns).tolist()
         # if not columns:
         #     max_len = min(len(_df1.axes[1]), len(_df2.axes[1]))
         #     columns = range(2, max_len)
@@ -582,7 +634,7 @@ class Comparisons:
             a = pd.to_numeric(_df1.loc[:, column_to_compare], errors='coerce')
             b = pd.to_numeric(_df2.loc[:, column_to_compare], errors='coerce')
             # a, b = get_column(column_to_compare, _df1_filtered, _df2_filtered)
-            if a.any() and b.any() and (a.notnull().all() and b.notnull().all()):
+            if a.any() and b.any() and (a.notnull().all() and b.notnull().all()): # for all the fields with numbers
 
                 if not plots % n_subplots:
                     if plots > 1:
@@ -604,6 +656,7 @@ class Comparisons:
             if plots >= 20:  # to avoid plotting too much
                 break
 
+
     def stat_test(self, columns):
         # input: query, df1 name, df2 name, subj_table, list of all test results
         _df1 = self.stat_df_1
@@ -612,8 +665,10 @@ class Comparisons:
 
         # se non viene dato un input fa il test per tutte le colonne
         if not columns:
-            columns = _df1_filtered.columns
-            columns.intersection(_df2_filtered.columns).tolist()
+            columns = {_df1.columns.tolist()}.intersection({_df2.columns.tolist()}) # set with columns
+        # if not columns:
+        #     columns = _df1.columns
+        #     columns.intersection(_df2_filtered.columns).tolist()
         # if not columns:
         #     max_len = min(len(_df1.axes[1]), len(_df2.axes[1]))
         #     columns = range(2, max_len)
@@ -626,7 +681,7 @@ class Comparisons:
 
                 r1, p1, o1 = __mann_whitney(a, b)
                 r2, p2, o2 = __t_test(a, b)
-                d, rd = __cohens_d(a, b)
+                d, rd = __cohens_d(a, b) # between two areas
 
                 if isinstance(column_to_compare, int):
                     column_to_compare_name = _df1_filtered.columns[column_to_compare]
@@ -657,16 +712,16 @@ class Comparisons:
             self.__save_dataframe(r_all)
 
     def bonferroni_correction(self, save=False):
-        updated_ST = self.bonferroni_correction_param()
-        print(updated_ST)
+        self.updated_alpha = self.bonferroni_correction_param()
+        # print(self.updated_alpha)
         for i, row in self.stat_df_result.iterrows():
-            if row[1] < updated_ST:
-                row[3] = f"p-value: {row[0]} - null hypothesis rejected, means are not statistically equal"
+            if row[1] < self.updated_alpha:
+                row[3] = f"p-value: {row[1]} - null hypothesis rejected, means are not statistically equal"
                 row[2] = 1
-            if row[4] < updated_ST:
-                row[6] = f"p-value: {row[3]} - null hypothesis rejected, the datasets have a different distribution"
+            if row[4] < self.updated_alpha:
+                row[6] = f"p-value: {row[4]} - null hypothesis rejected, the datasets have a different distribution"
                 row[5] = 1
-            row.loc["significance_threshold_used"] = updated_ST
+            row.loc["significance_threshold_used"] = self.updated_alpha
             df.iloc[i, :] = row
             if save == True:
                 df.to_csv(self.data_path + f"{query}_bonferroni_corrected.csv")
@@ -730,7 +785,8 @@ class Comparisons:
                                                                "t_test message": item["t_test"]["result"],
                                                                "cohens d value": item["d"]["d_value"],
                                                                "cohens d result": item["d"]["result"],
-                                                               "significance_threshold_used": self.alpha
+                                                               "alpha_used": self.alpha,
+                                                               "alpha_correction": self.updated_alpha
                                                                }, index=[item["name"]])])
 
         # df.to_csv(self.base_path + _name)  # , index=False
@@ -763,7 +819,7 @@ class Comparisons:
         # Create a split violin plot
         # sns.violinplot(data=df, split=True)
         sns.violinplot(ax=ax, data=df, hue="Group", x="Area", y="Data", split=True)
-        ax.title.set_text(_a.name + "\n" + queries[0].split("=")[-1])
+        ax.title.set_text(_a.name + "\n" + query.split("=")[-1])
         # ax.yaxis.set_major_formatter(plt.FormatStrFormatter('{:.3g}'))
         ax.set_xlabel("")
 
@@ -783,7 +839,7 @@ class Comparisons:
         ax.axhline(md - 1.96 * sd, color='gray', linestyle='--')
         ax.set_xlabel('Mean')
         ax.set_ylabel('Difference')
-        ax.set_title(_a.name + "\n" + queries[0].split("=")[-1])
+        ax.set_title(_a.name + "\n" + query.split("=")[-1])
         ax.legend(['Mean difference', '95% limits of agreement'])
 
     def __get_column(self, column_to_compare):
@@ -799,3 +855,92 @@ class Comparisons:
 
     def __correction_param(self):
         return self.alpha / len(self.stat_df_result)
+
+class SummaryPlot:
+    def __init__(self):
+        """
+        idea: fare una lina per persone sane, una linea per persone malate, una linea per freesurfer e per fastsurfer
+        domande da fare:
+            per tutte le aree o solo alcune interessanti?
+            quali devo confrontare come soggetti?
+        """
+        self.df1 = df1
+        self.df2 = df2
+        self.df3 = df3
+        self.df4 = df4
+
+        # else:
+        #     raise ("stats of the wrong class")
+        self.base_path = base_path
+
+        self.data_path = self.base_path + data_folder
+        if not os.path.exists(self.data_path):
+            os.makedirs(self.data_path)
+
+        self.subjects_list = self.df["ID"].tolist()
+        self.columns_list = self.df.columns.tolist()
+
+        self.name = name
+        self.alpha = alpha
+        self.max_plot = max_plot
+
+        self.stat_df_result = None
+        self.stat_test(columns_to_test)
+
+
+    def comparison_plot(self):
+        plots = 0
+
+        _df1 = self.stat_df_1
+        _df2 = self.stat_df_2
+        _df3 = self.stat_df_3
+        _df4 = self.stat_df_4
+
+        if not columns:
+            columns = _df1.columns
+            columns = columns.intersection(_df2.columns).tolist()
+        # if not columns:
+        #     max_len = min(len(_df1.axes[1]), len(_df2.axes[1]))
+        #     columns = range(2, max_len)
+
+        for column_to_compare in columns:
+            a = pd.to_numeric(_df1.loc[:, column_to_compare], errors='coerce')
+            b = pd.to_numeric(_df2.loc[:, column_to_compare], errors='coerce')
+            c = pd.to_numeric(_df2.loc[:, column_to_compare], errors='coerce')
+            d = pd.to_numeric(_df2.loc[:, column_to_compare], errors='coerce')
+            # a, b = get_column(column_to_compare, _df1_filtered, _df2_filtered)
+            if a.any() and b.any() and (a.notnull().all() and b.notnull().all()):
+
+                if not plots % n_subplots:
+                    if plots > 1:
+                        fig.savefig(
+                            self.data_path + "/images/img_violin_" + self.name + " - " + stats_2.name + "_" + str(
+                                plots) + ".png")  # save the figure to file
+                        # plt.close(fig)  # close the figure window
+                        # handles, labels = axs[1].get_legend_handles_labels()
+                        # fig.legend(handles, labels, loc=(0.95, 0.1), prop={'size': 30})
+                    fig, axs = plt.subplots(n_rows, int(n_subplots / n_rows), figsize=(40, 20))
+                    axs = axs.ravel()
+                    plt.subplots_adjust(hspace=0.5)
+                    plt.subplots_adjust(wspace=0.2)
+                    # mng = plt.get_current_fig_manager()
+                    # mng.full_screen_toggle()
+
+                # print(plots % N_SUBPLOTS)
+
+                self.__violin_plot(axs[plots % n_subplots], a, b)
+                plots += 1
+
+            if plots >= self.max_plot:  # to avoid plotting too much
+                break
+
+        """
+        idea
+            plot con 4
+            all'inizio tutti i puntini, ognuno con un colore diverso in base alla serie da cui proviene 
+            poi provo a far la linea
+        """
+    def __comparison_plot(self):
+        pass
+
+
