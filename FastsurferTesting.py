@@ -51,7 +51,7 @@ class Table:
 
     """
 
-    def __init__(self, name, b_path, df_subj, p_path, d_folder="data_testing/"):
+    def __init__(self, name, b_path, p_path, df_subj, d_folder="data_testing/"):
         if df_subj is not None:
             self.df = df_subj
         else:
@@ -174,13 +174,13 @@ class Stats:
         :param aparcRight:
         """
         # here it is saved the data object of the dataset
-        if isinstance(df_subj, Table):
+        if isinstance(df_subj_obj, Table):
             self.df_subj_obj = df_subj_obj
         else:
             raise "wrong datatype"
 
         # here there is the df only already filtered
-        self.df = df_subj.get_query(query)
+        self.df = df_subj_obj.get_query(query)
         self.subj_list = self.add_sub(self.df["ID"].tolist())
 
         self.processed_path = p_path

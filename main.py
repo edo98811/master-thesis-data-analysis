@@ -8,8 +8,7 @@ DATA_FOLDER = "test_data/"
 
 
 def main():
-    table = ft.Table(pd.read_csv(BASE_PATH + "/text_and_csv_files/OASIS_table.csv"), OASIS_PATH,
-                     BASE_PATH + "/text_and_csv_files")
+    table = ft.Table("OASIS TABLE", BASE_PATH, OASIS_PATH, pd.read_csv(BASE_PATH + "/text_and_csv_files/OASIS_table.csv"))
 
     aseg_free = pd.read_csv(BASE_PATH + "Stats_FreeSurfer/aseg.csv")
     aparcL_free = pd.read_csv(BASE_PATH + "Stats_FreeSurfer/aparcDKT_right.csv")
