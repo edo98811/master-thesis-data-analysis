@@ -773,6 +773,7 @@ class Comparisons:
     def bonferroni_correction(self, save=False):
         # print(self.updated_alpha)
         self.updated_alpha = self.__correction_param()
+        print(self.updated_alpha)
         for i, row in enumerate(self.stat_df_result.iterrows()):
             if row[1] < self.updated_alpha:
                 row[3] = f"p-value: {row[1]} - null hypothesis rejected, means are not statistically equal"
