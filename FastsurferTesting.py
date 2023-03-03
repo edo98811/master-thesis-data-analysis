@@ -22,7 +22,6 @@ cose da chiedere
 
 todo
     - bonferroni correction da sempre problemi 
-    - in get query add print with number of subjects found
     - mettere a posto i nomi dei grafici salvati
     - aggiungere modo di salvare parametri anche in stats free (adesso si puo fare solo per stats fast)
     - in Stats il processed path deve essere preso direttamente dalle Table, forse anche il processed path?
@@ -653,6 +652,8 @@ class Comparisons:
 
         if not self.subjects_list or not self.columns_list:
             raise "datasets dont have elements in common"
+        if not os.path.exists(self.data_path + "images/"):
+            os.makedirs(self.data_path + "images/")
 
         self.name = name
         self.alpha = alpha
@@ -704,7 +705,7 @@ class Comparisons:
                 if not plots % n_subplots:
                     if plots > 1:
                         fig.savefig(
-                            self.data_path + "/images/img_violin_" + self.name + "_" + str(
+                            self.data_path + "images/img_violin_" + self.name + "_" + str(
                                 plots) + ".png")  # save the figure to file
                         # plt.close(fig)  # close the figure window
                         # handles, labels = axs[1].get_legend_handles_labels()
@@ -761,7 +762,7 @@ class Comparisons:
                 if not plots % n_subplots:
                     if plots > 1:
                         fig.savefig(
-                            self.data_path + "/images/img_ba_" + self.name + "_" + str(
+                            self.data_path + "images/img_ba_" + self.name + "_" + str(
                                 plots) + ".png")  # save the figure to file
                         # handles, labels = ax.get_legend_handles_labels()
                         # fig.legend(handles, labels, loc=(0.95, 0.1), prop={'size': 30})
@@ -1064,7 +1065,7 @@ class SummaryPlot:
             if not plots % n_subplots:
                 if plots > 1:
                     fig.savefig(
-                        self.data_path + "/images/img_violin_" + self.name + " - " + self.name + "_" + str(
+                        self.data_path + "images/img_violin_" + self.name + " - " + self.name + "_" + str(
                             plots) + ".png")  # save the figure to file
                     # plt.close(fig)  # close the figure window
                     # handles, labels = axs[1].get_legend_handles_labels()
