@@ -604,12 +604,13 @@ class Comparisons:
 
         self.name = name
         self.alpha = alpha
+        self.updated_alpha = "no correction"
         self.max_plot = max_plot
 
         self.stat_df_result = None
         self.stat_test(columns_to_test)
 
-        self.updated_alpha = "no correction"
+
 
     def violin(self, data="aseg", columns=None, n_subplots=10, n_rows=2):
         plots = 0
