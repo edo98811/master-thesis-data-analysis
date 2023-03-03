@@ -23,7 +23,7 @@ cose da chiedere
 todo
     - mettere a posto i nomi dei grafici salvati
     - fare il metodo per caricare l'età dei soggetti 
-    - comparison object has no attribute updated apha??
+    - bonferroni correction da sempre problemi 
     - aggiungere print alla fine delle funzioni
 
 idee
@@ -775,12 +775,12 @@ class Comparisons:
         self.updated_alpha = self.__correction_param()
         print(self.updated_alpha)
         for i, row in enumerate(self.stat_df_result.iterrows()):
-            if row[1] < self.updated_alpha:
-                row[3] = f"p-value: {row[1]} - null hypothesis rejected, means are not statistically equal"
-                row[2] = 1
-            if row[4] < self.updated_alpha:
-                row[6] = f"p-value: {row[4]} - null hypothesis rejected, the datasets have a different distribution"
-                row[5] = 1
+            if row["mann_whitney p_value"] < self.updated_alpha:
+                row["mann_whitney message"] = f"p-value: {row['mann_whitney p_value']} - null hypothesis rejected, means are not statistically equal"
+                row["mann_whitney outcome"] = 1
+            if row["t_test p_value"] < self.updated_alpha:
+                row["t_test message"] = f"p-value: {row['t_test p_value']} - null hypothesis rejected, the datasets have a different distribution"
+                row["t_test outcome"] = 1
             row.loc["alpha_correction"] = self.updated_alpha
             self.stat_df_result.iloc[i, :] = row
             if save == True:
