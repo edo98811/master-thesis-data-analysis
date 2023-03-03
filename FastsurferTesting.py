@@ -22,6 +22,7 @@ cose da chiedere
 
 todo
     - bonferroni correction da sempre problemi 
+    - in get query add print with number of subjects found
     - mettere a posto i nomi dei grafici salvati
     - aggiungere modo di salvare parametri anche in stats free (adesso si puo fare solo per stats fast)
     - in Stats il processed path deve essere preso direttamente dalle Table, forse anche il processed path?
@@ -147,7 +148,7 @@ class Table:
         df = self.df.query(query)
         if only_processed:
             df = df.loc[df['processed'] == 'yes']
-        print(f"table: {self.name} filtered throug query: {query}")
+        print(f"table: {self.name} filtered throug query: {query}, {len(df)} subjects found")
         return df
 
     def save_csv(self, filename):
@@ -854,7 +855,7 @@ class Comparisons:
         # print(self.updated_alpha)
         self.updated_alpha = self.__correction_param()
         print(self.updated_alpha)
-        for i, row in enumerate(self.stat_df_result.iterrows()):
+        for i, row in self.stat_df_result.iterrows():
             if type(row["mann_whitney p_value"]) is not str and type(row["mann_whitney p_value"]) is not str and type(self.updated_alpha) is not str:
                 if row["mann_whitney p_value"] < self.updated_alpha:
                     row["mann_whitney message"] = f"p-value: {row['mann_whitney p_value']} - null hypothesis rejected, means are not statistically equal"
