@@ -780,7 +780,7 @@ class Comparisons:
             if row[4] < self.updated_alpha:
                 row[6] = f"p-value: {row[4]} - null hypothesis rejected, the datasets have a different distribution"
                 row[5] = 1
-            # row.loc["significance_threshold_used"] = self.updated_alpha
+            row.loc["alpha_correction"] = self.updated_alpha
             self.stat_df_result.iloc[i, :] = row
             if save == True:
                 self.stat_df_result.to_csv(self.data_path + f"{self.name}_bonferroni_corrected.csv")
