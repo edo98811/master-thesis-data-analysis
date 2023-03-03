@@ -266,7 +266,7 @@ class Stats:
         df_dict = {"ID": []}
 
         for n, path in enumerate(subj_paths):
-            print("extracting stats for subject " + str(n + 1) + ", path:" + path)
+            # print("extracting stats for subject " + str(n + 1) + ", path:" + path)
 
             # saving the subject name
             df_dict["ID"].append(path.split("/")[-3])
@@ -323,7 +323,7 @@ class Stats:
         df_dict = {"ID": []}
 
         for n, path in enumerate(subj_paths):
-            print("extracting stats for subject " + str(n + 1) + ", path:" + path)
+            #print("extracting stats for subject " + str(n + 1) + ", path:" + path)
 
             # saving the subject name
             df_dict["ID"].append(path.split("/")[-3])
@@ -378,7 +378,7 @@ class Stats:
                 if len(df_dict[key]) != n + 1:
                     df_dict[key].append("NaN")
 
-        dm.write_dict(df_dict, "old scripts/prova_df_dict.json")
+        #dm.write_dict(df_dict, "old scripts/prova_df_dict.json")
 
         # # if some columns have different length
         # for key in df_dict.keys():
@@ -392,7 +392,7 @@ class Stats:
         df_dict = {"ID": []}
 
         for n, path in enumerate(subj_paths):
-            print("extracting stats for subject " + str(n + 1) + ", path:" + path)
+            #print("extracting stats for subject " + str(n + 1) + ", path:" + path)
 
             # saving the subject name
             df_dict["ID"].append(path.split("/")[-3])
@@ -449,7 +449,7 @@ class Stats:
         df_dict = {"ID": []}
 
         for n, path in enumerate(subj_paths):
-            print("extracting stats for subject " + str(n + 1) + ", path:" + path)
+            #print("extracting stats for subject " + str(n + 1) + ", path:" + path)
 
             # saving the subject name
             df_dict["ID"].append(path.split("/")[-3])
@@ -773,7 +773,7 @@ class Comparisons:
     def bonferroni_correction(self, save=False):
         # print(self.updated_alpha)
         self.updated_alpha = self.__correction_param()
-        for i, row in self.stat_df_result.iterrows():
+        for i, row in enumerate(self.stat_df_result.iterrows()):
             if row[1] < self.updated_alpha:
                 row[3] = f"p-value: {row[1]} - null hypothesis rejected, means are not statistically equal"
                 row[2] = 1
