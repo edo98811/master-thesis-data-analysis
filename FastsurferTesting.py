@@ -24,6 +24,7 @@ todo
     - mettere a posto i nomi dei grafici salvati
     - fare il metodo per caricare l'età dei soggetti 
     - comparison object has no attribute updated apha??
+    - aggiungere print alla fine delle funzioni
 
 idee
     - input nella funzione table anche la struttura delle tabelle per creare la tabella nuova (magari richiamata) 
@@ -96,7 +97,7 @@ class Table:
         raise "method not yet implemented"
         passextr
 
-    def get_query(self, query, sub=False, only_processed=False):
+    def get_query(self, query, sub=False, only_processed=True):
         # print (self.df.head())
         """
         :param query:
@@ -121,6 +122,7 @@ class Table:
         df = self.df.query(query)
         if only_processed:
             df = df.loc[df['processed'] == 'yes']
+        print(f"table: {self.name} filtered throug query: {query}")
         return df
 
     def save_csv(self, filename):
@@ -131,6 +133,7 @@ class Table:
         :return:
         """
         self.df.to_csv(self.data_path + filename)
+        print(f"csv of table {self.name} saved in {self.data_path + filename}")
 
     def start_processing(self):
         pass
