@@ -21,10 +21,14 @@ cose da chiedere
 - quali soggetti dovrei tenere per fastsurfer (che patologie) 
 
 todo
-    - mettere a posto i nomi dei grafici salvati
-    - fare il metodo per caricare l'età dei soggetti 
     - bonferroni correction da sempre problemi 
+    - mettere a posto i nomi dei grafici salvati
+    - aggiungere modo di salvare parametri anche in stats free (adesso si puo fare solo per stats fast)
+    - in Stats il processed path deve essere preso direttamente dalle Table, forse anche il processed path?
+    - in comparison serve davvero il parametro column to test?
+    - fare il metodo per caricare l'età dei soggetti 
     - aggiungere print alla fine delle funzioni
+    - aggiungere descrizioni fatte bene
 
 idee
     - input nella funzione table anche la struttura delle tabelle per creare la tabella nuova (magari richiamata) 
@@ -54,7 +58,14 @@ class Table:
 
     """
 
-    def __init__(self, name, b_path, p_path, df_subj, d_folder="data_testing/"):
+    def __init__(self, name, b_path, p_path, df_subj=None, d_folder="data_testing/"):
+        """
+        :param name: str - name of the object
+        :param b_path: str - base path
+        :param p_path: str - path to check for processed images
+        :param df_subj: pd.df the dataframe of subjects
+        :param d_folder: str - data folder (default: data_testing/)
+        """
         if df_subj is not None:
             self.df = df_subj
         else:
@@ -79,6 +90,10 @@ class Table:
     #
     #     self.subjects_list = set(subjects_list)
     def update(self):
+        """
+        function to update the table
+        :return:
+        """
         # for i, subj_path_filtered in enumerate(df["ID"].tolist()):
         #     subjs.add("sub-" + subj_path_filtered)
 
@@ -94,10 +109,20 @@ class Table:
                             break
 
     def create_table(self):
+        """
+        method to create the table if it doesn't exist
+        :return:
+        """
         raise "method not yet implemented"
-        passextr
 
     def get_query(self, query, sub=False, only_processed=True):
+        """
+        function to filter the data in the table
+        :param query: str - pandas query to apply to the df
+        :param sub: bool - return the list of subjects or the list of folders which have sub- in front (default = False)
+        :param only_processed: bool - returns only the subjects that respect the query and have been processed already (default = True)
+        :return: pd.df - filtered
+        """
         # print (self.df.head())
         """
         :param query:
@@ -128,14 +153,18 @@ class Table:
     def save_csv(self, filename):
 
         """
-        to csv in basepath + filename
-        :param filename:
-        :return:
+        saves the df to csv in basepath + filename
+        :param filename: str - the filename that the csv file will have once saved
+        :return: void
         """
         self.df.to_csv(self.data_path + filename)
         print(f"csv of table {self.name} saved in {self.data_path + filename}")
 
     def start_processing(self):
+        """
+        to be implemented - starts the fastsurfer processing
+        :return:
+        """
         pass
         # subprocess.
 
@@ -169,16 +198,15 @@ class Stats:
                  p_path="/media/neuropsycad/disk12t/EdoardoFilippiMasterThesis/FastSurfer_Output", aseg=None,
                  aparcLeft=None, aparcRight=None):
         """
-
-        :param df_subj:
-        :param name:
-        :param query:
-        :param b_path:
-        :param d_folder:
-        :param p_path:
-        :param aseg:
-        :param aparcLeft:
-        :param aparcRight:
+        :param name: str - name of the object
+        :param b_path: str - base path
+        :param df_subj_obj: Table -
+        :param query: if data need to be filtered
+        :param d_folder: str - data folder (default: data_testing/)
+        :param p_path: str - the path in which to look for the processing  (default: "/media/neuropsycad/disk12t/EdoardoFilippiMasterThesis/FastSurfer_Output")
+        :param aseg: pd.df
+        :param aparcLeft: pd.df
+        :param aparcRight: pd.df
         """
         # here it is saved the data object of the dataset
         if isinstance(df_subj_obj, Table):
@@ -207,22 +235,31 @@ class Stats:
         if aparcLeft is not None:
             self.df_stats_aparcL = aparcLeft
         else:
-            self.df_stats_aparcL = self.extract_stats_fast('rh.aparc.DKTatlas.stats', 1)
+            self.df_stats_aparcL = self.extract_stats_fast('rh.aparc.DKTatlas.mapped.stats', 1)
         if aparcRight is not None:
             self.df_stats_aparcR = aparcRight
         else:
-            self.df_stats_aparcR = self.extract_stats_fast('lh.aparc.DKTatlas.stats', 1)
+            self.df_stats_aparcR = self.extract_stats_fast('lh.aparc.DKTatlas.mapped.stats', 1)
         if aseg is not None:
             self.df_stats_aseg = aseg
         else:
             self.df_stats_aseg = self.extract_stats_fast('aseg.stats', 0)
 
     def add_sub(self, list):
+        """
+        :param list: list of str - list of subj names
+        :return:
+        """
         for i, s in enumerate(list):
             list[i] = "sub-" + s
         return list
 
     def extract_stats_fast(self, stats_filename, _type):
+        """
+        :param stats_filename: str
+        :param _type: int aseg or aparc (0 or 1)
+        :return:
+        """
         stat_df_paths = self.__extract_path(stats_filename)
 
         if stat_df_paths:
@@ -237,6 +274,11 @@ class Stats:
             print(f"no stat file: {stats_filename} file found in {self.processed_path}")
 
     def extract_stats_free(self, stats_filename, _type):
+        """
+        :param stats_filename: str
+        :param _type: int aseg or aparc (0 or 1)
+        :return:
+        """
         stat_df_paths = self.__extract_path(stats_filename)
 
         if stat_df_paths:
@@ -251,6 +293,11 @@ class Stats:
             print("no file found")
 
     def save_stats_files(self, which=(True, True, True), names=("aseg.csv", "aseg_right.csv", "aseg_left.csv")):
+        """
+        :param which: tuple of bool - which files to save (default: True, True, True)
+        :param names: tuple - names of the files (default: "aseg.csv", "aseg_right.csv", "aseg_left.csv")
+        :return:
+        """
 
         if not os.path.exists(self.data_path + self.name):
             os.makedirs(self.data_path + self.name)
@@ -567,12 +614,12 @@ class Comparisons:
     def __init__(self, name, b_path, stats_df_1, stats_df_2, alpha=0.05, d_folder="data_testing/", columns_to_test=None,
                  max_plot=500):
         """
-
-        :param stat_df_1:
-        :param stat_df_2:
-        :param name:
-        :param alpha:
-        :param base_path:
+        :param name: str - name of the object
+        :param b_path: str - base path
+        :param stats_df_1: Stats -
+        :param stats_df_2: Stats -
+        :param alpha: float - significance treshold of stat test (default: 0.05)
+        :param d_folder: str - data folder (default: data_testing/)
         :param columns_to_test:
         :param max_plot:
         """
@@ -616,6 +663,13 @@ class Comparisons:
 
 
     def violin(self, data="aseg", columns=None, n_subplots=10, n_rows=2):
+        """
+        :param data: str - table to select (aseg, aparcL, aparcR)
+        :param columns: list  of str- list of column names to print (default None: prints all)
+        :param n_subplots: int - n of subplots in image (default 4)
+        :param n_rows: int - n of rows in plot (default 2)
+        :return: void
+        """
         plots = 0
 
         if data == "aseg":
@@ -669,6 +723,13 @@ class Comparisons:
                 break
 
     def bland_altmann(self, data="aseg", columns=None, n_subplots=4, n_rows=2):
+        """
+        :param data: str - table to select (aseg, aparcL, aparcR)
+        :param columns: list  of str- list of column names to print (default None: prints all)
+        :param n_subplots: int - n of subplots in image (default 4)
+        :param n_rows: int - n of rows in plot (default 2)
+        :return: void
+        """
         plots = 0
 
         if data == "aseg":
@@ -716,11 +777,26 @@ class Comparisons:
             if plots >= 20:  # to avoid plotting too much
                 break
 
-    def stat_test(self, columns):
-        # input: query, df1 name, df2 name, subj_table, list of all test results
-        _df1 = self.stat_df_1.df_stats_aseg
-        _df2 = self.stat_df_2.df_stats_aseg
+    def stat_test(self, columns, data="aseg"):
+        """
+        :param columns: list of str - list of column names to print (default None: prints all)
+        :param data: str - type of input (aseg, aparcL or aparcR)
+        :return: void
+        """
+        if data == "aseg":
+            _df1 = self.stat_df_1.df_stats_aseg
+            _df2 = self.stat_df_2.df_stats_aseg
+        elif data == "aparcR":
+            _df1 = self.stat_df_1.df_stats_aparcL
+            _df2 = self.stat_df_2.df_stats_aparcL
+        elif data == "aparcL":
+            _df1 = self.stat_df_1.df_stats_aparcR
+            _df2 = self.stat_df_2.df_stats_aparcR
+        else:
+            raise "stat_test: wrong selection parameter"
+
         r_all = []
+        print(f"performing t_test and mann whitney on {data} in {self.name}")
 
         # se non viene dato un input fa il test per tutte le colonne
         if not columns:
@@ -767,10 +843,14 @@ class Comparisons:
                                         "d_value": d}})
 
             else:
-                print(f"no data in category {column_to_compare}")
+                print(f"data in category {column_to_compare} absent or not valid for file {self.name} - {data}")
             self.__save_dataframe(r_all)
 
     def bonferroni_correction(self, save=False):
+        """
+        :param save: bool - if true save the file after correction
+        :return: void
+        """
         # print(self.updated_alpha)
         self.updated_alpha = self.__correction_param()
         print(self.updated_alpha)
@@ -789,10 +869,9 @@ class Comparisons:
                 self.stat_df_result.to_csv(self.data_path + f"{self.name}_bonferroni_corrected.csv")
 
     def save_data(self, filename):
-
         """
         to csv in basepath + filename
-        :param filename:
+        :param filename: str - name of the file to be saved into
         :return:
         """
         self.stat_df_result.to_csv(self.data_path + filename)
@@ -903,7 +982,6 @@ class Comparisons:
         _ax.set_ylabel('Difference')
         _ax.set_title(_a.name + "\n" + self.name)  # query.split("=")[-1])
         _ax.legend(['Mean difference', '95% limits of agreement'])
-
     # def __get_column(self, column_to_compare):
     #     if isinstance(column_to_compare, int):
     #         a = df1.iloc[:, column_to_compare]
@@ -914,7 +992,6 @@ class Comparisons:
     #         b = df2.loc[:, column_to_compare]
     #
     #     return a, b
-
     def __correction_param(self):
         return self.alpha / len(self.stat_df_result)
 
