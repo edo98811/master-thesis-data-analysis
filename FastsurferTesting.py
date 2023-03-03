@@ -20,8 +20,10 @@ cose da chiedere
 - script per ogni area (quali sono le aree più importanti) 
 - quali soggetti dovrei tenere per fastsurfer (che patologie) 
 
-- mettere a posto i nomi dei grafici salvati
-- fare il metodo per caricare l'età dei soggetti 
+todo
+    - mettere a posto i nomi dei grafici salvati
+    - fare il metodo per caricare l'età dei soggetti 
+    - comparison object has no attribute updated apha??
 
 idee
     - input nella funzione table anche la struttura delle tabelle per creare la tabella nuova (magari richiamata) 
@@ -133,12 +135,14 @@ class Table:
     def start_processing(self):
         pass
         # subprocess.
+
     """
     def add_sub(self, subjects_list):
         for i, s in enumerate(subjects_list):
             subjects_list[i] = "sub-" + s
         return subjects_list
     """
+
 
 class Stats:
     """
@@ -572,14 +576,14 @@ class Comparisons:
         if isinstance(stats_df_1, Stats):
             self.stat_df_1 = stats_df_1
         else:
-            raise ("stats of the wrong class")
+            raise "stats of the wrong class"
         if isinstance(stats_df_2, Stats):
             self.stat_df_2 = stats_df_2
         else:
-            raise ("stats of the wrong class")
+            raise "stats of the wrong class"
         self.base_path = b_path
 
-        self.data_path = d_folder
+        self.data_path = self.base_path + d_folder
         if not os.path.exists(self.data_path):
             os.makedirs(self.data_path)
 
@@ -619,6 +623,8 @@ class Comparisons:
         elif data == "aparcL":
             _df1 = self.stat_df_1.df_stats_aparcR
             _df2 = self.stat_df_2.df_stats_aparcR
+        else:
+            raise "violin: wrong selection parameter"
 
         # if not columns:
         #     columns = _df1.columns
@@ -770,7 +776,7 @@ class Comparisons:
             if row[4] < self.updated_alpha:
                 row[6] = f"p-value: {row[4]} - null hypothesis rejected, the datasets have a different distribution"
                 row[5] = 1
-            row.loc["significance_threshold_used"] = self.updated_alpha
+            # row.loc["significance_threshold_used"] = self.updated_alpha
             self.stat_df_result.iloc[i, :] = row
             if save == True:
                 self.stat_df_result.to_csv(self.data_path + f"{self.name}_bonferroni_corrected.csv")
@@ -782,7 +788,7 @@ class Comparisons:
         :param filename:
         :return:
         """
-        self.stat_df_result.to_csv(self.base_path + filename)
+        self.stat_df_result.to_csv(self.data_path + filename)
 
     def __t_test(self, _a, _b):
         # a, b = get_column(column_to_compare, df1, df2)
@@ -888,7 +894,7 @@ class Comparisons:
         _ax.axhline(md - 1.96 * sd, color='gray', linestyle='--')
         _ax.set_xlabel('Mean')
         _ax.set_ylabel('Difference')
-        _ax.set_title(_a.name + "\n" + self.name)#query.split("=")[-1])
+        _ax.set_title(_a.name + "\n" + self.name)  # query.split("=")[-1])
         _ax.legend(['Mean difference', '95% limits of agreement'])
 
     # def __get_column(self, column_to_compare):
@@ -956,7 +962,7 @@ class SummaryPlot:
 
         if not columns:
             columns = df_list[0].columns
-           # columns = columns.intersection(_df2.columns).tolist()
+        # columns = columns.intersection(_df2.columns).tolist()
         # if not columns:
         #     max_len = min(len(_df1.axes[1]), len(_df2.axes[1]))
         #     columns = range(2, max_len)
