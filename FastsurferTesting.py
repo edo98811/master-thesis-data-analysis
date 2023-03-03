@@ -226,7 +226,7 @@ class Stats:
         stat_df_paths = self.__extract_path(stats_filename)
 
         if stat_df_paths:
-            print("stats file found for " + str(len(stat_df_paths)) + " subjects")
+            print(f"stats file {stats_filename} found for {str(len(stat_df_paths))} subjects")
             if _type == 0:
                 # __(stat_df_paths).to_csv(SAVE_PATH + save_filename, index=False)
                 return self.__fast_stats_aseg(stat_df_paths)
@@ -234,7 +234,7 @@ class Stats:
                 # stats_aparcDTK(stat_df_paths).to_csv(SAVE_PATH + save_filename, index=False)
                 return self.__fast_stats_aparcDTK(stat_df_paths)
         else:
-            print("no file found")
+            print(f"no stat file: {stats_filename} file found in {self.processed_path}")
 
     def extract_stats_free(self, stats_filename, _type):
         stat_df_paths = self.__extract_path(stats_filename)
