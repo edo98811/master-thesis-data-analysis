@@ -916,10 +916,10 @@ class Comparisons:
         return result, p_value, outcome
 
     def __save_dataframe(self, list_to_save):
-        df = pd.DataFrame()
+        self.stat_df_result = pd.DataFrame()
 
         for item in list_to_save:
-            self.stat_df_result = pd.concat([df, pd.DataFrame({"mann_whitney p_value": item["mann_whitney"]["p_value"],
+            self.stat_df_result = pd.concat([self.stat_df_result, pd.DataFrame({"mann_whitney p_value": item["mann_whitney"]["p_value"],
                                                                "mann_whitney outcome": item["mann_whitney"]["outcome"],
                                                                "mann_whitney message": item["mann_whitney"]["result"],
                                                                "t_test p_value": item["t_test"]["p_value"],
