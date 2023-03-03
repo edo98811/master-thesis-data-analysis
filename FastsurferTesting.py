@@ -704,7 +704,7 @@ class Comparisons:
                 if not plots % n_subplots:
                     if plots > 1:
                         fig.savefig(
-                            self.data_path + "/images/img_violin_" + self.name + " - " + _df1.name + "_" + str(
+                            self.data_path + "/images/img_violin_" + self.name + "_" + str(
                                 plots) + ".png")  # save the figure to file
                         # plt.close(fig)  # close the figure window
                         # handles, labels = axs[1].get_legend_handles_labels()
@@ -761,7 +761,7 @@ class Comparisons:
                 if not plots % n_subplots:
                     if plots > 1:
                         fig.savefig(
-                            self.data_path + "/images/img_ba_" + self.name + " - " + _df1.name + "_" + str(
+                            self.data_path + "/images/img_ba_" + self.name + "_" + str(
                                 plots) + ".png")  # save the figure to file
                         # handles, labels = ax.get_legend_handles_labels()
                         # fig.legend(handles, labels, loc=(0.95, 0.1), prop={'size': 30})
