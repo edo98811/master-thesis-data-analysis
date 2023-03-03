@@ -571,6 +571,7 @@ class Stats:
         #     if len(s.split("/")) > 4:
         #         subj_list_numbers.add(s.split("/")[-4])
         # print(subj_list_numbers)
+        # to be updated for every processed paths
 
         paths_found = []
         for path, subdirs, files in os.walk(self.processed_path):
@@ -865,7 +866,7 @@ class Comparisons:
                     row["t_test message"] = f"p-value: {row['t_test p_value']} - null hypothesis rejected, the datasets have a different distribution"
                     row["t_test outcome"] = 1
             row.loc["alpha_correction"] = self.updated_alpha
-            self.stat_df_result.iloc[i, :] = row
+            self.stat_df_result.loc[i, :] = row
             if save:
                 self.stat_df_result.to_csv(self.data_path + f"{self.name}_bonferroni_corrected.csv")
 
@@ -961,7 +962,7 @@ class Comparisons:
         # Create a split violin plot
         # sns.violinplot(data=df, split=True)
         sns.violinplot(ax=_ax, data=df, hue="Group", x="Area", y="Data", split=True)
-        _ax.title.set_text(_a.name + "\n" + self.query.split("=")[-1])
+        _ax.title.set_text(_a.name + "\n" + self.name)
         # ax.yaxis.set_major_formatter(plt.FormatStrFormatter('{:.3g}'))
         _ax.set_xlabel("")
 
