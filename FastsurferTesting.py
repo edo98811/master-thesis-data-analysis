@@ -708,7 +708,7 @@ class Comparisons:
                                 plots) + ".png")  # save the figure to file
                         # plt.close(fig)  # close the figure window
                         # handles, labels = axs[1].get_legend_handles_labels()
-                        # fig.legend(handles, labels, loc=(0.95, 0.1), prop={'size': 30})
+                        # fig.legend(handles, labels, loc=(0.95, 0.1), prop={'size': 30})F
                     fig, axs = plt.subplots(n_rows, int(n_subplots / n_rows), figsize=(40, 20))
                     axs = axs.ravel()
                     plt.subplots_adjust(hspace=0.5)
