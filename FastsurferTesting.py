@@ -775,15 +775,17 @@ class Comparisons:
         self.updated_alpha = self.__correction_param()
         print(self.updated_alpha)
         for i, row in enumerate(self.stat_df_result.iterrows()):
-            if row["mann_whitney p_value"] < self.updated_alpha:
-                row["mann_whitney message"] = f"p-value: {row['mann_whitney p_value']} - null hypothesis rejected, means are not statistically equal"
-                row["mann_whitney outcome"] = 1
-            if row["t_test p_value"] < self.updated_alpha:
-                row["t_test message"] = f"p-value: {row['t_test p_value']} - null hypothesis rejected, the datasets have a different distribution"
-                row["t_test outcome"] = 1
+            if type(row["mann_whitney p_value"]) is not str and type(row["mann_whitney p_value"]) is not str and type(self.updated_alpha) is not str:
+                if row["mann_whitney p_value"] < self.updated_alpha:
+                    row["mann_whitney message"] = f"p-value: {row['mann_whitney p_value']} - null hypothesis rejected, means are not statistically equal"
+                    row["mann_whitney outcome"] = 1
+            if type(row["t_test p_value"]) is not str and type(row["t_test p_value"]) is not str and type(self.updated_alpha) is not str:
+                if row["t_test p_value"] < self.updated_alpha:
+                    row["t_test message"] = f"p-value: {row['t_test p_value']} - null hypothesis rejected, the datasets have a different distribution"
+                    row["t_test outcome"] = 1
             row.loc["alpha_correction"] = self.updated_alpha
             self.stat_df_result.iloc[i, :] = row
-            if save == True:
+            if save:
                 self.stat_df_result.to_csv(self.data_path + f"{self.name}_bonferroni_corrected.csv")
 
     def save_data(self, filename):
