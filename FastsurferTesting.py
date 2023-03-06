@@ -1239,8 +1239,8 @@ class SummaryPlot:
 
     def __scatter_plot(self, ax, data, ages):
 
-        for series in data:
-            ax.scatter(ages, series.tolist(), label=series.name)  # mettere il nome della serie e le cose qui
+        for series, age in zip(data, age):
+            ax.scatter(age, series.tolist(), label=series.name)  # mettere il nome della serie e le cose qui
 
         # Add a legend and axis labels
         ax.legend()
