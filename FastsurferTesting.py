@@ -307,16 +307,19 @@ class Stats:
         # add control that these data are dataframes
         if aparcLeft is not None:
             self.df_stats_aparcL = aparcLeft
+            self.df_stats_aparcL = self.df_stats_aparcL[self.df_stats_aparcL["ID"].isin(self.df_subj["ID"].tolist())]
         else:
             self.df_stats_aparcL = self.extract_stats_fast('rh.aparc.DKTatlas.mapped.stats', 1)
             self.df_stats_aparcL = self.df_stats_aparcL[self.df_stats_aparcL["ID"].isin(self.df_subj["ID"].tolist())]
         if aparcRight is not None:
             self.df_stats_aparcR = aparcRight
+            self.df_stats_aparcR = self.df_stats_aparcR[self.df_stats_aparcR[ "ID"].isin(self.df_subj["ID"].tolist())]
         else:
             self.df_stats_aparcR = self.extract_stats_fast('lh.aparc.DKTatlas.mapped.stats', 1)
             self.df_stats_aparcR = self.df_stats_aparcR[self.df_stats_aparcR[ "ID"].isin(self.df_subj["ID"].tolist())]
         if aseg is not None:
             self.df_stats_aseg = aseg
+            self.df_stats_aseg = self.df_stats_aseg[self.df_stats_aseg[ "ID"].isin(self.df_subj["ID"].tolist())]
         else:
             self.df_stats_aseg = self.extract_stats_fast('aseg.stats', 0)
             self.df_stats_aseg = self.df_stats_aseg[self.df_stats_aseg[ "ID"].isin(self.df_subj["ID"].tolist())]
