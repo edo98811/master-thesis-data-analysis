@@ -1159,6 +1159,7 @@ class SummaryPlot:
 
         if not columns:
             columns = df_list[0].columns
+            print(columns)
         # columns = columns.intersection(_df2.columns).tolist()
         # if not columns:
         #     max_len = min(len(_df1.axes[1]), len(_df2.axes[1]))
