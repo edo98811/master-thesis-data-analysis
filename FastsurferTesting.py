@@ -6,7 +6,7 @@ from scipy import stats
 import seaborn as sns
 import data_manipulation as dm
 import numpy as np
-
+import dropboxAPI
 import subprocess
 
 # todo altro:
@@ -29,6 +29,9 @@ todo
     - fare il metodo per caricare l'età dei soggetti 
     - aggiungere print alla fine delle funzioni
     - aggiungere descrizioni fatte bene
+    - riscrivere tutto usando inheritance
+    - quando faccio la selezione delle colonne aggiungere un testo che mi dice cosa sto escludendo (quali colonne)
+    - salvare in log i dati che non vanno (ad esempio nello stat test) quando dice che absent or invalid data
 
 idee
     - input nella funzione table anche la struttura delle tabelle per creare la tabella nuova (magari richiamata) 
@@ -108,12 +111,80 @@ class Table:
                             self.df.loc[i, "processed_path"] = root + "/" + dir
                             break
 
-    def create_table(self):
+    def create_table(self, df_dict_map, path_to_origin_file):
         """
         method to create the table if it doesn't exist
         :return:
         """
         raise "method not yet implemented"
+
+        table = pd.read_csv(self.base_path + path_to_origin_file)
+
+        # create the dictionary that will turn into a table
+        if ADNI:
+            df_dict = {
+                "ID": [],
+                "path": [],
+                "age": [],
+                "sex": [],
+                "main_condition": [],
+                "processed": [],
+                "processed_path": []
+            }
+        else:
+            df_dict = {
+                "ID": [],
+                "path": [],
+                "age": [],
+                "main_condition": [],
+                "processed": [],
+                "processed_path": []
+            }
+
+        # populates the dictionary
+        for index, row in table.iterrows():
+            for i, path_on_table in enumerate(_paths_on_table):
+                if len(path_on_table.split("/")) > 3:
+                    match = re.split("sub-", path_on_table.split("/")[-4])
+                    if row["ID"] == match[1]:
+                        if ADNI and (row["_merge"] == "both" or row["_merge"] == "right_only"):
+                            df_dict["ID"].append(row["ID"])
+                            df_dict["path"].append(path_on_table)
+                            df_dict["age"].append(row["age"])
+                            df_dict["sex"].append(row["sex"])
+                            df_dict["main_condition"].append(row["diagnosis"])
+                            df_dict["processed"].append("no")
+                            df_dict["processed_path"].append("")
+                        elif not ADNI:
+                            df_dict["ID"].append(row["ID"])
+                            df_dict["path"].append(path_on_table)
+                            df_dict["age"].append(row["ageAtEntry"])
+                            df_dict["main_condition"].append(row["dx1"])
+                            df_dict["processed"].append("no")
+                            df_dict["processed_path"].append("")
+
+        df = pd.DataFrame.from_dict(df_dict)
+
+        subjs = set()
+
+        # adds the paths
+        # interate though all the rows to create a set of the subjects
+        for i, subj_path_filtered in enumerate(df["ID"].tolist()):
+            df.loc[i, "processed"] = "no"
+            subjs.add("sub-" + subj_path_filtered)
+
+        # iterate though all the directories in the processed path
+        for root, dirs, files in os.walk(PROCESSED_PATH):
+            for dir in dirs:
+                if dir in subjs:
+                    # quando trova il soggetto nella crtela modifica il dataframe
+                    for i, subj_path_filtered in enumerate(df["ID"].tolist()):
+                        if dir == "sub-" + subj_path_filtered:
+                            df.loc[i, "processed"] = "yes"
+                            df.loc[i, "processed_path"] = root + "/" + dir
+                            break
+
+        return df
 
     def get_query(self, query, sub=False, only_processed=True):
         """
@@ -370,7 +441,7 @@ class Stats:
         df_dict = {"ID": []}
 
         for n, path in enumerate(subj_paths):
-            #print("extracting stats for subject " + str(n + 1) + ", path:" + path)
+            # print("extracting stats for subject " + str(n + 1) + ", path:" + path)
 
             # saving the subject name
             df_dict["ID"].append(path.split("/")[-3])
@@ -425,7 +496,7 @@ class Stats:
                 if len(df_dict[key]) != n + 1:
                     df_dict[key].append("NaN")
 
-        #dm.write_dict(df_dict, "old scripts/prova_df_dict.json")
+        # dm.write_dict(df_dict, "old scripts/prova_df_dict.json")
 
         # # if some columns have different length
         # for key in df_dict.keys():
@@ -439,7 +510,7 @@ class Stats:
         df_dict = {"ID": []}
 
         for n, path in enumerate(subj_paths):
-            #print("extracting stats for subject " + str(n + 1) + ", path:" + path)
+            # print("extracting stats for subject " + str(n + 1) + ", path:" + path)
 
             # saving the subject name
             df_dict["ID"].append(path.split("/")[-3])
@@ -496,7 +567,7 @@ class Stats:
         df_dict = {"ID": []}
 
         for n, path in enumerate(subj_paths):
-            #print("extracting stats for subject " + str(n + 1) + ", path:" + path)
+            # print("extracting stats for subject " + str(n + 1) + ", path:" + path)
 
             # saving the subject name
             df_dict["ID"].append(path.split("/")[-3])
@@ -663,8 +734,6 @@ class Comparisons:
         self.stat_df_result = None
         self.stat_test(columns_to_test)
 
-
-
     def violin(self, data="aseg", columns=None, n_subplots=10, n_rows=2):
         """
         :param data: str - table to select (aseg, aparcL, aparcR)
@@ -690,6 +759,7 @@ class Comparisons:
         # if not columns:
         #     columns = _df1.columns
         #     columns = columns.intersection(_df2.columns).tolist()
+        # select the columns that exist in both the datasets
         if not columns:
             columns = set(_df1.columns.tolist()).intersection(set(_df2.columns.tolist()))
         # if not columns:
@@ -725,6 +795,9 @@ class Comparisons:
             if plots >= self.max_plot:  # to avoid plotting too much
                 break
 
+        fig.savefig(
+            self.data_path + "images/img_scatter_" + self.name + " - " + self.name + "_" + str(
+                plots) + ".png")  # save the figure to file
     def bland_altmann(self, data="aseg", columns=None, n_subplots=4, n_rows=2):
         """
         :param data: str - table to select (aseg, aparcL, aparcR)
@@ -780,6 +853,9 @@ class Comparisons:
             if plots >= 20:  # to avoid plotting too much
                 break
 
+        fig.savefig(
+            self.data_path + "images/img_scatter_" + self.name + " - " + self.name + "_" + str(
+                plots) + ".png")  # save the figure to file
     def stat_test(self, columns, data="aseg"):
         """
         :param columns: list of str - list of column names to print (default None: prints all)
@@ -816,6 +892,7 @@ class Comparisons:
             b = pd.to_numeric(_df2.loc[:, column_to_compare], errors='coerce')
             # a, b = get_column(column_to_compare, _df1_filtered, _df2_filtered)
             if a.any() and b.any() and (a.notnull().all() and b.notnull().all()):
+                print(f"performing statistical analysis for data in category {column_to_compare}for file {self.name} - {data}")
 
                 r1, p1, o1 = self.__mann_whitney(a, b)
                 r2, p2, o2 = self.__t_test(a, b)
@@ -846,7 +923,7 @@ class Comparisons:
                                         "d_value": d}})
 
             else:
-                print(f"data in category {column_to_compare} absent or not valid for file {self.name} - {data}")
+                print(f"absent or not valid data in category {column_to_compare}for file {self.name} - {data}")
             self.__save_dataframe(r_all)
 
     def bonferroni_correction(self, save=False):
@@ -858,13 +935,17 @@ class Comparisons:
         self.updated_alpha = self.__correction_param()
         print(self.updated_alpha)
         for i, row in self.stat_df_result.iterrows():
-            if type(row["mann_whitney p_value"]) is not str and type(row["mann_whitney p_value"]) is not str and type(self.updated_alpha) is not str:
+            if type(row["mann_whitney p_value"]) is not str and type(row["mann_whitney p_value"]) is not str and type(
+                    self.updated_alpha) is not str:
                 if row["mann_whitney p_value"] < self.updated_alpha:
-                    row["mann_whitney message"] = f"p-value: {row['mann_whitney p_value']} - null hypothesis rejected, means are not statistically equal"
+                    row[
+                        "mann_whitney message"] = f"p-value: {row['mann_whitney p_value']} - null hypothesis rejected, means are not statistically equal"
                     row["mann_whitney outcome"] = 1
-            if type(row["t_test p_value"]) is not str and type(row["t_test p_value"]) is not str and type(self.updated_alpha) is not str:
+            if type(row["t_test p_value"]) is not str and type(row["t_test p_value"]) is not str and type(
+                    self.updated_alpha) is not str:
                 if row["t_test p_value"] < self.updated_alpha:
-                    row["t_test message"] = f"p-value: {row['t_test p_value']} - null hypothesis rejected, the datasets have a different distribution"
+                    row[
+                        "t_test message"] = f"p-value: {row['t_test p_value']} - null hypothesis rejected, the datasets have a different distribution"
                     row["t_test outcome"] = 1
             row.loc["alpha_correction"] = self.updated_alpha
             self.stat_df_result.loc[i, :] = row
@@ -921,17 +1002,18 @@ class Comparisons:
         self.stat_df_result = pd.DataFrame()
 
         for item in list_to_save:
-            self.stat_df_result = pd.concat([self.stat_df_result, pd.DataFrame({"mann_whitney p_value": item["mann_whitney"]["p_value"],
-                                                               "mann_whitney outcome": item["mann_whitney"]["outcome"],
-                                                               "mann_whitney message": item["mann_whitney"]["result"],
-                                                               "t_test p_value": item["t_test"]["p_value"],
-                                                               "t_test outcome": item["t_test"]["outcome"],
-                                                               "t_test message": item["t_test"]["result"],
-                                                               "cohens d value": item["d"]["d_value"],
-                                                               "cohens d result": item["d"]["result"],
-                                                               "alpha_used": self.alpha,
-                                                               "alpha_correction": self.updated_alpha
-                                                               }, index=[item["name"]])])
+            self.stat_df_result = pd.concat(
+                [self.stat_df_result, pd.DataFrame({"mann_whitney p_value": item["mann_whitney"]["p_value"],
+                                                    "mann_whitney outcome": item["mann_whitney"]["outcome"],
+                                                    "mann_whitney message": item["mann_whitney"]["result"],
+                                                    "t_test p_value": item["t_test"]["p_value"],
+                                                    "t_test outcome": item["t_test"]["outcome"],
+                                                    "t_test message": item["t_test"]["result"],
+                                                    "cohens d value": item["d"]["d_value"],
+                                                    "cohens d result": item["d"]["result"],
+                                                    "alpha_used": self.alpha,
+                                                    "alpha_correction": self.updated_alpha
+                                                    }, index=[item["name"]])])
 
         # df.to_csv(self.base_path + _name)  # , index=False
 
@@ -1015,7 +1097,7 @@ class SummaryPlot:
             per tutte le aree o solo alcune interessanti?
             quali devo confrontare come soggetti?
         """
-        self.df_list = stats_df_list
+        self.df_list_obj = stats_df_list
 
         # else:
         #     raise ("stats of the wrong class")
@@ -1032,20 +1114,28 @@ class SummaryPlot:
         self.name = name
         self.max_plot = max_plot
 
+    # in teoria dovrei filtrarla prima
     def comparison_plot(self, data="aseg", columns=None, n_subplots=10, n_rows=2):
-
+        """
+        :param columns: list of str - list of column names to print (default None: prints all)
+        :param data: str - type of input (aseg, aparcL or aparcR)
+        :param n_subplots:
+        :param n_rows:
+        :return:
+        """
         plots = 0
 
         df_list = []
+        # saves the dataframes from the stats object
         if data == "aseg":
-            for table in self.df_list:
+            for table in self.df_list_obj:
                 df_list.append(table.df_stats_aseg)
         elif data == "aparcR":
-            for table in self.df_list:
+            for table in self.df_list_obj:
                 df_list.append(table.df_stats_aparcL)
         elif data == "aparcL":
-            for table in self.df_list:
-                df_list.append(table.df_stats_aparcR)
+            for table in self.df_list_obj:
+                df_list.append(table.df_stats_aparcR) # table
 
         if not columns:
             columns = df_list[0].columns
@@ -1055,17 +1145,20 @@ class SummaryPlot:
         #     columns = range(2, max_len)
 
         for column_to_compare in columns:
+            serieses =[]
+            # selects the column from all the dataframes and puts them in a list of series
             for i, df in table(df_list):
                 series = pd.to_numeric(df.loc[:, column_to_compare], errors='coerce')
-                series.rename = self.df_list[i].name
+                series.rename = f"{df_list[i].name} - {column_to_compare}"
                 if series.any() and series.notnull().all():
-                    data.append(series)
+                    serieses.append(series)
 
             # a, b = get_column(column_to_compare, _df1_filtered, _df2_filtered)
+            # if it needs to create a new figure it creates it
             if not plots % n_subplots:
                 if plots > 1:
                     fig.savefig(
-                        self.data_path + "images/img_violin_" + self.name + " - " + self.name + "_" + str(
+                        self.data_path + "images/img_scatter_" + self.name + " - " + self.name + "_" + str(
                             plots) + ".png")  # save the figure to file
                     # plt.close(fig)  # close the figure window
                     # handles, labels = axs[1].get_legend_handles_labels()
@@ -1078,13 +1171,28 @@ class SummaryPlot:
                 # mng.full_screen_toggle()
 
             # print(plots % N_SUBPLOTS)
-            ages = None
-            self.__scatter_plot(axs[plots % n_subplots], df_list, ages)
+            # creates the age series
+            ages = []
+            for table in self.df_list_obj.df_subj:
+                ages.append(table.loc[:, "age"].tolist())
+
+            """
+            now i have two series
+            serieses: series of data
+            ages: series of ages 
+            
+            i can do the scatter plots of this
+            """
+
+            self.__scatter_plot(axs[plots % n_subplots], serieses, ages)
             plots += 1
 
             if plots >= self.max_plot:  # to avoid plotting too much
                 break
 
+        fig.savefig(
+            self.data_path + "images/img_scatter_" + self.name + " - " + self.name + "_" + str(
+                plots) + ".png")  # save the figure to file
         """
         idea
             plot con 4
@@ -1101,3 +1209,4 @@ class SummaryPlot:
         ax.legend()
         ax.set_xlabel('Age')
         ax.set_ylabel('Data')
+

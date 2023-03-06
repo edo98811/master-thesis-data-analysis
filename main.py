@@ -8,7 +8,8 @@ DATA_FOLDER = "test_data/"
 
 
 def main():
-    table = ft.Table("OASIS TABLE", BASE_PATH, OASIS_PATH, pd.read_csv(BASE_PATH + "/text_and_csv_files/OASIS_table.csv"))
+    table = ft.Table("OASIS TABLE", BASE_PATH, OASIS_PATH,
+                     pd.read_csv(BASE_PATH + "/text_and_csv_files/OASIS_table.csv"))
 
     aseg_free = pd.read_csv(BASE_PATH + "Stats_FreeSurfer/aseg.csv")
     aparcL_free = pd.read_csv(BASE_PATH + "Stats_FreeSurfer/aparcDKT_right.csv")
@@ -18,10 +19,10 @@ def main():
                                   d_folder=DATA_FOLDER)
     stats_fast_MC = ft.Stats("MC_FAST", BASE_PATH, table, "main_condition!='Cognitively normal'", d_folder=DATA_FOLDER)
 
-    stats_free_healthy = ft.Stats("healthy_FREE", BASE_PATH, table, "main_condition!='Cognitively normal'", BASE_PATH,
+    stats_free_healthy = ft.Stats("healthy_FREE", BASE_PATH, table, "main_condition!='Cognitively normal'",
                                   DATA_FOLDER, aseg=aseg_free,
                                   aparcRight=aparcR_free, aparcLeft=aparcL_free)
-    stats_free_MC = ft.Stats("MC_FREE", BASE_PATH, table, "main_condition!='Cognitively normal'", BASE_PATH,
+    stats_free_MC = ft.Stats("MC_FREE", BASE_PATH, table, "main_condition!='Cognitively normal'",
                              DATA_FOLDER, aseg=aseg_free,
                              aparcRight=aparcR_free, aparcLeft=aparcL_free)
 
@@ -36,6 +37,9 @@ def main():
     comp2.violin()
     comp2.bland_altmann()
 
+    summary1 = ft.SummaryPlot("summary", BASE_PATH, [stats_free_MC, stats_fast_MC, stats_free_healthy,
+                                                     stats_fast_healthy])
+    summary1.comparison_plot()
 
 if __name__ == "__main__":
     main()

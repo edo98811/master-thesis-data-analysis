@@ -15,7 +15,7 @@ def dropbox_connect():
     return dbx
 
 
-def dropbox_upload_file(local_path, local_file, dropbox_file_path, file_from_dataframe, FINAL_FILENAME_EXCEL):
+def dropbox_upload_file_old(local_path, local_file, dropbox_file_path, file_from_dataframe, FINAL_FILENAME_EXCEL):
     """Upload a file from the local machine to a path in the Dropbox app directory.
 
     Args:
@@ -41,6 +41,28 @@ def dropbox_upload_file(local_path, local_file, dropbox_file_path, file_from_dat
 
 
         meta = dbx.files_upload(file_from_dataframe.to_excel(FINAL_FILENAME_EXCEL), dropbox_file_path, mode=dropbox.files.WriteMode("overwrite"))
+        return meta
+
+    except Exception as e:
+        print('Error uploading file to Dropbox: ' + str(e))
+
+
+def dropbox_upload_table(file, filename, dropbox_path):
+    try:
+        dbx = dropbox_connect()
+
+        meta = dbx.files_upload(file.to_excel(filename), dropbox_path, mode=dropbox.files.WriteMode("overwrite"))
+        return meta
+
+    except Exception as e:
+        print('Error uploading file to Dropbox: ' + str(e))
+
+def dropbox_upload_image(fig, filename, dropbox_path):
+    try:
+        dbx = dropbox_connect()
+
+        meta = dbx.files_upload(fig.savefig(filename), dropbox_path,
+                                mode=dropbox.files.WriteMode("overwrite"))
         return meta
 
     except Exception as e:

@@ -7,8 +7,8 @@ import os
 # import dropbox as dropbox_manager
 
 # useful constants, can i modify them later?
-"""
-ADNI = 0
+
+ADNI = False
 PROCESSED_PATH = "/media/neuropsycad/disk12t/EdoardoFilippiMasterThesis/FastSurfer_Output"
 BASE_PATH = "/media/neuropsycad/disk12t/EdoardoFilippiMasterThesis/"
 FREESURFER_PATH = "/media/neuropsycad/disk12t/VascoDiogo/OASIS/FS7/"
@@ -26,7 +26,7 @@ FREESURFER_PATH = "/media/neuropsycad/disk12t/VascoDiogo/ADNI/"
 TABLE_FILENAME = "text_and_csv_files/ADNI_filtered.csv"
 FINAL_FILENAME = "text_and_csv_files/ADNI_table.csv"
 FINAL_FILENAME_EXCEL = "text_and_csv_files/ADNI_table.xlsx"
-
+"""
 
 def main():
     paths = dm.list_files(FREESURFER_PATH, "001.mgz")
@@ -212,6 +212,7 @@ def create_table(_paths_on_table):
             "age": [],
             "sex": [],
             "main_condition": [],
+            "mmse_score": [],
             "processed": [],
             "processed_path": []
         }
@@ -236,6 +237,7 @@ def create_table(_paths_on_table):
                         df_dict["path"].append(path_on_table)
                         df_dict["age"].append(row["age"])
                         df_dict["sex"].append(row["sex"])
+                        df_dict["mmse_score"].append(row["mmse"])
                         df_dict["main_condition"].append(row["diagnosis"])
                         df_dict["processed"].append("no")
                         df_dict["processed_path"].append("")
