@@ -1158,6 +1158,9 @@ class SummaryPlot:
                 series.rename = f"{data} {self.df_list_obj[i].name} - {column_to_compare}"
                 if series.any() and series.notnull().all():
                     serieses.append(series)
+                else:
+                    print("scatter not possible for column ID")
+                    continue
 
 
             # a, b = get_column(column_to_compare, _df1_filtered, _df2_filtered)
