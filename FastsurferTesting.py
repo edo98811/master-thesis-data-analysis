@@ -849,6 +849,7 @@ class Comparisons:
 
                 # print(plots % N_SUBPLOTS)
                 index = plots % n_subplots
+                print(index)
                 self.__bland_altman_plot(axs[index], a, b)
                 plots += 1
 
