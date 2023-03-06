@@ -790,7 +790,7 @@ class Comparisons:
 
                 # print(plots % N_SUBPLOTS)
                 index = plots % n_subplots
-                print(index)
+                #print(index)
                 self.__violin_plot(axs[index], a, b)
                 plots += 1
 
@@ -850,7 +850,7 @@ class Comparisons:
 
                 # print(plots % N_SUBPLOTS)
                 index = plots % n_subplots
-                print(index)
+                #print(index)
                 self.__bland_altman_plot(axs[index], a, b)
                 plots += 1
 
@@ -1055,7 +1055,10 @@ class Comparisons:
 
     def __bland_altman_plot(self, _ax, _a, _b):
         # Compute mean and difference between two series
-        mean = np.mean([_a, _b], axis=0)
+        mean = np.array()
+        for i, (a,b) in enumerate(zip(_a, _b))
+            mean[i] = (a + b)/2
+        # mean = np.mean([_a,_b], axis=0)
         diff = _a - _b
 
         # Compute mean difference and standard deviation of difference
@@ -1196,7 +1199,7 @@ class SummaryPlot:
             print(f"ages {len(ages)} {type(ages[0])} {ages[0]}")
             print(f"ages {len(serieses)} {type(serieses[0])} {serieses[0]}")
             index = plots % n_subplots
-            print(index)
+            #print(index)
             self.__scatter_plot(axs[index], serieses, ages)
             plots += 1
 
