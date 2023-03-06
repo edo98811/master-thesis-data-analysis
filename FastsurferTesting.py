@@ -1055,7 +1055,7 @@ class Comparisons:
 
     def __bland_altman_plot(self, _ax, _a, _b):
         # Compute mean and difference between two series
-        mean = np.array()
+        mean = np.empty()
         for i, (a,b) in enumerate(zip(_a, _b)):
             mean[i] = (a + b)/2
         # mean = np.mean([_a,_b], axis=0)
