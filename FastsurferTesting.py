@@ -1207,9 +1207,9 @@ class SummaryPlot:
             if plots >= self.max_plot:  # to avoid plotting too much
                 break
 
-        fig.savefig(
-            self.data_path + "images/img_scatter_" + self.name + " - " + self.name + "_" + str(
-                plots) + ".png")  # save the figure to file
+        # fig.savefig(
+        #     self.data_path + "images/img_scatter_" + self.name + " - " + self.name + "_" + str(
+        #         plots) + ".png")  # save the figure to file
         """
         idea
             plot con 4
