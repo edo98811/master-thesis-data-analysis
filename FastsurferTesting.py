@@ -1159,9 +1159,10 @@ class SummaryPlot:
                 if series.any() and series.notnull().all():
                     serieses.append(series)
                 else:
-                    print("scatter not possible for column ID")
-                    continue
-
+                    print(f"scatter not possible for column{self.df_list_obj[i].name}")
+                    break
+            if not series:
+                break
 
             # a, b = get_column(column_to_compare, _df1_filtered, _df2_filtered)
             # if it needs to create a new figure it creates it
