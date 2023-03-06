@@ -324,7 +324,7 @@ class Stats:
             self.df_stats_aseg = self.extract_stats_fast('aseg.stats', 0)
             self.df_stats_aseg = self.df_stats_aseg[self.df_stats_aseg["ID"].isin(self.subj_list)]
 
-        self.subj_list = [v for v in self.subj_list if v in self.df_stats_aseg["ID"].tolist]
+        self.subj_list = [v for v in self.subj_list if v in self.df_stats_aseg["ID"].tolist()]
     def add_sub(self, list):
         """
         :param list: list of str - list of subj names
