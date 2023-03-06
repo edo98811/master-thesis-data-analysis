@@ -1184,6 +1184,8 @@ class SummaryPlot:
                 series.rename = f"{data} {self.df_list_obj[i].name} - {column_to_compare}"
                 if series.any() and series.notnull().all():
                     serieses.append(series)
+                    print(f"ages {len(ages[i])}  - {type(ages[i])} {ages[i]}")
+                    print(f"ages {len(serieses[i])} - {type(serieses[i])} {serieses[i]}")
                 else:
                     # print(series)
                     print(f"scatter not possible for column {column_to_compare}")
@@ -1217,8 +1219,6 @@ class SummaryPlot:
             
             i can do the scatter plots of this
             """
-            print(f"ages {len(ages)} {len(ages[0])}  - {type(ages[0])} {ages[0]}")
-            print(f"ages {len(serieses)} {len(serieses[0])} - {type(serieses[0])} {serieses[0]}")
             index = plots % n_subplots
             #print(index)
             self.__scatter_plot(axs[index], serieses, ages)
