@@ -1138,6 +1138,11 @@ class SummaryPlot:
             for table in self.df_list_obj:
                 df_list.append(table.df_stats_aparcR) # table
 
+        # creates the age series, to move up
+        ages = []
+        for table in self.df_list_obj:
+            ages.append(table.df_subj.loc[:, "age"].tolist())
+
         if not columns:
             columns = df_list[0].columns
         # columns = columns.intersection(_df2.columns).tolist()
@@ -1153,10 +1158,7 @@ class SummaryPlot:
                 series.rename = f"{data} {self.df_list_obj[i].name} - {column_to_compare}"
                 if series.any() and series.notnull().all():
                     serieses.append(series)
-            # creates the age series, to move up
-            ages = []
-            for table in self.df_list_obj:
-                ages.append(table.df_subj.loc[:, "age"].tolist())
+
 
             # a, b = get_column(column_to_compare, _df1_filtered, _df2_filtered)
             # if it needs to create a new figure it creates it
@@ -1184,7 +1186,8 @@ class SummaryPlot:
             
             i can do the scatter plots of this
             """
-
+            print(f"ages {len(ages)} {type(ages[0])} {ages[0]}")
+            print(f"ages {len(serieses)} {type(serieses[0])} {serieses[0]}")
             self.__scatter_plot(axs[plots % n_subplots], serieses, ages)
             plots += 1
 
