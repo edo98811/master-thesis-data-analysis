@@ -307,22 +307,22 @@ class Stats:
         # add control that these data are dataframes
         if aparcLeft is not None:
             self.df_stats_aparcL = aparcLeft
-            self.df_stats_aparcL = self.df_stats_aparcL[self.df_stats_aparcL["ID"].isin(self.df_subj["ID"].tolist())]
+            self.df_stats_aparcL = self.df_stats_aparcL[self.df_stats_aparcL["ID"].isin(self.subj_list)]
         else:
             self.df_stats_aparcL = self.extract_stats_fast('rh.aparc.DKTatlas.mapped.stats', 1)
-            self.df_stats_aparcL = self.df_stats_aparcL[self.df_stats_aparcL["ID"].isin(self.df_subj["ID"].tolist())]
+            self.df_stats_aparcL = self.df_stats_aparcL[self.df_stats_aparcL["ID"].isin(self.subj_list)]
         if aparcRight is not None:
             self.df_stats_aparcR = aparcRight
-            self.df_stats_aparcR = self.df_stats_aparcR[self.df_stats_aparcR[ "ID"].isin(self.df_subj["ID"].tolist())]
+            self.df_stats_aparcR = self.df_stats_aparcR[self.df_stats_aparcR[ "ID"].isin(self.subj_list)]
         else:
             self.df_stats_aparcR = self.extract_stats_fast('lh.aparc.DKTatlas.mapped.stats', 1)
-            self.df_stats_aparcR = self.df_stats_aparcR[self.df_stats_aparcR[ "ID"].isin(self.df_subj["ID"].tolist())]
+            self.df_stats_aparcR = self.df_stats_aparcR[self.df_stats_aparcR[ "ID"].isin(self.subj_list)]
         if aseg is not None:
             self.df_stats_aseg = aseg
-            self.df_stats_aseg = self.df_stats_aseg[self.df_stats_aseg[ "ID"].isin(self.df_subj["ID"].tolist())]
+            self.df_stats_aseg = self.df_stats_aseg[self.df_stats_aseg[ "ID"].isin(self.subj_list)]
         else:
             self.df_stats_aseg = self.extract_stats_fast('aseg.stats', 0)
-            self.df_stats_aseg = self.df_stats_aseg[self.df_stats_aseg[ "ID"].isin(self.df_subj["ID"].tolist())]
+            self.df_stats_aseg = self.df_stats_aseg[self.df_stats_aseg[ "ID"].isin(self.subj_list)]
 
     def add_sub(self, list):
         """
@@ -1159,7 +1159,6 @@ class SummaryPlot:
 
         if not columns:
             columns = df_list[0].columns
-            print(columns)
         # columns = columns.intersection(_df2.columns).tolist()
         # if not columns:
         #     max_len = min(len(_df1.axes[1]), len(_df2.axes[1]))
