@@ -29,16 +29,16 @@ def main():
                              DATA_FOLDER, aseg=aseg_free,
                              aparcRight=aparcR_free, aparcLeft=aparcL_free)
 
-    comp1 = ft.Comparisons("MC_oasis", BASE_PATH, stats_free_MC, stats_fast_MC)
-    comp2 = ft.Comparisons("healthy_oasis", BASE_PATH, stats_free_healthy, stats_fast_healthy)
-    comp1.bonferroni_correction()
-    comp2.bonferroni_correction()
-
-    comp1.violin()
-    #comp1.bland_altmann()
-
-    comp2.violin()
-    #comp2.bland_altmann()
+    # comp1 = ft.Comparisons("MC_oasis", BASE_PATH, stats_free_MC, stats_fast_MC)
+    # comp2 = ft.Comparisons("healthy_oasis", BASE_PATH, stats_free_healthy, stats_fast_healthy)
+    # comp1.bonferroni_correction()
+    # comp2.bonferroni_correction()
+    #
+    # comp1.violin()
+    # #comp1.bland_altmann()
+    #
+    # comp2.violin()
+    # #comp2.bland_altmann()
 
     summary1 = ft.SummaryPlot("summary", BASE_PATH, [stats_free_MC, stats_fast_MC, stats_free_healthy,
                                                      stats_fast_healthy])
