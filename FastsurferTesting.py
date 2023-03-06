@@ -1185,7 +1185,7 @@ class SummaryPlot:
                 if series.any() and series.notnull().all():
                     serieses.append(series)
                     print(f"ages {len(ages[i])}  - {type(ages[i])} {ages[i]}")
-                    print(f"ages {len(serieses[i])} - {type(serieses[i])} {serieses[i].tolist()}")
+                    print(f" series {len(serieses[i])} - {type(serieses[i].tolist())} {serieses[i].tolist()}")
                 else:
                     # print(series)
                     print(f"scatter not possible for column {column_to_compare}")
