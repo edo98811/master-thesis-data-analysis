@@ -1173,7 +1173,7 @@ class SummaryPlot:
                 if series.any() and series.notnull().all():
                     serieses.append(series)
                 else:
-                    print(series)
+                    # print(series)
                     print(f"scatter not possible for column {column_to_compare}")
                     break
             if not len(serieses):
