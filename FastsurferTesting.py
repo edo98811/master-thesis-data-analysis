@@ -1239,7 +1239,7 @@ class SummaryPlot:
 
     def __scatter_plot(self, ax, data, ages):
 
-        for series, age in zip(data, age):
+        for series, age in zip(data, ages):
             ax.scatter(age, series.tolist(), label=series.name)  # mettere il nome della serie e le cose qui
 
         # Add a legend and axis labels
