@@ -1185,7 +1185,7 @@ class SummaryPlot:
                 if series.any() and series.notnull().all():
                     serieses.append(series)
                     print(f"ages {len(ages[i])}  - {type(ages[i])} {ages[i]}")
-                    print(f"ages {len(serieses[i])} - {type(serieses[i])} {serieses[i]}")
+                    print(f"ages {len(serieses[i])} - {type(serieses[i])} {serieses[i].tolist()}")
                 else:
                     # print(series)
                     print(f"scatter not possible for column {column_to_compare}")
@@ -1240,7 +1240,7 @@ class SummaryPlot:
     def __scatter_plot(self, ax, data, ages):
 
         for series in data:
-            ax.scatter(ages, series, label=series.name)  # mettere il nome della serie e le cose qui
+            ax.scatter(ages, series.tolist(), label=series.name)  # mettere il nome della serie e le cose qui
 
         # Add a legend and axis labels
         ax.legend()
