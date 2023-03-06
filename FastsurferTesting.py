@@ -325,6 +325,8 @@ class Stats:
             self.df_stats_aseg = self.df_stats_aseg[self.df_stats_aseg["ID"].isin(self.subj_list)]
 
         self.subj_list = [v for v in self.subj_list if v in self.df_stats_aseg["ID"].tolist()]
+        temp = self.delete_sub(self.subj_list)
+        self.df_subj = self.df_subj[self.df_subj["ID"].isin(temp)]
     def add_sub(self, list):
         """
         :param list: list of str - list of subj names
@@ -332,6 +334,15 @@ class Stats:
         """
         for i, s in enumerate(list):
             list[i] = "sub-" + s
+        return list
+    def delete_sub(self, list):
+        """
+        :param list: list of str - list of subj names
+        :return:
+        """
+        for i, s in enumerate(list):
+            match = re.split("sub-", s)
+            list[i] = match[1]
         return list
 
     def extract_stats_fast(self, stats_filename, _type):
