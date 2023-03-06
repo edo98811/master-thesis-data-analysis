@@ -35,10 +35,10 @@ def main():
     comp2.bonferroni_correction()
 
     comp1.violin()
-    comp1.bland_altmann()
+    #comp1.bland_altmann()
 
     comp2.violin()
-    comp2.bland_altmann()
+    #comp2.bland_altmann()
 
     summary1 = ft.SummaryPlot("summary", BASE_PATH, [stats_free_MC, stats_fast_MC, stats_free_healthy,
                                                      stats_fast_healthy])
