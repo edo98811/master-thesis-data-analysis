@@ -1150,7 +1150,7 @@ class SummaryPlot:
             # selects the column from all the dataframes and puts them in a list of series
             for i, df in enumerate(df_list):
                 series = pd.to_numeric(df.loc[:, column_to_compare], errors='coerce')
-                series.rename = f"{df_list[i].name} - {column_to_compare}"
+                series.rename = f"{data} {self.df_list_obj[i].name} - {column_to_compare}"
                 if series.any() and series.notnull().all():
                     serieses.append(series)
 
