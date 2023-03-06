@@ -6,7 +6,7 @@ from scipy import stats
 import seaborn as sns
 import data_manipulation as dm
 import numpy as np
-import dropboxAPI
+# import dropboxAPI
 import subprocess
 
 # todo altro:
@@ -789,8 +789,8 @@ class Comparisons:
                     # mng.full_screen_toggle()
 
                 # print(plots % N_SUBPLOTS)
-
-                self.__violin_plot(axs[plots % n_subplots], a, b)
+                index = plots % n_subplots
+                self.__violin_plot(axs[index], a, b)
                 plots += 1
 
             if plots >= self.max_plot:  # to avoid plotting too much
@@ -848,7 +848,8 @@ class Comparisons:
                     # mng.full_screen_toggle()
 
                 # print(plots % N_SUBPLOTS)
-                self.__bland_altman_plot(axs[plots % n_subplots], a, b)
+                index = plots % n_subplots
+                self.__bland_altman_plot(axs[index], a, b)
                 plots += 1
 
             if plots >= 20:  # to avoid plotting too much
@@ -1192,7 +1193,9 @@ class SummaryPlot:
             """
             print(f"ages {len(ages)} {type(ages[0])} {ages[0]}")
             print(f"ages {len(serieses)} {type(serieses[0])} {serieses[0]}")
-            self.__scatter_plot(axs[plots % n_subplots], serieses, ages)
+            index = plots % n_subplots
+            print(index)
+            self.__scatter_plot(axs[index], serieses, ages)
             plots += 1
 
             if plots >= self.max_plot:  # to avoid plotting too much
