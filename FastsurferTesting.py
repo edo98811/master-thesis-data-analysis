@@ -33,6 +33,7 @@ todo
     - quando faccio la selezione delle colonne aggiungere un testo che mi dice cosa sto escludendo (quali colonne)
     - salvare in log i dati che non vanno (ad esempio nello stat test) quando dice che absent or invalid data in un file di testo 
         tipo log 
+    - aggiungere metodo per controllare che le figure siano salvate correttamente (e tutte)
 
 idee
     - input nella funzione table anche la struttura delle tabelle per creare la tabella nuova (magari richiamata) 
@@ -1123,7 +1124,7 @@ class SummaryPlot:
         self.max_plot = max_plot
 
     # in teoria dovrei filtrarla prima
-    def comparison_plot(self, data="aseg", columns=None, n_subplots=10, n_rows=2):
+    def comparison_plot(self, data="aseg", columns=None, n_subplots=4, n_rows=2):
         """
         :param columns: list of str - list of column names to print (default None: prints all)
         :param data: str - type of input (aseg, aparcL or aparcR)
@@ -1169,7 +1170,7 @@ class SummaryPlot:
                     print(f"scatter not possible for column{self.df_list_obj[i].name}")
                     break
             if not len(serieses):
-                break
+                continue
 
             # a, b = get_column(column_to_compare, _df1_filtered, _df2_filtered)
             # if it needs to create a new figure it creates it
