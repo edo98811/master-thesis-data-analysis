@@ -309,14 +309,17 @@ class Stats:
             self.df_stats_aparcL = aparcLeft
         else:
             self.df_stats_aparcL = self.extract_stats_fast('rh.aparc.DKTatlas.mapped.stats', 1)
+            self.df_stats_aparcL = self.df_stats_aparcL.loc[self.df_stats_aparcL[:, "ID"].isin(self.df_subj["ID"].tolist())]
         if aparcRight is not None:
             self.df_stats_aparcR = aparcRight
         else:
             self.df_stats_aparcR = self.extract_stats_fast('lh.aparc.DKTatlas.mapped.stats', 1)
+            self.df_stats_aparcR = self.df_stats_aparcR.loc[self.df_stats_aparcR[:, "ID"].isin(self.df_subj["ID"].tolist())]
         if aseg is not None:
             self.df_stats_aseg = aseg
         else:
             self.df_stats_aseg = self.extract_stats_fast('aseg.stats', 0)
+            self.df_stats_aseg = self.df_stats_aseg.loc[self.df_stats_aseg[:, "ID"].isin(self.df_subj["ID"].tolist())]
 
     def add_sub(self, list):
         """
