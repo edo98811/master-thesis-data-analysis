@@ -31,7 +31,8 @@ todo
     - aggiungere descrizioni fatte bene
     - riscrivere tutto usando inheritance
     - quando faccio la selezione delle colonne aggiungere un testo che mi dice cosa sto escludendo (quali colonne)
-    - salvare in log i dati che non vanno (ad esempio nello stat test) quando dice che absent or invalid data
+    - salvare in log i dati che non vanno (ad esempio nello stat test) quando dice che absent or invalid data in un file di testo 
+        tipo log 
 
 idee
     - input nella funzione table anche la struttura delle tabelle per creare la tabella nuova (magari richiamata) 
@@ -933,7 +934,7 @@ class Comparisons:
         """
         # print(self.updated_alpha)
         self.updated_alpha = self.__correction_param()
-        print(self.updated_alpha)
+        # print(self.updated_alpha)
         for i, row in self.stat_df_result.iterrows():
             if type(row["mann_whitney p_value"]) is not str and type(row["mann_whitney p_value"]) is not str and type(
                     self.updated_alpha) is not str:
@@ -1147,7 +1148,7 @@ class SummaryPlot:
         for column_to_compare in columns:
             serieses =[]
             # selects the column from all the dataframes and puts them in a list of series
-            for i, df in table(df_list):
+            for i, df in df_list:
                 series = pd.to_numeric(df.loc[:, column_to_compare], errors='coerce')
                 series.rename = f"{df_list[i].name} - {column_to_compare}"
                 if series.any() and series.notnull().all():
