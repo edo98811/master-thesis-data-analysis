@@ -1165,14 +1165,15 @@ class SummaryPlot:
         #     columns = range(2, max_len)
 
         for column_to_compare in columns:
-            serieses =[]
+            serieses = []
             # selects the column from all the dataframes and puts them in a list of series
             for i, df in enumerate(df_list):
-                series = pd.to_numeric(df.loc[:, column_to_compare], errors='coerce')
+                series = pd.to_numeric(df[column_to_compare], errors='coerce')
                 series.rename = f"{data} {self.df_list_obj[i].name} - {column_to_compare}"
                 if series.any() and series.notnull().all():
                     serieses.append(series)
                 else:
+                    print(series)
                     print(f"scatter not possible for column {column_to_compare}")
                     break
             if not len(serieses):
