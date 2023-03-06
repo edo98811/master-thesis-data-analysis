@@ -1153,6 +1153,10 @@ class SummaryPlot:
                 series.rename = f"{data} {self.df_list_obj[i].name} - {column_to_compare}"
                 if series.any() and series.notnull().all():
                     serieses.append(series)
+            # creates the age series, to move up
+            ages = []
+            for table in self.df_list_obj:
+                ages.append(table.df_subj.loc[:, "age"].tolist())
 
             # a, b = get_column(column_to_compare, _df1_filtered, _df2_filtered)
             # if it needs to create a new figure it creates it
@@ -1172,10 +1176,6 @@ class SummaryPlot:
                 # mng.full_screen_toggle()
 
             # print(plots % N_SUBPLOTS)
-            # creates the age series
-            ages = []
-            for table in self.df_list_obj.df_subj:
-                ages.append(table.loc[:, "age"].tolist())
 
             """
             now i have two series
