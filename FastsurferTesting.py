@@ -1161,7 +1161,7 @@ class SummaryPlot:
                 else:
                     print(f"scatter not possible for column{self.df_list_obj[i].name}")
                     break
-            if not series:
+            if not len(serieses):
                 break
 
             # a, b = get_column(column_to_compare, _df1_filtered, _df2_filtered)

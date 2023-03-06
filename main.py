@@ -1,5 +1,6 @@
 import FastsurferTesting as ft
 import pandas as pd
+import numpy as np
 
 ADNI_PATH = ""
 OASIS_PATH = "/media/neuropsycad/disk12t/VascoDiogo/OASIS/FS7/"
@@ -8,6 +9,8 @@ DATA_FOLDER = "test_data/"
 
 
 def main():
+    np.warnings.filterwarnings('error', category=np.VisibleDeprecationWarning)
+
     table = ft.Table("OASIS TABLE", BASE_PATH, OASIS_PATH,
                      pd.read_csv(BASE_PATH + "/text_and_csv_files/OASIS_table.csv"))
 
