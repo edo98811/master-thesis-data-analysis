@@ -39,6 +39,7 @@ todo
     - mettere a posto i nomi dei grafici salvati
     - mettere a posto i grafici in generale rendendoli piu beli
     - in comparison serve davvero il parametro column to test?
+    - in stats save stats vengono salvati solo aseg e non tutti
     - aggiungere print alla fine delle funzioni e log
     - aggiungere descrizioni fatte bene
     - riscrivere tutto usando inheritance
@@ -829,6 +830,9 @@ class Comparisons:
         else:
             raise "violin: wrong selection parameter"
 
+        print(f"length of the tables to compare {len(_df1)} {len(_df2)}")
+        LogWriter.log.append(f"length of the tables to compare {len(_df1)} {len(_df2)}")
+
         # if not columns:
         #     columns = _df1.columns
         #     columns = columns.intersection(_df2.columns).tolist()
@@ -868,10 +872,10 @@ class Comparisons:
 
             if plots >= self.max_plot:  # to avoid plotting too much
                 break
-
-        fig.savefig(
-            self.data_path + "images/img_scatter_" + self.name + " - " + self.name + "_" + str(
-                plots) + ".png")  # save the figure to file
+        if not fig:
+            fig.savefig(
+                self.data_path + "images/img_scatter_" + self.name + " - " + self.name + "_" + str(
+                    plots) + ".png")  # save the figure to file
 
     def bland_altmann(self, data="aseg", columns=None, n_subplots=4, n_rows=2):
         """
@@ -892,6 +896,11 @@ class Comparisons:
         elif data == "aparcL":
             _df1 = self.stat_df_1.df_stats_aparcR[self.stat_df_1.df_stats_aparcR["ID"].isin(self.subjects_list)]
             _df2 = self.stat_df_2.df_stats_aparcR[self.stat_df_2.df_stats_aparcR["ID"].isin(self.subjects_list)]
+        else:
+            raise "violin: wrong selection parameter"
+
+        print(f"length of the tables to compare {len(_df1)} {len(_df2)}")
+        LogWriter.log.append(f"length of the tables to compare {len(_df1)} {len(_df2)}")
 
         if not columns:
             columns = set(_df1.columns.tolist()).intersection(set(_df2.columns.tolist()))  # set with columns
@@ -930,9 +939,10 @@ class Comparisons:
             if plots >= 20:  # to avoid plotting too much
                 break
 
-        fig.savefig(
-            self.data_path + "images/img_scatter_" + self.name + " - " + self.name + "_" + str(
-                plots) + ".png")  # save the figure to file
+        if not fig:
+            fig.savefig(
+                self.data_path + "images/img_scatter_" + self.name + " - " + self.name + "_" + str(
+                    plots) + ".png")  # save the figure to file
 
     def stat_test(self, columns, data="aseg"):
         """
