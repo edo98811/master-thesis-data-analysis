@@ -37,8 +37,6 @@ def main():
     stats_free_healthy.save_stats_files()
     stats_free_MC.save_stats_files()
 
-    ft.LogWriter()
-
     comp1 = ft.Comparisons("MC_oasis", BASE_PATH, stats_free_MC, stats_fast_MC)
     comp2 = ft.Comparisons("healthy_oasis", BASE_PATH, stats_free_healthy, stats_fast_healthy)
     comp1.bonferroni_correction()
@@ -57,6 +55,7 @@ def main():
                                                      stats_fast_healthy])
     summary1.comparison_plot()
 
+    ft.LogWriter()
 
 if __name__ == "__main__":
     main()
