@@ -903,8 +903,8 @@ class Comparisons:
         else:
             raise "violin: wrong selection parameter"
 
-        print(f"length of the tables to compare {len(_df1)} {len(_df2)}")
-        LogWriter.log.append(f"length of the tables to compare {len(_df1)} {len(_df2)}")
+        print(f"BA length of the tables to compare {len(_df1)} {len(_df2)}")
+        LogWriter.log.append(f"BA length of the tables to compare {len(_df1)} {len(_df2)}")
 
         if not columns:
             columns = set(_df1.columns.tolist()).intersection(set(_df2.columns.tolist()))  # set with columns
@@ -1150,8 +1150,8 @@ class Comparisons:
         if len(_a) != len(_b):
             print("arrays have different lenghts")
             LogWriter.log.append("arrays have different length")
-            LogWriter.log.append(_b)
-            LogWriter.log.append(_a)
+            LogWriter.log.append(_b.tolist())
+            LogWriter.log.append(_a.tolist())
             return
         for i, (a, b) in enumerate(zip(_a, _b)):
             mean_list.append((a + b) / 2)
