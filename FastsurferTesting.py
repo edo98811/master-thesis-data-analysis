@@ -31,7 +31,7 @@ todo
     ok- ricontrollare il modo in cui salva statistiche
     - ricontrollare bland altmann
     - aggiungere freesurfer nelle statistiche
-    - aggiungere funzione per creare la table senza che sia inizializzata
+    - aggiungere funzione per creare la table senza che sia caricata da prima nel caso
     - aggiungere log a tutti
     
     altre
@@ -796,6 +796,9 @@ class Comparisons:
         if not os.path.exists(self.data_path + "images/"):
             os.makedirs(self.data_path + "images/")
 
+        # filtrare dataset solo per quelli che sono in comune tra tutti (quindi gli stessi soggetti)
+
+
         self.name = name
         self.alpha = alpha
         self.updated_alpha = "no correction"
@@ -815,14 +818,14 @@ class Comparisons:
         plots = 0
 
         if data == "aseg":
-            _df1 = self.stat_df_1.df_stats_aseg
-            _df2 = self.stat_df_2.df_stats_aseg
+            _df1 = self.stat_df_1.df_stats_aseg[self.stat_df_1.df_stats_aseg["ID"].isin(self.subjects_list)]
+            _df2 = self.stat_df_2.df_stats_aseg[self.stat_df_2.df_stats_aseg["ID"].isin(self.subjects_list)]
         elif data == "aparcR":
-            _df1 = self.stat_df_1.df_stats_aparcL
-            _df2 = self.stat_df_2.df_stats_aparcL
+            _df1 = self.stat_df_1.df_stats_aparcL[self.stat_df_1.df_stats_aparcL["ID"].isin(self.subjects_list)]
+            _df2 = self.stat_df_2.df_stats_aparcL[self.stat_df_2.df_stats_aparcL["ID"].isin(self.subjects_list)]
         elif data == "aparcL":
-            _df1 = self.stat_df_1.df_stats_aparcR
-            _df2 = self.stat_df_2.df_stats_aparcR
+            _df1 = self.stat_df_1.df_stats_aparcR[self.stat_df_1.df_stats_aparcR["ID"].isin(self.subjects_list)]
+            _df2 = self.stat_df_2.df_stats_aparcR[self.stat_df_2.df_stats_aparcR["ID"].isin(self.subjects_list)]
         else:
             raise "violin: wrong selection parameter"
 
@@ -881,14 +884,14 @@ class Comparisons:
         plots = 0
 
         if data == "aseg":
-            _df1 = self.stat_df_1.df_stats_aseg
-            _df2 = self.stat_df_2.df_stats_aseg
+            _df1 = self.stat_df_1.df_stats_aseg[self.stat_df_1.df_stats_aseg["ID"].isin(self.subjects_list)]
+            _df2 = self.stat_df_2.df_stats_aseg[self.stat_df_2.df_stats_aseg["ID"].isin(self.subjects_list)]
         elif data == "aparcR":
-            _df1 = self.stat_df_1.df_stats_aparcL
-            _df2 = self.stat_df_2.df_stats_aparcL
+            _df1 = self.stat_df_1.df_stats_aparcL[self.stat_df_1.df_stats_aparcL["ID"].isin(self.subjects_list)]
+            _df2 = self.stat_df_2.df_stats_aparcL[self.stat_df_2.df_stats_aparcL["ID"].isin(self.subjects_list)]
         elif data == "aparcL":
-            _df1 = self.stat_df_1.df_stats_aparcR
-            _df2 = self.stat_df_2.df_stats_aparcR
+            _df1 = self.stat_df_1.df_stats_aparcR[self.stat_df_1.df_stats_aparcR["ID"].isin(self.subjects_list)]
+            _df2 = self.stat_df_2.df_stats_aparcR[self.stat_df_2.df_stats_aparcR["ID"].isin(self.subjects_list)]
 
         if not columns:
             columns = set(_df1.columns.tolist()).intersection(set(_df2.columns.tolist()))  # set with columns
