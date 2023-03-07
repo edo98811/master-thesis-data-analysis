@@ -1308,7 +1308,7 @@ class SummaryPlot:
                 max_ = series.max()
 
         # Add a legend and axis labels
-        ax.ylim(0, max_)
+        ax.axis(ymin=0,ymax=max_)
         ax.legend()
         ax.set_xlabel('Age')
         ax.set_ylabel('Data')
