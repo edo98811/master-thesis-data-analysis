@@ -21,24 +21,48 @@ cose da chiedere
 - quali soggetti dovrei tenere per fastsurfer (che patologie) 
 
 todo
-    - bonferroni correction da sempre problemi 
+    modifiche importanti
+        - salvare in log i dati che non vanno (ad esempio nello stat test) quando dice che absent or invalid data in un file di testo 
+        tipo log 
+        - fare diagramma del codice 
+        
+    ordine di cose da fare
+    okcontrollare- togliere p path
+    ok- ricontrollare il modo in cui salva statistiche
+    - ricontrollare bland altmann
+    - aggiungere freesurfer nelle statistiche
+    - aggiungere funzione per creare la table senza che sia inizializzata
+    - aggiungere log a tutti
+    
+    altre
+    - bonferroni correction da sempre problemi, controllare?
     - mettere a posto i nomi dei grafici salvati
-    - aggiungere modo di salvare parametri anche in stats free (adesso si puo fare solo per stats fast)
-    - in Stats il processed path deve essere preso direttamente dalle Table, forse anche il processed path?
+    - mettere a posto i grafici in generale rendendoli piu beli
     - in comparison serve davvero il parametro column to test?
-    - fare il metodo per caricare l'età dei soggetti 
-    - aggiungere print alla fine delle funzioni
+    - aggiungere print alla fine delle funzioni e log
     - aggiungere descrizioni fatte bene
     - riscrivere tutto usando inheritance
     - quando faccio la selezione delle colonne aggiungere un testo che mi dice cosa sto escludendo (quali colonne)
-    - salvare in log i dati che non vanno (ad esempio nello stat test) quando dice che absent or invalid data in un file di testo 
-        tipo log 
+
     - aggiungere metodo per controllare che le figure siano salvate correttamente (e tutte)
 
 idee
     - input nella funzione table anche la struttura delle tabelle per creare la tabella nuova (magari richiamata) 
+    - classe logger che fa il log di tutto e viene passata di default a tutte le classi
+
 
 """
+
+
+class LogWriter:
+    log = []
+
+    def __init__(self, save_file="log.txt"):
+        with open(save_file, 'w') as output:
+            for row in LogWriter.log:
+                output.write(str(row) + '\n')
+
+        print(f"log saved in {save_file}")
 
 
 class Table:
@@ -64,6 +88,7 @@ class Table:
     """
 
     def __init__(self, name, b_path, p_path, df_subj=None, d_folder="data_testing/"):
+        LogWriter.log.append("si!!!")
         """
         :param name: str - name of the object
         :param b_path: str - base path
@@ -313,13 +338,13 @@ class Stats:
             self.df_stats_aparcL = self.df_stats_aparcL[self.df_stats_aparcL["ID"].isin(self.subj_list)]
         if aparcRight is not None:
             self.df_stats_aparcR = aparcRight
-            self.df_stats_aparcR = self.df_stats_aparcR[self.df_stats_aparcR[ "ID"].isin(self.subj_list)]
+            self.df_stats_aparcR = self.df_stats_aparcR[self.df_stats_aparcR["ID"].isin(self.subj_list)]
         else:
             self.df_stats_aparcR = self.extract_stats_fast('lh.aparc.DKTatlas.mapped.stats', 1)
             self.df_stats_aparcR = self.df_stats_aparcR[self.df_stats_aparcR["ID"].isin(self.subj_list)]
         if aseg is not None:
             self.df_stats_aseg = aseg
-            self.df_stats_aseg = self.df_stats_aseg[self.df_stats_aseg[ "ID"].isin(self.subj_list)]
+            self.df_stats_aseg = self.df_stats_aseg[self.df_stats_aseg["ID"].isin(self.subj_list)]
         else:
             self.df_stats_aseg = self.extract_stats_fast('aseg.stats', 0)
             self.df_stats_aseg = self.df_stats_aseg[self.df_stats_aseg["ID"].isin(self.subj_list)]
@@ -327,6 +352,7 @@ class Stats:
         self.subj_list = [v for v in self.subj_list if v in self.df_stats_aseg["ID"].tolist()]
         temp = self.delete_sub(self.subj_list)
         self.df_subj = self.df_subj[self.df_subj["ID"].isin(temp)]
+
     def add_sub(self, list):
         """
         :param list: list of str - list of subj names
@@ -335,6 +361,7 @@ class Stats:
         for i, s in enumerate(list):
             list[i] = "sub-" + s
         return list
+
     def delete_sub(self, list):
         """
         :param list: list of str - list of subj names
@@ -351,7 +378,7 @@ class Stats:
         :param _type: int aseg or aparc (0 or 1)
         :return:
         """
-        stat_df_paths = self.__extract_path(stats_filename)
+        stat_df_paths = self.__extract_path(stats_filename, alg="fast")
 
         if stat_df_paths:
             print(f"stats file {stats_filename} found for {str(len(stat_df_paths))} subjects")
@@ -362,7 +389,7 @@ class Stats:
                 # stats_aparcDTK(stat_df_paths).to_csv(SAVE_PATH + save_filename, index=False)
                 return self.__fast_stats_aparcDTK(stat_df_paths)
         else:
-            print(f"no stat file: {stats_filename} file found in {self.processed_path}")
+            print(f"no stat file: {stats_filename} found in paths on table")
 
     def extract_stats_free(self, stats_filename, _type):
         """
@@ -370,10 +397,10 @@ class Stats:
         :param _type: int aseg or aparc (0 or 1)
         :return:
         """
-        stat_df_paths = self.__extract_path(stats_filename)
+        stat_df_paths = self.__extract_path(stats_filename, alg="free")
 
         if stat_df_paths:
-            print("stats file found for " + str(len(stat_df_paths)) + " subjects")
+            print(f"stats file {stats_filename} found for {str(len(stat_df_paths))} subjects")
             if _type == 0:
                 # __(stat_df_paths).to_csv(SAVE_PATH + save_filename, index=False)
                 return self.__free_stats_aseg(stat_df_paths)
@@ -381,7 +408,7 @@ class Stats:
                 # stats_aparcDTK(stat_df_paths).to_csv(SAVE_PATH + save_filename, index=False)
                 return self.__free_stats_aparcDTK(stat_df_paths)
         else:
-            print("no file found")
+            print(f"no stat file: {stats_filename} found in paths on table")
 
     def save_stats_files(self, which=(True, True, True), names=("aseg.csv", "aseg_right.csv", "aseg_left.csv")):
         """
@@ -389,16 +416,16 @@ class Stats:
         :param names: tuple - names of the files (default: "aseg.csv", "aseg_right.csv", "aseg_left.csv")
         :return:
         """
-
-        if not os.path.exists(self.data_path + self.name):
-            os.makedirs(self.data_path + self.name)
+        path = self.data_path + self.name + "_stats"
+        if not os.path.exists(path):
+            os.makedirs(path)
 
         if which[0]:
-            self.df_stats_aseg.to_csv(self.data_path + self.name + "/" + names[0])
+            self.df_stats_aseg.to_csv(path + "/" + names[0])
         if which[1]:
-            self.df_stats_aparcL.to_csv(self.data_path + self.name + "/" + names[1])
+            self.df_stats_aparcL.to_csv(path + "/" + names[1])
         if which[2]:
-            self.df_stats_aparcR.to_csv(self.data_path + self.name + "/" + names[2])
+            self.df_stats_aparcR.to_csv(path + "/" + names[2])
 
     def __fast_stats_aseg(self, subj_paths):
         df_dict = {"ID": []}
@@ -652,17 +679,15 @@ class Stats:
 
         return pd.DataFrame.from_dict(df_dict, orient='columns')
 
-    def __extract_path(self, filename):
+    def __extract_path(self, filename, alg):
         # set of all the subjects for easier computation
         subj_list_numbers = set(self.subj_list)
-
         # creates a list with all the subjects that are in the list
         # for s in subj_list:
         #     if len(s.split("/")) > 4:
         #         subj_list_numbers.add(s.split("/")[-4])
         # print(subj_list_numbers)
         # to be updated for every processed paths
-
         paths_found = []
         for path, subdirs, files in os.walk(self.processed_path):
             if path.split("/")[-1] == 'stats' and path.split("/")[-2] in subj_list_numbers:
@@ -670,6 +695,31 @@ class Stats:
                     if name == filename:
                         paths_found.append(path + "/" + name)
 
+        if not paths_found:
+            return False
+
+        return paths_found
+
+        # seconda parte da fare
+        paths_found = []
+        if alg == "free":
+            for s in self.subj_list:
+                s_path = os.path.dirname(self.df_subj[self.df_subj["ID"] == self.delete_sub(s)]["processed_path"][:-2])
+
+                for path, subdirs, files in os.walk(s_path):
+                    if path.split("/")[-1] == "stats" and path.split("/")[-2] in subj_list_numbers:
+                        for name in files:
+                            if name == filename:
+                                paths_found.append(path + "/" + name)
+        elif alg == "free":
+            for s in self.subj_list:
+                s_path = os.path.dirname(self.df_subj[self.df_subj["ID"] == self.delete_sub(s)]["path"][:-2])
+
+                for path, subdirs, files in os.walk(s_path):
+                    if path.split("/")[-1] == "stats" and path.split("/")[-2] in subj_list_numbers:
+                        for name in files:
+                            if name == filename:
+                                paths_found.append(path + "/" + name)
         if not paths_found:
             return False
 
@@ -742,7 +792,7 @@ class Comparisons:
             set(self.stat_df_2.df_subj.columns.tolist()))
 
         if not self.subjects_list or not self.columns_list:
-            raise "datasets dont have elements in common"
+            raise "datasets do not have elements in common"
         if not os.path.exists(self.data_path + "images/"):
             os.makedirs(self.data_path + "images/")
 
@@ -809,7 +859,7 @@ class Comparisons:
 
                 # print(plots % N_SUBPLOTS)
                 index = plots % n_subplots
-                #print(index)
+                # print(index)
                 self.__violin_plot(axs[index], a, b)
                 plots += 1
 
@@ -819,6 +869,7 @@ class Comparisons:
         fig.savefig(
             self.data_path + "images/img_scatter_" + self.name + " - " + self.name + "_" + str(
                 plots) + ".png")  # save the figure to file
+
     def bland_altmann(self, data="aseg", columns=None, n_subplots=4, n_rows=2):
         """
         :param data: str - table to select (aseg, aparcL, aparcR)
@@ -869,7 +920,7 @@ class Comparisons:
 
                 # print(plots % N_SUBPLOTS)
                 index = plots % n_subplots
-                #print(index)
+                # print(index)
                 self.__bland_altman_plot(axs[index], a, b)
                 plots += 1
 
@@ -879,6 +930,7 @@ class Comparisons:
         fig.savefig(
             self.data_path + "images/img_scatter_" + self.name + " - " + self.name + "_" + str(
                 plots) + ".png")  # save the figure to file
+
     def stat_test(self, columns, data="aseg"):
         """
         :param columns: list of str - list of column names to print (default None: prints all)
@@ -915,7 +967,8 @@ class Comparisons:
             b = pd.to_numeric(_df2.loc[:, column_to_compare], errors='coerce')
             # a, b = get_column(column_to_compare, _df1_filtered, _df2_filtered)
             if a.any() and b.any() and (a.notnull().all() and b.notnull().all()):
-                print(f"performing statistical analysis for data in category {column_to_compare}for file {self.name} - {data}")
+                print(
+                    f"performing statistical analysis for data in category {column_to_compare}for file {self.name} - {data}")
 
                 r1, p1, o1 = self.__mann_whitney(a, b)
                 r2, p2, o2 = self.__t_test(a, b)
@@ -975,12 +1028,14 @@ class Comparisons:
             if save:
                 self.stat_df_result.to_csv(self.data_path + f"{self.name}_bonferroni_corrected.csv")
 
-    def save_data(self, filename):
+    def save_data(self, filename=None):
         """
         to csv in basepath + filename
         :param filename: str - name of the file to be saved into
         :return:
         """
+        if filename is None:
+            filename = f"{self.name}_stats.csv"
         self.stat_df_result.to_csv(self.data_path + filename)
 
     def __t_test(self, _a, _b):
@@ -1075,8 +1130,12 @@ class Comparisons:
     def __bland_altman_plot(self, _ax, _a, _b):
         # Compute mean and difference between two series
         mean_list = []
-        for i, (a,b) in enumerate(zip(_a, _b)):
-            mean_list.append((a + b)/2)
+        if len(_a) != len(_b):
+            print("arrays have different lenghts")
+            # LogWriter.log.append("arrays have different length")
+            return
+        for i, (a, b) in enumerate(zip(_a, _b)):
+            mean_list.append((a + b) / 2)
         # mean = np.mean([_a,_b], axis=0)ù
         mean = np.array(mean_list)
         diff = _a - _b
@@ -1094,6 +1153,7 @@ class Comparisons:
         _ax.set_ylabel('Difference')
         _ax.set_title(_a.name + "\n" + self.name)  # query.split("=")[-1])
         _ax.legend(['Mean difference', '95% limits of agreement'])
+
     # def __get_column(self, column_to_compare):
     #     if isinstance(column_to_compare, int):
     #         a = df1.iloc[:, column_to_compare]
@@ -1162,13 +1222,14 @@ class SummaryPlot:
                 df_list.append(table.df_stats_aparcL)
         elif data == "aparcL":
             for table in self.df_list_obj:
-                df_list.append(table.df_stats_aparcR) # table
+                df_list.append(table.df_stats_aparcR)  # table
 
         # creates the age series, to move up
         ages = []
+        legend = []
         for table in self.df_list_obj:
             ages.append(table.df_subj.loc[:, "age"].tolist())
-
+            legend.append(self.df_list_obj.name)
         if not columns:
             columns = df_list[0].columns
         # columns = columns.intersection(_df2.columns).tolist()
@@ -1181,7 +1242,7 @@ class SummaryPlot:
             # selects the column from all the dataframes and puts them in a list of series
             for i, df in enumerate(df_list):
                 series = pd.to_numeric(df[column_to_compare], errors='coerce')
-                series.rename = f"{data} {self.df_list_obj[i].name} - {column_to_compare}"
+                series.rename = f"{data} {self.df_list_obj[i].name} {column_to_compare}"
                 if series.any() and series.notnull().all():
                     serieses.append(series)
                     print(f"ages {len(ages[i])}  - {type(ages[i])} {ages[i]}")
@@ -1198,8 +1259,8 @@ class SummaryPlot:
             if not plots % n_subplots:
                 if plots > 1:
                     fig.savefig(
-                        self.data_path + "images/img_scatter_" + self.name + " - " + self.name + "_" + str(
-                            plots) + ".png")  # save the figure to file
+                        f"{self.data_path} images/img_scatter_{self.name}"
+                        f"_{str(plots - n_subplots)}-{str(plots)} .png")  # save the figure to file
                     # plt.close(fig)  # close the figure window
                     # handles, labels = axs[1].get_legend_handles_labels()
                     # fig.legend(handles, labels, loc=(0.95, 0.1), prop={'size': 30})
@@ -1220,7 +1281,7 @@ class SummaryPlot:
             i can do the scatter plots of this
             """
             index = plots % n_subplots
-            #print(index)
+            # print(index)
             self.__scatter_plot(axs[index], serieses, ages)
             plots += 1
 
@@ -1238,12 +1299,14 @@ class SummaryPlot:
         """
 
     def __scatter_plot(self, ax, data, ages):
-
+        max_ = 0
         for series, age in zip(data, ages):
             ax.scatter(age, series.tolist(), label=series.name)  # mettere il nome della serie e le cose qui
+            if series.max() > max_:
+                max_ = series.max()
 
         # Add a legend and axis labels
+        ax.ylim(0, max_)
         ax.legend()
         ax.set_xlabel('Age')
         ax.set_ylabel('Data')
-
