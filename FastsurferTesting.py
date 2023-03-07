@@ -802,7 +802,7 @@ class Comparisons:
             os.makedirs(self.data_path + "images/")
 
         # filtrare dataset solo per quelli che sono in comune tra tutti (quindi gli stessi soggetti)
-        self.subjects_list = stats_df_2.add_sub(self.subjects_list)
+        self.subjects_list = set(stats_df_2.add_sub(list(self.subjects_list)))
 
         self.name = name
         self.alpha = alpha
