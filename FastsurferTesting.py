@@ -23,7 +23,7 @@ cose da chiedere
 todo
     modifiche importanti
         - salvare in log i dati che non vanno (ad esempio nello stat test) quando dice che absent or invalid data in un file di testo 
-        tipo log 
+        tipo log (esiste un modo per definire il comportamento di una variabile in modo che stampi quello a cui viene assegnata?)
         - fare diagramma del codice 
         
     ordine di cose da fare
