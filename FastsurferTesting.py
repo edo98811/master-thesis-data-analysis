@@ -37,7 +37,9 @@ todo
     altre
     - bonferroni correction da sempre problemi, controllare?
     - mettere a posto i nomi dei grafici salvati
+    - rendere add_sun e delete_sub static methods 
     - mettere a posto i grafici in generale rendendoli piu beli
+    - uniformare i sub e i non sub nelle strutture
     - in comparison serve davvero il parametro column to test?
     - in stats save stats vengono salvati solo aseg e non tutti
     - aggiungere print alla fine delle funzioni e log
@@ -792,13 +794,15 @@ class Comparisons:
         self.columns_list = set(self.stat_df_1.df_subj.columns.tolist()).intersection(
             set(self.stat_df_2.df_subj.columns.tolist()))
 
+
+
         if not self.subjects_list or not self.columns_list:
             raise "datasets do not have elements in common"
         if not os.path.exists(self.data_path + "images/"):
             os.makedirs(self.data_path + "images/")
 
         # filtrare dataset solo per quelli che sono in comune tra tutti (quindi gli stessi soggetti)
-
+        self.subjects_list = stats_df_2.add_sub(self.subjects_list)
 
         self.name = name
         self.alpha = alpha
