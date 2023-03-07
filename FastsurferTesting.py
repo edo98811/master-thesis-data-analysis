@@ -1132,7 +1132,9 @@ class Comparisons:
         mean_list = []
         if len(_a) != len(_b):
             print("arrays have different lenghts")
-            # LogWriter.log.append("arrays have different length")
+            LogWriter.log.append("arrays have different length")
+            LogWriter.log.append(_b)
+            LogWriter.log.append(_a)
             return
         for i, (a, b) in enumerate(zip(_a, _b)):
             mean_list.append((a + b) / 2)
@@ -1229,7 +1231,7 @@ class SummaryPlot:
         legend = []
         for table in self.df_list_obj:
             ages.append(table.df_subj.loc[:, "age"].tolist())
-            legend.append(self.df_list_obj.name)
+            legend.append(table.name)
         if not columns:
             columns = df_list[0].columns
         # columns = columns.intersection(_df2.columns).tolist()
