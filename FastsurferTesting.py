@@ -1245,8 +1245,8 @@ class SummaryPlot:
                 series.rename = f"{data} {self.df_list_obj[i].name} {column_to_compare}"
                 if series.any() and series.notnull().all():
                     serieses.append(series)
-                    print(f"ages {len(ages[i])}  - {type(ages[i])} {ages[i]}")
-                    print(f" series {len(serieses[i])} - {type(serieses[i].tolist())} {serieses[i].tolist()}")
+                    # print(f"ages {len(ages[i])}  - {type(ages[i])} {ages[i]}")
+                    # print(f" series {len(serieses[i])} - {type(serieses[i].tolist())} {serieses[i].tolist()}")
                 else:
                     # print(series)
                     print(f"scatter not possible for column {column_to_compare}")
