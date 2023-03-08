@@ -386,7 +386,7 @@ class Stats:
         """
         for i, s in enumerate(list):
             match = re.split("sub-", s)
-            if len(match) >=1:
+            if len(match) > 1:
                 list[i] = match[1]
         return list
 
