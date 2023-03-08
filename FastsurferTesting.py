@@ -370,6 +370,7 @@ class Stats:
         print(t)
         print(len(self.df_stats_aseg["ID"].tolist()))
         print(self.subj_list)
+        self.subj_list = self.add_sub(self.subj_list)
         self.subj_list = [v for v in self.subj_list if v in self.df_stats_aseg["ID"].tolist()]
         temp = set(self.delete_sub(self.subj_list))
         self.df_subj = self.df_subj[self.df_subj["ID"].isin(temp)]
