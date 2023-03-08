@@ -1150,7 +1150,6 @@ class Comparisons:
         sns.violinplot(ax=_ax, data=df, hue="Group", x="Area", y="Data", split=True)
         _ax.title.set_text(_a.name + "\n" + self.name)
         _ax.ticklabel_format(style='sci', axis='x', scilimits=(0, 0), useMathText=True)
-        _ax.ticklabel_format(style='sci', axis='y', scilimits=(0, 0), useMathText=True)
         # ax.yaxis.set_major_formatter(plt.FormatStrFormatter('{:.3g}'))
         _ax.set_xlabel("")
 
@@ -1341,3 +1340,4 @@ class SummaryPlot:
         ax.legend()
         ax.set_xlabel('Age')
         ax.set_ylabel('Data')
+        ax.ticklabel_format(style='sci', axis='x', scilimits=(0, 0), useMathText=True)
