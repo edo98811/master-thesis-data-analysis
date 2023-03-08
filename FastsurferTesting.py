@@ -383,7 +383,7 @@ class Stats:
         """
         l = []
         for i, s in enumerate(list):
-            l[i] = "sub-" + s
+            l.append("sub-" + s)
         return l
 
     @staticmethod
