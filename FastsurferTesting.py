@@ -718,6 +718,7 @@ class Stats:
         if alg == "free":
             for s in self.subj_list:
                 s_path = os.path.dirname(self.df_subj[self.df_subj["ID"] == self.delete_sub(s)]["processed_path"][:-2])
+                print(s_path)
 
                 for path, subdirs, files in os.walk(s_path):
                     if path.split("/")[-1] == "stats" and path.split("/")[-2] in subj_list_numbers:
