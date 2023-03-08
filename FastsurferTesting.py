@@ -727,9 +727,9 @@ class Stats:
             for s in subj_list_numbers:
                 # list_path = str(self.df_subj[self.df_subj["ID"] == s]["processed_path"])
                 # str_path = "/".join(list_path[:-1])
-                print(s)
+                #print(s)
                 s_path = str(self.df_subj[self.df_subj["ID"] == s]["processed_path"].iloc[0])
-                print(s_path)
+                #print(s_path)
 
                 for path, subdirs, files in os.walk(s_path):
                     if path.split("/")[-1] == "stats":#  and path.split("/")[-2] in subj_list_numbers:
