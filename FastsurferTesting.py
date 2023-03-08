@@ -1342,4 +1342,4 @@ class SummaryPlot:
         ax.set_xlabel('Age')
         ax.set_ylabel('Data')
         ax.ticklabel_format(style='sci', axis='x', scilimits=(0, 0), useMathText=True)
-        ax.title(title)
+        ax.set_title(title)
