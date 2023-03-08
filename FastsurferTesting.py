@@ -717,8 +717,8 @@ class Stats:
         paths_found = []
         if alg == "fast":
             for s in self.subj_list:
-                str_path = str(s)
-                s_path = os.path.dirname(str_path)[:-2]
+                str_path = str(self.df_subj[self.df_subj["ID"] == s]["processed_path"])
+                s_path = os.path.dirname(str_path)[:-1]
                 print(s_path)
 
                 for path, subdirs, files in os.walk(s_path):
