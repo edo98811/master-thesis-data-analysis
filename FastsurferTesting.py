@@ -940,7 +940,7 @@ class Comparisons:
                 # print(plots % N_SUBPLOTS)
                 index = plots % n_subplots
                 # print(index)
-                self.__bland_altman_plot(axs[index], np.array(a), np.array(b))
+                self.__bland_altman_plot(axs[index], a, b)
                 plots += 1
 
             if plots >= 20:  # to avoid plotting too much
@@ -1161,7 +1161,7 @@ class Comparisons:
             mean_list.append((a + b) / 2)
         # mean = np.mean([_a,_b], axis=0)ù
         mean = np.array(mean_list)
-        diff = _a - _b
+        diff = np.array(_a) - np.array(_b)
         print(f"{len(mean)} {mean}")
         print(f"{len(diff)} {diff}")
         # Compute mean difference and standard deviation of difference
