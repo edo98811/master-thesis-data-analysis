@@ -1150,20 +1150,20 @@ class Comparisons:
     def __bland_altman_plot(self, _ax, _a, _b):
         # Compute mean and difference between two series
         mean_list = []
-        print(f"{len(_a)} {len(_b)}")
-        if len(_a) != len(_b):
-            print("arrays have different lenghts")
-            LogWriter.log_list.append("arrays have different length")
-            LogWriter.log_list.append(_b.tolist())
-            LogWriter.log_list.append(_a.tolist())
-            return
-        for i, (a, b) in enumerate(zip(_a, _b)):
-            mean_list.append((a + b) / 2)
-        # mean = np.mean([_a,_b], axis=0)ù
-        mean = np.array(mean_list)
+        # print(f"{len(_a)} {len(_b)}")
+        # if len(_a) != len(_b):
+        #     print("arrays have different lenghts")
+        #     LogWriter.log_list.append("arrays have different length")
+        #     LogWriter.log_list.append(_b.tolist())
+        #     LogWriter.log_list.append(_a.tolist())
+        #     return
+        # for i, (a, b) in enumerate(zip(_a, _b)):
+        #     mean_list.append((a + b) / 2)
+        mean = np.mean([np.array(_a),np.array(_b)], axis=0)ù
+        # mean = np.array(mean_list)
         diff = np.array(_a) - np.array(_b)
-        print(f"{len(mean)} {mean}")
-        print(f"{len(diff)} {diff}")
+        # print(f"{len(mean)} {mean}")
+        # print(f"{len(diff)} {diff}")
         # Compute mean difference and standard deviation of difference
         md = np.mean(diff)
         sd = np.std(diff, axis=0)
