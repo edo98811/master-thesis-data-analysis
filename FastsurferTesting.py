@@ -1242,7 +1242,6 @@ class SummaryPlot:
         :return:
         """
         plots = 0
-
         df_list = []
         # saves the dataframes from the stats object
         if data == "aseg":
@@ -1269,6 +1268,7 @@ class SummaryPlot:
         #     columns = range(2, max_len)
 
         for column_to_compare in columns:
+            title = f"{data} {column_to_compare}"
             serieses = []
             # selects the column from all the dataframes and puts them in a list of series
             for i, df in enumerate(df_list):
@@ -1312,7 +1312,7 @@ class SummaryPlot:
             """
             index = plots % n_subplots
             # print(index)
-            self.__scatter_plot(axs[index], serieses, ages)
+            self.__scatter_plot(axs[index], serieses, ages, title)
             plots += 1
 
             if plots >= self.max_plot:  # to avoid plotting too much
@@ -1328,10 +1328,11 @@ class SummaryPlot:
             poi provo a far la linea
         """
 
-    def __scatter_plot(self, ax, data, ages):
+    def __scatter_plot(self, ax, data, ages, title):
         max_ = 0
         for series, age in zip(data, ages):
             ax.scatter(age, series.tolist(), label=series.name)  # mettere il nome della serie e le cose qui
+            print(series.name)
             if series.max() > max_:
                 max_ = series.max()
 
@@ -1341,3 +1342,4 @@ class SummaryPlot:
         ax.set_xlabel('Age')
         ax.set_ylabel('Data')
         ax.ticklabel_format(style='sci', axis='x', scilimits=(0, 0), useMathText=True)
+        ax.title(title)
