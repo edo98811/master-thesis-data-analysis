@@ -723,7 +723,7 @@ class Stats:
                 print(s_path)
 
                 for path, subdirs, files in os.walk(s_path):
-                    if path.split("/")[-1] == "stats" and path.split("/")[-2] in subj_list_numbers:
+                    if path.split("/")[-1] == "stats":#  and path.split("/")[-2] in subj_list_numbers:
                         for name in files:
                             if name == filename:
                                 paths_found.append(path + "/" + name)
