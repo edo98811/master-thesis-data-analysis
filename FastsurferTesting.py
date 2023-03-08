@@ -61,13 +61,18 @@ class LogWriter:
     log_list = []
 
     @staticmethod
+    def clearlog(save_file="log.txt"):
+        with open(save_file, 'w') as output:
+            output.write(str("------new log") + '\n')
+
+    @staticmethod
     def log(line, save_file="log.txt"):
         with open(save_file, 'a') as output:
             output.write(str(line) + '\n')
 
     def __init__(self, save_file="log.txt"):
         with open(save_file, 'w') as output:
-            for row in LogWriter.log_list_list:
+            for row in LogWriter.log_list:
                 output.write(str(row) + '\n')
 
         print(f"log saved in {save_file}")
@@ -1144,6 +1149,8 @@ class Comparisons:
         # sns.violinplot(data=df, split=True)
         sns.violinplot(ax=_ax, data=df, hue="Group", x="Area", y="Data", split=True)
         _ax.title.set_text(_a.name + "\n" + self.name)
+        _ax.ticklabel_format(style='sci', axis='x', scilimits=(0, 0), useMathText=True)
+        _ax.ticklabel_format(style='sci', axis='y', scilimits=(0, 0), useMathText=True)
         # ax.yaxis.set_major_formatter(plt.FormatStrFormatter('{:.3g}'))
         _ax.set_xlabel("")
 
@@ -1159,7 +1166,7 @@ class Comparisons:
         #     return
         # for i, (a, b) in enumerate(zip(_a, _b)):
         #     mean_list.append((a + b) / 2)
-        mean = np.mean([np.array(_a),np.array(_b)], axis=0)
+        mean = np.mean([np.array(_a), np.array(_b)], axis=0)
         # mean = np.array(mean_list)
         diff = np.array(_a) - np.array(_b)
         # print(f"{len(mean)} {mean}")
@@ -1177,7 +1184,8 @@ class Comparisons:
         _ax.set_ylabel('Difference')
         _ax.set_title(_a.name + "\n" + self.name)  # query.split("=")[-1])
         _ax.legend(['Mean difference', '95% limits of agreement'])
-
+        _ax.ticklabel_format(style='sci', axis='x', scilimits=(0, 0), useMathText=True)
+        _ax.ticklabel_format(style='sci', axis='y', scilimits=(0, 0), useMathText=True)
     # def __get_column(self, column_to_compare):
     #     if isinstance(column_to_compare, int):
     #         a = df1.iloc[:, column_to_compare]
@@ -1266,7 +1274,7 @@ class SummaryPlot:
             # selects the column from all the dataframes and puts them in a list of series
             for i, df in enumerate(df_list):
                 series = pd.to_numeric(df[column_to_compare], errors='coerce')
-                series.rename = f"{data} {self.df_list_obj[i].name} {column_to_compare}"
+                series.rename(f"{data} {self.df_list_obj[i].name} {column_to_compare}")
                 if series.any() and series.notnull().all():
                     serieses.append(series)
                     # print(f"ages {len(ages[i])}  - {type(ages[i])} {ages[i]}")
