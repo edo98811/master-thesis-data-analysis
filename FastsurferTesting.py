@@ -1274,6 +1274,8 @@ class SummaryPlot:
             for i, df in enumerate(df_list):
                 series = pd.to_numeric(df[column_to_compare], errors='coerce')
                 series.rename(f"{data} {self.df_list_obj[i].name} {column_to_compare}")
+                print(f"{data} {self.df_list_obj[i].name} {column_to_compare}")
+                print(series.name)
                 if series.any() and series.notnull().all():
                     serieses.append(series)
                     # print(f"ages {len(ages[i])}  - {type(ages[i])} {ages[i]}")
