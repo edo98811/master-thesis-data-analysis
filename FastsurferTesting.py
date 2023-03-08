@@ -692,7 +692,7 @@ class Stats:
 
         return pd.DataFrame.from_dict(df_dict, orient='columns')
 
-    def __extract_path(self, filename, alg):
+    def __extract_path(self, filename, alg="fast"):
         # set of all the subjects for easier computation
         subj_list_numbers = set(self.subj_list)
         # creates a list with all the subjects that are in the list
@@ -701,17 +701,17 @@ class Stats:
         #         subj_list_numbers.add(s.split("/")[-4])
         # print(subj_list_numbers)
         # to be updated for every processed paths
-        paths_found = []
-        for path, subdirs, files in os.walk(self.processed_path):
-            if path.split("/")[-1] == 'stats' and path.split("/")[-2] in subj_list_numbers:
-                for name in files:
-                    if name == filename:
-                        paths_found.append(path + "/" + name)
-
-        if not paths_found:
-            return False
-
-        return paths_found
+        # paths_found = []
+        # for path, subdirs, files in os.walk(self.processed_path):
+        #     if path.split("/")[-1] == 'stats' and path.split("/")[-2] in subj_list_numbers:
+        #         for name in files:
+        #             if name == filename:
+        #                 paths_found.append(path + "/" + name)
+        #
+        # if not paths_found:
+        #     return False
+        #
+        # return paths_found
 
         # seconda parte da fare
         paths_found = []
@@ -1273,7 +1273,7 @@ class SummaryPlot:
             # selects the column from all the dataframes and puts them in a list of series
             for i, df in enumerate(df_list):
                 series = pd.to_numeric(df[column_to_compare], errors='coerce')
-                series.rename(f"{data} {self.df_list_obj[i].name} {column_to_compare}")
+                series.rename(f"{data}_{self.df_list_obj[i].name}_{column_to_compare}")
                 print(f"{data} {self.df_list_obj[i].name} {column_to_compare}")
                 print(series.name)
                 if series.any() and series.notnull().all():

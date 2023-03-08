@@ -21,15 +21,12 @@ def main():
     aparcL_free = pd.read_csv(BASE_PATH + "Stats_FreeSurfer/aparcDKT_right.csv")
     aparcR_free = pd.read_csv(BASE_PATH + "Stats_FreeSurfer/aparcDKT_left.csv")
 
-    stats_fast_healthy = ft.Stats("healthy_FAST", BASE_PATH, table, " main_condition!='Cognitively normal'",
-                                  d_folder=DATA_FOLDER)
-    stats_fast_MC = ft.Stats("MC_FAST", BASE_PATH, table, "main_condition!='Cognitively normal'", d_folder=DATA_FOLDER)
+    stats_fast_healthy = ft.Stats("healthy_FAST", BASE_PATH, table, " main_condition!='Cognitively normal'")
+    stats_fast_MC = ft.Stats("MC_FAST", BASE_PATH, table, "main_condition!='Cognitively normal'")
 
-    stats_free_healthy = ft.Stats("healthy_FREE", BASE_PATH, table, "main_condition!='Cognitively normal'",
-                                  DATA_FOLDER, aseg=aseg_free,
+    stats_free_healthy = ft.Stats("healthy_FREE", BASE_PATH, table, "main_condition!='Cognitively normal'", aseg=aseg_free,
                                   aparcRight=aparcR_free, aparcLeft=aparcL_free)
-    stats_free_MC = ft.Stats("MC_FREE", BASE_PATH, table, "main_condition!='Cognitively normal'",
-                             DATA_FOLDER, aseg=aseg_free,
+    stats_free_MC = ft.Stats("MC_FREE", BASE_PATH, table, "main_condition!='Cognitively normal'", aseg=aseg_free,
                              aparcRight=aparcR_free, aparcLeft=aparcL_free)
 
     stats_fast_healthy.save_stats_files()
