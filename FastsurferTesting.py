@@ -723,6 +723,7 @@ class Stats:
             for s in self.subj_list:
                 # list_path = str(self.df_subj[self.df_subj["ID"] == s]["processed_path"])
                 # str_path = "/".join(list_path[:-1])
+                print(s)
                 s_path = str(self.df_subj[self.df_subj["ID"] == s]["processed_path"].iloc[0])
                 print(s_path)
 
