@@ -366,8 +366,10 @@ class Stats:
         temp = self.delete_sub(self.subj_list)
         self.df_subj = self.df_subj[self.df_subj["ID"].isin(temp)]
         print(len(self.subj_list))
+        print(self.subj_list[0])
 
-    def add_sub(self, list):
+    @staticmethod
+    def add_sub(list):
         """
         :param list: list of str - list of subj names
         :return:
@@ -376,7 +378,8 @@ class Stats:
             list[i] = "sub-" + s
         return list
 
-    def delete_sub(self, list):
+    @staticmethod
+    def delete_sub(list):
         """
         :param list: list of str - list of subj names
         :return:
@@ -695,7 +698,7 @@ class Stats:
 
     def __extract_path(self, filename, alg="fast"):
         # set of all the subjects for easier computation
-        subj_list_numbers = set(self.delete_sub(self.subj_list))
+        # subj_list_numbers = set(self.delete_sub(self.subj_list))
         # creates a list with all the subjects that are in the list
         # for s in subj_list:
         #     if len(s.split("/")) > 4:
@@ -733,7 +736,7 @@ class Stats:
                 s_path = os.path.dirname(self.df_subj[self.df_subj["ID"] == s]["path"][:-2])
 
                 for path, subdirs, files in os.walk(s_path):
-                    if path.split("/")[-1] == "stats" and path.split("/")[-2] in subj_list_numbers:
+                    if path.split("/")[-1] == "stats":# and path.split("/")[-2] in subj_list_numbers:
                         for name in files:
                             if name == filename:
                                 paths_found.append(path + "/" + name)
