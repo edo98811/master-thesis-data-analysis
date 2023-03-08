@@ -381,9 +381,10 @@ class Stats:
         :param list: list of str - list of subj names
         :return:
         """
+        l = []
         for i, s in enumerate(list):
-            list[i] = "sub-" + s
-        return list
+            l[i] = "sub-" + s
+        return l
 
     @staticmethod
     def delete_sub(list):
