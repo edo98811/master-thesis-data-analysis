@@ -1158,7 +1158,8 @@ class Comparisons:
         # mean = np.mean([_a,_b], axis=0)ù
         mean = np.array(mean_list)
         diff = _a - _b
-
+        print(f"{len(mean)}")
+        print(f"{len(diff)}")
         # Compute mean difference and standard deviation of difference
         md = np.mean(diff)
         sd = np.std(diff, axis=0)
