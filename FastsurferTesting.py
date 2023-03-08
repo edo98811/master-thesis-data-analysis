@@ -504,6 +504,7 @@ class Stats:
         #            df_dict[key].append("NaN")
 
         # dm.write_dict(df_dict,"prova_df_dict.json")
+        print(str(df_dict))
         return pd.DataFrame.from_dict(df_dict, orient='columns')
 
     def __fast_stats_aparcDTK(self, subj_paths):
