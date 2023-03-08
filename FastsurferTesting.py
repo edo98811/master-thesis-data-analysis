@@ -940,7 +940,7 @@ class Comparisons:
                 # print(plots % N_SUBPLOTS)
                 index = plots % n_subplots
                 # print(index)
-                self.__bland_altman_plot(axs[index], a, b)
+                self.__bland_altman_plot(axs[index], np.array(a), np.array(b))
                 plots += 1
 
             if plots >= 20:  # to avoid plotting too much
@@ -1150,6 +1150,7 @@ class Comparisons:
     def __bland_altman_plot(self, _ax, _a, _b):
         # Compute mean and difference between two series
         mean_list = []
+        print(f"{len(_a)} {len(_b)}")
         if len(_a) != len(_b):
             print("arrays have different lenghts")
             LogWriter.log_list.append("arrays have different length")
