@@ -360,6 +360,7 @@ class Stats:
             self.df_stats_aseg = self.df_stats_aseg[self.df_stats_aseg["ID"].isin(self.subj_list)]
         else:
             self.df_stats_aseg = self.extract_stats_fast('aseg.stats', 0)
+            print(len(self.df_stats_aseg))
             self.df_stats_aseg = self.df_stats_aseg[self.df_stats_aseg["ID"].isin(self.subj_list)]
 
         #
