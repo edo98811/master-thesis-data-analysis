@@ -386,7 +386,8 @@ class Stats:
         """
         for i, s in enumerate(list):
             match = re.split("sub-", s)
-            list[i] = match[1]
+            if len(match) >=1:
+                list[i] = match[1]
         return list
 
     def extract_stats_fast(self, stats_filename, _type):
@@ -698,7 +699,7 @@ class Stats:
 
     def __extract_path(self, filename, alg="fast"):
         # set of all the subjects for easier computation
-        # subj_list_numbers = set(self.delete_sub(self.subj_list))
+        subj_list_numbers = set(self.delete_sub(self.subj_list))
         # creates a list with all the subjects that are in the list
         # for s in subj_list:
         #     if len(s.split("/")) > 4:
@@ -720,7 +721,7 @@ class Stats:
         # seconda parte da fare
         paths_found = []
         if alg == "fast":
-            for s in self.subj_list:
+            for s in subj_list_numbers:
                 # list_path = str(self.df_subj[self.df_subj["ID"] == s]["processed_path"])
                 # str_path = "/".join(list_path[:-1])
                 print(s)
