@@ -1159,7 +1159,7 @@ class Comparisons:
         #     return
         # for i, (a, b) in enumerate(zip(_a, _b)):
         #     mean_list.append((a + b) / 2)
-        mean = np.mean([np.array(_a),np.array(_b)], axis=0)ù
+        mean = np.mean([np.array(_a),np.array(_b)], axis=0)
         # mean = np.array(mean_list)
         diff = np.array(_a) - np.array(_b)
         # print(f"{len(mean)} {mean}")
