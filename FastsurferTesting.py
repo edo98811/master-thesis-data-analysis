@@ -694,7 +694,7 @@ class Stats:
 
     def __extract_path(self, filename, alg="fast"):
         # set of all the subjects for easier computation
-        subj_list_numbers = set(self.subj_list)
+        subj_list_numbers = set(self.delete_sub(self.subj_list))
         # creates a list with all the subjects that are in the list
         # for s in subj_list:
         #     if len(s.split("/")) > 4:
@@ -717,7 +717,7 @@ class Stats:
         paths_found = []
         if alg == "fast":
             for s in self.subj_list:
-                s_path = os.path.dirname(self.df_subj[self.df_subj["ID"] == self.delete_sub(s)]["processed_path"])[:-2]
+                s_path = os.path.dirname(self.df_subj[self.df_subj["ID"] == s]["processed_path"])[:-2]
                 print(s_path)
 
                 for path, subdirs, files in os.walk(s_path):
@@ -727,7 +727,7 @@ class Stats:
                                 paths_found.append(path + "/" + name)
         elif alg == "free":
             for s in self.subj_list:
-                s_path = os.path.dirname(self.df_subj[self.df_subj["ID"] == self.delete_sub(s)]["path"][:-2])
+                s_path = os.path.dirname(self.df_subj[self.df_subj["ID"] == s]["path"][:-2])
 
                 for path, subdirs, files in os.walk(s_path):
                     if path.split("/")[-1] == "stats" and path.split("/")[-2] in subj_list_numbers:
