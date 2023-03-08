@@ -370,6 +370,7 @@ class Stats:
         print(t)
         print(len(self.df_stats_aseg["ID"].tolist()))
         print(self.subj_list)
+        print(self.df_stats_aseg["ID"].tolist())
         self.subj_list = self.add_sub(self.subj_list)
         self.subj_list = [v for v in self.subj_list if v in self.df_stats_aseg["ID"].tolist()]
         temp = set(self.delete_sub(self.subj_list))
@@ -510,7 +511,7 @@ class Stats:
         #            df_dict[key].append("NaN")
 
         # dm.write_dict(df_dict,"prova_df_dict.json")
-        print(str(df_dict))
+        # print(str(df_dict))
         return pd.DataFrame.from_dict(df_dict, orient='columns')
 
     def __fast_stats_aparcDTK(self, subj_paths):
