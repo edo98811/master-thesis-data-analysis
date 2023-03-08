@@ -328,7 +328,7 @@ class Stats:
         # here there is the df only already filtered
         self.df_subj = df_subj_obj.get_query(query)
         self.subj_list = self.add_sub(self.df_subj["ID"].tolist())
-
+        t = self.subj_list
         self.processed_path = p_path
         self.base_path = b_path
         self.data_path = self.base_path + d_folder
@@ -366,6 +366,7 @@ class Stats:
         #
 
         print(len(self.subj_list))
+        print(t)
         print(len(self.df_stats_aseg["ID"].tolist()))
         print(self.subj_list)
         self.subj_list = [v for v in self.subj_list if v in self.df_stats_aseg["ID"].tolist()]
