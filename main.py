@@ -9,7 +9,7 @@ DATA_FOLDER = "test_data/"
 
 
 def main():
-    ft.LogWriter.log.append("funziona?")
+    ft.LogWriter.log_list.append("funziona?")
     np.warnings.filterwarnings('error', category=np.VisibleDeprecationWarning)
 
     table = ft.Table("OASIS TABLE", BASE_PATH, OASIS_PATH,
