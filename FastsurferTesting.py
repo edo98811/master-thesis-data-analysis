@@ -58,11 +58,16 @@ idee
 
 
 class LogWriter:
-    log = []
+    log_list = []
+
+    @staticmethod
+    def log(line, save_file="log.txt"):
+        with open(save_file, 'a') as output:
+            output.write(str(line) + '\n')
 
     def __init__(self, save_file="log.txt"):
         with open(save_file, 'w') as output:
-            for row in LogWriter.log:
+            for row in LogWriter.log_list_list:
                 output.write(str(row) + '\n')
 
         print(f"log saved in {save_file}")
@@ -91,7 +96,7 @@ class Table:
     """
 
     def __init__(self, name, b_path, p_path, df_subj=None, d_folder="data_testing/"):
-        LogWriter.log.append("si!!!")
+        LogWriter.log_list.append("si!!!")
         """
         :param name: str - name of the object
         :param b_path: str - base path
@@ -794,8 +799,6 @@ class Comparisons:
         self.columns_list = set(self.stat_df_1.df_subj.columns.tolist()).intersection(
             set(self.stat_df_2.df_subj.columns.tolist()))
 
-
-
         if not self.subjects_list or not self.columns_list:
             raise "datasets do not have elements in common"
         if not os.path.exists(self.data_path + "images/"):
@@ -835,7 +838,7 @@ class Comparisons:
             raise "violin: wrong selection parameter"
 
         print(f"length of the tables to compare {len(_df1)} {len(_df2)}")
-        LogWriter.log.append(f"length of the tables to compare {len(_df1)} {len(_df2)}")
+        LogWriter.log_list.append(f"length of the tables to compare {len(_df1)} {len(_df2)}")
 
         # if not columns:
         #     columns = _df1.columns
@@ -904,7 +907,7 @@ class Comparisons:
             raise "violin: wrong selection parameter"
 
         print(f"BA length of the tables to compare {len(_df1)} {len(_df2)}")
-        LogWriter.log.append(f"BA length of the tables to compare {len(_df1)} {len(_df2)}")
+        LogWriter.log_list.append(f"BA length of the tables to compare {len(_df1)} {len(_df2)}")
 
         if not columns:
             columns = set(_df1.columns.tolist()).intersection(set(_df2.columns.tolist()))  # set with columns
@@ -1149,17 +1152,17 @@ class Comparisons:
         mean_list = []
         if len(_a) != len(_b):
             print("arrays have different lenghts")
-            LogWriter.log.append("arrays have different length")
-            LogWriter.log.append(_b.tolist())
-            LogWriter.log.append(_a.tolist())
+            LogWriter.log_list.append("arrays have different length")
+            LogWriter.log_list.append(_b.tolist())
+            LogWriter.log_list.append(_a.tolist())
             return
         for i, (a, b) in enumerate(zip(_a, _b)):
             mean_list.append((a + b) / 2)
         # mean = np.mean([_a,_b], axis=0)ù
         mean = np.array(mean_list)
         diff = _a - _b
-        print(f"{len(mean)}")
-        print(f"{len(diff)}")
+        print(f"{len(mean)} {mean}")
+        print(f"{len(diff)} {diff}")
         # Compute mean difference and standard deviation of difference
         md = np.mean(diff)
         sd = np.std(diff, axis=0)
@@ -1279,7 +1282,7 @@ class SummaryPlot:
             if not plots % n_subplots:
                 if plots > 1:
                     fig.savefig(f"{self.data_path}images/img_scatter_{self.name}"
-                        f"_{str(plots - n_subplots)}-{str(plots)}.png")  # save the figure to file
+                                f"_{str(plots - n_subplots)}-{str(plots)}.png")  # save the figure to file
                     # plt.close(fig)  # close the figure window
                     # handles, labels = axs[1].get_legend_handles_labels()
                     # fig.legend(handles, labels, loc=(0.95, 0.1), prop={'size': 30})
@@ -1325,7 +1328,7 @@ class SummaryPlot:
                 max_ = series.max()
 
         # Add a legend and axis labels
-        ax.axis(ymin=0,ymax=max_)
+        ax.axis(ymin=0, ymax=max_)
         ax.legend()
         ax.set_xlabel('Age')
         ax.set_ylabel('Data')
