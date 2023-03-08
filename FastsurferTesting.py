@@ -6,6 +6,7 @@ from scipy import stats
 import seaborn as sns
 import data_manipulation as dm
 import numpy as np
+from copy import deepcopy
 # import dropboxAPI
 import subprocess
 
@@ -328,7 +329,7 @@ class Stats:
         # here there is the df only already filtered
         self.df_subj = df_subj_obj.get_query(query)
         self.subj_list = self.add_sub(self.df_subj["ID"].tolist())
-        t = self.subj_list
+        t = deepcopy(self.subj_list)
         self.processed_path = p_path
         self.base_path = b_path
         self.data_path = self.base_path + d_folder
