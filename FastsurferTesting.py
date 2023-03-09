@@ -26,7 +26,8 @@ todo
         - salvare in log i dati che non vanno (ad esempio nello stat test) quando dice che absent or invalid data in un file di testo 
         tipo log (esiste un modo per definire il comportamento di una variabile in modo che stampi quello a cui viene assegnata?)
         - fare diagramma del codice 
-        - togliere sub ovunque 
+        - scrivere unittest
+        - controllar che salvi tutte le statistiche, mi sa salva solo aseg ora
         
     ordine di cose da fare
     okcontrollare- togliere p path
@@ -38,7 +39,6 @@ todo
     
     altre
     - bonferroni correction da sempre problemi, controllare?
-    - mettere a posto i nomi dei grafici salvati
     - rendere add_sun e delete_sub static methods 
     - mettere a posto i grafici in generale rendendoli piu beli
     - uniformare i sub e i non sub nelle strutture
@@ -50,10 +50,6 @@ todo
     - quando faccio la selezione delle colonne aggiungere un testo che mi dice cosa sto escludendo (quali colonne)
 
     - aggiungere metodo per controllare che le figure siano salvate correttamente (e tutte)
-
-idee
-    - input nella funzione table anche la struttura delle tabelle per creare la tabella nuova (magari richiamata) 
-    - classe logger che fa il log di tutto e viene passata di default a tutte le classi
 
 
 """
@@ -973,7 +969,7 @@ class Comparisons:
                 # print(plots % N_SUBPLOTS)
                 index = plots % n_subplots
                 # print(index)
-                self.__violin_plot(axs[index], a, b)
+                self.__violin_plot(axs[index], a, b, title= a.name + "\n" + self.name)
                 plots += 1
             else:
                 not_done.append(a.name)
@@ -981,10 +977,11 @@ class Comparisons:
             if plots >= self.max_plot:  # to avoid plotting too much
                 break
 
-        if not fig:
+        if plots % n_subplots != 0:
             fig.savefig(
                 self.data_path + "images/img_violin_" + self.name + "_" + str(
                     plots) + ".png")  # save the figure to file
+        del axs, fig
 
         LogWriter.log(f"    plotted for {plots} variables out of {len(columns)}")
         not_done_str = '         \n '.join(not_done)
@@ -1046,7 +1043,7 @@ class Comparisons:
                 # print(plots % N_SUBPLOTS)
                 index = plots % n_subplots
                 # print(index)
-                self.__bland_altman_plot(axs[index], a, b)
+                self.__bland_altman_plot(axs[index], a, b, title=a.name + "\n" + self.name)
                 plots += 1
             else:
                 not_done.append(a.name)
@@ -1054,10 +1051,11 @@ class Comparisons:
                 break
 
 
-        if not fig:
+        if plots % n_subplots != 0:
             fig.savefig(
-                self.data_path + "images/img_ba_" + self.name + "_" + str(
+                self.data_path + "images/img_violin_" + self.name + "_" + str(
                     plots) + ".png")  # save the figure to file
+        del axs, fig
 
         LogWriter.log(f"    plotted {plots} variables out of {len(columns)}")
         not_done_str = '         \n '.join(not_done)
@@ -1177,7 +1175,8 @@ class Comparisons:
             filename = f"{self.name}_stats.csv"
         self.stat_df_result.to_csv(self.data_path + filename)
 
-    def __t_test(self, _a, _b):
+    @staticmethod
+    def __t_test(_a, _b):
         # a, b = get_column(column_to_compare, df1, df2)
 
         if "NaN" in _a or "NaN" in _b:
@@ -1195,7 +1194,8 @@ class Comparisons:
 
         return result, p_value, outcome
 
-    def __mann_whitney(self, _a, _b):
+    @staticmethod
+    def __mann_whitney(_a, _b):
         # a, b = get_column(column_to_compare, df1, df2)
 
         if "NaN" in _a or "NaN" in _b:
@@ -1234,7 +1234,8 @@ class Comparisons:
 
         # df.to_csv(self.base_path + _name)  # , index=False
 
-    def __cohens_d(self, _a, _b):
+    @staticmethod
+    def __cohens_d(_a, _b):
         n1, n2 = len(_a), len(_b)
         var1, var2 = np.var(_a, ddof=1), np.var(_b, ddof=1)
 
@@ -1252,7 +1253,8 @@ class Comparisons:
 
         return d, string
 
-    def __violin_plot(self, _ax, _a, _b):
+    @staticmethod
+    def __violin_plot(_ax, _a, _b, title):
         # Create a DataFrame with the two Series
         # df = pd.DataFrame({'Freesurfer': _a, 'Fastsurfer': _b})
         df = pd.DataFrame({'Data': pd.concat([_a, _b]),
@@ -1262,12 +1264,13 @@ class Comparisons:
         # Create a split violin plot
         # sns.violinplot(data=df, split=True)
         sns.violinplot(ax=_ax, data=df, hue="Group", x="Area", y="Data", split=True)
-        _ax.title.set_text(_a.name + "\n" + self.name)
+        _ax.title.set_text(title)
         _ax.ticklabel_format(style='sci', axis='y', scilimits=(0, 0), useMathText=True)
         # ax.yaxis.set_major_formatter(plt.FormatStrFormatter('{:.3g}'))
         _ax.set_xlabel("")
 
-    def __bland_altman_plot(self, _ax, _a, _b):
+    @staticmethod
+    def __bland_altman_plot(_ax, _a, _b, title):
         # Compute mean and difference between two series
         mean_list = []
         # print(f"{len(_a)} {len(_b)}")
@@ -1295,7 +1298,7 @@ class Comparisons:
         _ax.axhline(md - 1.96 * sd, color='gray', linestyle='--')
         _ax.set_xlabel('Mean')
         _ax.set_ylabel('Difference')
-        _ax.set_title(_a.name + "\n" + self.name)  # query.split("=")[-1])
+        _ax.set_title(title)  # query.split("=")[-1])
         _ax.legend(['Mean difference', '95% limits of agreement'])
         _ax.ticklabel_format(style='sci', axis='x', scilimits=(0, 0), useMathText=True)
         _ax.ticklabel_format(style='sci', axis='y', scilimits=(0, 0), useMathText=True)
@@ -1445,7 +1448,8 @@ class SummaryPlot:
             poi provo a far la linea
         """
 
-    def __scatter_plot(self, ax, data, ages, title):
+    @staticmethod
+    def __scatter_plot(ax, data, ages, title):
         max_ = 0
         for series, age in zip(data, ages):
             ax.scatter(age, series.tolist(), label=series.name)  # mettere il nome della serie e le cose qui
