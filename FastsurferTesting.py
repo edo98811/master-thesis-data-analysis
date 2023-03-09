@@ -359,12 +359,10 @@ class Stats:
             self.df_stats_aparcR = self.df_stats_aparcR[self.df_stats_aparcR["ID"].isin(self.subj_list)]
         if aseg is not None:
             self.df_stats_aseg = aseg
-            self.subj_list = self.add_sub(self.subj_list)
             self.df_stats_aseg = self.df_stats_aseg[self.df_stats_aseg["ID"].isin(self.subj_list)]
         else:
             self.df_stats_aseg = self.extract_stats_fast('aseg.stats', 0)
             print(len(self.df_stats_aseg["ID"].tolist()))
-            self.subj_list = self.add_sub(self.subj_list)
             self.df_stats_aseg = self.df_stats_aseg[self.df_stats_aseg["ID"].isin(self.subj_list)]
 
         #
