@@ -441,7 +441,7 @@ class Stats:
             match = re.split("sub-", s)
             if len(match) > 1:
                 l.append(match[1])
-        if len(l) != len(list):
+        if len(l) != len(_list):
             LogWriter.log("warning deletesub: wrong number of subjects matched the pattern sub-#######...")
         else:
             LogWriter.log("addsub: correctly deleted sub- from all the patients")
