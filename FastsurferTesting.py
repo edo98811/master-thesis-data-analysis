@@ -376,14 +376,14 @@ class Stats:
                 self.df_stats_aparcL = self.df_stats_aparcL[self.df_stats_aparcL["ID"].isin(t)]
             else:
                 LogWriter.log(f"extracting aparcL stats for {self.name}")
-                self.df_stats_aparcL = self.extract_stats_free('rh.aparc.DKTatlas.mapped.stats', 1)
+                self.df_stats_aparcL = self.extract_stats_free('rh.aparc.DKTatlas.stats', 1)
                 self.df_stats_aparcL = self.df_stats_aparcL[self.df_stats_aparcL["ID"].isin(t)]
             if aparcRight is not None:
                 self.df_stats_aparcR = aparcRight
                 self.df_stats_aparcR = self.df_stats_aparcR[self.df_stats_aparcR["ID"].isin(self.subj_list)]
             else:
                 LogWriter.log(f"extracting aparcR stats for {self.name}")
-                self.df_stats_aparcR = self.extract_stats_free('lh.aparc.DKTatlas.mapped.stats', 1)
+                self.df_stats_aparcR = self.extract_stats_free('lh.aparc.DKTatlas.stats', 1)
                 self.df_stats_aparcR = self.df_stats_aparcR[self.df_stats_aparcR["ID"].isin(t)]
             if aseg is not None:
                 self.df_stats_aseg = aseg
