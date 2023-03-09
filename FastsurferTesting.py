@@ -362,12 +362,11 @@ class Stats:
             self.df_stats_aseg = self.df_stats_aseg[self.df_stats_aseg["ID"].isin(self.subj_list)]
         else:
             self.df_stats_aseg = self.extract_stats_fast('aseg.stats', 0)
-            print(len(self.df_stats_aseg["ID"].tolist()))
             self.df_stats_aseg = self.df_stats_aseg[self.df_stats_aseg["ID"].isin(self.subj_list)]
 
         #
 
-        print(len(self.subj_list))
+        print("len sbj list" + len(self.subj_list))
         print(t)
         print(len(self.df_stats_aseg["ID"].tolist()))
         print(self.subj_list)
@@ -410,7 +409,7 @@ class Stats:
         :return:
         """
         stat_df_paths = self.__extract_path(stats_filename, alg="fast")
-
+        print("len stat paths found :" + stat_df_paths)
         if stat_df_paths:
             print(f"stats file {stats_filename} found for {str(len(stat_df_paths))} subjects")
             if _type == 0:
