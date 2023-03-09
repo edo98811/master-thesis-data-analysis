@@ -17,9 +17,9 @@ def main():
 
     table.save_csv("UPDATED_OASIS.csv")
 
-    aseg_free = pd.read_csv(BASE_PATH + "Stats_FreeSurfer/aseg.csv")
-    aparcL_free = pd.read_csv(BASE_PATH + "Stats_FreeSurfer/aparcDKT_right.csv")
-    aparcR_free = pd.read_csv(BASE_PATH + "Stats_FreeSurfer/aparcDKT_left.csv")
+    # aseg_free = pd.read_csv(BASE_PATH + "Stats_FreeSurfer/aseg.csv")
+    # aparcL_free = pd.read_csv(BASE_PATH + "Stats_FreeSurfer/aparcDKT_right.csv")
+    # aparcR_free = pd.read_csv(BASE_PATH + "Stats_FreeSurfer/aparcDKT_left.csv")
 
     stats_fast_healthy = ft.Stats("healthy_FAST", BASE_PATH, table, " main_condition=='Cognitively normal'")
     stats_fast_MC = ft.Stats("MC_FAST", BASE_PATH, table, "main_condition!='Cognitively normal'")
