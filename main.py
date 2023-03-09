@@ -23,11 +23,13 @@ def main():
 
     stats_fast_healthy = ft.Stats("healthy_FAST", BASE_PATH, table, " main_condition=='Cognitively normal'")
     stats_fast_MC = ft.Stats("MC_FAST", BASE_PATH, table, "main_condition!='Cognitively normal'")
+    stats_free_healthy = ft.Stats("healthy_FREE", BASE_PATH, table, "main_condition=='Cognitively normal'", alg="free")
+    stats_free_MC = ft.Stats("MC_FREE", BASE_PATH, table, "main_condition!='Cognitively normal'", alg="free")
 
-    stats_free_healthy = ft.Stats("healthy_FREE", BASE_PATH, table, "main_condition=='Cognitively normal'", aseg=aseg_free,
-                                  aparcRight=aparcR_free, aparcLeft=aparcL_free)
-    stats_free_MC = ft.Stats("MC_FREE", BASE_PATH, table, "main_condition!='Cognitively normal'", aseg=aseg_free,
-                             aparcRight=aparcR_free, aparcLeft=aparcL_free)
+    # stats_free_healthy = ft.Stats("healthy_FREE", BASE_PATH, table, "main_condition=='Cognitively normal'", aseg=aseg_free,
+    #                               aparcRight=aparcR_free, aparcLeft=aparcL_free)
+    # stats_free_MC = ft.Stats("MC_FREE", BASE_PATH, table, "main_condition!='Cognitively normal'", aseg=aseg_free,
+    #                          aparcRight=aparcR_free, aparcLeft=aparcL_free)
 
     stats_fast_healthy.save_stats_files()
     stats_fast_MC.save_stats_files()
