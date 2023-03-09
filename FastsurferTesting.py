@@ -366,7 +366,7 @@ class Stats:
 
         #
 
-        print("len sbj list" + len(self.subj_list))
+        print("len sbj list" + str(len(self.subj_list)))
         print(t)
         print(len(self.df_stats_aseg["ID"].tolist()))
         print(self.subj_list)
