@@ -309,8 +309,7 @@ class Stats:
     methods
     """
 
-    def __init__(self, name, b_path, df_subj_obj, query, d_folder="data_testing/",
-                 p_path="/media/neuropsycad/disk12t/EdoardoFilippiMasterThesis/FastSurfer_Output", aseg=None,
+    def __init__(self, name, b_path, df_subj_obj, query, d_folder="data_testing/", aseg=None,
                  aparcLeft=None, aparcRight=None, alg="fast"):
         """
         :param name: str - name of the object
@@ -329,11 +328,13 @@ class Stats:
         else:
             raise "wrong datatype"
 
+        LogWriter.log(f"inizializing Stats for {name}")
+
         # here there is the df only already filtered
         self.df_subj = df_subj_obj.get_query(query)
         self.subj_list = self.add_sub(self.df_subj["ID"].tolist())
         t = deepcopy(self.subj_list)
-        self.processed_path = p_path
+
         self.base_path = b_path
         self.data_path = self.base_path + d_folder
 
@@ -353,21 +354,21 @@ class Stats:
                 self.df_stats_aparcL = aparcLeft
                 self.df_stats_aparcL = self.df_stats_aparcL[self.df_stats_aparcL["ID"].isin(t)]
             else:
-                LogWriter.log(f"extracting aparcL stats for {self.name}")
+                LogWriter.log(f"    extracting aparcL stats for {self.name}...")
                 self.df_stats_aparcL = self.extract_stats_fast('rh.aparc.DKTatlas.mapped.stats', 1)
                 self.df_stats_aparcL = self.df_stats_aparcL[self.df_stats_aparcL["ID"].isin(t)]
             if aparcRight is not None:
                 self.df_stats_aparcR = aparcRight
                 self.df_stats_aparcR = self.df_stats_aparcR[self.df_stats_aparcR["ID"].isin(self.subj_list)]
             else:
-                LogWriter.log(f"extracting aparcR stats for {self.name}")
+                LogWriter.log(f"    extracting aparcR stats for {self.name}...")
                 self.df_stats_aparcR = self.extract_stats_fast('lh.aparc.DKTatlas.mapped.stats', 1)
                 self.df_stats_aparcR = self.df_stats_aparcR[self.df_stats_aparcR["ID"].isin(t)]
             if aseg is not None:
                 self.df_stats_aseg = aseg
                 self.df_stats_aseg = self.df_stats_aseg[self.df_stats_aseg["ID"].isin(t)]
             else:
-                LogWriter.log(f"extracting aseg stats for {self.name}...")
+                LogWriter.log(f"    extracting aseg stats for {self.name}...")
                 self.df_stats_aseg = self.extract_stats_fast('aseg.stats', 0)
                 self.df_stats_aseg = self.df_stats_aseg[self.df_stats_aseg["ID"].isin(t)]
         if alg == "free":
@@ -375,21 +376,21 @@ class Stats:
                 self.df_stats_aparcL = aparcLeft
                 self.df_stats_aparcL = self.df_stats_aparcL[self.df_stats_aparcL["ID"].isin(t)]
             else:
-                LogWriter.log(f"extracting aparcL stats for {self.name}")
+                LogWriter.log(f"    extracting aparcL stats for {self.name}...")
                 self.df_stats_aparcL = self.extract_stats_free('rh.aparc.DKTatlas.stats', 1)
                 self.df_stats_aparcL = self.df_stats_aparcL[self.df_stats_aparcL["ID"].isin(t)]
             if aparcRight is not None:
                 self.df_stats_aparcR = aparcRight
                 self.df_stats_aparcR = self.df_stats_aparcR[self.df_stats_aparcR["ID"].isin(self.subj_list)]
             else:
-                LogWriter.log(f"extracting aparcR stats for {self.name}")
+                LogWriter.log(f"    extracting aparcR stats for {self.name}...")
                 self.df_stats_aparcR = self.extract_stats_free('lh.aparc.DKTatlas.stats', 1)
                 self.df_stats_aparcR = self.df_stats_aparcR[self.df_stats_aparcR["ID"].isin(t)]
             if aseg is not None:
                 self.df_stats_aseg = aseg
                 self.df_stats_aseg = self.df_stats_aseg[self.df_stats_aseg["ID"].isin(t)]
             else:
-                LogWriter.log(f"extracting aseg stats for {self.name}")
+                LogWriter.log(f"    extracting aseg stats for {self.name}...")
                 self.df_stats_aseg = self.extract_stats_free('aseg.stats', 0)
                 self.df_stats_aseg = self.df_stats_aseg[self.df_stats_aseg["ID"].isin(t)]
 
@@ -407,6 +408,7 @@ class Stats:
         temp = set(self.delete_sub(t))
         self.df_subj = self.df_subj[self.df_subj["ID"].isin(temp)]
         self.n_sub = len(self.df_subj)
+
         if self.n_sub > 0:
             LogWriter.log(f"stats {self.name} correctly initialized {self.n_sub} being considered")
             LogWriter.log(f"    len aseg {len(self.df_stats_aseg)}")
@@ -933,9 +935,9 @@ class Comparisons:
             _df2 = self.stat_df_2.df_stats_aparcR[self.stat_df_2.df_stats_aparcR["ID"].isin(self.subjects_list)]
         else:
             raise "violin: wrong selection parameter"
-
-        print(f"length of the tables to compare {len(_df1)} {len(_df2)}")
-        LogWriter.log_list.append(f"length of the tables to compare {len(_df1)} {len(_df2)}")
+        LogWriter.log(f"Violin plot: {self.name}")
+        # print(f"length of the tables to compare {len(_df1)} {len(_df2)}")
+        LogWriter.log(f"    length of the tables to compare {len(_df1)} {len(_df2)}")
 
         # if not columns:
         #     columns = _df1.columns
@@ -946,7 +948,7 @@ class Comparisons:
         # if not columns:
         #     max_len = min(len(_df1.axes[1]), len(_df2.axes[1]))
         #     columns = range(2, max_len)
-
+        not_done = []
         for column_to_compare in columns:
             a = pd.to_numeric(_df1.loc[:, column_to_compare], errors='coerce')
             b = pd.to_numeric(_df2.loc[:, column_to_compare], errors='coerce')
@@ -973,13 +975,20 @@ class Comparisons:
                 # print(index)
                 self.__violin_plot(axs[index], a, b)
                 plots += 1
+            else:
+                not_done.append(a.name)
 
             if plots >= self.max_plot:  # to avoid plotting too much
                 break
+
         if not fig:
             fig.savefig(
-                self.data_path + "images/img_scatter_" + self.name + " - " + self.name + "_" + str(
+                self.data_path + "images/img_violin_" + self.name + "_" + str(
                     plots) + ".png")  # save the figure to file
+
+        LogWriter.log(f"    plotted for {plots} variables out of {len(columns)}")
+        not_done_str = '         \n '.join(not_done)
+        LogWriter.log(f"    skipped: {not_done_str}")
 
     def bland_altmann(self, data="aseg", columns=None, n_subplots=4, n_rows=2):
         """
@@ -1001,10 +1010,10 @@ class Comparisons:
             _df1 = self.stat_df_1.df_stats_aparcR[self.stat_df_1.df_stats_aparcR["ID"].isin(self.subjects_list)]
             _df2 = self.stat_df_2.df_stats_aparcR[self.stat_df_2.df_stats_aparcR["ID"].isin(self.subjects_list)]
         else:
-            raise "violin: wrong selection parameter"
-
-        print(f"BA length of the tables to compare {len(_df1)} {len(_df2)}")
-        LogWriter.log_list.append(f"BA length of the tables to compare {len(_df1)} {len(_df2)}")
+            raise "bland_altmann: wrong selection parameter"
+        LogWriter.log(f"Bland altmann plot: {self.name}")
+        # print(f"BA length of the tables to compare {len(_df1)} {len(_df2)}")
+        LogWriter.log(f"    BA length of the tables to compare {len(_df1)} {len(_df2)}")
 
         if not columns:
             columns = set(_df1.columns.tolist()).intersection(set(_df2.columns.tolist()))  # set with columns
@@ -1013,7 +1022,7 @@ class Comparisons:
         # if not columns:
         #     max_len = min(len(_df1.axes[1]), len(_df2.axes[1]))
         #     columns = range(2, max_len)
-
+        not_done = []
         for column_to_compare in columns:
             a = pd.to_numeric(_df1.loc[:, column_to_compare], errors='coerce')
             b = pd.to_numeric(_df2.loc[:, column_to_compare], errors='coerce')
@@ -1039,14 +1048,20 @@ class Comparisons:
                 # print(index)
                 self.__bland_altman_plot(axs[index], a, b)
                 plots += 1
-
+            else:
+                not_done.append(a.name)
             if plots >= 20:  # to avoid plotting too much
                 break
 
+
         if not fig:
             fig.savefig(
-                self.data_path + "images/img_scatter_" + self.name + " - " + self.name + "_" + str(
+                self.data_path + "images/img_ba_" + self.name + "_" + str(
                     plots) + ".png")  # save the figure to file
+
+        LogWriter.log(f"    plotted {plots} variables out of {len(columns)}")
+        not_done_str = '         \n '.join(not_done)
+        LogWriter.log(f"    skipped: {not_done_str}")
 
     def stat_test(self, columns, data="aseg"):
         """
@@ -1068,6 +1083,7 @@ class Comparisons:
 
         r_all = []
         print(f"performing t_test and mann whitney on {data} in {self.name}")
+        LogWriter.log(f"    performing t_test and mann whitney on {data} in {self.name}")
 
         # se non viene dato un input fa il test per tutte le colonne
         if not columns:
@@ -1078,7 +1094,7 @@ class Comparisons:
         # if not columns:
         #     max_len = min(len(_df1.axes[1]), len(_df2.axes[1]))
         #     columns = range(2, max_len)
-
+        not_done = []
         for column_to_compare in columns:
             a = pd.to_numeric(_df1.loc[:, column_to_compare], errors='coerce')
             b = pd.to_numeric(_df2.loc[:, column_to_compare], errors='coerce')
@@ -1086,6 +1102,7 @@ class Comparisons:
             if a.any() and b.any() and (a.notnull().all() and b.notnull().all()):
                 print(
                     f"performing statistical analysis for data in category {column_to_compare}for file {self.name} - {data}")
+                LogWriter.log(f"performing statistical analysis for data in category {column_to_compare}for file {self.name} - {data}")
 
                 r1, p1, o1 = self.__mann_whitney(a, b)
                 r2, p2, o2 = self.__t_test(a, b)
@@ -1117,7 +1134,12 @@ class Comparisons:
 
             else:
                 print(f"absent or not valid data in category {column_to_compare}for file {self.name} - {data}")
-            self.__save_dataframe(r_all)
+                not_done.append(column_to_compare)
+
+        LogWriter.log(f"    tested {len(r_all)} variables out of {len(columns)}")
+        not_done_str = '         \n '.join(not_done)
+        LogWriter.log(f"    skipped: {not_done_str}")
+        self.__save_dataframe(r_all)
 
     def bonferroni_correction(self, save=False):
         """
