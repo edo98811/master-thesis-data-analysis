@@ -365,7 +365,7 @@ class Stats:
             self.df_stats_aseg = self.df_stats_aseg[self.df_stats_aseg["ID"].isin(self.subj_list)]
 
         #
-
+        print(self.df_stats_aseg.head())
         print("len sbj list" + str(len(self.subj_list)))
         print(t)
         print(len(self.df_stats_aseg["ID"].tolist()))
