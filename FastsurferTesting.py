@@ -809,6 +809,7 @@ class Stats:
                 # str_path = "/".join(list_path[:-1])
                 # print(s)
                 s_path = str(self.df_subj[self.df_subj["ID"] == s]["path"].iloc[0])
+                s_path = "/".join(s_path.split("/")[:-3])
                 # print(s_path)
 
                 for path, subdirs, files in os.walk(s_path):
