@@ -54,7 +54,7 @@ def main():
                                                      stats_fast_healthy])
     summary1.comparison_plot()
 
-    ft.LogWriter()
+    # ft.LogWriter()
 
 if __name__ == "__main__":
     main()

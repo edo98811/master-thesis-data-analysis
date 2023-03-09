@@ -105,7 +105,7 @@ class Table:
     """
 
     def __init__(self, name, b_path, p_path, df_subj=None, d_folder="data_testing/"):
-        LogWriter.log_list.append("si!!!")
+        # LogWriter.log_list.append("si!!!")
         """
         :param name: str - name of the object
         :param b_path: str - base path
