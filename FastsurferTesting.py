@@ -953,9 +953,8 @@ class Comparisons:
 
                 if not plots % n_subplots:
                     if plots > 1:
-                        fig.savefig(
-                            self.data_path + "images/img_violin_" + self.name + "_" + str(
-                                plots) + ".png")  # save the figure to file
+                        fig.savefig(f"{self.data_path}images/img_violin_{self.name}"
+                                    f"_{str(plots - n_subplots)}-{str(plots)}.png")  # save the figure to file
                         # plt.close(fig)  # close the figure window
                         # handles, labels = axs[1].get_legend_handles_labels()
                         # fig.legend(handles, labels, loc=(0.95, 0.1), prop={'size': 30})F
@@ -978,9 +977,8 @@ class Comparisons:
                 break
 
         if plots % n_subplots != 0:
-            fig.savefig(
-                self.data_path + "images/img_violin_" + self.name + "_" + str(
-                    plots) + ".png")  # save the figure to file
+            fig.savefig(f"{self.data_path}images/img_violin_{self.name}"
+                        f"_{str(plots - (plots % n_subplots))}-{str(plots)}.png")  # save the figure to file
         del axs, fig
 
         LogWriter.log(f"    plotted for {plots} variables out of {len(columns)}")
@@ -1028,9 +1026,8 @@ class Comparisons:
 
                 if not plots % n_subplots:
                     if plots > 1:
-                        fig.savefig(
-                            self.data_path + "images/img_ba_" + self.name + "_" + str(
-                                plots) + ".png")  # save the figure to file
+                        fig.savefig(f"{self.data_path}images/img_ba_{self.name}"
+                                    f"_{str(plots - n_subplots)}-{str(plots)}.png")  # save the figure to file
                         # handles, labels = ax.get_legend_handles_labels()
                         # fig.legend(handles, labels, loc=(0.95, 0.1), prop={'size': 30})
                     fig, axs = plt.subplots(n_rows, int(n_subplots / n_rows), figsize=(40, 20))
@@ -1052,9 +1049,8 @@ class Comparisons:
 
 
         if plots % n_subplots != 0:
-            fig.savefig(
-                self.data_path + "images/img_violin_" + self.name + "_" + str(
-                    plots) + ".png")  # save the figure to file
+            fig.savefig(f"{self.data_path}images/img_ba_{self.name}"
+                        f"_{str(plots - (plots % n_subplots))}-{str(plots)}.png")  # save the figure to file
         del axs, fig
 
         LogWriter.log(f"    plotted {plots} variables out of {len(columns)}")
@@ -1362,6 +1358,7 @@ class SummaryPlot:
         plots = 0
         df_list = []
         # saves the dataframes from the stats object
+        LogWriter.log(f" scatter plot:{self.name}...")
         if data == "aseg":
             for table in self.df_list_obj:
                 df_list.append(table.df_stats_aseg)
@@ -1384,7 +1381,7 @@ class SummaryPlot:
         # if not columns:
         #     max_len = min(len(_df1.axes[1]), len(_df2.axes[1]))
         #     columns = range(2, max_len)
-
+        not_done = []
         for column_to_compare in columns:
             title = f"{data} {column_to_compare}"
             serieses = []
@@ -1400,7 +1397,9 @@ class SummaryPlot:
                     # print(f" series {len(serieses[i])} - {type(serieses[i].tolist())} {serieses[i].tolist()}")
                 else:
                     # print(series)
+                    LogWriter.log(f"    scatter not possible for column {column_to_compare}")
                     print(f"scatter not possible for column {column_to_compare}")
+                    not_done.append(column_to_compare)
                     break
             if not len(serieses):
                 continue
@@ -1438,6 +1437,14 @@ class SummaryPlot:
             if plots >= self.max_plot:  # to avoid plotting too much
                 break
 
+        if plots % n_subplots != 0:
+            fig.savefig(f"{self.data_path}images/img_scatter_{self.name}"
+                        f"_{str(plots - n_subplots)}-{str(plots)}.png")  # save the figure to file
+        del axs, fig
+
+        LogWriter.log(f"    plotted {plots} variables out of {len(columns)}")
+        not_done_str = '         \n '.join(not_done)
+        LogWriter.log(f"    skipped: {not_done_str}")
         # fig.savefig(
         #     self.data_path + "images/img_scatter_" + self.name + " - " + self.name + "_" + str(
         #         plots) + ".png")  # save the figure to file
