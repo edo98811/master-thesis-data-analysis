@@ -60,16 +60,18 @@ idee
 
 
 class LogWriter:
-    log_list = []
 
-    @staticmethod
-    def clearlog(save_file="log.txt"):
-        with open(save_file, 'w') as output:
+    log_list = []
+    save_file = "log.txt"
+
+    @classmethod
+    def clearlog(cls):
+        with open(cls.save_file, 'w') as output:
             output.write(str("------new log") + '\n')
 
-    @staticmethod
-    def log(line, save_file="log.txt"):
-        with open(save_file, 'a') as output:
+    @classmethod
+    def log(cls, line):
+        with open(cls.save_file, 'a') as output:
             output.write(str(line) + '\n')
 
     def __init__(self, save_file="log.txt"):
@@ -309,7 +311,7 @@ class Stats:
 
     def __init__(self, name, b_path, df_subj_obj, query, d_folder="data_testing/",
                  p_path="/media/neuropsycad/disk12t/EdoardoFilippiMasterThesis/FastSurfer_Output", aseg=None,
-                 aparcLeft=None, aparcRight=None):
+                 aparcLeft=None, aparcRight=None, alg="fast"):
         """
         :param name: str - name of the object
         :param b_path: str - base path
@@ -343,64 +345,107 @@ class Stats:
 
         self.query = query
         self.name = name
+        self.alg = alg
 
         # add control that these data are dataframes
-        if aparcLeft is not None:
-            self.df_stats_aparcL = aparcLeft
-            self.df_stats_aparcL = self.df_stats_aparcL[self.df_stats_aparcL["ID"].isin(t)]
-        else:
-            self.df_stats_aparcL = self.extract_stats_fast('rh.aparc.DKTatlas.mapped.stats', 1)
-            self.df_stats_aparcL = self.df_stats_aparcL[self.df_stats_aparcL["ID"].isin(t)]
-        if aparcRight is not None:
-            self.df_stats_aparcR = aparcRight
-            self.df_stats_aparcR = self.df_stats_aparcR[self.df_stats_aparcR["ID"].isin(self.subj_list)]
-        else:
-            self.df_stats_aparcR = self.extract_stats_fast('lh.aparc.DKTatlas.mapped.stats', 1)
-            self.df_stats_aparcR = self.df_stats_aparcR[self.df_stats_aparcR["ID"].isin(t)]
-        if aseg is not None:
-            self.df_stats_aseg = aseg
-            self.df_stats_aseg = self.df_stats_aseg[self.df_stats_aseg["ID"].isin(t)]
-        else:
-            self.df_stats_aseg = self.extract_stats_fast('aseg.stats', 0)
-            self.df_stats_aseg = self.df_stats_aseg[self.df_stats_aseg["ID"].isin(t)]
+        if alg == "fast":
+            if aparcLeft is not None:
+                self.df_stats_aparcL = aparcLeft
+                self.df_stats_aparcL = self.df_stats_aparcL[self.df_stats_aparcL["ID"].isin(t)]
+            else:
+                LogWriter.log(f"extracting aparcL stats for {self.name}")
+                self.df_stats_aparcL = self.extract_stats_fast('rh.aparc.DKTatlas.mapped.stats', 1)
+                self.df_stats_aparcL = self.df_stats_aparcL[self.df_stats_aparcL["ID"].isin(t)]
+            if aparcRight is not None:
+                self.df_stats_aparcR = aparcRight
+                self.df_stats_aparcR = self.df_stats_aparcR[self.df_stats_aparcR["ID"].isin(self.subj_list)]
+            else:
+                LogWriter.log(f"extracting aparcR stats for {self.name}")
+                self.df_stats_aparcR = self.extract_stats_fast('lh.aparc.DKTatlas.mapped.stats', 1)
+                self.df_stats_aparcR = self.df_stats_aparcR[self.df_stats_aparcR["ID"].isin(t)]
+            if aseg is not None:
+                self.df_stats_aseg = aseg
+                self.df_stats_aseg = self.df_stats_aseg[self.df_stats_aseg["ID"].isin(t)]
+            else:
+                LogWriter.log(f"extracting aseg stats for {self.name}...")
+                self.df_stats_aseg = self.extract_stats_fast('aseg.stats', 0)
+                self.df_stats_aseg = self.df_stats_aseg[self.df_stats_aseg["ID"].isin(t)]
+        if alg == "free":
+            if aparcLeft is not None:
+                self.df_stats_aparcL = aparcLeft
+                self.df_stats_aparcL = self.df_stats_aparcL[self.df_stats_aparcL["ID"].isin(t)]
+            else:
+                LogWriter.log(f"extracting aparcL stats for {self.name}")
+                self.df_stats_aparcL = self.extract_stats_free('rh.aparc.DKTatlas.mapped.stats', 1)
+                self.df_stats_aparcL = self.df_stats_aparcL[self.df_stats_aparcL["ID"].isin(t)]
+            if aparcRight is not None:
+                self.df_stats_aparcR = aparcRight
+                self.df_stats_aparcR = self.df_stats_aparcR[self.df_stats_aparcR["ID"].isin(self.subj_list)]
+            else:
+                LogWriter.log(f"extracting aparcR stats for {self.name}")
+                self.df_stats_aparcR = self.extract_stats_free('lh.aparc.DKTatlas.mapped.stats', 1)
+                self.df_stats_aparcR = self.df_stats_aparcR[self.df_stats_aparcR["ID"].isin(t)]
+            if aseg is not None:
+                self.df_stats_aseg = aseg
+                self.df_stats_aseg = self.df_stats_aseg[self.df_stats_aseg["ID"].isin(t)]
+            else:
+                LogWriter.log(f"extracting aseg stats for {self.name}")
+                self.df_stats_aseg = self.extract_stats_free('aseg.stats', 0)
+                self.df_stats_aseg = self.df_stats_aseg[self.df_stats_aseg["ID"].isin(t)]
+
 
         #
-        print(self.df_stats_aseg.head())
-        print("len sbj list" + str(len(self.subj_list)))
-        print(t)
-        print(len(self.df_stats_aseg["ID"].tolist()))
-        print(self.subj_list)
-        print(t)
-        print(self.df_stats_aseg["ID"].tolist())
+        # print(self.df_stats_aseg.head())
+        # print("len sbj list" + str(len(self.subj_list)))
+        # print(t)
+        # print(len(self.df_stats_aseg["ID"].tolist()))
+        # print(self.subj_list)
+        # print(t)
+        # print(self.df_stats_aseg["ID"].tolist())
         # self.subj_list = self.add_sub(self.subj_list)
         self.subj_list = [v for v in t if v in self.df_stats_aseg["ID"].tolist()]
         temp = set(self.delete_sub(t))
         self.df_subj = self.df_subj[self.df_subj["ID"].isin(temp)]
-        print(len(self.subj_list))
-        print(self.subj_list[0])
+        self.n_sub = len(self.df_subj)
+        if self.n_sub > 0:
+            LogWriter.log(f"stats {self.name} correctly initialized {self.n_sub} being considered")
+            LogWriter.log(f"    len aseg {len(self.df_stats_aseg)}")
+            LogWriter.log(f"    len aparcR {len(self.df_stats_aparcL)}")
+            LogWriter.log(f"    len aparcR {len(self.df_stats_aparcR)}")
+        else:
+            LogWriter.log(f"stats {self.name} EMPTY")
+        # print(len(self.subj_list))
+        # print(self.subj_list[0])
 
     @staticmethod
-    def add_sub(list):
+    def add_sub(_list):
         """
-        :param list: list of str - list of subj names
+        :param _list: list of str - list of subj names
         :return:
         """
         l = []
-        for i, s in enumerate(list):
+        for i, s in enumerate(_list):
             l.append("sub-" + s)
+        LogWriter.log("addsub: correctly added sub- to all the patients")
         return l
 
     @staticmethod
-    def delete_sub(list):
+    def delete_sub(_list):
         """
-        :param list: list of str - list of subj names
+        :param _list:
+        :param _list: list of str - list of subj names
         :return:
         """
-        for i, s in enumerate(list):
+        l = []
+        for i, s in enumerate(_list):
             match = re.split("sub-", s)
             if len(match) > 1:
-                list[i] = match[1]
-        return list
+                l.append(match[1])
+        if len(l) != len(list):
+            LogWriter.log("warning deletesub: wrong number of subjects matched the pattern sub-#######...")
+        else:
+            LogWriter.log("addsub: correctly deleted sub- from all the patients")
+        return l
 
     def extract_stats_fast(self, stats_filename, _type):
         """
@@ -408,10 +453,15 @@ class Stats:
         :param _type: int aseg or aparc (0 or 1)
         :return:
         """
-        stat_df_paths = self.__extract_path(stats_filename, alg="fast")
-        print("len stat paths found :" + str(stat_df_paths))
+        stat_df_paths = self.__extract_path(stats_filename)
+        # print("len stat paths found :" + str(len(stat_df_paths)))
+        # LogWriter.log("len stat paths found :" + str(len(stat_df_paths)))
+
         if stat_df_paths:
+
             print(f"stats file {stats_filename} found for {str(len(stat_df_paths))} subjects")
+            LogWriter.log(f"stats file {stats_filename} found for {str(len(stat_df_paths))} subjects")
+
             if _type == 0:
                 # __(stat_df_paths).to_csv(SAVE_PATH + save_filename, index=False)
                 return self.__fast_stats_aseg(stat_df_paths)
@@ -420,6 +470,7 @@ class Stats:
                 return self.__fast_stats_aparcDTK(stat_df_paths)
         else:
             print(f"no stat file: {stats_filename} found in paths on table")
+            LogWriter.log(f"no stat file: {stats_filename} found in paths on table")
 
     def extract_stats_free(self, stats_filename, _type):
         """
@@ -427,10 +478,11 @@ class Stats:
         :param _type: int aseg or aparc (0 or 1)
         :return:
         """
-        stat_df_paths = self.__extract_path(stats_filename, alg="free")
+        stat_df_paths = self.__extract_path(stats_filename)
 
         if stat_df_paths:
             print(f"stats file {stats_filename} found for {str(len(stat_df_paths))} subjects")
+            LogWriter.log(f"stats file {stats_filename} found for {str(len(stat_df_paths))} subjects")
             if _type == 0:
                 # __(stat_df_paths).to_csv(SAVE_PATH + save_filename, index=False)
                 return self.__free_stats_aseg(stat_df_paths)
@@ -439,6 +491,7 @@ class Stats:
                 return self.__free_stats_aparcDTK(stat_df_paths)
         else:
             print(f"no stat file: {stats_filename} found in paths on table")
+            LogWriter.log(f"no stat file: {stats_filename} found in paths on table")
 
     def save_stats_files(self, which=(True, True, True), names=("aseg.csv", "aseg_right.csv", "aseg_left.csv")):
         """
@@ -457,7 +510,8 @@ class Stats:
         if which[2]:
             self.df_stats_aparcR.to_csv(path + "/" + names[2])
 
-    def __fast_stats_aseg(self, subj_paths):
+    @staticmethod
+    def __fast_stats_aseg(subj_paths):
         df_dict = {"ID": []}
 
         for n, path in enumerate(subj_paths):
@@ -515,7 +569,8 @@ class Stats:
         # print(str(df_dict))
         return pd.DataFrame.from_dict(df_dict, orient='columns')
 
-    def __fast_stats_aparcDTK(self, subj_paths):
+    @staticmethod
+    def __fast_stats_aparcDTK(subj_paths):
         df_dict = {"ID": []}
 
         for n, path in enumerate(subj_paths):
@@ -584,7 +639,8 @@ class Stats:
 
         return pd.DataFrame.from_dict(df_dict, orient='columns')
 
-    def __free_stats_aseg(self, subj_paths):
+    @staticmethod
+    def __free_stats_aseg(subj_paths):
         df_dict = {"ID": []}
 
         for n, path in enumerate(subj_paths):
@@ -641,7 +697,8 @@ class Stats:
         # dm.write_dict(df_dict,"prova_df_dict.json")
         return pd.DataFrame.from_dict(df_dict, orient='columns')
 
-    def __free_stats_aparcDTK(self, subj_paths):
+    @staticmethod
+    def __free_stats_aparcDTK(subj_paths):
         df_dict = {"ID": []}
 
         for n, path in enumerate(subj_paths):
@@ -710,7 +767,7 @@ class Stats:
 
         return pd.DataFrame.from_dict(df_dict, orient='columns')
 
-    def __extract_path(self, filename, alg="fast"):
+    def __extract_path(self, filename):
         # set of all the subjects for easier computation
         subj_list_numbers = set(self.delete_sub(self.subj_list))
         # creates a list with all the subjects that are in the list
@@ -733,7 +790,7 @@ class Stats:
 
         # seconda parte da fare
         paths_found = []
-        if alg == "fast":
+        if self.alg == "fast":
             for s in subj_list_numbers:
                 # list_path = str(self.df_subj[self.df_subj["ID"] == s]["processed_path"])
                 # str_path = "/".join(list_path[:-1])
@@ -746,15 +803,27 @@ class Stats:
                         for name in files:
                             if name == filename:
                                 paths_found.append(path + "/" + name)
-        elif alg == "free":
-            for s in self.subj_list:
-                s_path = os.path.dirname(self.df_subj[self.df_subj["ID"] == s]["path"][:-2])
+        elif self.alg == "free":
+            for s in subj_list_numbers:
+                # list_path = str(self.df_subj[self.df_subj["ID"] == s]["processed_path"])
+                # str_path = "/".join(list_path[:-1])
+                # print(s)
+                s_path = str(self.df_subj[self.df_subj["ID"] == s]["path"].iloc[0])
+                # print(s_path)
 
                 for path, subdirs, files in os.walk(s_path):
                     if path.split("/")[-1] == "stats":  # and path.split("/")[-2] in subj_list_numbers:
                         for name in files:
                             if name == filename:
                                 paths_found.append(path + "/" + name)
+            # for s in self.subj_list:
+            #     s_path = os.path.dirname(self.df_subj[self.df_subj["ID"] == s]["path"][:-2])
+            #
+            #     for path, subdirs, files in os.walk(s_path):
+            #         if path.split("/")[-1] == "stats":  # and path.split("/")[-2] in subj_list_numbers:
+            #             for name in files:
+            #                 if name == filename:
+            #                     paths_found.append(path + "/" + name)
         if not paths_found:
             return False
 
