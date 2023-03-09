@@ -26,6 +26,7 @@ todo
         - salvare in log i dati che non vanno (ad esempio nello stat test) quando dice che absent or invalid data in un file di testo 
         tipo log (esiste un modo per definire il comportamento di una variabile in modo che stampi quello a cui viene assegnata?)
         - fare diagramma del codice 
+        - togliere sub ovunque 
         
     ordine di cose da fare
     okcontrollare- togliere p path
@@ -152,6 +153,59 @@ class Table:
                             self.df.loc[i, "processed_path"] = root + "/" + dir
                             break
 
+    def get_query(self, query, sub=False, only_processed=True):
+        """
+        function to filter the data in the table
+        :param query: str - pandas query to apply to the df
+        :param sub: bool - return the list of subjects or the list of folders which have sub- in front (default = False)
+        :param only_processed: bool - returns only the subjects that respect the query and have been processed already (default = True)
+        :return: pd.df - filtered
+        """
+        # print (self.df.head())
+        """
+        :param query:
+        :param sub:
+        :param only_processed:
+        :return: df or list
+        """
+        if sub:
+            if only_processed:
+                df = self.df.query("processed==yes")
+            else:
+                df = self.df
+
+            subjects_list = df.query(query)["ID"].tolist()
+            for i, s in enumerate(subjects_list):
+                subjects_list[i] = "sub-" + s
+
+            return subjects_list
+
+        # df = self.df.loc[df_subj.loc['ID'].isin(subjects_list)]
+
+        df = self.df.query(query)
+        if only_processed:
+            df = df.loc[df['processed'] == 'yes']
+        print(f"table: {self.name} filtered throug query: {query}, {len(df)} subjects found")
+        return df
+
+    def save_csv(self, filename):
+
+        """
+        saves the df to csv in basepath + filename
+        :param filename: str - the filename that the csv file will have once saved
+        :return: void
+        """
+        self.df.to_csv(self.data_path + filename)
+        print(f"csv of table {self.name} saved in {self.data_path + filename}")
+
+    def start_processing(self):
+        """
+        to be implemented - starts the fastsurfer processing
+        :return:
+        """
+        pass
+        # subprocess.
+
     def create_table(self, df_dict_map, path_to_origin_file):
         """
         method to create the table if it doesn't exist
@@ -226,59 +280,6 @@ class Table:
                             break
 
         return df
-
-    def get_query(self, query, sub=False, only_processed=True):
-        """
-        function to filter the data in the table
-        :param query: str - pandas query to apply to the df
-        :param sub: bool - return the list of subjects or the list of folders which have sub- in front (default = False)
-        :param only_processed: bool - returns only the subjects that respect the query and have been processed already (default = True)
-        :return: pd.df - filtered
-        """
-        # print (self.df.head())
-        """
-        :param query:
-        :param sub:
-        :param only_processed:
-        :return: df or list
-        """
-        if sub:
-            if only_processed:
-                df = self.df.query("processed==yes")
-            else:
-                df = self.df
-
-            subjects_list = df.query(query)["ID"].tolist()
-            for i, s in enumerate(subjects_list):
-                subjects_list[i] = "sub-" + s
-
-            return subjects_list
-
-        # df = self.df.loc[df_subj.loc['ID'].isin(subjects_list)]
-
-        df = self.df.query(query)
-        if only_processed:
-            df = df.loc[df['processed'] == 'yes']
-        print(f"table: {self.name} filtered throug query: {query}, {len(df)} subjects found")
-        return df
-
-    def save_csv(self, filename):
-
-        """
-        saves the df to csv in basepath + filename
-        :param filename: str - the filename that the csv file will have once saved
-        :return: void
-        """
-        self.df.to_csv(self.data_path + filename)
-        print(f"csv of table {self.name} saved in {self.data_path + filename}")
-
-    def start_processing(self):
-        """
-        to be implemented - starts the fastsurfer processing
-        :return:
-        """
-        pass
-        # subprocess.
 
     """
     def add_sub(self, subjects_list):
@@ -374,8 +375,8 @@ class Stats:
         print(self.subj_list)
         print(self.df_stats_aseg["ID"].tolist())
         self.subj_list = self.add_sub(self.subj_list)
-        self.subj_list = [v for v in self.subj_list if v in self.df_stats_aseg["ID"].tolist()]
-        temp = set(self.delete_sub(self.subj_list))
+        self.subj_list = [v for v in t if v in self.df_stats_aseg["ID"].tolist()]
+        temp = set(self.delete_sub(t))
         self.df_subj = self.df_subj[self.df_subj["ID"].isin(temp)]
         print(len(self.subj_list))
         print(self.subj_list[0])
@@ -738,12 +739,12 @@ class Stats:
             for s in subj_list_numbers:
                 # list_path = str(self.df_subj[self.df_subj["ID"] == s]["processed_path"])
                 # str_path = "/".join(list_path[:-1])
-                #print(s)
+                # print(s)
                 s_path = str(self.df_subj[self.df_subj["ID"] == s]["processed_path"].iloc[0])
-                #print(s_path)
+                # print(s_path)
 
                 for path, subdirs, files in os.walk(s_path):
-                    if path.split("/")[-1] == "stats":#  and path.split("/")[-2] in subj_list_numbers:
+                    if path.split("/")[-1] == "stats":  # and path.split("/")[-2] in subj_list_numbers:
                         for name in files:
                             if name == filename:
                                 paths_found.append(path + "/" + name)
@@ -752,7 +753,7 @@ class Stats:
                 s_path = os.path.dirname(self.df_subj[self.df_subj["ID"] == s]["path"][:-2])
 
                 for path, subdirs, files in os.walk(s_path):
-                    if path.split("/")[-1] == "stats":# and path.split("/")[-2] in subj_list_numbers:
+                    if path.split("/")[-1] == "stats":  # and path.split("/")[-2] in subj_list_numbers:
                         for name in files:
                             if name == filename:
                                 paths_found.append(path + "/" + name)
@@ -1208,6 +1209,7 @@ class Comparisons:
         _ax.legend(['Mean difference', '95% limits of agreement'])
         _ax.ticklabel_format(style='sci', axis='x', scilimits=(0, 0), useMathText=True)
         _ax.ticklabel_format(style='sci', axis='y', scilimits=(0, 0), useMathText=True)
+
     # def __get_column(self, column_to_compare):
     #     if isinstance(column_to_compare, int):
     #         a = df1.iloc[:, column_to_compare]
