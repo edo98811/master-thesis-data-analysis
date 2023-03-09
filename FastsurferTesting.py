@@ -409,7 +409,7 @@ class Stats:
         :return:
         """
         stat_df_paths = self.__extract_path(stats_filename, alg="fast")
-        print("len stat paths found :" + stat_df_paths)
+        print("len stat paths found :" + str(stat_df_paths))
         if stat_df_paths:
             print(f"stats file {stats_filename} found for {str(len(stat_df_paths))} subjects")
             if _type == 0:
