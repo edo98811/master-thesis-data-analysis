@@ -426,7 +426,7 @@ class Stats:
         l = []
         for i, s in enumerate(_list):
             l.append("sub-" + s)
-        LogWriter.log("addsub: correctly added sub- to all the patients")
+        LogWriter.log("    add_sub: correctly added sub- to all the patients")
         return l
 
     @staticmethod
@@ -444,7 +444,7 @@ class Stats:
         if len(l) != len(_list):
             LogWriter.log("warning deletesub: wrong number of subjects matched the pattern sub-#######...")
         else:
-            LogWriter.log("addsub: correctly deleted sub- from all the patients")
+            LogWriter.log("    delete_sub: correctly deleted sub- from all the patients")
         return l
 
     def extract_stats_fast(self, stats_filename, _type):
