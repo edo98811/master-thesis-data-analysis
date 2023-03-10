@@ -1018,18 +1018,18 @@ class Comparisons:
 
         LogWriter.log(f"    coorection, selection of common elements")
         if len(_df1) != len(_df2):
-            set1 = set(_df1.index.tolist())
-            set2 = set(_df2.index.tolist())
+            set1 = set(_df1.loc[:,"ID"].tolist())
+            set2 = set(_df2.loc[:,"ID"].tolist())
 
             sd = set1.symmetric_difference(set2)
 
-            for i_to_delete in sd:
-                if i_to_delete in set1:
-                    _df1.drop(i_to_delete, inplace=True)
-                    LogWriter.log(f"    dropped: {i_to_delete} from {self.stat_df_1.name}")
+            for id_to_delete in sd:
+                if id_to_delete in set1:
+                    _df1.drop(_df1["ID"]== id_to_delete, inplace=True)
+                    LogWriter.log(f"    dropped: {id_to_delete} from {self.stat_df_1.name}")
                 else:
-                    _df2.drop(i_to_delete, inplace=True)
-                    LogWriter.log(f"    dropped: {i_to_delete} from {self.stat_df_2.name}")
+                    _df2.drop(_df2["ID"]== id_to_delete, inplace=True)
+                    LogWriter.log(f"    dropped: {id_to_delete} from {self.stat_df_2.name}")
 
 
         if not columns:
