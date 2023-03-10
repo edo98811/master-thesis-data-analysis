@@ -1164,7 +1164,10 @@ class Comparisons:
                         "t_test message"] = f"p-value: {row['t_test p_value']} - null hypothesis rejected, the datasets have a different distribution"
                     row["t_test outcome"] = 1
             row.loc["alpha_correction"] = self.updated_alpha
-            self.stat_df_result.loc[i, :] = row
+            if len(row) == 10:
+                self.stat_df_result.loc[i, :] = row
+            else:
+                LogWriter.log(f"     row{i} WRONG N ELEMENTS BONFERRONI CORRECTION")
             if save:
                 self.stat_df_result.to_csv(self.data_path + f"{self.name}_bonferroni_corrected.csv")
 
