@@ -1096,7 +1096,7 @@ class Comparisons:
             #     max_len = min(len(_df1.axes[1]), len(_df2.axes[1]))
             #     columns = range(2, max_len)
             not_done = []
-            for column_to_compare in columns:
+            for i, column_to_compare in enumerate(columns):
                 a = pd.to_numeric(_df1.loc[:, column_to_compare], errors='coerce')
                 b = pd.to_numeric(_df2.loc[:, column_to_compare], errors='coerce')
                 # a, b = get_column(column_to_compare, _df1_filtered, _df2_filtered)
@@ -1137,7 +1137,7 @@ class Comparisons:
                     #print(f"absent or not valid data in category {column_to_compare}for file {self.name} - {data}")
                     not_done.append(column_to_compare)
 
-            LogWriter.log(f"    tested {len(r_all)} variables out of {len(columns)}")
+            LogWriter.log(f"    tested {i} variables out of {len(columns)}")
             not_done_str = '         \n '.join(not_done)
             LogWriter.log(f"    skipped: {not_done_str}")
         self.__save_dataframe(r_all)
@@ -1164,7 +1164,7 @@ class Comparisons:
                         "t_test message"] = f"p-value: {row['t_test p_value']} - null hypothesis rejected, the datasets have a different distribution"
                     row["t_test outcome"] = 1
             row.loc["alpha_correction"] = self.updated_alpha
-            self.stat_df_result.iloc[i, :] = row
+            self.stat_df_result.loc[i, :] = row
             if save:
                 self.stat_df_result.to_csv(self.data_path + f"{self.name}_bonferroni_corrected.csv")
 
