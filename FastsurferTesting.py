@@ -1086,14 +1086,14 @@ class Comparisons:
         :return: void
         """
         r_all = []
-        for d in data:
-            if d == "aseg":
+        for data_n in data:
+            if data_n == "aseg":
                 _df1 = self.stat_df_1.df_stats_aseg
                 _df2 = self.stat_df_2.df_stats_aseg
-            elif d == "aparcR":
+            elif data_n == "aparcR":
                 _df1 = self.stat_df_1.df_stats_aparcL
                 _df2 = self.stat_df_2.df_stats_aparcL
-            elif d == "aparcL":
+            elif data_n == "aparcL":
                 _df1 = self.stat_df_1.df_stats_aparcR
                 _df2 = self.stat_df_2.df_stats_aparcR
             else:
@@ -1130,7 +1130,7 @@ class Comparisons:
                     if isinstance(column_to_compare, int):
                         column_to_compare_name = _df1.columns[column_to_compare]
 
-                        r_all.append({"name": f"{self.name}_{d}_{column_to_compare_name}",
+                        r_all.append({"name": f"{self.name}_{data_n}_{column_to_compare_name}",
                                       "mann_whitney": {"result": r1,
                                                        "p_value": p1,
                                                        "outcome": o1},
@@ -1141,7 +1141,7 @@ class Comparisons:
                                             "d_value": d}})
 
                     if isinstance(column_to_compare, str):
-                        r_all.append({"name": f"{self.name}_{d}_{column_to_compare}",
+                        r_all.append({"name": f"{self.name}_{data_n}_{column_to_compare}",
                                       "mann_whitney": {"result": r1,
                                                        "p_value": p1,
                                                        "outcome": o1},
