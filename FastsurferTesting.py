@@ -1129,7 +1129,7 @@ class Comparisons:
                     if isinstance(column_to_compare, int):
                         column_to_compare_name = _df1.columns[column_to_compare]
 
-                        r_all.append({"name": f"{self.name} {column_to_compare_name}",
+                        r_all.append({"name": f"{self.name}_{d}_{column_to_compare_name}",
                                       "mann_whitney": {"result": r1,
                                                        "p_value": p1,
                                                        "outcome": o1},
