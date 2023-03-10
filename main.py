@@ -38,11 +38,12 @@ def main():
 
     comp1 = ft.Comparisons("MC_ADNI", BASE_PATH, stats_free_MC, stats_fast_MC)
     comp2 = ft.Comparisons("healthy_ADNI", BASE_PATH, stats_free_healthy, stats_fast_healthy)
-    comp1.bonferroni_correction()
-    comp2.bonferroni_correction()
 
     comp1.save_data()
     comp2.save_data()
+
+    comp1.bonferroni_correction()
+    comp2.bonferroni_correction()
 
     comp1.violin()
     comp1.bland_altmann()
