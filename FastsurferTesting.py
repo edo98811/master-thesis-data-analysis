@@ -1187,7 +1187,7 @@ class Comparisons:
             else:
                 LogWriter.log(
                     f"     row{i} WRONG N ELEMENTS BONFERRONI CORRECTION, follows row from dataframe and row processed")
-                LogWriter.log(self.stat_df_result.loc[i, :].tolist())
+                LogWriter.log(self.stat_df_result.loc[i, :])
                 LogWriter.log(row.tolist())
             if save:
                 self.stat_df_result.to_csv(self.data_path + f"{self.name}_bonferroni_corrected.csv")
