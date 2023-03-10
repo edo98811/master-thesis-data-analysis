@@ -121,6 +121,9 @@ class Table:
         self.data_path = d_folder
         self.name = name
 
+        if not os.path.exists(self.data_path):
+            os.makedirs(self.data_path)
+
     # def get_query_list(self, query):
     #     """
     #     old
@@ -133,6 +136,7 @@ class Table:
     #         subjects_list[i] = "sub-" + s
     #
     #     self.subjects_list = set(subjects_list)
+
     def update(self):
         """
         function to update the table
