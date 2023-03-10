@@ -1099,7 +1099,7 @@ class Comparisons:
             else:
                 raise "stat_test: wrong selection parameter"
             # print(f"performing t_test and mann whitney on {data} in {self.name}")
-            LogWriter.log(f"    t_test and mann whitney on {d} in {self.name}...")
+            LogWriter.log(f"    t_test and mann whitney on {data_n} in {self.name}...")
 
             # se non viene dato un input fa il test per tutte le colonne
             if not columns_input:
