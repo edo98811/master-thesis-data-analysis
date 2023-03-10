@@ -517,7 +517,7 @@ class Stats:
         df_dict = {"ID": []}
 
         for n, path in enumerate(subj_paths):
-            LogWriter.log("     extracting stats for subject " + str(n + 1) + ", path:" + path)
+            # LogWriter.log("     extracting stats for subject " + str(n + 1) + ", path:" + path)
 
             # saving the subject name
             df_dict["ID"].append(path.split("/")[-3])
@@ -576,7 +576,7 @@ class Stats:
         df_dict = {"ID": []}
 
         for n, path in enumerate(subj_paths):
-            LogWriter.log("     extracting stats for subject " + str(n + 1) + ", path:" + path)
+            # LogWriter.log("     extracting stats for subject " + str(n + 1) + ", path:" + path)
 
             # saving the subject name
             df_dict["ID"].append(path.split("/")[-3])
@@ -646,7 +646,7 @@ class Stats:
         df_dict = {"ID": []}
 
         for n, path in enumerate(subj_paths):
-            LogWriter.log("     extracting stats for subject " + str(n + 1) + ", path:" + path)
+            # LogWriter.log("     extracting stats for subject " + str(n + 1) + ", path:" + path)
 
             # saving the subject name
             df_dict["ID"].append(path.split("/")[-3])
@@ -704,7 +704,7 @@ class Stats:
         df_dict = {"ID": []}
 
         for n, path in enumerate(subj_paths):
-            LogWriter.log("     extracting stats for subject " + str(n + 1) + ", path:" + path)
+            # LogWriter.log("     extracting stats for subject " + str(n + 1) + ", path:" + path)
 
             # saving the subject name
             df_dict["ID"].append(path.split("/")[-3])
@@ -1120,8 +1120,8 @@ class Comparisons:
                 if a.any() and b.any() and (a.notnull().all() and b.notnull().all()):
                     # print(
                     #   f"performing statistical analysis for data in category {column_to_compare}for file {self.name} - {data}")
-                    LogWriter.log(
-                        f"performing statistical analysis for data in category {column_to_compare} for file {self.name} - {data_n}")
+                    #LogWriter.log(
+                    #    f"      performing statistical analysis for data in category {column_to_compare} for file {self.name} - {data_n}")
 
                     r1, p1, o1 = self.__mann_whitney(a, b)
                     r2, p2, o2 = self.__t_test(a, b)
@@ -1388,25 +1388,32 @@ class SummaryPlot:
         """
         plots = 0
         df_list = []
+        subj_lists = []
         # saves the dataframes from the stats object
         LogWriter.log(f"\n")
         LogWriter.log(f" scatter plot:{self.name}...")
         if data == "aseg":
             for table in self.df_list_obj:
                 df_list.append(table.df_stats_aseg)
+                subj_lists.append(table.df_stats_aseg["ID"].tolist())
         elif data == "aparcR":
             for table in self.df_list_obj:
                 df_list.append(table.df_stats_aparcL)
+                subj_lists.append(table.df_stats_aparcL["ID"].tolist())
         elif data == "aparcL":
             for table in self.df_list_obj:
                 df_list.append(table.df_stats_aparcR)  # table
+                subj_lists.append(table.df_stats_aparcR["ID"].tolist())
 
         # creates the age series, to move up
         ages = []
         legend = []
-        for table in self.df_list_obj:
-            ages.append(table.df_subj.loc[:, "age"].tolist())
-            legend.append(table.name)
+        for table, subj_list in zip(self.df_list_obj, subj_lists):
+            s = set(Stats.delete_sub(subj_list))
+            t = table.df_subj.isin({'ID': s})
+            ages.append(t.loc[:, "age"].tolist())
+            # legend.append(table.name)
+
         if not columns:
             columns = df_list[0].columns
         # columns = columns.intersection(_df2.columns).tolist()
@@ -1421,7 +1428,9 @@ class SummaryPlot:
             for i, df in enumerate(df_list):
                 series = pd.to_numeric(df[column_to_compare], errors='coerce')
                 series.rename(f"{data}_{self.df_list_obj[i].name}_{column_to_compare}")
-                LogWriter.log(f"{data} {self.df_list_obj[i].name} {column_to_compare}. series name {series.name}")
+                legend.append(f"{data}_{self.df_list_obj[i].name}_{column_to_compare}")
+                LogWriter.log(f"{data} {self.df_list_obj[i].name} {column_to_compare}. "
+                              f"series name {series.name}")
 
                 if series.any() and series.notnull().all():
                     serieses.append(series)
@@ -1463,7 +1472,7 @@ class SummaryPlot:
             """
             index = plots % n_subplots
             # print(index)
-            self.__scatter_plot(axs[index], serieses, ages, title)
+            self.__scatter_plot(axs[index], serieses, ages, title, legend)
             plots += 1
 
             if plots >= self.max_plot:  # to avoid plotting too much
@@ -1488,10 +1497,10 @@ class SummaryPlot:
         """
 
     @staticmethod
-    def __scatter_plot(ax, data, ages, title):
+    def __scatter_plot(ax, data, ages, title, legend):
         max_ = 0
-        for series, age in zip(data, ages):
-            ax.scatter(age, series.tolist(), label=series.name)  # mettere il nome della serie e le cose qui
+        for series, age, legend_entry in zip(data, ages, legend):
+            ax.scatter(age, series.tolist(), label=legend)  # mettere il nome della serie e le cose qui
             LogWriter.log(series.name)
             if series.max() > max_:
                 max_ = series.max()
