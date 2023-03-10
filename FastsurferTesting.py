@@ -1121,7 +1121,7 @@ class Comparisons:
                     # print(
                     #   f"performing statistical analysis for data in category {column_to_compare}for file {self.name} - {data}")
                     LogWriter.log(
-                        f"performing statistical analysis for data in category {column_to_compare} for file {self.name} - {d}")
+                        f"performing statistical analysis for data in category {column_to_compare} for file {self.name} - {data_n}")
 
                     r1, p1, o1 = self.__mann_whitney(a, b)
                     r2, p2, o2 = self.__t_test(a, b)
