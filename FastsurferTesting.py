@@ -1016,7 +1016,7 @@ class Comparisons:
         # print(f"BA length of the tables to compare {len(_df1)} {len(_df2)}")
         LogWriter.log(f"    BA length of the tables to compare {len(_df1)} {len(_df2)}")
 
-        LogWriter.log(f"    coorection, selection of common elements")
+        LogWriter.log(f"        correction, selection of common elements")
         if len(_df1) != len(_df2):
             set1 = set(_df1.loc[:, "ID"].tolist())
             set2 = set(_df2.loc[:, "ID"].tolist())
@@ -1026,11 +1026,11 @@ class Comparisons:
             for id_to_delete in sd:
                 if id_to_delete in set1:
                     LogWriter.log(f"        element{id_to_delete} found in  {self.stat_df_1.name}")
-                    _df1.drop(_df1["ID"] == id_to_delete, inplace=True)
+                    _df1 = _df1[_df1["ID"] != id_to_delete]
                     LogWriter.log(f"    dropped: {id_to_delete} from {self.stat_df_1.name}")
                 else:
                     LogWriter.log(f"        element{id_to_delete} found in  {self.stat_df_2.name}")
-                    _df2.drop(_df2["ID"] == id_to_delete, inplace=True)
+                    _df2 = _df2[_df2["ID"] != id_to_delete]
                     LogWriter.log(f"    dropped: {id_to_delete} from {self.stat_df_2.name}")
 
         if not columns:
@@ -1141,7 +1141,7 @@ class Comparisons:
                                             "d_value": d}})
 
                     if isinstance(column_to_compare, str):
-                        r_all.append({"name": f"{self.name} {column_to_compare}",
+                        r_all.append({"name": f"{self.name}_{d}_{column_to_compare}",
                                       "mann_whitney": {"result": r1,
                                                        "p_value": p1,
                                                        "outcome": o1},
@@ -1187,8 +1187,8 @@ class Comparisons:
             else:
                 LogWriter.log(
                     f"     row{i} WRONG N ELEMENTS BONFERRONI CORRECTION, follows row from dataframe and row processed")
-                LogWriter.log(self.stat_df_result.loc[i, :])
-                LogWriter.log(row)
+                LogWriter.log(self.stat_df_result.loc[i, :].tolist())
+                LogWriter.log(row.tolist())
             if save:
                 self.stat_df_result.to_csv(self.data_path + f"{self.name}_bonferroni_corrected.csv")
 
