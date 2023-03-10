@@ -990,7 +990,7 @@ class Comparisons:
         not_done_str = '         \n '.join(not_done)
         LogWriter.log(f"    skipped: {not_done_str}")
 
-    def bland_altmann(self, data="aseg", columns=None, n_subplots=4, n_rows=2):
+    def bland_altmann(self, data="aseg", columns_input=None, n_subplots=4, n_rows=2):
         """
         :param data: str - table to select (aseg, aparcL, aparcR)
         :param columns: list  of str- list of column names to print (default None: prints all)
@@ -1085,8 +1085,10 @@ class Comparisons:
             LogWriter.log(f"    t_test and mann whitney on {d} in {self.name}...")
 
             # se non viene dato un input fa il test per tutte le colonne
-            if not columns:
+            if not columns_input:
                 columns = set(_df1.columns.tolist()).intersection(set(_df2.columns.tolist()))
+            else
+                columns = colums_input
             # if not columns:
             #     columns = _df1.columns
             #     columns.intersection(_df2_filtered.columns).tolist()
