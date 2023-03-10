@@ -1025,11 +1025,11 @@ class Comparisons:
             LogWriter.log(f"        elements to delete: { ' '.join(sd)}")
             for id_to_delete in sd:
                 if id_to_delete in set1:
-                    LogWriter.log(f"        element{id_to_delete} found in  {_df1}")
+                    LogWriter.log(f"        element{id_to_delete} found in  {self.stat_df_1.name}")
                     _df1.drop(_df1["ID"] == id_to_delete, inplace=True)
                     LogWriter.log(f"    dropped: {id_to_delete} from {self.stat_df_1.name}")
                 else:
-                    LogWriter.log(f"        element{id_to_delete} found in  {_df2}")
+                    LogWriter.log(f"        element{id_to_delete} found in  {self.stat_df_2.name}")
                     _df2.drop(_df2["ID"] == id_to_delete, inplace=True)
                     LogWriter.log(f"    dropped: {id_to_delete} from {self.stat_df_2.name}")
 
@@ -1121,7 +1121,7 @@ class Comparisons:
                     # print(
                     #   f"performing statistical analysis for data in category {column_to_compare}for file {self.name} - {data}")
                     LogWriter.log(
-                        f"performing statistical analysis for data in category {column_to_compare}for file {self.name} - {d}")
+                        f"performing statistical analysis for data in category {column_to_compare} for file {self.name} - {d}")
 
                     r1, p1, o1 = self.__mann_whitney(a, b)
                     r2, p2, o2 = self.__t_test(a, b)
