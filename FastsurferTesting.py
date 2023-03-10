@@ -67,6 +67,7 @@ class LogWriter:
 
     @classmethod
     def log(cls, line):
+        print(line)
         with open(cls.save_file, 'a') as output:
             output.write(str(line) + '\n')
 
@@ -100,7 +101,7 @@ class Table:
 
     """
 
-    def __init__(self, name, b_path, p_path, df_subj=None, d_folder="data_testing/"):
+    def __init__(self, name, b_path, p_path, df_subj=None, d_folder="data_testing_ADNI/"):
         # LogWriter.log_list.append("si!!!")
         """
         :param name: str - name of the object
@@ -305,7 +306,7 @@ class Stats:
     methods
     """
 
-    def __init__(self, name, b_path, df_subj_obj, query, d_folder="data_testing/", aseg=None,
+    def __init__(self, name, b_path, df_subj_obj, query, d_folder="data_testing_ADNI/", aseg=None,
                  aparcLeft=None, aparcRight=None, alg="fast"):
         """
         :param name: str - name of the object
@@ -457,7 +458,7 @@ class Stats:
 
         if stat_df_paths:
 
-            print(f"stats file {stats_filename} found for {str(len(stat_df_paths))} subjects")
+           # print(f"stats file {stats_filename} found for {str(len(stat_df_paths))} subjects")
             LogWriter.log(f"stats file {stats_filename} found for {str(len(stat_df_paths))} subjects")
 
             if _type == 0:
@@ -467,7 +468,7 @@ class Stats:
                 # stats_aparcDTK(stat_df_paths).to_csv(SAVE_PATH + save_filename, index=False)
                 return self.__fast_stats_aparcDTK(stat_df_paths)
         else:
-            print(f"no stat file: {stats_filename} found in paths on table")
+            #print(f"no stat file: {stats_filename} found in paths on table")
             LogWriter.log(f"no stat file: {stats_filename} found in paths on table")
 
     def extract_stats_free(self, stats_filename, _type):
@@ -479,7 +480,7 @@ class Stats:
         stat_df_paths = self.__extract_path(stats_filename)
 
         if stat_df_paths:
-            print(f"stats file {stats_filename} found for {str(len(stat_df_paths))} subjects")
+            #print(f"stats file {stats_filename} found for {str(len(stat_df_paths))} subjects")
             LogWriter.log(f"stats file {stats_filename} found for {str(len(stat_df_paths))} subjects")
             if _type == 0:
                 # __(stat_df_paths).to_csv(SAVE_PATH + save_filename, index=False)
@@ -488,7 +489,7 @@ class Stats:
                 # stats_aparcDTK(stat_df_paths).to_csv(SAVE_PATH + save_filename, index=False)
                 return self.__free_stats_aparcDTK(stat_df_paths)
         else:
-            print(f"no stat file: {stats_filename} found in paths on table")
+            #print(f"no stat file: {stats_filename} found in paths on table")
             LogWriter.log(f"no stat file: {stats_filename} found in paths on table")
 
     def save_stats_files(self, which=(True, True, True), names=("aseg.csv", "aseg_right.csv", "aseg_left.csv")):
@@ -513,7 +514,7 @@ class Stats:
         df_dict = {"ID": []}
 
         for n, path in enumerate(subj_paths):
-            # print("extracting stats for subject " + str(n + 1) + ", path:" + path)
+            LogWriter.log("     extracting stats for subject " + str(n + 1) + ", path:" + path)
 
             # saving the subject name
             df_dict["ID"].append(path.split("/")[-3])
@@ -572,7 +573,7 @@ class Stats:
         df_dict = {"ID": []}
 
         for n, path in enumerate(subj_paths):
-            # print("extracting stats for subject " + str(n + 1) + ", path:" + path)
+            LogWriter.log("     extracting stats for subject " + str(n + 1) + ", path:" + path)
 
             # saving the subject name
             df_dict["ID"].append(path.split("/")[-3])
@@ -642,7 +643,7 @@ class Stats:
         df_dict = {"ID": []}
 
         for n, path in enumerate(subj_paths):
-            # print("extracting stats for subject " + str(n + 1) + ", path:" + path)
+            LogWriter.log("     extracting stats for subject " + str(n + 1) + ", path:" + path)
 
             # saving the subject name
             df_dict["ID"].append(path.split("/")[-3])
@@ -700,7 +701,7 @@ class Stats:
         df_dict = {"ID": []}
 
         for n, path in enumerate(subj_paths):
-            # print("extracting stats for subject " + str(n + 1) + ", path:" + path)
+            LogWriter.log("     extracting stats for subject " + str(n + 1) + ", path:" + path)
 
             # saving the subject name
             df_dict["ID"].append(path.split("/")[-3])
@@ -856,7 +857,7 @@ class Comparisons:
         bland altmann plot
     """
 
-    def __init__(self, name, b_path, stats_df_1, stats_df_2, alpha=0.05, d_folder="data_testing/", columns_to_test=None,
+    def __init__(self, name, b_path, stats_df_1, stats_df_2, alpha=0.05, d_folder="data_testing_ADNI/", columns_to_test=None,
                  max_plot=500):
         """
         :param name: str - name of the object
@@ -1057,82 +1058,82 @@ class Comparisons:
         not_done_str = '         \n '.join(not_done)
         LogWriter.log(f"    skipped: {not_done_str}")
 
-    def stat_test(self, columns, data="aseg"):
+    def stat_test(self, columns, data=("aseg", "aparcL", "aparcR")):
         """
         :param columns: list of str - list of column names to print (default None: prints all)
         :param data: str - type of input (aseg, aparcL or aparcR)
         :return: void
         """
-        if data == "aseg":
-            _df1 = self.stat_df_1.df_stats_aseg
-            _df2 = self.stat_df_2.df_stats_aseg
-        elif data == "aparcR":
-            _df1 = self.stat_df_1.df_stats_aparcL
-            _df2 = self.stat_df_2.df_stats_aparcL
-        elif data == "aparcL":
-            _df1 = self.stat_df_1.df_stats_aparcR
-            _df2 = self.stat_df_2.df_stats_aparcR
-        else:
-            raise "stat_test: wrong selection parameter"
-
         r_all = []
-        print(f"performing t_test and mann whitney on {data} in {self.name}")
-        LogWriter.log(f"    performing t_test and mann whitney on {data} in {self.name}")
-
-        # se non viene dato un input fa il test per tutte le colonne
-        if not columns:
-            columns = set(_df1.columns.tolist()).intersection(set(_df2.columns.tolist()))
-        # if not columns:
-        #     columns = _df1.columns
-        #     columns.intersection(_df2_filtered.columns).tolist()
-        # if not columns:
-        #     max_len = min(len(_df1.axes[1]), len(_df2.axes[1]))
-        #     columns = range(2, max_len)
-        not_done = []
-        for column_to_compare in columns:
-            a = pd.to_numeric(_df1.loc[:, column_to_compare], errors='coerce')
-            b = pd.to_numeric(_df2.loc[:, column_to_compare], errors='coerce')
-            # a, b = get_column(column_to_compare, _df1_filtered, _df2_filtered)
-            if a.any() and b.any() and (a.notnull().all() and b.notnull().all()):
-                print(
-                    f"performing statistical analysis for data in category {column_to_compare}for file {self.name} - {data}")
-                LogWriter.log(f"performing statistical analysis for data in category {column_to_compare}for file {self.name} - {data}")
-
-                r1, p1, o1 = self.__mann_whitney(a, b)
-                r2, p2, o2 = self.__t_test(a, b)
-                d, rd = self.__cohens_d(a, b)  # between two areas
-
-                if isinstance(column_to_compare, int):
-                    column_to_compare_name = _df1.columns[column_to_compare]
-
-                    r_all.append({"name": f"{self.name} {column_to_compare_name}",
-                                  "mann_whitney": {"result": r1,
-                                                   "p_value": p1,
-                                                   "outcome": o1},
-                                  "t_test": {"result": r2,
-                                             "p_value": p2,
-                                             "outcome": o2},
-                                  "d": {"result": rd,
-                                        "d_value": d}})
-
-                if isinstance(column_to_compare, str):
-                    r_all.append({"name": f"{self.name} {column_to_compare}",
-                                  "mann_whitney": {"result": r1,
-                                                   "p_value": p1,
-                                                   "outcome": o1},
-                                  "t_test": {"result": r2,
-                                             "p_value": p2,
-                                             "outcome": o2},
-                                  "d": {"result": rd,
-                                        "d_value": d}})
-
+        for d in data:
+            if d == "aseg":
+                _df1 = self.stat_df_1.df_stats_aseg
+                _df2 = self.stat_df_2.df_stats_aseg
+            elif d == "aparcR":
+                _df1 = self.stat_df_1.df_stats_aparcL
+                _df2 = self.stat_df_2.df_stats_aparcL
+            elif d == "aparcL":
+                _df1 = self.stat_df_1.df_stats_aparcR
+                _df2 = self.stat_df_2.df_stats_aparcR
             else:
-                print(f"absent or not valid data in category {column_to_compare}for file {self.name} - {data}")
-                not_done.append(column_to_compare)
+                raise "stat_test: wrong selection parameter"
+            # print(f"performing t_test and mann whitney on {data} in {self.name}")
+            LogWriter.log(f"    t_test and mann whitney on {d} in {self.name}...")
 
-        LogWriter.log(f"    tested {len(r_all)} variables out of {len(columns)}")
-        not_done_str = '         \n '.join(not_done)
-        LogWriter.log(f"    skipped: {not_done_str}")
+            # se non viene dato un input fa il test per tutte le colonne
+            if not columns:
+                columns = set(_df1.columns.tolist()).intersection(set(_df2.columns.tolist()))
+            # if not columns:
+            #     columns = _df1.columns
+            #     columns.intersection(_df2_filtered.columns).tolist()
+            # if not columns:
+            #     max_len = min(len(_df1.axes[1]), len(_df2.axes[1]))
+            #     columns = range(2, max_len)
+            not_done = []
+            for column_to_compare in columns:
+                a = pd.to_numeric(_df1.loc[:, column_to_compare], errors='coerce')
+                b = pd.to_numeric(_df2.loc[:, column_to_compare], errors='coerce')
+                # a, b = get_column(column_to_compare, _df1_filtered, _df2_filtered)
+                if a.any() and b.any() and (a.notnull().all() and b.notnull().all()):
+                    #print(
+                     #   f"performing statistical analysis for data in category {column_to_compare}for file {self.name} - {data}")
+                    LogWriter.log(f"performing statistical analysis for data in category {column_to_compare}for file {self.name} - {d}")
+
+                    r1, p1, o1 = self.__mann_whitney(a, b)
+                    r2, p2, o2 = self.__t_test(a, b)
+                    d, rd = self.__cohens_d(a, b)  # between two areas
+
+                    if isinstance(column_to_compare, int):
+                        column_to_compare_name = _df1.columns[column_to_compare]
+
+                        r_all.append({"name": f"{self.name} {column_to_compare_name}",
+                                      "mann_whitney": {"result": r1,
+                                                       "p_value": p1,
+                                                       "outcome": o1},
+                                      "t_test": {"result": r2,
+                                                 "p_value": p2,
+                                                 "outcome": o2},
+                                      "d": {"result": rd,
+                                            "d_value": d}})
+
+                    if isinstance(column_to_compare, str):
+                        r_all.append({"name": f"{self.name} {column_to_compare}",
+                                      "mann_whitney": {"result": r1,
+                                                       "p_value": p1,
+                                                       "outcome": o1},
+                                      "t_test": {"result": r2,
+                                                 "p_value": p2,
+                                                 "outcome": o2},
+                                      "d": {"result": rd,
+                                            "d_value": d}})
+
+                else:
+                    #print(f"absent or not valid data in category {column_to_compare}for file {self.name} - {data}")
+                    not_done.append(column_to_compare)
+
+            LogWriter.log(f"    tested {len(r_all)} variables out of {len(columns)}")
+            not_done_str = '         \n '.join(not_done)
+            LogWriter.log(f"    skipped: {not_done_str}")
         self.__save_dataframe(r_all)
 
     def bonferroni_correction(self, save=False):
@@ -1175,6 +1176,7 @@ class Comparisons:
     def __t_test(_a, _b):
         # a, b = get_column(column_to_compare, df1, df2)
 
+        # togliere questo
         if "NaN" in _a or "NaN" in _b:
             print("could not compute")
             return "result could not be computed", "NaN", "NaN"
@@ -1314,7 +1316,7 @@ class Comparisons:
 
 
 class SummaryPlot:
-    def __init__(self, name, b_path, stats_df_list, d_folder="data_testing/", max_plot=500):
+    def __init__(self, name, b_path, stats_df_list, d_folder="data_testing_ADNI/", max_plot=500):
         """
 
         :param name:
@@ -1341,7 +1343,6 @@ class SummaryPlot:
 
         # self.subjects_list = self.df["ID"].tolist()
         # self.columns_list = self.df.columns.tolist()
-        # todo: aggiugere lista soggetti
 
         self.name = name
         self.max_plot = max_plot
@@ -1358,6 +1359,7 @@ class SummaryPlot:
         plots = 0
         df_list = []
         # saves the dataframes from the stats object
+        LogWriter.log(f"\n")
         LogWriter.log(f" scatter plot:{self.name}...")
         if data == "aseg":
             for table in self.df_list_obj:
@@ -1389,8 +1391,8 @@ class SummaryPlot:
             for i, df in enumerate(df_list):
                 series = pd.to_numeric(df[column_to_compare], errors='coerce')
                 series.rename(f"{data}_{self.df_list_obj[i].name}_{column_to_compare}")
-                print(f"{data} {self.df_list_obj[i].name} {column_to_compare}")
-                print(series.name)
+                LogWriter.log(f"{data} {self.df_list_obj[i].name} {column_to_compare}. series name {series.name}")
+
                 if series.any() and series.notnull().all():
                     serieses.append(series)
                     # print(f"ages {len(ages[i])}  - {type(ages[i])} {ages[i]}")
@@ -1460,7 +1462,7 @@ class SummaryPlot:
         max_ = 0
         for series, age in zip(data, ages):
             ax.scatter(age, series.tolist(), label=series.name)  # mettere il nome della serie e le cose qui
-            print(series.name)
+            LogWriter.log(series.name)
             if series.max() > max_:
                 max_ = series.max()
 
