@@ -57,7 +57,6 @@ todo
 
 
 class LogWriter:
-
     log_list = []
     save_file = "log.txt"
 
@@ -396,7 +395,6 @@ class Stats:
                 self.df_stats_aseg = self.extract_stats_free('aseg.stats', 0)
                 self.df_stats_aseg = self.df_stats_aseg[self.df_stats_aseg["ID"].isin(t)]
 
-
         #
         # print(self.df_stats_aseg.head())
         # print("len sbj list" + str(len(self.subj_list)))
@@ -463,7 +461,7 @@ class Stats:
 
         if stat_df_paths:
 
-           # print(f"stats file {stats_filename} found for {str(len(stat_df_paths))} subjects")
+            # print(f"stats file {stats_filename} found for {str(len(stat_df_paths))} subjects")
             LogWriter.log(f"stats file {stats_filename} found for {str(len(stat_df_paths))} subjects")
 
             if _type == 0:
@@ -473,7 +471,7 @@ class Stats:
                 # stats_aparcDTK(stat_df_paths).to_csv(SAVE_PATH + save_filename, index=False)
                 return self.__fast_stats_aparcDTK(stat_df_paths)
         else:
-            #print(f"no stat file: {stats_filename} found in paths on table")
+            # print(f"no stat file: {stats_filename} found in paths on table")
             LogWriter.log(f"no stat file: {stats_filename} found in paths on table")
 
     def extract_stats_free(self, stats_filename, _type):
@@ -485,7 +483,7 @@ class Stats:
         stat_df_paths = self.__extract_path(stats_filename)
 
         if stat_df_paths:
-            #print(f"stats file {stats_filename} found for {str(len(stat_df_paths))} subjects")
+            # print(f"stats file {stats_filename} found for {str(len(stat_df_paths))} subjects")
             LogWriter.log(f"stats file {stats_filename} found for {str(len(stat_df_paths))} subjects")
             if _type == 0:
                 # __(stat_df_paths).to_csv(SAVE_PATH + save_filename, index=False)
@@ -494,7 +492,7 @@ class Stats:
                 # stats_aparcDTK(stat_df_paths).to_csv(SAVE_PATH + save_filename, index=False)
                 return self.__free_stats_aparcDTK(stat_df_paths)
         else:
-            #print(f"no stat file: {stats_filename} found in paths on table")
+            # print(f"no stat file: {stats_filename} found in paths on table")
             LogWriter.log(f"no stat file: {stats_filename} found in paths on table")
 
     def save_stats_files(self, which=(True, True, True), names=("aseg.csv", "aseg_right.csv", "aseg_left.csv")):
@@ -862,7 +860,8 @@ class Comparisons:
         bland altmann plot
     """
 
-    def __init__(self, name, b_path, stats_df_1, stats_df_2, alpha=0.05, d_folder="data_testing_ADNI/", columns_to_test=None,
+    def __init__(self, name, b_path, stats_df_1, stats_df_2, alpha=0.05, d_folder="data_testing_ADNI/",
+                 columns_to_test=None,
                  max_plot=500):
         """
         :param name: str - name of the object
@@ -974,7 +973,7 @@ class Comparisons:
                 # print(plots % N_SUBPLOTS)
                 index = plots % n_subplots
                 # print(index)
-                self.__violin_plot(axs[index], a, b, title= a.name + "\n" + self.name)
+                self.__violin_plot(axs[index], a, b, title=a.name + "\n" + self.name)
                 plots += 1
             else:
                 not_done.append(a.name)
@@ -1012,25 +1011,27 @@ class Comparisons:
             _df2 = self.stat_df_2.df_stats_aparcR[self.stat_df_2.df_stats_aparcR["ID"].isin(self.subjects_list)]
         else:
             raise "bland_altmann: wrong selection parameter"
+
         LogWriter.log(f"Bland altmann plot: {self.name}")
         # print(f"BA length of the tables to compare {len(_df1)} {len(_df2)}")
         LogWriter.log(f"    BA length of the tables to compare {len(_df1)} {len(_df2)}")
 
         LogWriter.log(f"    coorection, selection of common elements")
         if len(_df1) != len(_df2):
-            set1 = set(_df1.loc[:,"ID"].tolist())
-            set2 = set(_df2.loc[:,"ID"].tolist())
+            set1 = set(_df1.loc[:, "ID"].tolist())
+            set2 = set(_df2.loc[:, "ID"].tolist())
 
             sd = set1.symmetric_difference(set2)
-
+            LogWriter.log(f"        elements to delete: { ' '.join(sd)}")
             for id_to_delete in sd:
                 if id_to_delete in set1:
-                    _df1.drop(_df1["ID"]== id_to_delete, inplace=True)
+                    LogWriter.log(f"        element{id_to_delete} found in  {_df1}")
+                    _df1.drop(_df1["ID"] == id_to_delete, inplace=True)
                     LogWriter.log(f"    dropped: {id_to_delete} from {self.stat_df_1.name}")
                 else:
-                    _df2.drop(_df2["ID"]== id_to_delete, inplace=True)
+                    LogWriter.log(f"        element{id_to_delete} found in  {_df2}")
+                    _df2.drop(_df2["ID"] == id_to_delete, inplace=True)
                     LogWriter.log(f"    dropped: {id_to_delete} from {self.stat_df_2.name}")
-
 
         if not columns:
             columns = set(_df1.columns.tolist()).intersection(set(_df2.columns.tolist()))  # set with columns
@@ -1068,7 +1069,6 @@ class Comparisons:
                 not_done.append(a.name)
             if plots >= 20:  # to avoid plotting too much
                 break
-
 
         if plots % n_subplots != 0:
             fig.savefig(f"{self.data_path}images/img_ba_{self.name}"
@@ -1118,9 +1118,10 @@ class Comparisons:
                 b = pd.to_numeric(_df2.loc[:, column_to_compare], errors='coerce')
                 # a, b = get_column(column_to_compare, _df1_filtered, _df2_filtered)
                 if a.any() and b.any() and (a.notnull().all() and b.notnull().all()):
-                    #print(
-                     #   f"performing statistical analysis for data in category {column_to_compare}for file {self.name} - {data}")
-                    LogWriter.log(f"performing statistical analysis for data in category {column_to_compare}for file {self.name} - {d}")
+                    # print(
+                    #   f"performing statistical analysis for data in category {column_to_compare}for file {self.name} - {data}")
+                    LogWriter.log(
+                        f"performing statistical analysis for data in category {column_to_compare}for file {self.name} - {d}")
 
                     r1, p1, o1 = self.__mann_whitney(a, b)
                     r2, p2, o2 = self.__t_test(a, b)
@@ -1151,7 +1152,7 @@ class Comparisons:
                                             "d_value": d}})
 
                 else:
-                    #print(f"absent or not valid data in category {column_to_compare}for file {self.name} - {data}")
+                    # print(f"absent or not valid data in category {column_to_compare}for file {self.name} - {data}")
                     not_done.append(column_to_compare)
 
             LogWriter.log(f"    tested {i} variables out of {len(columns)}")
@@ -1184,7 +1185,8 @@ class Comparisons:
             if len(row) == len(self.stat_df_result.loc[i, :]):
                 self.stat_df_result.loc[i, :] = row
             else:
-                LogWriter.log(f"     row{i} WRONG N ELEMENTS BONFERRONI CORRECTION, follows row from dataframe and row processed")
+                LogWriter.log(
+                    f"     row{i} WRONG N ELEMENTS BONFERRONI CORRECTION, follows row from dataframe and row processed")
                 LogWriter.log(self.stat_df_result.loc[i, :])
                 LogWriter.log(row)
             if save:
