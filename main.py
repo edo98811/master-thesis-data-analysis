@@ -22,9 +22,9 @@ def main():
     # aparcR_free = pd.read_csv(BASE_PATH + "Stats_FreeSurfer/aparcDKT_left.csv")
 
     stats_fast_healthy = ft.Stats("healthy_FAST", BASE_PATH, table, " main_condition=='NL'")
-    stats_fast_MC = ft.Stats("MC_FAST", BASE_PATH, table, "main_condition!='NL'")
+    stats_fast_MC = ft.Stats("NotHealthy_FAST", BASE_PATH, table, "main_condition!='NL'")
     stats_free_healthy = ft.Stats("healthy_FREE", BASE_PATH, table, "main_condition=='NL'", alg="free")
-    stats_free_MC = ft.Stats("MC_FREE", BASE_PATH, table, "main_condition!='NL'", alg="free")
+    stats_free_MC = ft.Stats("NotHealthy_FREE", BASE_PATH, table, "main_condition!='NL'", alg="free")
 
     # stats_free_healthy = ft.Stats("healthy_FREE", BASE_PATH, table, "main_condition=='NL'", aseg=aseg_free,
     #                               aparcRight=aparcR_free, aparcLeft=aparcL_free)
@@ -36,7 +36,7 @@ def main():
     stats_free_healthy.save_stats_files()
     stats_free_MC.save_stats_files()
 
-    comp1 = ft.Comparisons("MC_ADNI", BASE_PATH, stats_free_MC, stats_fast_MC)
+    comp1 = ft.Comparisons("NotHealthy_ADNI", BASE_PATH, stats_free_MC, stats_fast_MC)
     comp2 = ft.Comparisons("healthy_ADNI", BASE_PATH, stats_free_healthy, stats_fast_healthy)
 
     comp1.save_data()

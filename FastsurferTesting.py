@@ -32,10 +32,11 @@ todo
     ordine di cose da fare
     okcontrollare- togliere p path
     ok- ricontrollare il modo in cui salva statistiche
-    - ricontrollare bland altmann
-    - aggiungere freesurfer nelle statistiche
+    ok- ricontrollare bland altmann
+    -ok aggiungere freesurfer nelle statistiche
     - aggiungere funzione per creare la table senza che sia caricata da prima nel caso
     - aggiungere log a tutti
+    - unire i plot in un unica funzione
     
     altre
     - bonferroni correction da sempre problemi, controllare?
@@ -1014,6 +1015,22 @@ class Comparisons:
         LogWriter.log(f"Bland altmann plot: {self.name}")
         # print(f"BA length of the tables to compare {len(_df1)} {len(_df2)}")
         LogWriter.log(f"    BA length of the tables to compare {len(_df1)} {len(_df2)}")
+
+        LogWriter.log(f"    coorection, selection of common elements")
+        if len(_df1) != len(_df2):
+            set1 = set(_df1.index.tolist())
+            set2 = set(_df2.index.tolist())
+
+            sd = set1.symmetric_difference(set2)
+
+            for i_to_delete in sd:
+                if i_to_delete in set1:
+                    _df1.drop(i_to_delete, inplace=True)
+                    LogWriter.log(f"    dropped: {i_to_delete} from {self.stat_df_1.name}")
+                else:
+                    _df2.drop(i_to_delete, inplace=True)
+                    LogWriter.log(f"    dropped: {i_to_delete} from {self.stat_df_2.name}")
+
 
         if not columns:
             columns = set(_df1.columns.tolist()).intersection(set(_df2.columns.tolist()))  # set with columns
