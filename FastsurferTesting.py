@@ -1429,8 +1429,9 @@ class SummaryPlot:
                 series = pd.to_numeric(df[column_to_compare], errors='coerce')
                 series.rename(f"{data}_{self.df_list_obj[i].name}_{column_to_compare}")
                 legend.append(f"{data}_{self.df_list_obj[i].name}_{column_to_compare}")
-                LogWriter.log(f"{data} {self.df_list_obj[i].name} {column_to_compare}. "
+                LogWriter.log(f"{data}_{self.df_list_obj[i].name}_{column_to_compare}. "
                               f"series name {series.name}")
+                LogWriter.log(f"{legend[-1]}")
 
                 if series.any() and series.notnull().all():
                     serieses.append(series)
