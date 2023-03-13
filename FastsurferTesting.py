@@ -1410,7 +1410,7 @@ class SummaryPlot:
         legend = []
         for table, subj_list in zip(self.df_list_obj, subj_lists):
             s = set(Stats.delete_sub(subj_list))
-            t = table.df_subj.isin({'ID': s})
+            t = table.df_subj[table.df_subj.isin({'ID': s})]
             ages.append(t.loc[:, "age"].tolist())
             # legend.append(table.name)
 
