@@ -118,7 +118,7 @@ class Table:
 
         self.processed_path = p_path
         self.base_path = b_path
-        self.data_path = d_folder
+        self.data_path = b_path + d_folder
         self.name = name
 
         if not os.path.exists(self.data_path):
