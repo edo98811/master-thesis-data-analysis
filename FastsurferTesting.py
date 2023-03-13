@@ -1411,9 +1411,10 @@ class SummaryPlot:
         for table, subj_list in zip(self.df_list_obj, subj_lists):
             s = list(Stats.delete_sub(subj_list))
             t = table.df_subj[table.df_subj['ID'].isin(s)]
-            ages.append(t.loc[:, "age"].tolist())
+            a = t.loc[:, "age"].tolist()
+            ages.append(pd.to_numeric(a, errors='coerce'))
             # legend.append(table.name)
-
+        del a, t, s
         if not columns:
             columns = df_list[0].columns
         # columns = columns.intersection(_df2.columns).tolist()
@@ -1501,7 +1502,7 @@ class SummaryPlot:
     def __scatter_plot(ax, data, ages, title, legend):
         max_ = 0
         for series, age, legend_entry in zip(data, ages, legend):
-            ax.scatter(age, series.tolist(), label=legend)  # mettere il nome della serie e le cose qui
+            ax.scatter(age, series.tolist(), label=legend_entry)  # mettere il nome della serie e le cose qui
             LogWriter.log(series.name)
             if series.max() > max_:
                 max_ = series.max()
