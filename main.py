@@ -31,25 +31,25 @@ def main():
     # stats_free_MC = ft.Stats("MC_FREE", BASE_PATH, table, "main_condition!='NL'", aseg=aseg_free,
     #                          aparcRight=aparcR_free, aparcLeft=aparcL_free)
 
-    stats_fast_healthy.save_stats_files()
-    stats_fast_MC.save_stats_files()
-    stats_free_healthy.save_stats_files()
-    stats_free_MC.save_stats_files()
-
-    comp1 = ft.Comparisons("NotHealthy_ADNI", BASE_PATH, stats_free_MC, stats_fast_MC)
-    comp2 = ft.Comparisons("healthy_ADNI", BASE_PATH, stats_free_healthy, stats_fast_healthy)
-
-    comp1.save_data()
-    comp2.save_data()
-
-    comp1.bonferroni_correction()
-    comp2.bonferroni_correction()
-
-    comp1.violin()
-    comp1.bland_altmann()
-
-    comp2.violin()
-    comp2.bland_altmann()
+    # stats_fast_healthy.save_stats_files()
+    # stats_fast_MC.save_stats_files()
+    # stats_free_healthy.save_stats_files()
+    # stats_free_MC.save_stats_files()
+    #
+    # comp1 = ft.Comparisons("NotHealthy_ADNI", BASE_PATH, stats_free_MC, stats_fast_MC)
+    # comp2 = ft.Comparisons("healthy_ADNI", BASE_PATH, stats_free_healthy, stats_fast_healthy)
+    #
+    # comp1.save_data()
+    # comp2.save_data()
+    #
+    # comp1.bonferroni_correction()
+    # comp2.bonferroni_correction()
+    #
+    # comp1.violin()
+    # comp1.bland_altmann()
+    #
+    # comp2.violin()
+    # comp2.bland_altmann()
 
     summary1 = ft.SummaryPlot("summary", BASE_PATH, [stats_free_MC, stats_fast_MC, stats_free_healthy,
                                                      stats_fast_healthy])
