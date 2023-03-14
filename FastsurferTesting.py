@@ -33,6 +33,8 @@ todo
         - ICC
         - controllare bland altmann
         - aggiungere shapiro wilk
+        - aggiungere il ciclo for e rendere la variabile data una tupla per tutti i plot
+        - rendere la variabile plot nei plots globale
 
 """
 
@@ -954,7 +956,7 @@ class Comparisons:
 
                     if not plots % n_subplots:
                         if plots > 1:
-                            fig.savefig(f"{self.data_path}images/img_violin_{self.name}"
+                            fig.savefig(f"{self.data_path}images/img_{data}_violin_{self.name}"
                                         f"_{str(plots - n_subplots)}-{str(plots)}.png")  # save the figure to file
                             # plt.close(fig)  # close the figure window
                             # handles, labels = axs[1].get_legend_handles_labels()
@@ -980,7 +982,7 @@ class Comparisons:
                 LogWriter.log(f"excluded {column_to_compare}")
 
         if plots % n_subplots != 0:
-            fig.savefig(f"{self.data_path}images/img_violin_{self.name}"
+            fig.savefig(f"{self.data_path}images/img_{data}_violin_{self.name}"
                         f"_{str(plots - (plots % n_subplots))}-{str(plots)}.png")  # save the figure to file
         del axs, fig
 
@@ -1012,15 +1014,15 @@ class Comparisons:
 
         LogWriter.log(f"Bland altmann plot: {self.name}")
         # print(f"BA length of the tables to compare {len(_df1)} {len(_df2)}")
-        LogWriter.log(f"   \BA length of the tables to compare {len(_df1)} {len(_df2)}")
+        LogWriter.log(f"    BA length of the tables to compare {len(_df1)} {len(_df2)}")
 
-        if c_to_exclude:
-            LogWriter.log(f"    excluding {len(c_to_exclude)} columns ")
-            for c in c_to_exclude:
-                if c in self.columns_list:
-                    _df1 = _df1.drop(c, axis=1)
-                    _df2 = _df2.drop(c, axis=1)
-                    LogWriter.log(f"        {c} deleted")
+        # if c_to_exclude:
+        #     LogWriter.log(f"    excluding {len(c_to_exclude)} columns ")
+        #     for c in c_to_exclude:
+        #         if c in self.columns_list:
+        #             _df1 = _df1.drop(c, axis=1)
+        #             _df2 = _df2.drop(c, axis=1)
+        #             LogWriter.log(f"        {c} deleted")
 
         # checks that the subjects to compare are the same
         if len(_df1) != len(_df2):
@@ -1058,7 +1060,7 @@ class Comparisons:
 
                     if not plots % n_subplots:
                         if plots > 1:
-                            fig.savefig(f"{self.data_path}images/img_ba_{self.name}"
+                            fig.savefig(f"{self.data_path}images/img_{data}_ba_{self.name}"
                                         f"_{str(plots - n_subplots)}-{str(plots)}.png")  # save the figure to file
                             # handles, labels = ax.get_legend_handles_labels()
                             # fig.legend(handles, labels, loc=(0.95, 0.1), prop={'size': 30})
@@ -1079,7 +1081,7 @@ class Comparisons:
                 LogWriter.log(f"excluded {column_to_compare}")
 
         if plots % n_subplots != 0:
-            fig.savefig(f"{self.data_path}images/img_ba_{self.name}"
+            fig.savefig(f"{self.data_path}images/img_{data}_ba_{self.name}"
                         f"_{str(plots - (plots % n_subplots))}-{str(plots)}.png")  # save the figure to file
         del axs, fig
 
@@ -1087,8 +1089,49 @@ class Comparisons:
         not_done_str = ' | '.join(not_done)
         LogWriter.log(f"    skipped: {not_done_str}")
 
-    def iterate_columns(self, function):
-        pass
+    def iterate_columns(self, function, plots, n_rows, n_subplots, plot_title, c_to_exclude, _df1, _df2):
+
+        not_done = []
+        for column_to_compare in self.columns_list:
+            if column_to_compare not in c_to_exclude:
+                a = pd.to_numeric(_df1.loc[:, column_to_compare], errors='coerce')
+                b = pd.to_numeric(_df2.loc[:, column_to_compare], errors='coerce')
+
+                if a.any() and b.any() and (a.notnull().all() and b.notnull().all()):
+
+                    if not plots % n_subplots:
+                        if plots > 1:
+                            fig.savefig(f"{plot_title}"
+                                        f"_{str(plots - n_subplots)}-{str(plots)}.png")  # save the figure to file
+                            # plt.close(fig)  # close the figure window
+                            # handles, labels = axs[1].get_legend_handles_labels()
+                            # fig.legend(handles, labels, loc=(0.95, 0.1), prop={'size': 30})F
+                        fig, axs = plt.subplots(n_rows, int(n_subplots / n_rows), figsize=(40, 20))
+                        axs = axs.ravel()
+                        plt.subplots_adjust(hspace=0.5)
+                        plt.subplots_adjust(wspace=0.2)
+                        # mng = plt.get_current_fig_manager()
+                        # mng.full_screen_toggle()
+
+                    # print(plots % N_SUBPLOTS)
+                    index = plots % n_subplots
+                    # print(index)
+                    function(axs[index], a, b, title=a.name + "\n" + self.name)
+
+                    plots += 1
+                else:
+                    not_done.append(a.name)
+
+                if plots >= self.max_plot:  # to avoid plotting too much
+                    break
+            else:
+                LogWriter.log(f"excluded {column_to_compare}")
+
+        if plots % n_subplots != 0:
+            fig.savefig(f"{plot_title}"
+                        f"_{str(plots - (plots % n_subplots))}-{str(plots)}.png")  # save the figure to file
+        del axs, fig
+
     def stat_test(self, columns_input=None, data=("aseg", "aparcL", "aparcR")):
         """
         :param columns: list of str - list of column names to print (default None: prints all)
@@ -1542,7 +1585,7 @@ class SummaryPlot:
             # if it needs to create a new figure it creates it
             if not plots % n_subplots:
                 if plots > 1:
-                    fig.savefig(f"{self.data_path}images/img_scatter_{self.name}"
+                    fig.savefig(f"{self.data_path}images/img_{data}_scatter_{self.name}"
                                 f"_{str(plots - n_subplots)}-{str(plots)}.png")  # save the figure to file
                     # plt.close(fig)  # close the figure window
                     # handles, labels = axs[1].get_legend_handles_labels()
@@ -1572,7 +1615,7 @@ class SummaryPlot:
                 break
 
         if plots % n_subplots != 0:
-            fig.savefig(f"{self.data_path}images/img_scatter_{self.name}"
+            fig.savefig(f"{self.data_path}images/img_{data}_scatter_{self.name}"
                         f"_{str(plots - n_subplots)}-{str(plots)}.png")  # save the figure to file
         del axs, fig
 
@@ -1580,7 +1623,7 @@ class SummaryPlot:
         not_done_str = ' | '.join(not_done)
         LogWriter.log(f"    skipped: {not_done_str}")
         # fig.savefig(
-        #     self.data_path + "images/img_scatter_" + self.name + " - " + self.name + "_" + str(
+        #     self.data_path + "images/img_{data_scatter_" + self.name + " - " + self.name + "_" + str(
         #         plots) + ".png")  # save the figure to file
         """
         idea

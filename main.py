@@ -46,15 +46,25 @@ def main():
     comp1.bonferroni_correction()
     comp2.bonferroni_correction()
 
-    comp1.violin()
-    comp1.bland_altmann()
+    comp2.violin(data="aseg")
+    comp2.violin(data="aparcL")
+    comp2.violin(data="aparcR")
+    comp2.bland_altmann(data="aseg")
+    comp2.bland_altmann(data="aparcL")
+    comp2.bland_altmann(data="aparcR")
 
-    comp2.violin()
-    comp2.bland_altmann()
+    comp2.violin(data="aseg")
+    comp2.violin(data="aparcL")
+    comp2.violin(data="aparcR")
+    comp2.bland_altmann(data="aseg")
+    comp2.bland_altmann(data="aparcL")
+    comp2.bland_altmann(data="aparcR")
 
     summary1 = ft.SummaryPlot("summary", BASE_PATH, [stats_free_MC, stats_fast_MC, stats_free_healthy,
                                                      stats_fast_healthy])
-    summary1.comparison_plot()
+    summary1.comparison_plot(data="aseg")
+    summary1.comparison_plot(data="aparcL")
+    summary1.comparison_plot(data="aparcR")
 
     # ft.LogWriter()
 
