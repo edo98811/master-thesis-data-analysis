@@ -38,7 +38,8 @@ def main():
 
     comp1 = ft.Comparisons("NotHealthy_ADNI", BASE_PATH, stats_free_MC, stats_fast_MC)
     comp2 = ft.Comparisons("healthy_ADNI", BASE_PATH, stats_free_healthy, stats_fast_healthy)
-
+    comp1.stat_test()
+    comp2.stat_test()
     comp1.save_data()
     comp2.save_data()
 

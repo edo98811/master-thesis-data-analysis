@@ -7,8 +7,6 @@ import seaborn as sns
 import data_manipulation as dm
 import numpy as np
 from copy import deepcopy
-import pingouin as pg
-from statsmodels.stats import shapiro
 # import dropboxAPI
 import subprocess
 
@@ -25,14 +23,36 @@ cose da chiedere
 
 todo
     modifiche importanti
+        - salvare in log i dati che non vanno (ad esempio nello stat test) quando dice che absent or invalid data in un file di testo 
+        tipo log (esiste un modo per definire il comportamento di una variabile in modo che stampi quello a cui viene assegnata?)
         - fare diagramma del codice 
         - scrivere unittest
-        - fare selezionare colonne
-        - fare create table
-        - raggruppare in funzioni quello che si puo 
-        - ICC
-        - controllare bland altmann
-        - aggiungere shapiro wilk
+        - controllar che salvi tutte le statistiche, mi sa salva solo aseg ora
+        
+    ordine di cose da fare
+    okcontrollare- togliere p path
+    ok- ricontrollare il modo in cui salva statistiche
+    ok- ricontrollare bland altmann
+    -ok aggiungere freesurfer nelle statistiche
+    - aggiungere funzione per creare la table senza che sia caricata da prima nel caso
+    - aggiungere log a tutti
+    - unire i plot in un unica funzione
+    
+    altre
+    - bonferroni correction da sempre problemi, controllare?
+    - rendere add_sun e delete_sub static methods 
+    - mettere a posto i grafici in generale rendendoli piu beli
+    - uniformare i sub e i non sub nelle strutture
+    - in comparison serve davvero il parametro column to test?
+    - in stats save stats vengono salvati solo aseg e non tutti
+    - aggiungere print alla fine delle funzioni e log
+    - aggiungere descrizioni fatte bene
+    - riscrivere tutto usando inheritance
+    - quando faccio la selezione delle colonne aggiungere un testo che mi dice cosa sto escludendo (quali colonne)
+    - eliminare le cose che non servono (aggiungere script per farlo)
+
+    - aggiungere metodo per controllare che le figure siano salvate correttamente (e tutte)
+
 
 """
 
@@ -83,6 +103,7 @@ class Table:
     """
 
     def __init__(self, name, b_path, p_path, df_subj=None, d_folder="data_testing_ADNI/"):
+        # LogWriter.log_list.append("si!!!")
         """
         :param name: str - name of the object
         :param b_path: str - base path
@@ -90,13 +111,10 @@ class Table:
         :param df_subj: pd.df the dataframe of subjects
         :param d_folder: str - data folder (default: data_testing/)
         """
-
-        # definition of
         if df_subj is not None:
             self.df = df_subj
         else:
             self.create_table()
-
         self.subjects_list = self.df["ID"].tolist()
 
         self.processed_path = p_path
@@ -131,7 +149,7 @@ class Table:
         # iterate though all the directories in the processed path
         for root, dirs, files in os.walk(self.processed_path):
             for dir in dirs:
-                if dir in self.subjects_list:
+                if dir in self.subjects_lists:
                     # quando trova il soggetto nella cartella modifica il dataframe
                     for i, subj_path_filtered in enumerate(self.df["ID"].tolist()):
                         if dir == "sub-" + subj_path_filtered:
@@ -192,16 +210,17 @@ class Table:
         pass
         # subprocess.
 
-    def create_table(self, df_dict_map, path_to_origin_file, dataset="ADNI"):
+    def create_table(self, df_dict_map, path_to_origin_file):
         """
         method to create the table if it doesn't exist
         :return:
         """
+        raise "method not yet implemented"
 
         table = pd.read_csv(self.base_path + path_to_origin_file)
-        ADNI = False
+
         # create the dictionary that will turn into a table
-        if dataset == "ADNI":
+        if ADNI:
             df_dict = {
                 "ID": [],
                 "path": [],
@@ -211,7 +230,6 @@ class Table:
                 "processed": [],
                 "processed_path": []
             }
-            ADNI = True
         else:
             df_dict = {
                 "ID": [],
@@ -222,18 +240,7 @@ class Table:
                 "processed_path": []
             }
 
-        if df_dict_map != None:
-            df_dict = df_dict_map
-
-        # extracts all the paths for the subjects
-        IDs = Table.add_sub(table["ID"])
-        _paths_in_folder = os.listdir(self.processed_path)
-        _paths_on_table = set(_paths_in_folder).intersection(Table.add_sub(IDs))
-
         # populates the dictionary
-        # checks that subjects both exist in the table and on the computer
-        # for that it needs to check the subdirectory of the subjects exists
-
         for index, row in table.iterrows():
             for i, path_on_table in enumerate(_paths_on_table):
                 if len(path_on_table.split("/")) > 3:
@@ -259,14 +266,14 @@ class Table:
 
         subjs = set()
 
-        # checks the processed
+        # adds the paths
         # interate though all the rows to create a set of the subjects
         for i, subj_path_filtered in enumerate(df["ID"].tolist()):
             df.loc[i, "processed"] = "no"
             subjs.add("sub-" + subj_path_filtered)
 
         # iterate though all the directories in the processed path
-        for root, dirs, files in os.walk(self.processed_path):
+        for root, dirs, files in os.walk(PROCESSED_PATH):
             for dir in dirs:
                 if dir in subjs:
                     # quando trova il soggetto nella crtela modifica il dataframe
@@ -277,18 +284,13 @@ class Table:
                             break
 
         return df
-    @staticmethod
-    def add_sub(_list):
-        """
-        :param _list: list of str - list of subj names
-        :return:
-        """
-        l = []
-        for i, s in enumerate(_list):
-            l.append("sub-" + s)
-        LogWriter.log("    add_sub: correctly added sub- to all the patients")
-        return l
 
+    """
+    def add_sub(self, subjects_list):
+        for i, s in enumerate(subjects_list):
+            subjects_list[i] = "sub-" + s
+        return subjects_list
+    """
 
 
 class Stats:
@@ -335,14 +337,15 @@ class Stats:
         self.subj_list = self.add_sub(self.df_subj["ID"].tolist())
         t = deepcopy(self.subj_list)
 
-        # path definition and folder creation
         self.base_path = b_path
         self.data_path = self.base_path + d_folder
+
+        # if not query or (not aseg or not aparcLeft or not aparcRight):
+        #     raise " non va bene"
 
         if not os.path.exists(self.data_path):
             os.makedirs(self.data_path)
 
-        # other important parameters
         self.query = query
         self.name = name
         self.alg = alg
@@ -871,8 +874,6 @@ class Comparisons:
         :param columns_to_test:
         :param max_plot:
         """
-
-        # definition of the objects to compare
         if isinstance(stats_df_1, Stats):
             self.stat_df_1 = stats_df_1
         else:
@@ -881,42 +882,41 @@ class Comparisons:
             self.stat_df_2 = stats_df_2
         else:
             raise "stats of the wrong class"
-
-        # definition od path variables and folders
         self.base_path = b_path
 
         self.data_path = self.base_path + d_folder
         if not os.path.exists(self.data_path):
             os.makedirs(self.data_path)
 
-        # create common subjects list and common column list
+        # aggiungere controllo che i soggetti siano gli stessi e non diversi
+        # tmp = self.stat_df_1.df_subj["ID"].tolist()
+        # self.subjects_list = {tmp.extend(self.stat_df_2.df_subj["ID"].tolist())}
+        # tmp = self.stat_df_1.df_subj.columns.tolist()
+        # self.columns_list = {tmp.extend(self.stat_df_2.df_subj.columns.tolist())}
+        # del tmp
+
         self.subjects_list = set(self.stat_df_1.df_subj["ID"].tolist()).intersection(
             set(self.stat_df_2.df_subj["ID"].tolist()))
         self.columns_list = set(self.stat_df_1.df_subj.columns.tolist()).intersection(
             set(self.stat_df_2.df_subj.columns.tolist()))
 
-        # check that there are common subjects and define image path
         if not self.subjects_list or not self.columns_list:
             raise "datasets do not have elements in common"
         if not os.path.exists(self.data_path + "images/"):
             os.makedirs(self.data_path + "images/")
 
-        # create the common
-        # self.subjects_list = set(stats_df_2.add_sub(list(self.subjects_list)))
+        # filtrare dataset solo per quelli che sono in comune tra tutti (quindi gli stessi soggetti)
+        self.subjects_list = set(stats_df_2.add_sub(list(self.subjects_list)))
 
-        # other important variables
         self.name = name
         self.alpha = alpha
         self.updated_alpha = "no correction"
         self.max_plot = max_plot
 
         self.stat_df_result = None
-
-        # creation of the statistical test variables (can be deleted)
-        # self.stat_test(columns_to_test)
+        self.stat_test(columns_to_test)
 
     def violin(self, data="aseg", columns=None, n_subplots=10, n_rows=2, c_to_exclude=None):
-
         """
         :param data: str - table to select (aseg, aparcL, aparcR)
         :param columns: list  of str- list of column names to print (default None: prints all)
@@ -937,18 +937,24 @@ class Comparisons:
             _df2 = self.stat_df_2.df_stats_aparcR[self.stat_df_2.df_stats_aparcR["ID"].isin(self.subjects_list)]
         else:
             raise "violin: wrong selection parameter"
-
         LogWriter.log(f"Violin plot: {self.name}")
+        # print(f"length of the tables to compare {len(_df1)} {len(_df2)}")
         LogWriter.log(f"    length of the tables to compare {len(_df1)} {len(_df2)}")
 
+        # if not columns:
+        #     columns = _df1.columns
+        #     columns = columns.intersection(_df2.columns).tolist()
+        # select the columns that exist in both the datasets
         if not columns:
             columns = set(_df1.columns.tolist()).intersection(set(_df2.columns.tolist()))
-
+        # if not columns:
+        #     max_len = min(len(_df1.axes[1]), len(_df2.axes[1]))
+        #     columns = range(2, max_len)
         not_done = []
-        for column_to_compare in self.columns_list:
+        for column_to_compare in columns:
             a = pd.to_numeric(_df1.loc[:, column_to_compare], errors='coerce')
             b = pd.to_numeric(_df2.loc[:, column_to_compare], errors='coerce')
-
+            # a, b = get_column(column_to_compare, _df1_filtered, _df2_filtered)
             if a.any() and b.any() and (a.notnull().all() and b.notnull().all()):
 
                 if not plots % n_subplots:
@@ -985,7 +991,7 @@ class Comparisons:
         not_done_str = '         \n '.join(not_done)
         LogWriter.log(f"    skipped: {not_done_str}")
 
-    def bland_altmann(self, data="aseg", columns=None, n_subplots=4, n_rows=2, c_to_exclude=[]):
+    def bland_altmann(self, data="aseg", columns=None, n_subplots=4, n_rows=2, c_to_exclude=None):
         """
         :param data: str - table to select (aseg, aparcL, aparcR)
         :param columns: list  of str- list of column names to print (default None: prints all)
@@ -1009,69 +1015,61 @@ class Comparisons:
 
         LogWriter.log(f"Bland altmann plot: {self.name}")
         # print(f"BA length of the tables to compare {len(_df1)} {len(_df2)}")
-        LogWriter.log(f"   \BA length of the tables to compare {len(_df1)} {len(_df2)}")
+        LogWriter.log(f"    BA length of the tables to compare {len(_df1)} {len(_df2)}")
 
-        if c_to_exclude:
-            LogWriter.log(f"    excluding {len(c_to_exclude)} columns ")
-            for c in c_to_exclude:
-                if c in self.columns_list:
-                    _df1 = _df1.drop(c, axis=1)
-                    _df2 = _df2.drop(c, axis=1)
-                    LogWriter.log(f"        {c} deleted")
-
-        # checks that the subjects to compare are the same
+        LogWriter.log(f"        correction, selection of common elements")
         if len(_df1) != len(_df2):
-            LogWriter.log(f"    correction, selection of common subjects")
-
             set1 = set(_df1.loc[:, "ID"].tolist())
             set2 = set(_df2.loc[:, "ID"].tolist())
 
             sd = set1.symmetric_difference(set2)
-            LogWriter.log(f"        elements to delete: {' '.join(sd)}")
+            LogWriter.log(f"        elements to delete: { ' '.join(sd)}")
             for id_to_delete in sd:
                 if id_to_delete in set1:
-                    LogWriter.log(f"            element{id_to_delete} found in  {self.stat_df_1.name}")
+                    LogWriter.log(f"        element{id_to_delete} found in  {self.stat_df_1.name}")
                     _df1 = _df1[_df1["ID"] != id_to_delete]
-                    LogWriter.log(f"            dropped: {id_to_delete} from {self.stat_df_1.name}")
+                    LogWriter.log(f"    dropped: {id_to_delete} from {self.stat_df_1.name}")
                 else:
-                    LogWriter.log(f"            element{id_to_delete} found in  {self.stat_df_2.name}")
+                    LogWriter.log(f"        element{id_to_delete} found in  {self.stat_df_2.name}")
                     _df2 = _df2[_df2["ID"] != id_to_delete]
-                    LogWriter.log(f"            dropped: {id_to_delete} from {self.stat_df_2.name}")
-        # _df1, _df2 = self.__match_dataframes(_df1, _df2)
-        # create set of common fields, to be deleted
-        # todo: usare la variabile della classe per le colonne
+                    LogWriter.log(f"    dropped: {id_to_delete} from {self.stat_df_2.name}")
+
+        if not columns:
+            columns = set(_df1.columns.tolist()).intersection(set(_df2.columns.tolist()))  # set with columns
+            # columns = _df1.columns
+            # columns = columns.intersection(_df2.columns).tolist()
         # if not columns:
-        #     columns = set(_df1.columns.tolist()).intersection(set(_df2.columns.tolist()))  # set with columns
-
-        # iterates through the columns
+        #     max_len = min(len(_df1.axes[1]), len(_df2.axes[1]))
+        #     columns = range(2, max_len)
         not_done = []
-        for column_to_compare in self.columns_list:
-            if column_to_compare not in c_to_exclude:
+        for column_to_compare in columns:
+            a = pd.to_numeric(_df1.loc[:, column_to_compare], errors='coerce')
+            b = pd.to_numeric(_df2.loc[:, column_to_compare], errors='coerce')
+            # a, b = get_column(column_to_compare, _df1_filtered, _df2_filtered)
+            if a.any() and b.any() and (a.notnull().all() and b.notnull().all()):  # for all the fields with numbers
 
-                a = pd.to_numeric(_df1.loc[:, column_to_compare], errors='coerce')
-                b = pd.to_numeric(_df2.loc[:, column_to_compare], errors='coerce')
-                # a, b = get_column(column_to_compare, _df1_filtered, _df2_filtered)
-                if a.any() and b.any() and (a.notnull().all() and b.notnull().all()):  # for all the fields with numbers
+                if not plots % n_subplots:
+                    if plots > 1:
+                        fig.savefig(f"{self.data_path}images/img_ba_{self.name}"
+                                    f"_{str(plots - n_subplots)}-{str(plots)}.png")  # save the figure to file
+                        # handles, labels = ax.get_legend_handles_labels()
+                        # fig.legend(handles, labels, loc=(0.95, 0.1), prop={'size': 30})
+                    fig, axs = plt.subplots(n_rows, int(n_subplots / n_rows), figsize=(40, 20))
+                    axs = axs.ravel()
+                    plt.subplots_adjust(hspace=0.5)
+                    plt.subplots_adjust(wspace=0.2)
+                    # mng = plt.get_current_fig_manager()
+                    # mng.full_screen_toggle()
 
-                    if not plots % n_subplots:
-                        if plots > 1:
-                            fig.savefig(f"{self.data_path}images/img_ba_{self.name}"
-                                        f"_{str(plots - n_subplots)}-{str(plots)}.png")  # save the figure to file
-                            # handles, labels = ax.get_legend_handles_labels()
-                            # fig.legend(handles, labels, loc=(0.95, 0.1), prop={'size': 30})
-                        fig, axs = plt.subplots(n_rows, int(n_subplots / n_rows), figsize=(40, 20))
-                        axs = axs.ravel()
-                        plt.subplots_adjust(hspace=0.5)
-                        plt.subplots_adjust(wspace=0.2)
-
-                    index = plots % n_subplots
-
-                    self.__bland_altman_plot(axs[index], a, b, title=a.name + "\n" + self.name)
-                    plots += 1
-                else:
-                    not_done.append(a.name)
-                if plots >= 20:  # to avoid plotting too much
-                    break
+                # print(plots % N_SUBPLOTS)
+                index = plots % n_subplots
+                # print(index)
+                self.__bland_altman_plot(axs[index], a, b, title=a.name + "\n" + self.name)
+                plots += 1
+            else:
+                not_done.append(a.name)
+            if plots >= 20:  # to avoid plotting too much
+                break
 
         if plots % n_subplots != 0:
             fig.savefig(f"{self.data_path}images/img_ba_{self.name}"
@@ -1079,12 +1077,10 @@ class Comparisons:
         del axs, fig
 
         LogWriter.log(f"    plotted {plots} variables out of {len(columns)}")
-        not_done_str = ' | '.join(not_done)
+        not_done_str = '         \n '.join(not_done)
         LogWriter.log(f"    skipped: {not_done_str}")
 
-    def iterate_columns(self):
-        pass
-    def stat_test(self, columns_input=None, data=("aseg", "aparcL", "aparcR")):
+    def stat_test(self, columns_input, data=("aseg", "aparcL", "aparcR")):
         """
         :param columns: list of str - list of column names to print (default None: prints all)
         :param data: str - type of input (aseg, aparcL or aparcR)
@@ -1103,8 +1099,8 @@ class Comparisons:
                 _df2 = self.stat_df_2.df_stats_aparcR
             else:
                 raise "stat_test: wrong selection parameter"
-
-            LogWriter.log(f"t_test and mann whitney on {data_n} in {self.name}...")
+            # print(f"performing t_test and mann whitney on {data} in {self.name}")
+            LogWriter.log(f"    t_test and mann whitney on {data_n} in {self.name}...")
 
             # se non viene dato un input fa il test per tutte le colonne
             if not columns_input:
@@ -1121,17 +1117,16 @@ class Comparisons:
             for i, column_to_compare in enumerate(columns):
                 a = pd.to_numeric(_df1.loc[:, column_to_compare], errors='coerce')
                 b = pd.to_numeric(_df2.loc[:, column_to_compare], errors='coerce')
-
+                # a, b = get_column(column_to_compare, _df1_filtered, _df2_filtered)
                 if a.any() and b.any() and (a.notnull().all() and b.notnull().all()):
                     # print(
                     #   f"performing statistical analysis for data in category {column_to_compare}for file {self.name} - {data}")
-                    # LogWriter.log(
+                    #LogWriter.log(
                     #    f"      performing statistical analysis for data in category {column_to_compare} for file {self.name} - {data_n}")
 
                     r1, p1, o1 = self.__mann_whitney(a, b)
                     r2, p2, o2 = self.__t_test(a, b)
-                    d, rd = self.__cohens_d(a, b)
-                    # ICC
+                    d, rd = self.__cohens_d(a, b)  # between two areas
 
                     if isinstance(column_to_compare, int):
                         column_to_compare_name = _df1.columns[column_to_compare]
@@ -1171,34 +1166,30 @@ class Comparisons:
         :param save: bool - if true save the file after correction
         :return: void
         """
-
+        # print(self.updated_alpha)
         self.updated_alpha = self.__correction_param()
-
-        # iterates through the rows od the table and applies the correction
+        # print(self.updated_alpha)
         for i, row in self.stat_df_result.iterrows():
             if type(row["mann_whitney p_value"]) is not str and type(row["mann_whitney p_value"]) is not str and type(
                     self.updated_alpha) is not str:
                 if row["mann_whitney p_value"] < self.updated_alpha:
                     row[
-                        "mann_whitney message"] = f"p-value: {row['mann_whitney p_value']} - null hypothesis " \
-                                                  f"rejected, means are not statistically equal "
+                        "mann_whitney message"] = f"p-value: {row['mann_whitney p_value']} - null hypothesis rejected, means are not statistically equal"
                     row["mann_whitney outcome"] = 1
             if type(row["t_test p_value"]) is not str and type(row["t_test p_value"]) is not str and type(
                     self.updated_alpha) is not str:
                 if row["t_test p_value"] < self.updated_alpha:
                     row[
-                        "t_test message"] = f"p-value: {row['t_test p_value']} - null hypothesis rejected, the " \
-                                            f"datasets have a different distribution "
+                        "t_test message"] = f"p-value: {row['t_test p_value']} - null hypothesis rejected, the datasets have a different distribution"
                     row["t_test outcome"] = 1
             row.loc["alpha_correction"] = self.updated_alpha
             if len(row) == len(self.stat_df_result.loc[i, :]):
                 self.stat_df_result.loc[i, :] = row
             else:
                 LogWriter.log(
-                    f"     row{i} ERROR BONFERRONI CORRECTION, follows row from dataframe and row processed")
+                    f"     row{i} WRONG N ELEMENTS BONFERRONI CORRECTION, follows row from dataframe and row processed")
                 LogWriter.log(self.stat_df_result.loc[i, :])
                 LogWriter.log(row.tolist())
-
             if save:
                 self.stat_df_result.to_csv(self.data_path + f"{self.name}_bonferroni_corrected.csv")
 
@@ -1211,6 +1202,47 @@ class Comparisons:
         if filename is None:
             filename = f"{self.name}_stats.csv"
         self.stat_df_result.to_csv(self.data_path + filename)
+
+    @staticmethod
+    def __t_test(_a, _b):
+        # a, b = get_column(column_to_compare, df1, df2)
+
+        # togliere questo
+        if "NaN" in _a or "NaN" in _b:
+            print("could not compute")
+            return "result could not be computed", "NaN", "NaN"
+
+        t_stat, p_value = stats.ttest_ind(_a, _b)
+
+        if p_value > 0.05:
+            result = f"p-value: {p_value} - null hypothesis cannot be rejected, means are statistically equal"
+            outcome = 0
+        else:
+            result = f"p-value: {p_value} - null hypothesis rejected, means are not statistically equal"
+            outcome = 1
+
+        return result, p_value, outcome
+
+    @staticmethod
+    def __mann_whitney(_a, _b):
+        # a, b = get_column(column_to_compare, df1, df2)
+
+        if "NaN" in _a or "NaN" in _b:
+            return "result could not be computed", "NaN", "NaN"
+
+        # df1.to_csv("dataset_uniti_test.csv", index=False)
+
+        t_stat, p_value = stats.mannwhitneyu(_a, _b)
+
+        # p value is the likelihood that these are the same
+        if p_value > 0.05:
+            result = f"p-value: {p_value} - null hypothesis cannot be rejected, the datasets have the same distribution"
+            outcome = 0
+        else:
+            result = f"p-value: {p_value} - null hypothesis rejected, the datasets have a different distribution"
+            outcome = 1
+
+        return result, p_value, outcome
 
     def __save_dataframe(self, list_to_save):
         self.stat_df_result = pd.DataFrame()
@@ -1229,47 +1261,7 @@ class Comparisons:
                                                     "alpha_correction": self.updated_alpha
                                                     }, index=[item["name"]])])
 
-    @staticmethod
-    def __t_test(_a, _b):
-        # a, b = get_column(column_to_compare, df1, df2)
-
-        # togliere questo
-        if "NaN" in _a or "NaN" in _b:
-            print("could not compute")
-            return "result could not be computed", "NaN", "NaN"
-
-        t_stat, p_value = stats.ttest_ind(_a, _b)
-
-        if p_value > 0.05:
-            result = f"p-value: {p_value} - null hypothesis cannot be rejected"
-            outcome = 0
-        else:
-            result = f"p-value: {p_value} - null hypothesis rejected"
-            outcome = 1
-
-        return result, p_value, outcome
-
-    @staticmethod
-    def __mann_whitney(_a, _b):
-        # a, b = get_column(column_to_compare, df1, df2)
-
-        if "NaN" in _a or "NaN" in _b:
-            return "result could not be computed", "NaN", "NaN"
-
-        # df1.to_csv("dataset_uniti_test.csv", index=False)
-
-        # t_stat, p_value = stats.mannwhitneyu(_a, _b)
-        t_stat, p_value = stats.wilcoxon(_a, _b)
-
-        # p value is the likelihood that these are the same
-        if p_value > 0.05:
-            result = f"p-value: {p_value} - null hypothesis cannot be rejected"
-            outcome = 0
-        else:
-            result = f"p-value: {p_value} - null hypothesis rejected"
-            outcome = 1
-
-        return result, p_value, outcome
+        # df.to_csv(self.base_path + _name)  # , index=False
 
     @staticmethod
     def __cohens_d(_a, _b):
@@ -1289,28 +1281,6 @@ class Comparisons:
             string = "Large effect size"
 
         return d, string
-
-    @staticmethod
-    def __ICC(_a, _b):
-        """
-        Calculates the Intraclass Correlation Coefficient (ICC) between two methods
-        that are passed as pandas series.
-        """
-        # Calculate the mean of the two series
-        mean = (series1.mean() + series2.mean()) / 2
-
-        # Calculate the sum of squares between and within the two series
-        ss_between = ((series1.mean() - mean) ** 2 + (series2.mean() - mean) ** 2) * len(series1)
-        ss_within = ((series1 - series2) ** 2).sum()
-
-        # Calculate the total sum of squares
-        ss_total = ((series1 - mean) ** 2 + (series2 - mean) ** 2).sum()
-
-        # Calculate the ICC using the formula:
-        # ICC = (SS_between - SS_within) / (SS_total + SS_within)
-        icc = (ss_between - ss_within) / (ss_total + ss_within)
-
-        return icc
 
     @staticmethod
     def __violin_plot(_ax, _a, _b, title):
@@ -1374,61 +1344,6 @@ class Comparisons:
     #     return a, b
     def __correction_param(self):
         return self.alpha / len(self.stat_df_result)
-
-    def __match_dataframes(self, df1, df2):
-        LogWriter.log(f"    subject matching")
-        LogWriter.log(f"    selection of common subjects")
-
-        set1 = set(df1.loc[:, "ID"].tolist())
-        set2 = set(df2.loc[:, "ID"].tolist())
-
-        sd = set1.symmetric_difference(set2)
-        u = set1.intersection(set2)
-
-        if sd:
-            LogWriter.log(f"        elements to delete: {' '.join(sd)}")
-            for id_to_delete in sd:
-                if id_to_delete in set1:
-                    LogWriter.log(f"            element{id_to_delete} found in  {self.stat_df_1.name}")
-                    df1 = df1[df1["ID"] != id_to_delete]
-                    LogWriter.log(f"            dropped: {id_to_delete} from {self.stat_df_1.name}")
-                if id_to_delete in set2:
-                    LogWriter.log(f"            element{id_to_delete} found in  {self.stat_df_2.name}")
-                    df2 = df2[df2["ID"] != id_to_delete]
-                    LogWriter.log(f"            dropped: {id_to_delete} from {self.stat_df_2.name}")
-        else:
-            LogWriter.log(f"        no element to delete")
-
-        LogWriter.log(f"    subject matching...")
-
-        # sorts the dataframe by subject to make sure it has the same subjects
-        df1.sort_index(inplace=True)
-        df2.sort_index(inplace=True)
-
-        return df1, df2
-        # a = np.array(len(u))
-        # b = np.array(len(u))
-        #
-        # for i,subject in enumerate(u):
-        #
-        #     a[i] =
-        #     b[i] =
-        #
-        # return a, b
-    @staticmethod
-    def saphiro_test(data):
-
-        t_stat, p_value = shapiro(data)
-
-        #
-        if p_value > 0.05:
-            result = f"p-value: {p_value} "
-            outcome = 0
-        else:
-            result = f"p-value: {p_value} "
-            outcome = 1
-
-        return result, p_value, outcome
 
 
 class SummaryPlot:
@@ -1508,7 +1423,7 @@ class SummaryPlot:
         #     max_len = min(len(_df1.axes[1]), len(_df2.axes[1]))
         #     columns = range(2, max_len)
         not_done = []
-        for column_to_compare in self.columns_list:
+        for column_to_compare in columns:
             title = f"{data} {column_to_compare}"
             serieses = []
             # selects the column from all the dataframes and puts them in a list of series
