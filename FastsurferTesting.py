@@ -30,11 +30,12 @@ todo
         - fare selezionare colonne
         - fare create table
         - raggruppare in funzioni quello che si puo 
-        - ICC
+        - ICC non serve
         - controllare bland altmann
         - aggiungere shapiro wilk
         - aggiungere il ciclo for e rendere la variabile data una tupla per tutti i plot
         - rendere la variabile plot nei plots globale
+        - dividere tutti 
 
 """
 
@@ -329,6 +330,9 @@ class Stats:
             self.df_subj_obj = df_subj_obj
         else:
             raise "wrong datatype"
+
+        global plots_n
+        plots_n = 0
 
         LogWriter.log(f"inizializing Stats for {name}")
 
@@ -917,7 +921,7 @@ class Comparisons:
         # creation of the statistical test variables (can be deleted)
         # self.stat_test(columns_to_test)
 
-    def violin(self, data="aseg", columns=None, n_subplots=10, n_rows=2, c_to_exclude=None):
+    def violin(self, data=("aseg", "aparcL", "aparcR"), columns=None, n_subplots=10, n_rows=2, c_to_exclude=None):
 
         """
         :param data: str - table to select (aseg, aparcL, aparcR)
@@ -927,70 +931,61 @@ class Comparisons:
         :return: void
         """
         plots = 0
-
-        if data == "aseg":
-            _df1 = self.stat_df_1.df_stats_aseg[self.stat_df_1.df_stats_aseg["ID"].isin(self.subjects_list)]
-            _df2 = self.stat_df_2.df_stats_aseg[self.stat_df_2.df_stats_aseg["ID"].isin(self.subjects_list)]
-        elif data == "aparcR":
-            _df1 = self.stat_df_1.df_stats_aparcL[self.stat_df_1.df_stats_aparcL["ID"].isin(self.subjects_list)]
-            _df2 = self.stat_df_2.df_stats_aparcL[self.stat_df_2.df_stats_aparcL["ID"].isin(self.subjects_list)]
-        elif data == "aparcL":
-            _df1 = self.stat_df_1.df_stats_aparcR[self.stat_df_1.df_stats_aparcR["ID"].isin(self.subjects_list)]
-            _df2 = self.stat_df_2.df_stats_aparcR[self.stat_df_2.df_stats_aparcR["ID"].isin(self.subjects_list)]
-        else:
-            raise "violin: wrong selection parameter"
-
         LogWriter.log(f"Violin plot: {self.name}")
-        LogWriter.log(f"    length of the tables to compare {len(_df1)} {len(_df2)}")
 
-        # if not columns:
-        #     columns = set(_df1.columns.tolist()).intersection(set(_df2.columns.tolist()))
+        for d in data:
+            _df1, _df2 = self.get_data(d)
 
-        not_done = []
-        for column_to_compare in self.columns_list:
-            if column_to_compare not in c_to_exclude:
-                a = pd.to_numeric(_df1.loc[:, column_to_compare], errors='coerce')
-                b = pd.to_numeric(_df2.loc[:, column_to_compare], errors='coerce')
+            LogWriter.log(f"    length of the tables to compare {len(_df1)} {len(_df2)}")
 
-                if a.any() and b.any() and (a.notnull().all() and b.notnull().all()):
+            # if not columns:
+            #     columns = set(_df1.columns.tolist()).intersection(set(_df2.columns.tolist()))
 
-                    if not plots % n_subplots:
-                        if plots > 1:
-                            fig.savefig(f"{self.data_path}images/img_{data}_violin_{self.name}"
-                                        f"_{str(plots - n_subplots)}-{str(plots)}.png")  # save the figure to file
-                            # plt.close(fig)  # close the figure window
-                            # handles, labels = axs[1].get_legend_handles_labels()
-                            # fig.legend(handles, labels, loc=(0.95, 0.1), prop={'size': 30})F
-                        fig, axs = plt.subplots(n_rows, int(n_subplots / n_rows), figsize=(40, 20))
-                        axs = axs.ravel()
-                        plt.subplots_adjust(hspace=0.5)
-                        plt.subplots_adjust(wspace=0.2)
-                        # mng = plt.get_current_fig_manager()
-                        # mng.full_screen_toggle()
+            not_done = []
+            for column_to_compare in self.columns_list:
+                if column_to_compare not in c_to_exclude:
+                    a = pd.to_numeric(_df1.loc[:, column_to_compare], errors='coerce')
+                    b = pd.to_numeric(_df2.loc[:, column_to_compare], errors='coerce')
 
-                    # print(plots % N_SUBPLOTS)
-                    index = plots % n_subplots
-                    # print(index)
-                    self.__violin_plot(axs[index], a, b, title=a.name + "\n" + self.name)
-                    plots += 1
+                    if a.any() and b.any() and (a.notnull().all() and b.notnull().all()):
+
+                        if not plots % n_subplots:
+                            if plots > 1:
+                                fig.savefig(f"{self.data_path}images/img_{data}_violin_{self.name}"
+                                            f"_{str(plots - n_subplots)}-{str(plots)}.png")  # save the figure to file
+                                # plt.close(fig)  # close the figure window
+                                # handles, labels = axs[1].get_legend_handles_labels()
+                                # fig.legend(handles, labels, loc=(0.95, 0.1), prop={'size': 30})F
+                            fig, axs = plt.subplots(n_rows, int(n_subplots / n_rows), figsize=(40, 20))
+                            axs = axs.ravel()
+                            plt.subplots_adjust(hspace=0.5)
+                            plt.subplots_adjust(wspace=0.2)
+                            # mng = plt.get_current_fig_manager()
+                            # mng.full_screen_toggle()
+
+                        # print(plots % N_SUBPLOTS)
+                        index = plots % n_subplots
+                        # print(index)
+                        self.__violin_plot(axs[index], a, b, title=a.name + "\n" + self.name)
+                        plots += 1
+                    else:
+                        not_done.append(a.name)
+
+                    if plots >= self.max_plot:  # to avoid plotting too much
+                        break
                 else:
-                    not_done.append(a.name)
+                    LogWriter.log(f"excluded {column_to_compare}")
 
-                if plots >= self.max_plot:  # to avoid plotting too much
-                    break
-            else:
-                LogWriter.log(f"excluded {column_to_compare}")
-
-        if plots % n_subplots != 0:
-            fig.savefig(f"{self.data_path}images/img_{data}_violin_{self.name}"
-                        f"_{str(plots - (plots % n_subplots))}-{str(plots)}.png")  # save the figure to file
-        del axs, fig
+            if plots % n_subplots != 0:
+                fig.savefig(f"{self.data_path}images/img_{data}_violin_{self.name}"
+                            f"_{str(plots - (plots % n_subplots))}-{str(plots)}.png")  # save the figure to file
+            del axs, fig
 
         LogWriter.log(f"    plotted for {plots} variables out of {len(columns)}")
         not_done_str = ' | '.join(not_done)
         LogWriter.log(f"    skipped: {not_done_str}")
 
-    def bland_altmann(self, data="aseg", columns=None, n_subplots=4, n_rows=2, c_to_exclude=[]):
+    def bland_altmann(self, data=("aseg", "aparcL", "aparcR"), columns=None, n_subplots=4, n_rows=2, c_to_exclude=[]):
         """
         :param data: str - table to select (aseg, aparcL, aparcR)
         :param columns: list  of str- list of column names to print (default None: prints all)
@@ -999,7 +994,88 @@ class Comparisons:
         :return: void
         """
         plots = 0
+        LogWriter.log(f"Bland altmann plot: {self.name}")
+        for d in data:
+            _df1, _df2 = self.get_data(d)
 
+            # print(f"BA length of the tables to compare {len(_df1)} {len(_df2)}")
+            LogWriter.log(f"    BA length of the tables to compare {len(_df1)} {len(_df2)}")
+
+            # if c_to_exclude:
+            #     LogWriter.log(f"    excluding {len(c_to_exclude)} columns ")
+            #     for c in c_to_exclude:
+            #         if c in self.columns_list:
+            #             _df1 = _df1.drop(c, axis=1)
+            #             _df2 = _df2.drop(c, axis=1)
+            #             LogWriter.log(f"        {c} deleted")
+
+            # checks that the subjects to compare are the same
+            # if len(_df1) != len(_df2):
+            #     LogWriter.log(f"    correction, selection of common subjects")
+            #
+            #     set1 = set(_df1.loc[:, "ID"].tolist())
+            #     set2 = set(_df2.loc[:, "ID"].tolist())
+            #
+            #     sd = set1.symmetric_difference(set2)
+            #     LogWriter.log(f"        elements to delete: {' '.join(sd)}")
+            #     for id_to_delete in sd:
+            #         if id_to_delete in set1:
+            #             LogWriter.log(f"            element{id_to_delete} found in  {self.stat_df_1.name}")
+            #             _df1 = _df1[_df1["ID"] != id_to_delete]
+            #             LogWriter.log(f"            dropped: {id_to_delete} from {self.stat_df_1.name}")
+            #         else:
+            #             LogWriter.log(f"            element{id_to_delete} found in  {self.stat_df_2.name}")
+            #             _df2 = _df2[_df2["ID"] != id_to_delete]
+            #             LogWriter.log(f"            dropped: {id_to_delete} from {self.stat_df_2.name}")
+            # _df1, _df2 = self.__match_dataframes(_df1, _df2)
+            # create set of common fields, to be deleted
+
+            self.__match_dataframes(_df1, _df2)
+            # if not columns:
+            #     columns = set(_df1.columns.tolist()).intersection(set(_df2.columns.tolist()))  # set with columns
+
+            # iterates through the columns
+            not_done = []
+            for column_to_compare in self.columns_list:
+                if column_to_compare not in c_to_exclude:
+
+                    a = pd.to_numeric(_df1.loc[:, column_to_compare], errors='coerce')
+                    b = pd.to_numeric(_df2.loc[:, column_to_compare], errors='coerce')
+                    # a, b = get_column(column_to_compare, _df1_filtered, _df2_filtered)
+                    if a.any() and b.any() and (a.notnull().all() and b.notnull().all()):  # for all the fields with numbers
+
+                        if not plots % n_subplots:
+                            if plots > 1:
+                                fig.savefig(f"{self.data_path}images/img_{d}_ba_{self.name}"
+                                            f"_{str(plots - n_subplots)}-{str(plots)}.png")  # save the figure to file
+                                # handles, labels = ax.get_legend_handles_labels()
+                                # fig.legend(handles, labels, loc=(0.95, 0.1), prop={'size': 30})
+                            fig, axs = plt.subplots(n_rows, int(n_subplots / n_rows), figsize=(40, 20))
+                            axs = axs.ravel()
+                            plt.subplots_adjust(hspace=0.5)
+                            plt.subplots_adjust(wspace=0.2)
+
+                        index = plots % n_subplots
+
+                        self.__bland_altman_plot(axs[index], a, b, title=a.name + "\n" + self.name)
+                        plots += 1
+                    else:
+                        not_done.append(a.name)
+                    if plots >= 20:  # to avoid plotting too much
+                        break
+                else:
+                    LogWriter.log(f"excluded {column_to_compare}")
+
+            if plots % n_subplots != 0:
+                fig.savefig(f"{self.data_path}images/img_{d}_ba_{self.name}"
+                            f"_{str(plots - (plots % n_subplots))}-{str(plots)}.png")  # save the figure to file
+            del axs, fig
+
+        LogWriter.log(f"    plotted {plots} variables out of {len(columns)}")
+        not_done_str = ' | '.join(not_done)
+        LogWriter.log(f"    skipped: {not_done_str}")
+
+    def get_data(self, data):
         if data == "aseg":
             _df1 = self.stat_df_1.df_stats_aseg[self.stat_df_1.df_stats_aseg["ID"].isin(self.subjects_list)]
             _df2 = self.stat_df_2.df_stats_aseg[self.stat_df_2.df_stats_aseg["ID"].isin(self.subjects_list)]
@@ -1010,86 +1086,16 @@ class Comparisons:
             _df1 = self.stat_df_1.df_stats_aparcR[self.stat_df_1.df_stats_aparcR["ID"].isin(self.subjects_list)]
             _df2 = self.stat_df_2.df_stats_aparcR[self.stat_df_2.df_stats_aparcR["ID"].isin(self.subjects_list)]
         else:
-            raise "bland_altmann: wrong selection parameter"
+            raise "wrong selection parameter"
 
-        LogWriter.log(f"Bland altmann plot: {self.name}")
-        # print(f"BA length of the tables to compare {len(_df1)} {len(_df2)}")
-        LogWriter.log(f"    BA length of the tables to compare {len(_df1)} {len(_df2)}")
+        return _df1, _df2
+    def bland_altmann_column(self, data=("aseg", "aparcL", "aparcR"), columns=None, n_subplots=4, n_rows=2, c_to_exclude=[]):
+        LogWriter.log("BLAND ALTMANN")
+        for d in data:
+            df1, df2 = self.get_data(d)
 
-        # if c_to_exclude:
-        #     LogWriter.log(f"    excluding {len(c_to_exclude)} columns ")
-        #     for c in c_to_exclude:
-        #         if c in self.columns_list:
-        #             _df1 = _df1.drop(c, axis=1)
-        #             _df2 = _df2.drop(c, axis=1)
-        #             LogWriter.log(f"        {c} deleted")
-
-        # checks that the subjects to compare are the same
-        if len(_df1) != len(_df2):
-            LogWriter.log(f"    correction, selection of common subjects")
-
-            set1 = set(_df1.loc[:, "ID"].tolist())
-            set2 = set(_df2.loc[:, "ID"].tolist())
-
-            sd = set1.symmetric_difference(set2)
-            LogWriter.log(f"        elements to delete: {' '.join(sd)}")
-            for id_to_delete in sd:
-                if id_to_delete in set1:
-                    LogWriter.log(f"            element{id_to_delete} found in  {self.stat_df_1.name}")
-                    _df1 = _df1[_df1["ID"] != id_to_delete]
-                    LogWriter.log(f"            dropped: {id_to_delete} from {self.stat_df_1.name}")
-                else:
-                    LogWriter.log(f"            element{id_to_delete} found in  {self.stat_df_2.name}")
-                    _df2 = _df2[_df2["ID"] != id_to_delete]
-                    LogWriter.log(f"            dropped: {id_to_delete} from {self.stat_df_2.name}")
-        # _df1, _df2 = self.__match_dataframes(_df1, _df2)
-        # create set of common fields, to be deleted
-        # todo: usare la variabile della classe per le colonne
-        # if not columns:
-        #     columns = set(_df1.columns.tolist()).intersection(set(_df2.columns.tolist()))  # set with columns
-
-        # iterates through the columns
-        not_done = []
-        for column_to_compare in self.columns_list:
-            if column_to_compare not in c_to_exclude:
-
-                a = pd.to_numeric(_df1.loc[:, column_to_compare], errors='coerce')
-                b = pd.to_numeric(_df2.loc[:, column_to_compare], errors='coerce')
-                # a, b = get_column(column_to_compare, _df1_filtered, _df2_filtered)
-                if a.any() and b.any() and (a.notnull().all() and b.notnull().all()):  # for all the fields with numbers
-
-                    if not plots % n_subplots:
-                        if plots > 1:
-                            fig.savefig(f"{self.data_path}images/img_{data}_ba_{self.name}"
-                                        f"_{str(plots - n_subplots)}-{str(plots)}.png")  # save the figure to file
-                            # handles, labels = ax.get_legend_handles_labels()
-                            # fig.legend(handles, labels, loc=(0.95, 0.1), prop={'size': 30})
-                        fig, axs = plt.subplots(n_rows, int(n_subplots / n_rows), figsize=(40, 20))
-                        axs = axs.ravel()
-                        plt.subplots_adjust(hspace=0.5)
-                        plt.subplots_adjust(wspace=0.2)
-
-                    index = plots % n_subplots
-
-                    self.__bland_altman_plot(axs[index], a, b, title=a.name + "\n" + self.name)
-                    plots += 1
-                else:
-                    not_done.append(a.name)
-                if plots >= 20:  # to avoid plotting too much
-                    break
-            else:
-                LogWriter.log(f"excluded {column_to_compare}")
-
-        if plots % n_subplots != 0:
-            fig.savefig(f"{self.data_path}images/img_{data}_ba_{self.name}"
-                        f"_{str(plots - (plots % n_subplots))}-{str(plots)}.png")  # save the figure to file
-        del axs, fig
-
-        LogWriter.log(f"    plotted {plots} variables out of {len(columns)}")
-        not_done_str = ' | '.join(not_done)
-        LogWriter.log(f"    skipped: {not_done_str}")
-
-    def iterate_columns(self, function, plots, n_rows, n_subplots, plot_title, c_to_exclude, _df1, _df2):
+            self.iterate_columns(self.__bland_altman_plot)
+    def iterate_columns(self, function, n_rows, n_subplots, plot_title, c_to_exclude, _df1, _df2):
 
         not_done = []
         for column_to_compare in self.columns_list:
@@ -1453,7 +1459,7 @@ class Comparisons:
         df1.sort_index(inplace=True)
         df2.sort_index(inplace=True)
 
-        return df1, df2
+        # return df1, df2
         # a = np.array(len(u))
         # b = np.array(len(u))
         #
