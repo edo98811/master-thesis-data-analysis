@@ -85,7 +85,7 @@ class Table:
 
     """
 
-    def __init__(self, name, b_path, p_path, df_subj=None, d_folder="data_testing_ADNI/"):
+    def __init__(self, name, b_path, p_path="", df_subj=None, d_folder="data_testing_ADNI/"):
         """
         :param name: str - name of the object
         :param b_path: str - base path
@@ -101,8 +101,11 @@ class Table:
             self.create_table()
 
         self.subjects_list = self.df["ID"].tolist()
+        if p_path:
+            self.processed_path = p_path
+        else:
+            self.processed_path = ""
 
-        self.processed_path = p_path
         self.base_path = b_path
         self.data_path = b_path + d_folder
         self.name = name
@@ -132,15 +135,18 @@ class Table:
         #     subjs.add("sub-" + subj_path_filtered)
 
         # iterate though all the directories in the processed path
-        for root, dirs, files in os.walk(self.processed_path):
-            for dir in dirs:
-                if dir in self.subjects_list:
-                    # quando trova il soggetto nella cartella modifica il dataframe
-                    for i, subj_path_filtered in enumerate(self.df["ID"].tolist()):
-                        if dir == "sub-" + subj_path_filtered:
-                            self.df.loc[i, "processed"] = "yes"
-                            self.df.loc[i, "processed_path"] = root + "/" + dir
-                            break
+        if self.processed_path:
+            for root, dirs, files in os.walk(self.processed_path):
+                for dir in dirs:
+                    if dir in self.subjects_list:
+                        # quando trova il soggetto nella cartella modifica il dataframe
+                        for i, subj_path_filtered in enumerate(self.df["ID"].tolist()):
+                            if dir == "sub-" + subj_path_filtered:
+                                self.df.loc[i, "processed"] = "yes"
+                                self.df.loc[i, "processed_path"] = root + "/" + dir
+                                break
+        else:
+            LogWriter.log("processed path empty")
 
     def get_query(self, query, sub=False, only_processed=True):
         """
@@ -280,6 +286,7 @@ class Table:
                             break
 
         return df
+
     @staticmethod
     def add_sub(_list):
         """
@@ -291,7 +298,6 @@ class Table:
             l.append("sub-" + s)
         LogWriter.log("    add_sub: correctly added sub- to all the patients")
         return l
-
 
 
 class Stats:
@@ -917,7 +923,8 @@ class Comparisons:
         self.max_plot = max_plot
 
         self.stat_df_result = None
-
+        global plots
+        plots = 0
         # creation of the statistical test variables (can be deleted)
         # self.stat_test(columns_to_test)
 
@@ -930,7 +937,7 @@ class Comparisons:
         :param n_rows: int - n of rows in plot (default 2)
         :return: void
         """
-        plots = 0
+
         LogWriter.log(f"Violin plot: {self.name}")
 
         for d in data:
@@ -993,7 +1000,7 @@ class Comparisons:
         :param n_rows: int - n of rows in plot (default 2)
         :return: void
         """
-        plots = 0
+
         LogWriter.log(f"Bland altmann plot: {self.name}")
         for d in data:
             _df1, _df2 = self.get_data(d)
@@ -1042,7 +1049,8 @@ class Comparisons:
                     a = pd.to_numeric(_df1.loc[:, column_to_compare], errors='coerce')
                     b = pd.to_numeric(_df2.loc[:, column_to_compare], errors='coerce')
                     # a, b = get_column(column_to_compare, _df1_filtered, _df2_filtered)
-                    if a.any() and b.any() and (a.notnull().all() and b.notnull().all()):  # for all the fields with numbers
+                    if a.any() and b.any() and (
+                            a.notnull().all() and b.notnull().all()):  # for all the fields with numbers
 
                         if not plots % n_subplots:
                             if plots > 1:
@@ -1089,12 +1097,15 @@ class Comparisons:
             raise "wrong selection parameter"
 
         return _df1, _df2
-    def bland_altmann_column(self, data=("aseg", "aparcL", "aparcR"), columns=None, n_subplots=4, n_rows=2, c_to_exclude=[]):
+
+    def bland_altmann_column(self, data=("aseg", "aparcL", "aparcR"), columns=None, n_subplots=4, n_rows=2,
+                             c_to_exclude=[]):
         LogWriter.log("BLAND ALTMANN")
         for d in data:
             df1, df2 = self.get_data(d)
 
             self.iterate_columns(self.__bland_altman_plot)
+
     def iterate_columns(self, function, n_rows, n_subplots, plot_title, c_to_exclude, _df1, _df2):
 
         not_done = []
@@ -1344,27 +1355,27 @@ class Comparisons:
 
         return d, string
 
-    @staticmethod
-    def __ICC(_a, _b):
-        """
-        Calculates the Intraclass Correlation Coefficient (ICC) between two methods
-        that are passed as pandas series.
-        """
-        # Calculate the mean of the two series
-        mean = (series1.mean() + series2.mean()) / 2
-
-        # Calculate the sum of squares between and within the two series
-        ss_between = ((series1.mean() - mean) ** 2 + (series2.mean() - mean) ** 2) * len(series1)
-        ss_within = ((series1 - series2) ** 2).sum()
-
-        # Calculate the total sum of squares
-        ss_total = ((series1 - mean) ** 2 + (series2 - mean) ** 2).sum()
-
-        # Calculate the ICC using the formula:
-        # ICC = (SS_between - SS_within) / (SS_total + SS_within)
-        icc = (ss_between - ss_within) / (ss_total + ss_within)
-
-        return icc
+    # @staticmethod
+    # def __ICC(_a, _b):
+    #     """
+    #     Calculates the Intraclass Correlation Coefficient (ICC) between two methods
+    #     that are passed as pandas series.
+    #     """
+    #     # Calculate the mean of the two series
+    #     mean = (series1.mean() + series2.mean()) / 2
+    #
+    #     # Calculate the sum of squares between and within the two series
+    #     ss_between = ((series1.mean() - mean) ** 2 + (series2.mean() - mean) ** 2) * len(series1)
+    #     ss_within = ((series1 - series2) ** 2).sum()
+    #
+    #     # Calculate the total sum of squares
+    #     ss_total = ((series1 - mean) ** 2 + (series2 - mean) ** 2).sum()
+    #
+    #     # Calculate the ICC using the formula:
+    #     # ICC = (SS_between - SS_within) / (SS_total + SS_within)
+    #     icc = (ss_between - ss_within) / (ss_total + ss_within)
+    #
+    #     return icc
 
     @staticmethod
     def __violin_plot(_ax, _a, _b, title):
@@ -1469,6 +1480,7 @@ class Comparisons:
         #     b[i] =
         #
         # return a, b
+
     @staticmethod
     def saphiro_test(data):
 
@@ -1517,6 +1529,9 @@ class SummaryPlot:
         self.name = name
         self.max_plot = max_plot
 
+        global plots
+        plots = 0
+
     # in teoria dovrei filtrarla prima
     def comparison_plot(self, data=("aseg", "aparcL", "aparcR"), columns=None, n_subplots=4, n_rows=2):
         """
@@ -1526,7 +1541,7 @@ class SummaryPlot:
         :param n_rows:
         :return:
         """
-        plots = 0
+
         df_list = []
         subj_lists = []
         # saves the dataframes from the stats object
@@ -1644,6 +1659,176 @@ class SummaryPlot:
         max_ = 0
         for series, age, legend_entry in zip(data, ages, legend):
             ax.scatter(age, series.tolist(), label=legend_entry)  # mettere il nome della serie e le cose qui
+            LogWriter.log(series.name)
+            if series.max() > max_:
+                max_ = series.max()
+
+        # Add a legend and axis labels
+        ax.axis(ymin=0, ymax=max_)
+        ax.legend()
+        ax.set_xlabel('Age')
+        ax.set_ylabel('Data')
+        ax.ticklabel_format(style='sci', axis='y', scilimits=(0, 0), useMathText=True)
+        ax.set_title(title)
+
+    def comparison_plot_line(self, data=("aseg", "aparcL", "aparcR"), columns=None, n_subplots=4, n_rows=2):
+        """
+        :param columns: list of str - list of column names to print (default None: prints all)
+        :param data: str - type of input (aseg, aparcL or aparcR)
+        :param n_subplots:
+        :param n_rows:
+        :return:
+        """
+        df_list = []
+        subj_lists = []
+        # saves the dataframes from the stats object
+        LogWriter.log(f"\n")
+        LogWriter.log(f" scatter plot:{self.name}...")
+
+        for d in data:
+            plots = 0
+            if d == "aseg":
+                for table in self.df_list_obj:
+                    df_list.append(table.df_stats_aseg)
+                    subj_lists.append(table.df_stats_aseg["ID"].tolist())
+            elif d == "aparcR":
+                for table in self.df_list_obj:
+                    df_list.append(table.df_stats_aparcL)
+                    subj_lists.append(table.df_stats_aparcL["ID"].tolist())
+            elif d == "aparcL":
+                for table in self.df_list_obj:
+                    df_list.append(table.df_stats_aparcR)  # table
+                    subj_lists.append(table.df_stats_aparcR["ID"].tolist())
+
+            # creates the age series, to move up
+            ages = []
+            legend = []
+
+            # creates ages list with all the subjects in the lists
+            for table, subj_list in zip(self.df_list_obj, subj_lists):
+                s = list(Stats.delete_sub(subj_list))
+                t = table.df_subj[table.df_subj['ID'].isin(s)]
+                a = t.loc[:, "age"].tolist()
+                ages.append(pd.to_numeric(a, errors='coerce'))
+
+                # legend.append(table.name)
+            del a, t, s
+
+            # creates column list if it doesnt exist
+            if not columns: columns = df_list[0].columns
+            # add this method for creating the column list
+            # self.columns_list = set(self.stat_df_1.df_subj.columns.tolist()).intersection(
+            #     set(self.stat_df_2.df_subj.columns.tolist()))
+            # columns = columns.intersection(_df2.columns).tolist()
+            # if not columns:
+            #     max_len = min(len(_df1.axes[1]), len(_df2.axes[1]))
+            #     columns = range(2, max_len)
+            not_done = []
+            # idea: for each column you create another dataset with only the average and not the single subjects
+            data_points_list =[]
+
+            for table, age_list in zip(df_list, ages):
+                # check if the indexes of the series are actually the subjects data
+                full_table = pd.concat([table, ages], axis=1)
+                age_groups = np.arange(55, 100, 5)
+
+                # Create a new DataFrame to store the results
+                full_table['AgeGroup'] = pd.cut(full_table['Age'], bins=age_groups, labels=age_groups)
+                data_points = full_table.groupby('AgeGroup')[full_table.mean()]
+                data_points.index = age_groups
+
+                print(data_points.head())
+                data_points_list.append(data_points)
+
+                # add the lists of the confidence intervals, i need to calculate them like this and when i cut the dataframe, and sae themmaybe in ot
+                # other two dataframes then i need to add them into the original dataframes
+                # i could also do it after when i select the data, i mean the dataframes are still saved
+                # se = np.std(y) / np.sqrt(len(y))
+                # ci = 1.96 * se
+                # data_points_cin = series + ci
+                # data_points_cip = series - ci
+
+
+                # idea: copiare cme ho fatto su comparisons
+            for column_to_compare in self.columns_list:
+                title = f"{d} {column_to_compare}"
+                serieses = []
+                # selects the column from all the dataframes and puts them in a list of series
+                for i, df in enumerate(data_points_list):
+
+                    # creation of the serieses to plot and ages
+                    series = pd.to_numeric(df[column_to_compare], errors='coerce')
+                    series.rename(f"{d}_{self.df_list_obj[i].name}_{column_to_compare}")
+                    legend.append(f"{d}_{self.df_list_obj[i].name}_{column_to_compare}")
+                    LogWriter.log(f"{d}_{self.df_list_obj[i].name}_{column_to_compare}. "
+                                  f"series name {series.name}")
+                    LogWriter.log(f"{legend[-1]}")
+
+
+
+
+                    if series.any() and series.notnull().all():
+                        serieses.append(series)
+                        # print(f"ages {len(ages[i])}  - {type(ages[i])} {ages[i]}")
+                        # print(f" series {len(serieses[i])} - {type(serieses[i].tolist())} {serieses[i].tolist()}")
+                    else:
+                        # print(series)
+                        LogWriter.log(f"    scatter not possible for column {column_to_compare}")
+                        print(f"scatter not possible for column {column_to_compare}")
+                        not_done.append(column_to_compare)
+                        break
+                if not len(serieses):
+                    continue
+
+                # a, b = get_column(column_to_compare, _df1_filtered, _df2_filtered)
+                # if it needs to create a new figure it creates it
+                if not plots % n_subplots:
+                    if plots > 1:
+                        fig.savefig(f"{self.data_path}images/img_{d}_scatter_{self.name}"
+                                    f"_{str(plots - n_subplots)}-{str(plots)}.png")  # save the figure to file
+                        # plt.close(fig)  # close the figure window
+                        # handles, labels = axs[1].get_legend_handles_labels()
+                        # fig.legend(handles, labels, loc=(0.95, 0.1), prop={'size': 30})
+                    fig, axs = plt.subplots(n_rows, int(n_subplots / n_rows), figsize=(40, 20))
+                    axs = axs.ravel()
+                    plt.subplots_adjust(hspace=0.5)
+                    plt.subplots_adjust(wspace=0.2)
+                    # mng = plt.get_current_fig_manager()
+                    # mng.full_screen_toggle()
+
+                # print(plots % N_SUBPLOTS)
+
+                """
+                now i have two series
+                serieses: series of data
+                ages: series of ages 
+
+                i can do the scatter plots of this
+                """
+                index = plots % n_subplots
+                # print(index)
+                self.__line_plot(axs[index], data_points, age_groups, title, legend)
+                plots += 1
+
+                if plots >= self.max_plot:  # to avoid plotting too much
+                    break
+
+            if plots % n_subplots != 0:
+                fig.savefig(f"{self.data_path}images/img_{d}_scatter_{self.name}"
+                            f"_{str(plots - n_subplots)}-{str(plots)}.png")  # save the figure to file
+            del axs, fig
+
+            LogWriter.log(f"    plotted {plots} variables out of {len(columns)}")
+            not_done_str = ' | '.join(not_done)
+            LogWriter.log(f"    skipped: {not_done_str}")
+
+
+  def __line_plot(ax, data, ages, title, legend):
+        max_ = 0
+
+        LogWriter.log("line plot")
+        for series, age, legend_entry in zip(data, ages, legend):
+            ax.plot(age, series.tolist(), label=legend_entry)  # mettere il nome della serie e le cose qui
             LogWriter.log(series.name)
             if series.max() > max_:
                 max_ = series.max()

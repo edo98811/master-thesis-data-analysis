@@ -12,8 +12,8 @@ def main():
     ft.LogWriter.clearlog()
 
 
-    table = ft.Table("ADNI_TABLE", BASE_PATH, OASIS_PATH,
-                     pd.read_csv(BASE_PATH + "/text_and_csv_files/ADNI_table.csv"))
+    table = ft.Table("ADNI_TABLE", BASE_PATH,
+                     pd.read_csv(BASE_PATH + "/text_and_csv_files/ADNI_table.csv"), p_path=OASIS_PATH)
 
 
     table.save_csv("UPDATED_ADNI.csv")
