@@ -1,4 +1,4 @@
-import FastsurferTesting as ft
+import FastsurferTesting_pc as ft
 import pandas as pd
 import numpy as np
 

@@ -1,5 +1,5 @@
 import os
-from FastsurferTesting import Table, Stats, LogWriter
+from FastsurferTesting_pc import Table, Stats, LogWriter
 import pandas as pd
 import matplotlib.pyplot as plt
 

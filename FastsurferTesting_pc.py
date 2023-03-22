@@ -8,7 +8,7 @@ import data_manipulation as dm
 import numpy as np
 from copy import deepcopy
 import pingouin as pg
-from statsmodels.stats import shapiro
+#from statsmodels.stats import shapiro
 # import dropboxAPI
 import subprocess
 
@@ -505,7 +505,7 @@ class Stats:
             # print(f"no stat file: {stats_filename} found in paths on table")
             LogWriter.log(f"no stat file: {stats_filename} found in paths on table")
 
-    def save_stats_files(self, which=(True, True, True), names=("aseg.csv", "aseg_right.csv", "aseg_left.csv")):
+    def save_stats_files(self, which=(True, True, True), names=("aseg.csv", "aparcDKT_right.csv", "aparcDKT_left.csv")):
         """
         :param which: tuple of bool - which files to save (default: True, True, True)
         :param names: tuple - names of the files (default: "aseg.csv", "aseg_right.csv", "aseg_left.csv")
@@ -928,7 +928,7 @@ class Comparisons:
         # creation of the statistical test variables (can be deleted)
         # self.stat_test(columns_to_test)
 
-    def violin(self, data=("aseg", "aparcL", "aparcR"), columns=None, n_subplots=10, n_rows=2, c_to_exclude=None):
+    def violin(self, data=("aseg", "aparcL", "aparcR"), columns=None, n_subplots=10, n_rows=2, c_to_exclude=[]):
 
         """
         :param data: str - table to select (aseg, aparcL, aparcR)
@@ -958,7 +958,7 @@ class Comparisons:
 
                         if not plots % n_subplots:
                             if plots > 1:
-                                fig.savefig(f"{self.data_path}images/img_{data}_violin_{self.name}"
+                                fig.savefig(f"{self.data_path}images\\img_{data}_violin_{self.name}"
                                             f"_{str(plots - n_subplots)}-{str(plots)}.png")  # save the figure to file
                                 # plt.close(fig)  # close the figure window
                                 # handles, labels = axs[1].get_legend_handles_labels()
@@ -984,7 +984,7 @@ class Comparisons:
                     LogWriter.log(f"excluded {column_to_compare}")
 
             if plots % n_subplots != 0:
-                fig.savefig(f"{self.data_path}images/img_{data}_violin_{self.name}"
+                fig.savefig(f"{self.data_path}images\\img_{data}_violin_{self.name}"
                             f"_{str(plots - (plots % n_subplots))}-{str(plots)}.png")  # save the figure to file
             del axs, fig
 
@@ -1054,7 +1054,7 @@ class Comparisons:
 
                         if not plots % n_subplots:
                             if plots > 1:
-                                fig.savefig(f"{self.data_path}images/img_{d}_ba_{self.name}"
+                                fig.savefig(f"{self.data_path}images\\img_{d}_ba_{self.name}"
                                             f"_{str(plots - n_subplots)}-{str(plots)}.png")  # save the figure to file
                                 # handles, labels = ax.get_legend_handles_labels()
                                 # fig.legend(handles, labels, loc=(0.95, 0.1), prop={'size': 30})
@@ -1075,7 +1075,7 @@ class Comparisons:
                     LogWriter.log(f"excluded {column_to_compare}")
 
             if plots % n_subplots != 0:
-                fig.savefig(f"{self.data_path}images/img_{d}_ba_{self.name}"
+                fig.savefig(f"{self.data_path}images\\img_{d}_ba_{self.name}"
                             f"_{str(plots - (plots % n_subplots))}-{str(plots)}.png")  # save the figure to file
             del axs, fig
 
@@ -1484,7 +1484,7 @@ class Comparisons:
     @staticmethod
     def saphiro_test(data):
 
-        t_stat, p_value = shapiro(data)
+        #t_stat, p_value = shapiro(data)
 
         #
         if p_value > 0.05:
@@ -1528,12 +1528,13 @@ class SummaryPlot:
 
         self.name = name
         self.max_plot = max_plot
+        # self.columns_list =
 
         global plots
         plots = 0
 
     # in teoria dovrei filtrarla prima
-    def comparison_plot(self, data=("aseg", "aparcL", "aparcR"), columns=None, n_subplots=4, n_rows=2):
+    def comparison_plot(self, data=("aseg", "aparcL", "aparcR"), c_to_exclude=["ID"], n_subplots=4, n_rows=2):
         """
         :param columns: list of str - list of column names to print (default None: prints all)
         :param data: str - type of input (aseg, aparcL or aparcR)
@@ -1571,73 +1572,72 @@ class SummaryPlot:
                 ages.append(pd.to_numeric(a, errors='coerce'))
                 # legend.append(table.name)
             del a, t, s
-            if not columns:
-                columns = df_list[0].columns
+            columns = df_list[0].columns
             # columns = columns.intersection(_df2.columns).tolist()
             # if not columns:
             #     max_len = min(len(_df1.axes[1]), len(_df2.axes[1]))
             #     columns = range(2, max_len)
             not_done = []
-            for column_to_compare in self.columns_list:
-                title = f"{d} {column_to_compare}"
-                serieses = []
-                # selects the column from all the dataframes and puts them in a list of series
-                for i, df in enumerate(df_list):
-                    series = pd.to_numeric(df[column_to_compare], errors='coerce')
-                    series.rename(f"{d}_{self.df_list_obj[i].name}_{column_to_compare}")
-                    legend.append(f"{d}_{self.df_list_obj[i].name}_{column_to_compare}")
-                    LogWriter.log(f"{d}_{self.df_list_obj[i].name}_{column_to_compare}. "
-                                  f"series name {series.name}")
-                    LogWriter.log(f"{legend[-1]}")
+            for column_to_compare in columns:
+                if column_to_compare not in c_to_exclude:
+                    title = f"{d} {column_to_compare}"
+                    serieses = []
+                    # selects the column from all the dataframes and puts them in a list of series
+                    for i, df in enumerate(df_list):
+                        series = pd.to_numeric(df[column_to_compare], errors='coerce')
+                        series.rename(f"{d}_{self.df_list_obj[i].name}_{column_to_compare}")
+                        legend.append(f"{d}_{self.df_list_obj[i].name}_{column_to_compare}")
+                        LogWriter.log(f"{d}_{self.df_list_obj[i].name}_{column_to_compare}. "
+                                      f"series name {series.name}")
+                        LogWriter.log(f"{legend[-1]}")
 
-                    if series.any() and series.notnull().all():
-                        serieses.append(series)
-                        # print(f"ages {len(ages[i])}  - {type(ages[i])} {ages[i]}")
-                        # print(f" series {len(serieses[i])} - {type(serieses[i].tolist())} {serieses[i].tolist()}")
-                    else:
-                        # print(series)
-                        LogWriter.log(f"    scatter not possible for column {column_to_compare}")
-                        print(f"scatter not possible for column {column_to_compare}")
-                        not_done.append(column_to_compare)
+                        if series.any() and series.notnull().all():
+                            serieses.append(series)
+                            # print(f"ages {len(ages[i])}  - {type(ages[i])} {ages[i]}")
+                            # print(f" series {len(serieses[i])} - {type(serieses[i].tolist())} {serieses[i].tolist()}")
+                        else:
+                            # print(series)
+                            LogWriter.log(f"    comparison not possible for column {column_to_compare}")
+                            not_done.append(column_to_compare)
+                            break
+                    if not len(serieses):
+                        continue
+
+                    # a, b = get_column(column_to_compare, _df1_filtered, _df2_filtered)
+                    # if it needs to create a new figure it creates it
+                    if not plots % n_subplots:
+                        if plots > 1:
+                            fig.savefig(f"{self.data_path}images\\img_{d}_scatter_{self.name}"
+                                        f"_{str(plots - n_subplots)}-{str(plots)}.png")  # save the figure to file
+                            # plt.close(fig)  # close the figure window
+                            # handles, labels = axs[1].get_legend_handles_labels()
+                            # fig.legend(handles, labels, loc=(0.95, 0.1), prop={'size': 30})
+                        fig, axs = plt.subplots(n_rows, int(n_subplots / n_rows), figsize=(40, 20))
+                        axs = axs.ravel()
+                        plt.subplots_adjust(hspace=0.5)
+                        plt.subplots_adjust(wspace=0.2)
+                        # mng = plt.get_current_fig_manager()
+                        # mng.full_screen_toggle()
+
+                    # print(plots % N_SUBPLOTS)
+
+                    """
+                    now i have two series
+                    serieses: series of data
+                    ages: series of ages 
+                    
+                    i can do the scatter plots of this
+                    """
+                    index = plots % n_subplots
+                    # print(index)
+                    self.__scatter_plot(axs[index], serieses, ages, title, legend)
+                    plots += 1
+
+                    if plots >= self.max_plot:  # to avoid plotting too much
                         break
-                if not len(serieses):
-                    continue
-
-                # a, b = get_column(column_to_compare, _df1_filtered, _df2_filtered)
-                # if it needs to create a new figure it creates it
-                if not plots % n_subplots:
-                    if plots > 1:
-                        fig.savefig(f"{self.data_path}images/img_{d}_scatter_{self.name}"
-                                    f"_{str(plots - n_subplots)}-{str(plots)}.png")  # save the figure to file
-                        # plt.close(fig)  # close the figure window
-                        # handles, labels = axs[1].get_legend_handles_labels()
-                        # fig.legend(handles, labels, loc=(0.95, 0.1), prop={'size': 30})
-                    fig, axs = plt.subplots(n_rows, int(n_subplots / n_rows), figsize=(40, 20))
-                    axs = axs.ravel()
-                    plt.subplots_adjust(hspace=0.5)
-                    plt.subplots_adjust(wspace=0.2)
-                    # mng = plt.get_current_fig_manager()
-                    # mng.full_screen_toggle()
-
-                # print(plots % N_SUBPLOTS)
-
-                """
-                now i have two series
-                serieses: series of data
-                ages: series of ages 
-                
-                i can do the scatter plots of this
-                """
-                index = plots % n_subplots
-                # print(index)
-                self.__scatter_plot(axs[index], serieses, ages, title, legend)
-                plots += 1
-
-                if plots >= self.max_plot:  # to avoid plotting too much
-                    break
 
             if plots % n_subplots != 0:
-                fig.savefig(f"{self.data_path}images/img_{d}_scatter_{self.name}"
+                fig.savefig(f"{self.data_path}images\\img_{d}_scatter_{self.name}"
                             f"_{str(plots - n_subplots)}-{str(plots)}.png")  # save the figure to file
         del axs, fig
 
@@ -1645,7 +1645,7 @@ class SummaryPlot:
         not_done_str = ' | '.join(not_done)
         LogWriter.log(f"    skipped: {not_done_str}")
         # fig.savefig(
-        #     self.data_path + "images/img_{data_scatter_" + self.name + " - " + self.name + "_" + str(
+        #     self.data_path + "images\\img_{data_scatter_" + self.name + " - " + self.name + "_" + str(
         #         plots) + ".png")  # save the figure to file
         """
         idea
@@ -1671,7 +1671,7 @@ class SummaryPlot:
         ax.ticklabel_format(style='sci', axis='y', scilimits=(0, 0), useMathText=True)
         ax.set_title(title)
 
-    def comparison_plot_line(self, data=("aseg", "aparcL", "aparcR"), columns=None, n_subplots=4, n_rows=2):
+    def comparison_plot_line(self, data=("aseg", "aparcL", "aparcR"), c_to_exclude=["ID"], n_subplots=4, n_rows=2):
         """
         :param columns: list of str - list of column names to print (default None: prints all)
         :param data: str - type of input (aseg, aparcL or aparcR)
@@ -1701,21 +1701,17 @@ class SummaryPlot:
                     subj_lists.append(table.df_stats_aparcR["ID"].tolist())
 
             # creates the age series, to move up
-            ages = []
             legend = []
-
             # creates ages list with all the subjects in the lists
-            for table, subj_list in zip(self.df_list_obj, subj_lists):
-                s = list(Stats.delete_sub(subj_list))
-                t = table.df_subj[table.df_subj['ID'].isin(s)]
-                a = t.loc[:, "age"].tolist()
-                ages.append(pd.to_numeric(a, errors='coerce'))
+            #for table, subj_list in zip(self.df_list_obj, subj_lists):
+
+
 
                 # legend.append(table.name)
-            del a, t, s
+
 
             # creates column list if it doesnt exist
-            if not columns: columns = df_list[0].columns
+            columns = df_list[0].columns
             # add this method for creating the column list
             # self.columns_list = set(self.stat_df_1.df_subj.columns.tolist()).intersection(
             #     set(self.stat_df_2.df_subj.columns.tolist()))
@@ -1727,19 +1723,28 @@ class SummaryPlot:
             # idea: for each column you create another dataset with only the average and not the single subjects
             data_points_list =[]
 
-            for table, age_list in zip(df_list, ages):
+            for table, subj_list, df_element in zip(self.df_list_obj, subj_lists, df_list):
+                df_element = df_element.set_index("ID")
+                s = list(Stats.delete_sub(subj_list))
+                t = table.df_subj[table.df_subj['ID'].isin(s)]
+                ages = t.loc[:, "age"]
+                ages.index = subj_list
+                # ages.append(pd.to_numeric(a, errors='coerce'))
+
                 # check if the indexes of the series are actually the subjects data
-                full_table = pd.concat([table, ages], axis=1)
-                age_groups = np.arange(55, 100, 5)
+                full_table = pd.concat([df_element, ages], axis=1)
+                age_groups = np.arange(55, 90, 5)
 
                 # Create a new DataFrame to store the results
-                full_table['AgeGroup'] = pd.cut(full_table['Age'], bins=age_groups, labels=age_groups)
-                data_points = full_table.groupby('AgeGroup')[full_table.mean()]
-                data_points.index = age_groups
+                full_table['AgeGroup'] = pd.cut(full_table['age'], bins=age_groups, labels=age_groups[:-1])
+                # data_points = full_table.groupby('AgeGroup')[full_table.mean()]
+                data_points = full_table.groupby('AgeGroup').mean()
+                data_points.index = age_groups[:-1]
 
-                print(data_points.head())
+                #print(data_points.head())
                 data_points_list.append(data_points)
 
+                del t, s
                 # add the lists of the confidence intervals, i need to calculate them like this and when i cut the dataframe, and sae themmaybe in ot
                 # other two dataframes then i need to add them into the original dataframes
                 # i could also do it after when i select the data, i mean the dataframes are still saved
@@ -1750,71 +1755,70 @@ class SummaryPlot:
 
 
                 # idea: copiare cme ho fatto su comparisons
-            for column_to_compare in self.columns_list:
-                title = f"{d} {column_to_compare}"
-                serieses = []
-                # selects the column from all the dataframes and puts them in a list of series
-                for i, df in enumerate(data_points_list):
+            for column_to_compare in columns:
+                if column_to_compare not in c_to_exclude:
+                    LogWriter.log(f"doing column{column_to_compare}")
+                    title = f"{d} {column_to_compare}"
+                    serieses = []
+                    # selects the column from all the dataframes and puts them in a list of series
+                    for i, df in enumerate(data_points_list):
 
-                    # creation of the serieses to plot and ages
-                    series = pd.to_numeric(df[column_to_compare], errors='coerce')
-                    series.rename(f"{d}_{self.df_list_obj[i].name}_{column_to_compare}")
-                    legend.append(f"{d}_{self.df_list_obj[i].name}_{column_to_compare}")
-                    LogWriter.log(f"{d}_{self.df_list_obj[i].name}_{column_to_compare}. "
-                                  f"series name {series.name}")
-                    LogWriter.log(f"{legend[-1]}")
+                        # creation of the serieses to plot and ages
+                        series = pd.to_numeric(df[column_to_compare], errors='coerce')
+                        series.rename(f"{d}_{self.df_list_obj[i].name}_{column_to_compare}")
+                        legend.append(f"{d}_{self.df_list_obj[i].name}_{column_to_compare}")
+                        LogWriter.log(f"{d}_{self.df_list_obj[i].name}_{column_to_compare}. "
+                                      f"series name {series.name}")
+                        LogWriter.log(f"{legend[-1]}")
 
+                        if series.any() and series.notnull().all():
+                            serieses.append(series)
+                            # print(f"ages {len(ages[i])}  - {type(ages[i])} {ages[i]}")
+                            # print(f" series {len(serieses[i])} - {type(serieses[i].tolist())} {serieses[i].tolist()}")
+                        else:
+                            # print(series)
+                            LogWriter.log(f"    scatter not possible for column {column_to_compare}")
+                            print(f"scatter not possible for column {column_to_compare}")
+                            not_done.append(column_to_compare)
+                            break
+                    if not len(serieses):
+                        continue
 
+                    # a, b = get_column(column_to_compare, _df1_filtered, _df2_filtered)
+                    # if it needs to create a new figure it creates it
+                    if not plots % n_subplots:
+                        if plots > 1:
+                            fig.savefig(f"{self.data_path}images\\img_{d}_scatter_{self.name}"
+                                        f"_{str(plots - n_subplots)}-{str(plots)}.png")  # save the figure to file
+                            # plt.close(fig)  # close the figure window
+                            # handles, labels = axs[1].get_legend_handles_labels()
+                            # fig.legend(handles, labels, loc=(0.95, 0.1), prop={'size': 30})
+                        fig, axs = plt.subplots(n_rows, int(n_subplots / n_rows), figsize=(40, 20))
+                        axs = axs.ravel()
+                        plt.subplots_adjust(hspace=0.5)
+                        plt.subplots_adjust(wspace=0.2)
+                        # mng = plt.get_current_fig_manager()
+                        # mng.full_screen_toggle()
 
+                    # print(plots % N_SUBPLOTS)
 
-                    if series.any() and series.notnull().all():
-                        serieses.append(series)
-                        # print(f"ages {len(ages[i])}  - {type(ages[i])} {ages[i]}")
-                        # print(f" series {len(serieses[i])} - {type(serieses[i].tolist())} {serieses[i].tolist()}")
-                    else:
-                        # print(series)
-                        LogWriter.log(f"    scatter not possible for column {column_to_compare}")
-                        print(f"scatter not possible for column {column_to_compare}")
-                        not_done.append(column_to_compare)
+                    """
+                    now i have two series
+                    serieses: series of data
+                    ages: series of ages 
+    
+                    i can do the scatter plots of this
+                    """
+                    index = plots % n_subplots
+                    # print(index)
+                    self.__line_plot(axs[index], serieses, age_groups[:-1], title, legend)
+                    plots += 1
+
+                    if plots >= self.max_plot:  # to avoid plotting too much
                         break
-                if not len(serieses):
-                    continue
-
-                # a, b = get_column(column_to_compare, _df1_filtered, _df2_filtered)
-                # if it needs to create a new figure it creates it
-                if not plots % n_subplots:
-                    if plots > 1:
-                        fig.savefig(f"{self.data_path}images/img_{d}_scatter_{self.name}"
-                                    f"_{str(plots - n_subplots)}-{str(plots)}.png")  # save the figure to file
-                        # plt.close(fig)  # close the figure window
-                        # handles, labels = axs[1].get_legend_handles_labels()
-                        # fig.legend(handles, labels, loc=(0.95, 0.1), prop={'size': 30})
-                    fig, axs = plt.subplots(n_rows, int(n_subplots / n_rows), figsize=(40, 20))
-                    axs = axs.ravel()
-                    plt.subplots_adjust(hspace=0.5)
-                    plt.subplots_adjust(wspace=0.2)
-                    # mng = plt.get_current_fig_manager()
-                    # mng.full_screen_toggle()
-
-                # print(plots % N_SUBPLOTS)
-
-                """
-                now i have two series
-                serieses: series of data
-                ages: series of ages 
-
-                i can do the scatter plots of this
-                """
-                index = plots % n_subplots
-                # print(index)
-                self.__line_plot(axs[index], data_points, age_groups, title, legend)
-                plots += 1
-
-                if plots >= self.max_plot:  # to avoid plotting too much
-                    break
 
             if plots % n_subplots != 0:
-                fig.savefig(f"{self.data_path}images/img_{d}_scatter_{self.name}"
+                fig.savefig(f"{self.data_path}images\\img_{d}_scatter_{self.name}"
                             f"_{str(plots - n_subplots)}-{str(plots)}.png")  # save the figure to file
             del axs, fig
 
@@ -1822,13 +1826,13 @@ class SummaryPlot:
             not_done_str = ' | '.join(not_done)
             LogWriter.log(f"    skipped: {not_done_str}")
 
-
-  def __line_plot(ax, data, ages, title, legend):
+    @staticmethod
+    def __line_plot(ax, data, ages, title, legend):
         max_ = 0
 
         LogWriter.log("line plot")
         for series, age, legend_entry in zip(data, ages, legend):
-            ax.plot(age, series.tolist(), label=legend_entry)  # mettere il nome della serie e le cose qui
+            ax.plot(series.index.tolist(), series.tolist(), label=legend_entry)  # mettere il nome della serie e le cose qui
             LogWriter.log(series.name)
             if series.max() > max_:
                 max_ = series.max()
