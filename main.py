@@ -10,10 +10,11 @@ DATA_FOLDER = "test_data/"
 
 def main():
     ft.LogWriter.clearlog()
-    np.warnings.filterwarnings('error', category=np.VisibleDeprecationWarning)
+
 
     table = ft.Table("ADNI_TABLE", BASE_PATH, OASIS_PATH,
                      pd.read_csv(BASE_PATH + "/text_and_csv_files/ADNI_table.csv"))
+
 
     table.save_csv("UPDATED_ADNI.csv")
 
