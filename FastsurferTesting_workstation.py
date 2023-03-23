@@ -958,7 +958,7 @@ class Comparisons:
 
                         if not plots % n_subplots:
                             if plots > 1:
-                                fig.savefig(f"{self.data_path}images\\img_{data}_violin_{self.name}"
+                                fig.savefig(f"{self.data_path}images/img_{data}_violin_{self.name}"
                                             f"_{str(plots - n_subplots)}-{str(plots)}.png")  # save the figure to file
                                 # plt.close(fig)  # close the figure window
                                 # handles, labels = axs[1].get_legend_handles_labels()
@@ -984,7 +984,7 @@ class Comparisons:
                     LogWriter.log(f"excluded {column_to_compare}")
 
             if plots % n_subplots != 0:
-                fig.savefig(f"{self.data_path}images\\img_{data}_violin_{self.name}"
+                fig.savefig(f"{self.data_path}images/img_{data}_violin_{self.name}"
                             f"_{str(plots - (plots % n_subplots))}-{str(plots)}.png")  # save the figure to file
             del axs, fig
 
@@ -1054,7 +1054,7 @@ class Comparisons:
 
                         if not plots % n_subplots:
                             if plots > 1:
-                                fig.savefig(f"{self.data_path}images\\img_{d}_ba_{self.name}"
+                                fig.savefig(f"{self.data_path}images/img_{d}_ba_{self.name}"
                                             f"_{str(plots - n_subplots)}-{str(plots)}.png")  # save the figure to file
                                 # handles, labels = ax.get_legend_handles_labels()
                                 # fig.legend(handles, labels, loc=(0.95, 0.1), prop={'size': 30})
@@ -1075,7 +1075,7 @@ class Comparisons:
                     LogWriter.log(f"excluded {column_to_compare}")
 
             if plots % n_subplots != 0:
-                fig.savefig(f"{self.data_path}images\\img_{d}_ba_{self.name}"
+                fig.savefig(f"{self.data_path}images/img_{d}_ba_{self.name}"
                             f"_{str(plots - (plots % n_subplots))}-{str(plots)}.png")  # save the figure to file
             del axs, fig
 
@@ -1607,7 +1607,7 @@ class SummaryPlot:
                     # if it needs to create a new figure it creates it
                     if not plots % n_subplots:
                         if plots > 1:
-                            fig.savefig(f"{self.data_path}images\\img_{d}_scatter_{self.name}"
+                            fig.savefig(f"{self.data_path}images/img_{d}_scatter_{self.name}"
                                         f"_{str(plots - n_subplots)}-{str(plots)}.png")  # save the figure to file
                             # plt.close(fig)  # close the figure window
                             # handles, labels = axs[1].get_legend_handles_labels()
@@ -1637,7 +1637,7 @@ class SummaryPlot:
                         break
 
             if plots % n_subplots != 0:
-                fig.savefig(f"{self.data_path}images\\img_{d}_scatter_{self.name}"
+                fig.savefig(f"{self.data_path}images/img_{d}_scatter_{self.name}"
                             f"_{str(plots - n_subplots)}-{str(plots)}.png")  # save the figure to file
         del axs, fig
 
@@ -1645,7 +1645,7 @@ class SummaryPlot:
         not_done_str = ' | '.join(not_done)
         LogWriter.log(f"    skipped: {not_done_str}")
         # fig.savefig(
-        #     self.data_path + "images\\img_{data_scatter_" + self.name + " - " + self.name + "_" + str(
+        #     self.data_path + "images/img_{data_scatter_" + self.name + " - " + self.name + "_" + str(
         #         plots) + ".png")  # save the figure to file
         """
         idea
@@ -1788,7 +1788,7 @@ class SummaryPlot:
                     # if it needs to create a new figure it creates it
                     if not plots % n_subplots:
                         if plots > 1:
-                            fig.savefig(f"{self.data_path}images\\img_{d}_scatter_{self.name}"
+                            fig.savefig(f"{self.data_path}images/img_{d}_scatter_{self.name}"
                                         f"_{str(plots - n_subplots)}-{str(plots)}.png")  # save the figure to file
                             # plt.close(fig)  # close the figure window
                             # handles, labels = axs[1].get_legend_handles_labels()
@@ -1818,7 +1818,7 @@ class SummaryPlot:
                         break
 
             if plots % n_subplots != 0:
-                fig.savefig(f"{self.data_path}images\\img_{d}_scatter_{self.name}"
+                fig.savefig(f"{self.data_path}images/img_{d}_scatter_{self.name}"
                             f"_{str(plots - n_subplots)}-{str(plots)}.png")  # save the figure to file
             del axs, fig
 

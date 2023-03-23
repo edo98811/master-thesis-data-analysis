@@ -1,11 +1,12 @@
 import FastsurferTesting_pc as ft
 import pandas as pd
 import numpy as np
+from comparisons_updated import SummaryPlot_updated, Comparison_updated
 
 ADNI_PATH = ""
 # OASIS_PATH = "/media/neuropsycad/disk12t/VascoDiogo/OASIS/FS7/"
 BASE_PATH = "C:\\Users\\edoar\\Dropbox (Politecnico Di Torino Studenti)\\Tesi\\data_testing_ADNI\\"
-DATA_FOLDER = "test_data_ADNI_pc\\"
+DATA_FOLDER = "test_data_ADNI_pc_updated\\"
 
 
 def main():
@@ -56,33 +57,26 @@ def main():
     stats_free_healthy.save_stats_files()
     stats_free_MCI.save_stats_files()
 
-    # comp1 = ft.Comparisons("NotHealthy_ADNI", BASE_PATH, stats_free_MCI, stats_fast_MCI, d_folder=DATA_FOLDER)
-    # comp2 = ft.Comparisons("healthy_ADNI", BASE_PATH, stats_free_healthy, stats_fast_healthy, d_folder=DATA_FOLDER)
-    # comp1.stat_test()
-    # comp2.stat_test()
-    # comp1.save_data()
-    # comp2.save_data()
+    comp1 = Comparison_updated("NotHealthy_ADNI", BASE_PATH, stats_free_MCI, stats_fast_MCI, d_folder=DATA_FOLDER)
+    comp2 = Comparison_updated("healthy_ADNI", BASE_PATH, stats_free_healthy, stats_fast_healthy, d_folder=DATA_FOLDER)
+    comp1.stat_test()
+    comp2.stat_test()
+
     #
-    # comp1.bonferroni_correction()
-    # comp2.bonferroni_correction()
-    #
-    # comp2.violin(data="aseg")
-    # comp2.violin(data="aparcL")
-    # comp2.violin(data="aparcR")
-    # comp2.bland_altmann(data="aseg")
-    # comp2.bland_altmann(data="aparcL")
-    # comp2.bland_altmann(data="aparcR")
-    #
-    # comp2.violin(data="aseg")
-    # comp2.violin(data="aparcL")
-    # comp2.violin(data="aparcR")
-    # comp2.bland_altmann(data="aseg")
-    # comp2.bland_altmann(data="aparcL")
-    # comp2.bland_altmann(data="aparcR")
-    #
-    summary1 = ft.SummaryPlot("summary", BASE_PATH, [stats_free_MCI, stats_fast_MCI, stats_free_healthy,
-                                                     stats_fast_healthy], d_folder=DATA_FOLDER)
-    summary1.comparison_plot_line()
+    comp1.bonferroni_correction()
+    comp2.bonferroni_correction()
+    comp1.save_data()
+    comp2.save_data()
+
+    comp2.violin()
+    comp2.bland_altmann()
+
+    comp2.violin()
+    comp2.bland_altmann()
+
+    # summary1 = SummaryPlot_updated("summary", BASE_PATH, [stats_free_MCI, stats_fast_MCI, stats_free_healthy,
+    #                                                  stats_fast_healthy], d_folder=DATA_FOLDER)
+    # summary1.comparison_plot_line()
 
     # ft.LogWriter()
 

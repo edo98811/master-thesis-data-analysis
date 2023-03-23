@@ -1483,18 +1483,19 @@ class Comparisons:
 
     @staticmethod
     def saphiro_test(data):
-
-        #t_stat, p_value = shapiro(data)
-
+        pass
         #
-        if p_value > 0.05:
-            result = f"p-value: {p_value} "
-            outcome = 0
-        else:
-            result = f"p-value: {p_value} "
-            outcome = 1
-
-        return result, p_value, outcome
+        # #t_stat, p_value = shapiro(data)
+        #
+        # #
+        # if p_value > 0.05:
+        #     result = f"p-value: {p_value} "
+        #     outcome = 0
+        # else:
+        #     result = f"p-value: {p_value} "
+        #     outcome = 1
+        #
+        # return result, p_value, outcome
 
 
 class SummaryPlot:
@@ -1679,8 +1680,10 @@ class SummaryPlot:
         :param n_rows:
         :return:
         """
+
         df_list = []
         subj_lists = []
+
         # saves the dataframes from the stats object
         LogWriter.log(f"\n")
         LogWriter.log(f" scatter plot:{self.name}...")
@@ -1757,9 +1760,11 @@ class SummaryPlot:
                 # idea: copiare cme ho fatto su comparisons
             for column_to_compare in columns:
                 if column_to_compare not in c_to_exclude:
+
                     LogWriter.log(f"doing column{column_to_compare}")
                     title = f"{d} {column_to_compare}"
                     serieses = []
+
                     # selects the column from all the dataframes and puts them in a list of series
                     for i, df in enumerate(data_points_list):
 
@@ -1777,10 +1782,11 @@ class SummaryPlot:
                             # print(f" series {len(serieses[i])} - {type(serieses[i].tolist())} {serieses[i].tolist()}")
                         else:
                             # print(series)
-                            LogWriter.log(f"    scatter not possible for column {column_to_compare}")
-                            print(f"scatter not possible for column {column_to_compare}")
+                            LogWriter.log(f"        scatter not possible for column {column_to_compare}")
+                            print(f"        scatter not possible for column {column_to_compare}")
                             not_done.append(column_to_compare)
                             break
+
                     if not len(serieses):
                         continue
 

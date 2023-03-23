@@ -1011,7 +1011,7 @@ class Comparisons:
             _df1 = self.stat_df_1.df_stats_aparcR[self.stat_df_1.df_stats_aparcR["ID"].isin(self.subjects_list)]
             _df2 = self.stat_df_2.df_stats_aparcR[self.stat_df_2.df_stats_aparcR["ID"].isin(self.subjects_list)]
         else:
-            raise "bland_altmann: wrong selection parameter"
+            raise "comparisons_updated.py: wrong selection parameter"
 
         LogWriter.log(f"Bland altmann plot: {self.name}")
         # print(f"BA length of the tables to compare {len(_df1)} {len(_df2)}")
