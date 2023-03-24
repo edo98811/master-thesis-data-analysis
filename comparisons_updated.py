@@ -16,9 +16,10 @@ todo:
 - cancellare global plots_n n in stats
 - cmparison mettere Stats invece di stats_df_2 e prendere la lista subj list dalla variabile nell'altra classe
 
-- testare comparison updated
+
 - aggiungere statistiche a line plot
-- controllare wilcoxon test
+- provare wilcoxon test
+- salvare statistiche su linee saltate eccetera
 
 """
 
@@ -786,17 +787,7 @@ class Comparison_updated:
 
         r_all = []
         for d in data:
-            if d == "aseg":
-                _df1 = self.stat_df_1.df_stats_aseg
-                _df2 = self.stat_df_2.df_stats_aseg
-            elif d == "aparcR":
-                _df1 = self.stat_df_1.df_stats_aparcL
-                _df2 = self.stat_df_2.df_stats_aparcL
-            elif d == "aparcL":
-                _df1 = self.stat_df_1.df_stats_aparcR
-                _df2 = self.stat_df_2.df_stats_aparcR
-            else:
-                raise "stat_test: wrong selection parameter"
+            _df1, _df2 = self.get_table(d)
 
             LogWriter.log(f"t_test and mann whitney on {d} in {self.name}...")
 
@@ -980,3 +971,21 @@ class Comparison_updated:
             string = "Large effect size"
 
         return d, string
+
+
+
+class Recap:
+
+
+    def __init__(self):
+        self.df = pd.DataFrame()
+
+
+    def add_line(self, list):
+        row = pd.series(list)
+
+        self.df.appen(row)
+
+    def save(self, filename="dataframe.csv"):
+        self.df.to_csv(filename)
+
