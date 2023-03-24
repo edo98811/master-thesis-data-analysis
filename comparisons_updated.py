@@ -225,115 +225,116 @@ class SummaryPlot_updated:
         :param n_rows:
         :return:
         """
-
-        df_list = []
-        subj_lists = []
-        # saves the dataframes from the stats object
-        LogWriter.log(f"\n")
-        LogWriter.log(f"    scatter plot:{self.name}...")
-        for d in data:
-            if d == "aseg":
-                for table in self.df_list_obj:
-                    df_list.append(table.df_stats_aseg)
-                    subj_lists.append(table.df_stats_aseg["ID"].tolist())
-            elif d == "aparcR":
-                for table in self.df_list_obj:
-                    df_list.append(table.df_stats_aparcL)
-                    subj_lists.append(table.df_stats_aparcL["ID"].tolist())
-            elif d == "aparcL":
-                for table in self.df_list_obj:
-                    df_list.append(table.df_stats_aparcR)  # table
-                    subj_lists.append(table.df_stats_aparcR["ID"].tolist())
-
-            # creates the age series, to move up
-            ages = []
-            legend = []
-            for table, subj_list in zip(self.df_list_obj, subj_lists):
-                s = list(ft.Stats.delete_sub(subj_list))
-                t = table.df_subj[table.df_subj['ID'].isin(s)]
-                a = t.loc[:, "age"].tolist()
-                ages.append(pd.to_numeric(a, errors='coerce'))
-                # legend.append(table.name)
-            del a, t, s
-            columns = df_list[0].columns
-            # columns = columns.intersection(_df2.columns).tolist()
-            # if not columns:
-            #     max_len = min(len(_df1.axes[1]), len(_df2.axes[1]))
-            #     columns = range(2, max_len)
-            not_done = []
-            for column_to_compare in columns:
-                if column_to_compare not in c_to_exclude:
-                    title = f"{d} {column_to_compare}"
-                    serieses = []
-                    # selects the column from all the dataframes and puts them in a list of series
-                    for i, df in enumerate(df_list):
-                        series = pd.to_numeric(df[column_to_compare], errors='coerce')
-                        series.rename(f"{d}_{self.df_list_obj[i].name}_{column_to_compare}")
-                        legend.append(f"{d}_{self.df_list_obj[i].name}_{column_to_compare}")
-                        LogWriter.log(f"        {d}_{self.df_list_obj[i].name}_{column_to_compare}. "
-                                      f"series name {series.name}")
-
-                        if series.any() and series.notnull().all():
-                            serieses.append(series)
-
-                        else:
-                            # print(series)
-                            LogWriter.log(f"        comparison not possible for column {column_to_compare}")
-                            not_done.append(column_to_compare)
-                            break
-                    if not len(serieses):
-                        continue
-
-                    # a, b = get_column(column_to_compare, _df1_filtered, _df2_filtered)
-                    # if it needs to create a new figure it creates it
-                    if not plots_n % n_subplots:
-                        if plots_n > 1:
-                            fig.savefig(f"{self.data_path}images\\img_{d}_scatter_{self.name}"
-                                        f"_{str(plots_n - n_subplots)}-{str(plots_n)}.png")  # save the figure to file
-                            # plt.close(fig)  # close the figure window
-                            # handles, labels = axs[1].get_legend_handles_labels()
-                            # fig.legend(handles, labels, loc=(0.95, 0.1), prop={'size': 30})
-                        fig, axs = plt.subplots(n_rows, int(n_subplots / n_rows), figsize=(40, 20))
-                        axs = axs.ravel()
-                        plt.subplots_adjust(hspace=0.5)
-                        plt.subplots_adjust(wspace=0.2)
-                        # mng = plt.get_current_fig_manager()
-                        # mng.full_screen_toggle()
-
-                    # print(plots_n % N_SUBPLOTS)
-
-                    """
-                    now i have two series
-                    serieses: series of data
-                    ages: series of ages 
-
-                    i can do the scatter plots_n of this
-                    """
-                    index = plots_n % n_subplots
-                    # print(index)
-                    self.__scatter_plot(axs[index], serieses, ages, title, legend)
-                    plots_n += 1
-
-                    if plots_n >= self.max_plot:  # to avoid plotting too much
-                        break
-
-            if plots_n % n_subplots != 0:
-                fig.savefig(f"{self.data_path}images\\img_{d}_scatter_{self.name}"
-                            f"_{str(plots_n - n_subplots)}-{str(plots_n)}.png")  # save the figure to file
-        del axs, fig
-
-        LogWriter.log(f"    plotted {plots_n} variables out of {len(columns)}")
-        not_done_str = ' | '.join(not_done)
-        LogWriter.log(f"    skipped: {not_done_str}")
-        # fig.savefig(
-        #     self.data_path + "images\\img_{data_scatter_" + self.name + " - " + self.name + "_" + str(
-        #         plots_n) + ".png")  # save the figure to file
-        """
-        idea
-            plot con 4
-            all'inizio tutti i puntini, ognuno con un colore diverso in base alla serie da cui proviene 
-            poi provo a far la linea
-        """
+        raise "old"
+        #
+        # df_list = []
+        # subj_lists = []
+        # # saves the dataframes from the stats object
+        # LogWriter.log(f"\n")
+        # LogWriter.log(f"    scatter plot:{self.name}...")
+        # for d in data:
+        #     if d == "aseg":
+        #         for table in self.df_list_obj:
+        #             df_list.append(table.df_stats_aseg)
+        #             subj_lists.append(table.df_stats_aseg["ID"].tolist())
+        #     elif d == "aparcR":
+        #         for table in self.df_list_obj:
+        #             df_list.append(table.df_stats_aparcL)
+        #             subj_lists.append(table.df_stats_aparcL["ID"].tolist())
+        #     elif d == "aparcL":
+        #         for table in self.df_list_obj:
+        #             df_list.append(table.df_stats_aparcR)  # table
+        #             subj_lists.append(table.df_stats_aparcR["ID"].tolist())
+        #
+        #     # creates the age series, to move up
+        #     ages = []
+        #     legend = []
+        #     for table, subj_list in zip(self.df_list_obj, subj_lists):
+        #         s = list(ft.Stats.delete_sub(subj_list))
+        #         t = table.df_subj[table.df_subj['ID'].isin(s)]
+        #         a = t.loc[:, "age"].tolist()
+        #         ages.append(pd.to_numeric(a, errors='coerce'))
+        #         # legend.append(table.name)
+        #     del a, t, s
+        #     columns = df_list[0].columns
+        #     # columns = columns.intersection(_df2.columns).tolist()
+        #     # if not columns:
+        #     #     max_len = min(len(_df1.axes[1]), len(_df2.axes[1]))
+        #     #     columns = range(2, max_len)
+        #     not_done = []
+        #     for column_to_compare in columns:
+        #         if column_to_compare not in c_to_exclude:
+        #             title = f"{d} {column_to_compare}"
+        #             serieses = []
+        #             # selects the column from all the dataframes and puts them in a list of series
+        #             for i, df in enumerate(df_list):
+        #                 series = pd.to_numeric(df[column_to_compare], errors='coerce')
+        #                 series.rename(f"{d}_{self.df_list_obj[i].name}_{column_to_compare}")
+        #                 legend.append(f"{d}_{self.df_list_obj[i].name}_{column_to_compare}")
+        #                 LogWriter.log(f"        {d}_{self.df_list_obj[i].name}_{column_to_compare}. "
+        #                               f"series name {series.name}")
+        #
+        #                 if series.any() and series.notnull().all():
+        #                     serieses.append(series)
+        #
+        #                 else:
+        #                     # print(series)
+        #                     LogWriter.log(f"        comparison not possible for column {column_to_compare}")
+        #                     not_done.append(column_to_compare)
+        #                     break
+        #             if not len(serieses):
+        #                 continue
+        #
+        #             # a, b = get_column(column_to_compare, _df1_filtered, _df2_filtered)
+        #             # if it needs to create a new figure it creates it
+        #             if not plots_n % n_subplots:
+        #                 if plots_n > 1:
+        #                     fig.savefig(f"{self.data_path}images\\img_{d}_scatter_{self.name}"
+        #                                 f"_{str(plots_n - n_subplots)}-{str(plots_n)}.png")  # save the figure to file
+        #                     # plt.close(fig)  # close the figure window
+        #                     # handles, labels = axs[1].get_legend_handles_labels()
+        #                     # fig.legend(handles, labels, loc=(0.95, 0.1), prop={'size': 30})
+        #                 fig, axs = plt.subplots(n_rows, int(n_subplots / n_rows), figsize=(40, 20))
+        #                 axs = axs.ravel()
+        #                 plt.subplots_adjust(hspace=0.5)
+        #                 plt.subplots_adjust(wspace=0.2)
+        #                 # mng = plt.get_current_fig_manager()
+        #                 # mng.full_screen_toggle()
+        #
+        #             # print(plots_n % N_SUBPLOTS)
+        #
+        #             """
+        #             now i have two series
+        #             serieses: series of data
+        #             ages: series of ages
+        #
+        #             i can do the scatter plots_n of this
+        #             """
+        #             index = plots_n % n_subplots
+        #             # print(index)
+        #             self.__scatter_plot(axs[index], serieses, ages, title, legend)
+        #             plots_n += 1
+        #
+        #             if plots_n >= self.max_plot:  # to avoid plotting too much
+        #                 break
+        #
+        #     if plots_n % n_subplots != 0:
+        #         fig.savefig(f"{self.data_path}images\\img_{d}_scatter_{self.name}"
+        #                     f"_{str(plots_n - n_subplots)}-{str(plots_n)}.png")  # save the figure to file
+        # del axs, fig
+        #
+        # LogWriter.log(f"    plotted {plots_n} variables out of {len(columns)}")
+        # not_done_str = ' | '.join(not_done)
+        # LogWriter.log(f"    skipped: {not_done_str}")
+        # # fig.savefig(
+        # #     self.data_path + "images\\img_{data_scatter_" + self.name + " - " + self.name + "_" + str(
+        # #         plots_n) + ".png")  # save the figure to file
+        # """
+        # idea
+        #     plot con 4
+        #     all'inizio tutti i puntini, ognuno con un colore diverso in base alla serie da cui proviene
+        #     poi provo a far la linea
+        # """
 
     def create_list(self, d):
         df_list = []
@@ -581,8 +582,8 @@ class Comparison_updated:
 
         self.stat_df_result = None
 
-        global n_plot
-        n_plot = 0
+        global plot_n
+        plot_n = 0
 
     def __match_dataframes(self, df1, df2):
         LogWriter.log(f"    subject matching")
@@ -629,6 +630,7 @@ class Comparison_updated:
 
     def iterate(self, function, data, columns, n_subplots, n_rows, c_to_exclude, img_name):
         plots_n = 0
+        fig, axs = None, None
 
         df1, df2 = self.get_table(data)
 
@@ -643,16 +645,20 @@ class Comparison_updated:
 
                 if a.any() and b.any() and (a.notnull().all() and b.notnull().all()):
                     if not plots_n % n_subplots:
+                        # plots when
                         if plots_n > 1:
-                            fig.savefig(f"{img_name}"
-                                        f"_{str(plots_n - n_subplots)}-{str(plots_n)}.png")  # save the figure to file
+                            if fig is not None:
+                                fig.savefig(f"{img_name}"
+                                            f"_{str(plots_n - n_subplots)}-{str(plots_n)}.png")  # save the figure to file
 
-                        fig, axs = plt.subplots(n_rows, int(n_subplots / n_rows), figsize=(40, 20))
-                        axs = axs.ravel()
-                        plt.subplots_adjust(hspace=0.5)
-                        plt.subplots_adjust(wspace=0.2)
+                        fig, axs = self.create_plot(n_subplots, n_rows)
+                        # fig, axs = plt.subplots(n_rows, int(n_subplots / n_rows), figsize=(40, 20))
+                        # axs = axs.ravel()
+                        # plt.subplots_adjust(hspace=0.5)
+                        # plt.subplots_adjust(wspace=0.2)
 
-                    function(axs[plots_n % n_subplots], a, b, title=a.name + "\n" + self.name)
+                    if function is not None:
+                        function(axs[plots_n % n_subplots], a, b, title=a.name + "\n" + self.name)
                     plots_n += 1
 
                 else:
@@ -660,12 +666,14 @@ class Comparison_updated:
 
                 if plots_n >= self.max_plot:  # to avoid plotting too much
                     break
+
                 else:
                     LogWriter.log(f"excluded {column_to_compare}")
 
                 if plots_n % n_subplots != 0:
-                    fig.savefig(f"{img_name}"
-                                f"_{str(plots_n - (plots_n % n_subplots))}-{str(plots_n)}.png")  # save the figure to file
+                    if fig is not None:
+                        fig.savefig(f"{img_name}"
+                                    f"_{str(plots_n - (plots_n % n_subplots))}-{str(plots_n)}.png")  # save the figure to file
                 del axs, fig
 
                 LogWriter.log(f"    plotted for {plots_n} variables out of {len(columns)}")
@@ -688,9 +696,19 @@ class Comparison_updated:
         return _df1, _df2
 
     @staticmethod
+    def create_plot(n_subplots, n_rows):
+
+        fig, axs = plt.subplots(n_rows, int(n_subplots / n_rows), figsize=(40, 20))
+        axs = axs.ravel()
+        plt.subplots_adjust(hspace=0.5)
+        plt.subplots_adjust(wspace=0.2)
+
+        return fig, axs
+    @staticmethod
     def __violin_plot(_ax, _a, _b, title):
         # Create a DataFrame with the two Series
         # df = pd.DataFrame({'Freesurfer': _a, 'Fastsurfer': _b})
+
         df = pd.DataFrame({'Data': pd.concat([_a, _b]),
                            'Group': ['FreeSurfer'] * len(_a) + ['FastSurfer'] * len(_b),
                            "Area": [_a.name] * (len(_a) + len(_b))})
@@ -706,7 +724,7 @@ class Comparison_updated:
     @staticmethod
     def __bland_altman_plot(_ax, _a, _b, title):
         # Compute mean and difference between two series
-        mean_list = []
+        # mean_list = []
         # print(f"{len(_a)} {len(_b)}")
         # if len(_a) != len(_b):
         #     print("arrays have different lenghts")
@@ -756,78 +774,79 @@ class Comparison_updated:
     def __correction_param(self):
         return self.alpha / len(self.stat_df_result)
 
-    def stat_test(self, columns_input=None, data=("aseg", "aparcL", "aparcR")):
+    def stat_test(self, c_to_exclude=None, data=("aseg", "aparcL", "aparcR")):
         """
+        :param c_to_exclude:
         :param columns: list of str - list of column names to print (default None: prints all)
         :param data: str - type of input (aseg, aparcL or aparcR)
         :return: void
         """
+        if c_to_exclude is None:
+            c_to_exclude = set()
+
         r_all = []
-        for data_n in data:
-            if data_n == "aseg":
+        for d in data:
+            if d == "aseg":
                 _df1 = self.stat_df_1.df_stats_aseg
                 _df2 = self.stat_df_2.df_stats_aseg
-            elif data_n == "aparcR":
+            elif d == "aparcR":
                 _df1 = self.stat_df_1.df_stats_aparcL
                 _df2 = self.stat_df_2.df_stats_aparcL
-            elif data_n == "aparcL":
+            elif d == "aparcL":
                 _df1 = self.stat_df_1.df_stats_aparcR
                 _df2 = self.stat_df_2.df_stats_aparcR
             else:
                 raise "stat_test: wrong selection parameter"
 
-            LogWriter.log(f"t_test and mann whitney on {data_n} in {self.name}...")
+            LogWriter.log(f"t_test and mann whitney on {d} in {self.name}...")
 
             # se non viene dato un input fa il test per tutte le colonne
-            if not columns_input:
+            if not c_to_exclude:
                 columns = set(_df1.columns.tolist()).intersection(set(_df2.columns.tolist()))
             else:
-                columns = columns_input
-            # if not columns:
-            #     columns = _df1.columns
-            #     columns.intersection(_df2_filtered.columns).tolist()
-            # if not columns:
-            #     max_len = min(len(_df1.axes[1]), len(_df2.axes[1]))
-            #     columns = range(2, max_len)
+                columns = c_to_exclude
+
             not_done = []
             for i, column_to_compare in enumerate(columns):
-                a = pd.to_numeric(_df1.loc[:, column_to_compare], errors='coerce')
-                b = pd.to_numeric(_df2.loc[:, column_to_compare], errors='coerce')
+                if column_to_compare not in c_to_exclude:
+                    a = pd.to_numeric(_df1.loc[:, column_to_compare], errors='coerce')
+                    b = pd.to_numeric(_df2.loc[:, column_to_compare], errors='coerce')
 
-                if a.any() and b.any() and (a.notnull().all() and b.notnull().all()):
-                    # print(
-                    #   f"performing statistical analysis for data in category {column_to_compare}for file {self.name} - {data}")
-                    # LogWriter.log(
-                    #    f"      performing statistical analysis for data in category {column_to_compare} for file {self.name} - {data_n}")
+                    if len(a) != len(b):
+                        LogWriter.log(f"        len a: {len(a)} len b: {len(b)}")
+                        not_done.append(column_to_compare)
+                        continue
 
-                    r1, p1, o1 = self.__mann_whitney(a, b)
-                    r2, p2, o2 = self.__t_test(a, b)
-                    d, rd = self.__cohens_d(a, b)
-                    # ICC
+                    if a.any() and b.any() and (a.notnull().all() and b.notnull().all()):
 
-                    if isinstance(column_to_compare, int):
-                        column_to_compare_name = _df1.columns[column_to_compare]
+                        r1, p1, o1 = self.__mann_whitney(a, b)
+                        r2, p2, o2 = self.__t_test(a, b)
+                        d, rd = self.__cohens_d(a, b)
+                        # ICC
 
-                        r_all.append({"name": f"{self.name}_{data_n}_{column_to_compare_name}",
-                                      "mann_whitney": {"result": r1,
-                                                       "p_value": p1,
-                                                       "outcome": o1},
-                                      "t_test": {"result": r2,
-                                                 "p_value": p2,
-                                                 "outcome": o2},
-                                      "d": {"result": rd,
-                                            "d_value": d}})
+                        if isinstance(column_to_compare, int):
+                            column_to_compare_name = _df1.columns[column_to_compare]
 
-                    if isinstance(column_to_compare, str):
-                        r_all.append({"name": f"{self.name}_{data_n}_{column_to_compare}",
-                                      "mann_whitney": {"result": r1,
-                                                       "p_value": p1,
-                                                       "outcome": o1},
-                                      "t_test": {"result": r2,
-                                                 "p_value": p2,
-                                                 "outcome": o2},
-                                      "d": {"result": rd,
-                                            "d_value": d}})
+                            r_all.append({"name": f"{self.name}_{d}_{column_to_compare_name}",
+                                          "mann_whitney": {"result": r1,
+                                                           "p_value": p1,
+                                                           "outcome": o1},
+                                          "t_test": {"result": r2,
+                                                     "p_value": p2,
+                                                     "outcome": o2},
+                                          "d": {"result": rd,
+                                                "d_value": d}})
+
+                        if isinstance(column_to_compare, str):
+                            r_all.append({"name": f"{self.name}_{d}_{column_to_compare}",
+                                          "mann_whitney": {"result": r1,
+                                                           "p_value": p1,
+                                                           "outcome": o1},
+                                          "t_test": {"result": r2,
+                                                     "p_value": p2,
+                                                     "outcome": o2},
+                                          "d": {"result": rd,
+                                                "d_value": d}})
 
                 else:
                     # print(f"absent or not valid data in category {column_to_compare}for file {self.name} - {data}")
