@@ -4,7 +4,7 @@ import pandas as pd
 import numpy as np
 
 ADNI_PATH = ""
-DATASET_PATH = "/media/neuropsycad/disk12t/EdoardoFilippiMasterThesis/MPRAGE_SPGR_imgs_Alzheimer/Selected_imgs_nifty"
+DATASET_PATH = "/media/neuropsycad/disk12t/EdoardoFilippiMasterThesis/MPRAGE_SPGR_imgs_Alzheimer/Selected_imgs_nifti"
 BASE_PATH = "/media/neuropsycad/disk12t/EdoardoFilippiMasterThesis/"
 DATA_FOLDER = "Portuguese_Processed/"
 PROCESSED_PATH = ""
