@@ -94,7 +94,7 @@ class Table:
         :param d_folder: str - data folder (default: data_testing/)
         """
 
-        self.subjects_list = self.df["ID"].tolist()
+
         if p_path:
             self.processed_path = p_path
         else:
@@ -114,6 +114,7 @@ class Table:
         else:
             self.create_table(table_file)
 
+        self.subjects_list = self.df["ID"].tolist()
 
     def update(self):
         """
