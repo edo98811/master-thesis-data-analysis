@@ -197,7 +197,7 @@ class Table:
         :return:
         """
 
-        table = pd.read_csv(self.base_path + origin_file)
+        table = pd.read_odf(self.base_path + origin_file)
 
         # create the dictionary that will turn into a table
         if self.dataset == "ADNI":
