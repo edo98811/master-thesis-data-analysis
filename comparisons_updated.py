@@ -13,8 +13,9 @@ import FastsurferTesting_pc as ft
 """
 todo:
 - cambiare nome var subj list in table
-- cancellare global plots_n n in stats
-- cmparison mettere Stats invece di stats_df_2 e prendere la lista subj list dalla variabile nell'altra classe
+- controllare global plots_n n in stats+
+- mettere un underscore in metodi privati
+
 
 
 - aggiungere statistiche a line plot
@@ -426,7 +427,7 @@ class SummaryPlot_updated:
 
         return serieses, legend
 
-    def comparison_plot_line(self, data=("aseg", "aparcL", "aparcR"), c_to_exclude=("ID"), n_subplots=4, n_rows=2):
+    def comparison_plot_line(self, data=("aseg", "aparcL", "aparcR"), c_to_exclude=("ID"), c_to_keep=None, n_subplots=4, n_rows=2):
         """
         :param columns: list of str - list of column names to print (default None: prints all)
         :param data: str - type of input (aseg, aparcL or aparcR)
@@ -443,6 +444,9 @@ class SummaryPlot_updated:
             df_list, subj_lists, columns = self.create_list(
                 d)  # questa si potrebbe fare anche in init, cosi lo devo fare una volta sola
             plots_n = 0
+
+            if c_to_keep is not None:
+                columns = [x for x in columns if x in c_to_keep]
 
             not_done = []
             data_points_list = []
@@ -612,11 +616,13 @@ class Comparison_updated:
         else:
             LogWriter.log(f"        no element to delete")
 
-        LogWriter.log(f"        subject matching...")
+        LogWriter.log(f"        ordering tables...")
 
         # sorts the dataframe by subject to make sure it has the same subjects
         df1.sort_index(inplace=True)
         df2.sort_index(inplace=True)
+
+        return df1, df2
 
     def bland_altmann(self, data=("aseg", "aparcL", "aparcR"), columns=None, n_subplots=4, n_rows=2, c_to_exclude=()):
 
@@ -638,7 +644,7 @@ class Comparison_updated:
         df1, df2 = self.get_table(data)
 
         if function.__name__ == "bland_altmann":
-            self.__match_dataframes(df1, df2)
+            df1, df2 = self.__match_dataframes(df1, df2)
 
         not_done = []
         for column_to_compare in self.columns_list:
@@ -684,18 +690,28 @@ class Comparison_updated:
                 LogWriter.log(f"    skipped: {not_done_str}")
 
     def get_table(self, data):
+        # if data == "aseg":
+        #     _df1 = self.stat_df_1.df_stats_aseg[self.stat_df_1.df_stats_aseg["ID"].isin(self.subjects_list)]
+        #     _df2 = self.stat_df_2.df_stats_aseg[self.stat_df_2.df_stats_aseg["ID"].isin(self.subjects_list)]
+        # elif data == "aparcR":
+        #     _df1 = self.stat_df_1.df_stats_aparcL[self.stat_df_1.df_stats_aparcL["ID"].isin(self.subjects_list)]
+        #     _df2 = self.stat_df_2.df_stats_aparcL[self.stat_df_2.df_stats_aparcL["ID"].isin(self.subjects_list)]
+        # elif data == "aparcL":
+        #     _df1 = self.stat_df_1.df_stats_aparcR[self.stat_df_1.df_stats_aparcR["ID"].isin(self.subjects_list)]
+        #     _df2 = self.stat_df_2.df_stats_aparcR[self.stat_df_2.df_stats_aparcR["ID"].isin(self.subjects_list)]
+        # else:
+        #     raise "wrong selection parameter"
         if data == "aseg":
-            _df1 = self.stat_df_1.df_stats_aseg[self.stat_df_1.df_stats_aseg["ID"].isin(self.subjects_list)]
-            _df2 = self.stat_df_2.df_stats_aseg[self.stat_df_2.df_stats_aseg["ID"].isin(self.subjects_list)]
+            _df1 = self.stat_df_1.df_stats_aseg
+            _df2 = self.stat_df_2.df_stats_aseg
         elif data == "aparcR":
-            _df1 = self.stat_df_1.df_stats_aparcL[self.stat_df_1.df_stats_aparcL["ID"].isin(self.subjects_list)]
-            _df2 = self.stat_df_2.df_stats_aparcL[self.stat_df_2.df_stats_aparcL["ID"].isin(self.subjects_list)]
+            _df1 = self.stat_df_1.df_stats_aparcL
+            _df2 = self.stat_df_2.df_stats_aparcL
         elif data == "aparcL":
-            _df1 = self.stat_df_1.df_stats_aparcR[self.stat_df_1.df_stats_aparcR["ID"].isin(self.subjects_list)]
-            _df2 = self.stat_df_2.df_stats_aparcR[self.stat_df_2.df_stats_aparcR["ID"].isin(self.subjects_list)]
+            _df1 = self.stat_df_1.df_stats_aparcR
+            _df2 = self.stat_df_2.df_stats_aparcR
         else:
             raise "wrong selection parameter"
-
         return _df1, _df2
 
     @staticmethod
@@ -791,6 +807,8 @@ class Comparison_updated:
         for d in data:
             _df1, _df2 = self.get_table(d)
 
+            _df1, _df2 = self.__match_dataframes(_df1, _df2)
+
             LogWriter.log(f"t_test and mann whitney on {d} in {self.name}...")
 
             # se non viene dato un input fa il test per tutte le colonne
@@ -814,7 +832,7 @@ class Comparison_updated:
 
                         r1, p1, o1 = self.__mann_whitney(a, b)
                         r2, p2, o2 = self.__t_test(a, b)
-                        d, rd = self.__cohens_d(a, b)
+                        cd, rd = self.__cohens_d(a, b)
                         # ICC
 
                         if isinstance(column_to_compare, int):
@@ -828,7 +846,7 @@ class Comparison_updated:
                                                      "p_value": p2,
                                                      "outcome": o2},
                                           "d": {"result": rd,
-                                                "d_value": d}})
+                                                "d_value": cd}})
 
                         if isinstance(column_to_compare, str):
                             r_all.append({"name": f"{self.name}_{d}_{column_to_compare}",
@@ -845,8 +863,8 @@ class Comparison_updated:
                     # print(f"absent or not valid data in category {column_to_compare}for file {self.name} - {data}")
                     not_done.append(column_to_compare)
 
-            LogWriter.log(f"    tested {i} variables out of {len(columns)}")
-            not_done_str = '         \n '.join(not_done)
+            LogWriter.log(f"    failed {len(not_done)} variables out of {len(columns)}")
+            not_done_str = ' | '.join(not_done)
             LogWriter.log(f"    skipped: {not_done_str}")
         self.__save_dataframe(r_all)
 

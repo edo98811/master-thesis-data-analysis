@@ -6,7 +6,7 @@ from comparisons_updated import SummaryPlot_updated, Comparison_updated
 ADNI_PATH = ""
 # OASIS_PATH = "/media/neuropsycad/disk12t/VascoDiogo/OASIS/FS7/"
 BASE_PATH = "C:\\Users\\edoar\\Dropbox (Politecnico Di Torino Studenti)\\Tesi\\data_testing_ADNI\\"
-DATA_FOLDER = "test_data_ADNI_pc_updated\\"
+DATA_FOLDER = "test_data_ADNI_pc_cp2703\\"
 
 
 def main():
@@ -61,18 +61,17 @@ def main():
     comp2 = Comparison_updated("healthy_ADNI", BASE_PATH, stats_free_healthy, stats_fast_healthy, d_folder=DATA_FOLDER)
     comp1.stat_test()
     comp2.stat_test()
-
     #
     comp1.bonferroni_correction()
     comp2.bonferroni_correction()
     comp1.save_data()
     comp2.save_data()
-
-    comp2.violin()
-    comp2.bland_altmann()
-
-    comp2.violin()
-    comp2.bland_altmann()
+    #
+    # comp2.violin()
+    # comp2.bland_altmann()
+    #
+    # comp2.violin()
+    # comp2.bland_altmann()
 
     # summary1 = SummaryPlot_updated("summary", BASE_PATH, [stats_free_MCI, stats_fast_MCI, stats_free_healthy,
     #                                                  stats_fast_healthy], d_folder=DATA_FOLDER)
