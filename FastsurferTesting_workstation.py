@@ -112,7 +112,7 @@ class Table:
         if df_subj is not None:
             self.df = df_subj
         else:
-            self.create_table(table_file)
+            self.df = self.create_table(table_file)
 
         self.subjects_list = self.df["ID"].tolist()
 
