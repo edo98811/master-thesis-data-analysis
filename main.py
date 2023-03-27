@@ -6,6 +6,7 @@ ADNI_PATH = ""
 OASIS_PATH = "/media/neuropsycad/disk12t/VascoDiogo/OASIS/FS7/"
 BASE_PATH = "/media/neuropsycad/disk12t/EdoardoFilippiMasterThesis/"
 DATA_FOLDER = "test_data/"
+PROCESSED_PATH = ""
 
 
 def main():
@@ -13,7 +14,7 @@ def main():
 
 
     table = ft.Table("ADNI_TABLE", BASE_PATH,
-                     pd.read_csv(BASE_PATH + "/text_and_csv_files/ADNI_table.csv"), p_path=OASIS_PATH)
+                     pd.read_csv(BASE_PATH + "/text_and_csv_files/ADNI_table.csv"), dataset_path=OASIS_PATH, p_path=PROCESSED_PATH)
 
 
     table.save_csv("UPDATED_ADNI.csv")

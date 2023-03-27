@@ -20,6 +20,8 @@ todo:
 - aggiungere statistiche a line plot
 - provare wilcoxon test
 - salvare statistiche su linee saltate eccetera
+- plot del pvalue per area
+- ADNI e cose per ospedali portoghesi
 
 """
 

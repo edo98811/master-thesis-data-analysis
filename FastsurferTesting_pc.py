@@ -8,7 +8,7 @@ import data_manipulation as dm
 import numpy as np
 from copy import deepcopy
 import pingouin as pg
-#from statsmodels.stats import shapiro
+# from statsmodels.stats import shapiro
 # import dropboxAPI
 import subprocess
 
@@ -85,7 +85,7 @@ class Table:
 
     """
 
-    def __init__(self, name, b_path, p_path="", df_subj=None, d_folder="data_testing_ADNI/"):
+    def __init__(self, name, b_path, dataset_path="", p_path="", df_subj=None, d_folder="data_testing_ADNI/"):
         """
         :param name: str - name of the object
         :param b_path: str - base path
@@ -105,6 +105,7 @@ class Table:
             self.processed_path = p_path
         else:
             self.processed_path = ""
+        self.dataset_path = dataset_path
 
         self.base_path = b_path
         self.data_path = b_path + d_folder
@@ -112,19 +113,6 @@ class Table:
 
         if not os.path.exists(self.data_path):
             os.makedirs(self.data_path)
-
-    # def get_query_list(self, query):
-    #     """
-    #     old
-    #
-    #     :param query:
-    #     :return:
-    #     """
-    #     subjects_list = self.df.query(query)["ID"].tolist()
-    #     for i, s in enumerate(subjects_list):
-    #         subjects_list[i] = "sub-" + s
-    #
-    #     self.subjects_list = set(subjects_list)
 
     def update(self):
         """
@@ -201,14 +189,14 @@ class Table:
         pass
         # subprocess.
 
-    def create_table(self, df_dict_map, path_to_origin_file, dataset="ADNI"):
+    def create_table(self, origin_file, dataset="ADNI", check_processed=True):
         """
         method to create the table if it doesn't exist
         :return:
         """
 
-        table = pd.read_csv(self.base_path + path_to_origin_file)
-        ADNI = False
+        table = pd.read_csv(self.base_path + origin_file)
+
         # create the dictionary that will turn into a table
         if dataset == "ADNI":
             df_dict = {
@@ -220,8 +208,7 @@ class Table:
                 "processed": [],
                 "processed_path": []
             }
-            ADNI = True
-        else:
+        elif dataset == "OASIS":
             df_dict = {
                 "ID": [],
                 "path": [],
@@ -230,15 +217,28 @@ class Table:
                 "processed": [],
                 "processed_path": []
             }
-
-        if df_dict_map != None:
-            df_dict = df_dict_map
+        elif dataset == "Portuguese":
+            df_dict = {
+                "ID": [],
+                "path": [],
+                "age": [],
+                "main_condition": [],
+                "processed": [],
+                "processed_path": []
+            }
+        else:
+            df_dict = {}
 
         # extracts all the paths for the subjects
-        IDs = Table.add_sub(table["ID"])
-        _paths_in_folder = os.listdir(self.processed_path)
-        _paths_on_table = set(_paths_in_folder).intersection(Table.add_sub(IDs))
+        if dataset == "ADNI" or dataset == "OASIS":
+            IDs = Table.add_sub(table["ID"])
+            _paths_in_folder = os.listdir(self.dataset_path)
+            _paths_on_table = set(_paths_in_folder).intersection(Table.add_sub(IDs))
 
+        if dataset == "Portuguese":
+            _paths_on_table = os.listdir(self.dataset_path)
+        else:
+            _paths_on_table = []
         # populates the dictionary
         # checks that subjects both exist in the table and on the computer
         # for that it needs to check the subdirectory of the subjects exists
@@ -248,7 +248,7 @@ class Table:
                 if len(path_on_table.split("/")) > 3:
                     match = re.split("sub-", path_on_table.split("/")[-4])
                     if row["ID"] == match[1]:
-                        if ADNI and (row["_merge"] == "both" or row["_merge"] == "right_only"):
+                        if dataset == "ADNI" and (row["_merge"] == "both" or row["_merge"] == "right_only"):
                             df_dict["ID"].append(row["ID"])
                             df_dict["path"].append(path_on_table)
                             df_dict["age"].append(row["age"])
@@ -256,34 +256,41 @@ class Table:
                             df_dict["main_condition"].append(row["diagnosis"])
                             df_dict["processed"].append("no")
                             df_dict["processed_path"].append("")
-                        elif not ADNI:
+                        elif dataset == "ADNI":
                             df_dict["ID"].append(row["ID"])
                             df_dict["path"].append(path_on_table)
                             df_dict["age"].append(row["ageAtEntry"])
                             df_dict["main_condition"].append(row["dx1"])
                             df_dict["processed"].append("no")
                             df_dict["processed_path"].append("")
+                        elif dataset == "Portuguese":
+                            df_dict["ID"].append(row["PatientID"])
+                            df_dict["path"].append(path_on_table)
+                            df_dict["age"].append(row["((0010, 1010)-Patients Age)"])
+                            df_dict["main_condition"].append("dementia")
+                            df_dict["processed"].append("no")
+                            df_dict["processed_path"].append("")
 
         df = pd.DataFrame.from_dict(df_dict)
 
-        subjs = set()
+        if check_processed == True:
+            subjs = set()
+            # checks the processed
+            # interate though all the rows to create a set of the subjects
+            for i, subj_path_filtered in enumerate(df["ID"].tolist()):
+                df.loc[i, "processed"] = "no"
+                subjs.add("sub-" + subj_path_filtered)
 
-        # checks the processed
-        # interate though all the rows to create a set of the subjects
-        for i, subj_path_filtered in enumerate(df["ID"].tolist()):
-            df.loc[i, "processed"] = "no"
-            subjs.add("sub-" + subj_path_filtered)
-
-        # iterate though all the directories in the processed path
-        for root, dirs, files in os.walk(self.processed_path):
-            for dir in dirs:
-                if dir in subjs:
-                    # quando trova il soggetto nella crtela modifica il dataframe
-                    for i, subj_path_filtered in enumerate(df["ID"].tolist()):
-                        if dir == "sub-" + subj_path_filtered:
-                            df.loc[i, "processed"] = "yes"
-                            df.loc[i, "processed_path"] = root + "/" + dir
-                            break
+            # iterate though all the directories in the processed path
+            for root, dirs, files in os.walk(self.processed_path):
+                for dir in dirs:
+                    if dir in subjs:
+                        # quando trova il soggetto nella crtela modifica il dataframe
+                        for i, subj_path_filtered in enumerate(df["ID"].tolist()):
+                            if dir == "sub-" + subj_path_filtered:
+                                df.loc[i, "processed"] = "yes"
+                                df.loc[i, "processed_path"] = root + "/" + dir
+                                break
 
         return df
 
@@ -1706,12 +1713,9 @@ class SummaryPlot:
             # creates the age series, to move up
             legend = []
             # creates ages list with all the subjects in the lists
-            #for table, subj_list in zip(self.df_list_obj, subj_lists):
+            # for table, subj_list in zip(self.df_list_obj, subj_lists):
 
-
-
-                # legend.append(table.name)
-
+            # legend.append(table.name)
 
             # creates column list if it doesnt exist
             columns = df_list[0].columns
@@ -1724,7 +1728,7 @@ class SummaryPlot:
             #     columns = range(2, max_len)
             not_done = []
             # idea: for each column you create another dataset with only the average and not the single subjects
-            data_points_list =[]
+            data_points_list = []
 
             for table, subj_list, df_element in zip(self.df_list_obj, subj_lists, df_list):
                 df_element = df_element.set_index("ID")
@@ -1744,7 +1748,7 @@ class SummaryPlot:
                 data_points = full_table.groupby('AgeGroup').mean()
                 data_points.index = age_groups[:-1]
 
-                #print(data_points.head())
+                # print(data_points.head())
                 data_points_list.append(data_points)
 
                 del t, s
@@ -1755,7 +1759,6 @@ class SummaryPlot:
                 # ci = 1.96 * se
                 # data_points_cin = series + ci
                 # data_points_cip = series - ci
-
 
                 # idea: copiare cme ho fatto su comparisons
             for column_to_compare in columns:
@@ -1838,7 +1841,8 @@ class SummaryPlot:
 
         LogWriter.log("line plot")
         for series, age, legend_entry in zip(data, ages, legend):
-            ax.plot(series.index.tolist(), series.tolist(), label=legend_entry)  # mettere il nome della serie e le cose qui
+            ax.plot(series.index.tolist(), series.tolist(),
+                    label=legend_entry)  # mettere il nome della serie e le cose qui
             LogWriter.log(series.name)
             if series.max() > max_:
                 max_ = series.max()
