@@ -268,7 +268,10 @@ class Table:
                                 df_dict["main_condition"].append(row["dx1"])
                                 df_dict["processed"].append("no")
                                 df_dict["processed_path"].append("")
-                        elif self.dataset == "Portuguese":
+
+                    elif self.dataset == "Portuguese":
+                        match = re.split("_", path_on_table.split("/")[-1])
+                        if row["Key"] == match[0]:
                             df_dict["ID"].append(row["PatientID"])
                             df_dict["path"].append(path_on_table)
                             df_dict["age"].append(row["((0010, 1010)-Patients Age)"])
