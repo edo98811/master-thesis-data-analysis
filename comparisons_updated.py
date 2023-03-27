@@ -830,7 +830,7 @@ class Comparison_updated:
 
                     if a.any() and b.any() and (a.notnull().all() and b.notnull().all()):
 
-                        r1, p1, o1 = self.__mann_whitney(a, b)
+                        r1, p1, o1 = self.__wilcoxon(a, b)
                         r2, p2, o2 = self.__t_test(a, b)
                         cd, rd = self.__cohens_d(a, b)
                         # ICC
@@ -839,7 +839,7 @@ class Comparison_updated:
                             column_to_compare_name = _df1.columns[column_to_compare]
 
                             r_all.append({"name": f"{self.name}_{d}_{column_to_compare_name}",
-                                          "mann_whitney": {"result": r1,
+                                          "wilcoxon": {"result": r1,
                                                            "p_value": p1,
                                                            "outcome": o1},
                                           "t_test": {"result": r2,
@@ -850,7 +850,7 @@ class Comparison_updated:
 
                         if isinstance(column_to_compare, str):
                             r_all.append({"name": f"{self.name}_{d}_{column_to_compare}",
-                                          "mann_whitney": {"result": r1,
+                                          "wilcoxon": {"result": r1,
                                                            "p_value": p1,
                                                            "outcome": o1},
                                           "t_test": {"result": r2,
@@ -878,13 +878,13 @@ class Comparison_updated:
 
         # iterates through the rows od the table and applies the correction
         for i, row in self.stat_df_result.iterrows():
-            if type(row["mann_whitney p_value"]) is not str and type(row["mann_whitney p_value"]) is not str and type(
+            if type(row["wilcoxon p_value"]) is not str and type(row["wilcoxon p_value"]) is not str and type(
                     self.updated_alpha) is not str:
-                if row["mann_whitney p_value"] < self.updated_alpha:
+                if row["wilcoxon p_value"] < self.updated_alpha:
                     row[
-                        "mann_whitney message"] = f"p-value: {row['mann_whitney p_value']} - null hypothesis " \
+                        "wilcoxon message"] = f"p-value: {row['wilcoxon p_value']} - null hypothesis " \
                                                   f"rejected, means are not statistically equal "
-                    row["mann_whitney outcome"] = 1
+                    row["wilcoxon outcome"] = 1
             if type(row["t_test p_value"]) is not str and type(row["t_test p_value"]) is not str and type(
                     self.updated_alpha) is not str:
                 if row["t_test p_value"] < self.updated_alpha:
@@ -919,9 +919,9 @@ class Comparison_updated:
 
         for item in list_to_save:
             self.stat_df_result = pd.concat(
-                [self.stat_df_result, pd.DataFrame({"mann_whitney p_value": item["mann_whitney"]["p_value"],
-                                                    "mann_whitney outcome": item["mann_whitney"]["outcome"],
-                                                    "mann_whitney message": item["mann_whitney"]["result"],
+                [self.stat_df_result, pd.DataFrame({"wilcoxon p_value": item["wilcoxon"]["p_value"],
+                                                    "wilcoxon outcome": item["wilcoxon"]["outcome"],
+                                                    "wilcoxon message": item["wilcoxon"]["result"],
                                                     "t_test p_value": item["t_test"]["p_value"],
                                                     "t_test outcome": item["t_test"]["outcome"],
                                                     "t_test message": item["t_test"]["result"],
@@ -952,7 +952,7 @@ class Comparison_updated:
         return result, p_value, outcome
 
     @staticmethod
-    def __mann_whitney(_a, _b):
+    def __wilcoxon(_a, _b):
         # a, b = get_column(column_to_compare, df1, df2)
 
         if "NaN" in _a or "NaN" in _b:
