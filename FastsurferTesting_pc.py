@@ -350,7 +350,8 @@ class Stats:
         LogWriter.log(f"inizializing Stats for {name}")
 
         # here there is the df only already filtered
-        self.df_subj = df_subj_obj.get_query(query)
+        if query:
+            self.df_subj = df_subj_obj.get_query(query)
         self.subj_list = self.add_sub(self.df_subj["ID"].tolist())
         t = deepcopy(self.subj_list)
 
@@ -1429,7 +1430,7 @@ class Comparisons:
         _ax.axhline(md - 1.96 * sd, color='gray', linestyle='--')
         _ax.set_xlabel('Mean')
         _ax.set_ylabel('Difference')
-        _ax.set_title(title)  # query.split("=")[-1])
+        _ax.set_title(title)
         _ax.legend(['Mean difference', '95% limits of agreement'])
         _ax.ticklabel_format(style='sci', axis='x', scilimits=(0, 0), useMathText=True)
         _ax.ticklabel_format(style='sci', axis='y', scilimits=(0, 0), useMathText=True)
