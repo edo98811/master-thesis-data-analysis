@@ -14,7 +14,7 @@ def main():
     ft.LogWriter.clearlog()
 
     table = ft.Table("PORTUGUESE_TABLE", BASE_PATH, dataset_path=DATASET_PATH, p_path=PROCESSED_PATH,
-                     table_file="MPRAGE_SPGR_imgs_Alzheimer/MPRAGE_SPGR_imgs_V2.xlsx")
+                     table_file="MPRAGE_SPGR_imgs_Alzheimer/Patients_dementia.csv")
 
     table.save_csv("Portuguese.csv")
 
