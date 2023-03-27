@@ -26,20 +26,20 @@ def main():
     # stats_free_healthy = ft.Stats("healthy_FREE", BASE_PATH, table, "main_condition=='NL'", alg="free")
     # stats_free_MCI = ft.Stats("NotHealthy_FREE", BASE_PATH, table, "main_condition!='NL'", alg="free")
 
-    stats_fast_healthy = ft.Stats("healthy_FAST", BASE_PATH, table, "")
-    stats_fast_MCI = ft.Stats("NotHealthy_FAST", BASE_PATH, table, "")
-    stats_free_healthy = ft.Stats("healthy_FREE", BASE_PATH, table, "", alg="free")
-    stats_free_MCI = ft.Stats("NotHealthy_FREE", BASE_PATH, table, "", alg="free")
+    # stats_fast_healthy = ft.Stats("healthy_FAST", BASE_PATH, table, "")
+    # stats_fast_MCI = ft.Stats("NotHealthy_FAST", BASE_PATH, table, "")
+    # stats_free_healthy = ft.Stats("healthy_FREE", BASE_PATH, table, "", alg="free")
+    # stats_free_MCI = ft.Stats("NotHealthy_FREE", BASE_PATH, table, "", alg="free")
 
     # stats_free_healthy = ft.Stats("healthy_FREE", BASE_PATH, table, "main_condition=='NL'", aseg=aseg_free,
     #                               aparcRight=aparcR_free, aparcLeft=aparcL_free)
     # stats_free_MC = ft.Stats("MC_FREE", BASE_PATH, table, "main_condition!='NL'", aseg=aseg_free,
     #                          aparcRight=aparcR_free, aparcLeft=aparcL_free)
 
-    stats_fast_healthy.save_stats_files()
-    stats_fast_MCI.save_stats_files()
-    stats_free_healthy.save_stats_files()
-    stats_free_MCI.save_stats_files()
+    # stats_fast_healthy.save_stats_files()
+    # stats_fast_MCI.save_stats_files()
+    # stats_free_healthy.save_stats_files()
+    # stats_free_MCI.save_stats_files()
     #
     # comp1 = ftu.Comparison_updated("NotHealthy_ADNI", BASE_PATH, stats_free_MCI, stats_fast_MCI, d_folder=DATA_FOLDER)
     # comp2 = ftu.Comparison_updated("healthy_ADNI", BASE_PATH, stats_free_healthy, stats_fast_healthy, d_folder=DATA_FOLDER)
