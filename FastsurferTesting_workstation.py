@@ -85,7 +85,7 @@ class Table:
 
     """
 
-    def __init__(self, name, b_path, dataset_path="", p_path="", df_subj=None, d_folder="data_testing_ADNI/"):
+    def __init__(self, name, b_path, dataset_path="", p_path="", df_subj=None, d_folder="data_testing_ADNI/", table_file=""):
         """
         :param name: str - name of the object
         :param b_path: str - base path
@@ -98,7 +98,7 @@ class Table:
         if df_subj is not None:
             self.df = df_subj
         else:
-            self.create_table()
+            self.create_table(table_file)
 
         self.subjects_list = self.df["ID"].tolist()
         if p_path:
