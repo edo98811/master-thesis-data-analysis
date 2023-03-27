@@ -231,6 +231,7 @@ class Table:
         else:
             df_dict = {}
 
+        _paths_on_table = []
         # extracts all the paths for the subjects
         if self.dataset == "ADNI" or self.dataset == "OASIS":
             IDs = Table.add_sub(table["ID"])
@@ -238,9 +239,10 @@ class Table:
             _paths_on_table = set(_paths_in_folder).intersection(Table.add_sub(IDs))
 
         if self.dataset == "Portuguese":
-            _paths_on_table = os.listdir(self.dataset_path)
-        else:
-            _paths_on_table = []
+            root, dirs, files = os.walk(self.dataset_path)
+            for file in files:
+                _paths_on_table.append(f"{root}/{file}")
+
         # populates the dictionary
         # checks that subjects both exist in the table and on the computer
         # for that it needs to check the subdirectory of the subjects exists
@@ -248,23 +250,24 @@ class Table:
         for index, row in table.iterrows():
             for i, path_on_table in enumerate(_paths_on_table):
                 if len(path_on_table.split("/")) > 3:
-                    match = re.split("sub-", path_on_table.split("/")[-4])
-                    if row["ID"] == match[1]:
-                        if self.dataset == "ADNI" and (row["_merge"] == "both" or row["_merge"] == "right_only"):
-                            df_dict["ID"].append(row["ID"])
-                            df_dict["path"].append(path_on_table)
-                            df_dict["age"].append(row["age"])
-                            df_dict["sex"].append(row["sex"])
-                            df_dict["main_condition"].append(row["diagnosis"])
-                            df_dict["processed"].append("no")
-                            df_dict["processed_path"].append("")
-                        elif self.dataset == "ADNI":
-                            df_dict["ID"].append(row["ID"])
-                            df_dict["path"].append(path_on_table)
-                            df_dict["age"].append(row["ageAtEntry"])
-                            df_dict["main_condition"].append(row["dx1"])
-                            df_dict["processed"].append("no")
-                            df_dict["processed_path"].append("")
+                    if self.dataset == "ADNI" or self.dataset == "OASIS":
+                        match = re.split("sub-", path_on_table.split("/")[-4])
+                        if row["ID"] == match[1]:
+                            if self.dataset == "ADNI" and (row["_merge"] == "both" or row["_merge"] == "right_only"):
+                                df_dict["ID"].append(row["ID"])
+                                df_dict["path"].append(path_on_table)
+                                df_dict["age"].append(row["age"])
+                                df_dict["sex"].append(row["sex"])
+                                df_dict["main_condition"].append(row["diagnosis"])
+                                df_dict["processed"].append("no")
+                                df_dict["processed_path"].append("")
+                            elif self.dataset == "ADNI":
+                                df_dict["ID"].append(row["ID"])
+                                df_dict["path"].append(path_on_table)
+                                df_dict["age"].append(row["ageAtEntry"])
+                                df_dict["main_condition"].append(row["dx1"])
+                                df_dict["processed"].append("no")
+                                df_dict["processed_path"].append("")
                         elif self.dataset == "Portuguese":
                             df_dict["ID"].append(row["PatientID"])
                             df_dict["path"].append(path_on_table)
