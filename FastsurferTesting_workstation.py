@@ -85,7 +85,7 @@ class Table:
 
     """
 
-    def __init__(self, name, b_path, dataset_path="", p_path="", df_subj=None, d_folder="data_testing_ADNI/", table_file=""):
+    def __init__(self, name, b_path, dataset_path="", p_path="", df_subj=None, d_folder="data_testing_ADNI/", table_file="", dataset="ADNI"):
         """
         :param name: str - name of the object
         :param b_path: str - base path
@@ -94,7 +94,7 @@ class Table:
         :param d_folder: str - data folder (default: data_testing/)
         """
 
-
+        self.dataset = dataset
         if p_path:
             self.processed_path = p_path
         else:
@@ -191,7 +191,7 @@ class Table:
         pass
         # subprocess.
 
-    def create_table(self, origin_file, dataset="ADNI", check_processed=True):
+    def create_table(self, origin_file, check_processed=True):
         """
         method to create the table if it doesn't exist
         :return:
@@ -200,7 +200,7 @@ class Table:
         table = pd.read_csv(self.base_path + origin_file)
 
         # create the dictionary that will turn into a table
-        if dataset == "ADNI":
+        if self.dataset == "ADNI":
             df_dict = {
                 "ID": [],
                 "path": [],
@@ -210,7 +210,7 @@ class Table:
                 "processed": [],
                 "processed_path": []
             }
-        elif dataset == "OASIS":
+        elif self.dataset == "OASIS":
             df_dict = {
                 "ID": [],
                 "path": [],
@@ -219,7 +219,7 @@ class Table:
                 "processed": [],
                 "processed_path": []
             }
-        elif dataset == "Portuguese":
+        elif self.dataset == "Portuguese":
             df_dict = {
                 "ID": [],
                 "path": [],
@@ -232,12 +232,12 @@ class Table:
             df_dict = {}
 
         # extracts all the paths for the subjects
-        if dataset == "ADNI" or dataset == "OASIS":
+        if self.dataset == "ADNI" or self.dataset == "OASIS":
             IDs = Table.add_sub(table["ID"])
             _paths_in_folder = os.listdir(self.dataset_path)
             _paths_on_table = set(_paths_in_folder).intersection(Table.add_sub(IDs))
 
-        if dataset == "Portuguese":
+        if self.dataset == "Portuguese":
             _paths_on_table = os.listdir(self.dataset_path)
         else:
             _paths_on_table = []
@@ -250,7 +250,7 @@ class Table:
                 if len(path_on_table.split("/")) > 3:
                     match = re.split("sub-", path_on_table.split("/")[-4])
                     if row["ID"] == match[1]:
-                        if dataset == "ADNI" and (row["_merge"] == "both" or row["_merge"] == "right_only"):
+                        if self.dataset == "ADNI" and (row["_merge"] == "both" or row["_merge"] == "right_only"):
                             df_dict["ID"].append(row["ID"])
                             df_dict["path"].append(path_on_table)
                             df_dict["age"].append(row["age"])
@@ -258,14 +258,14 @@ class Table:
                             df_dict["main_condition"].append(row["diagnosis"])
                             df_dict["processed"].append("no")
                             df_dict["processed_path"].append("")
-                        elif dataset == "ADNI":
+                        elif self.dataset == "ADNI":
                             df_dict["ID"].append(row["ID"])
                             df_dict["path"].append(path_on_table)
                             df_dict["age"].append(row["ageAtEntry"])
                             df_dict["main_condition"].append(row["dx1"])
                             df_dict["processed"].append("no")
                             df_dict["processed_path"].append("")
-                        elif dataset == "Portuguese":
+                        elif self.dataset == "Portuguese":
                             df_dict["ID"].append(row["PatientID"])
                             df_dict["path"].append(path_on_table)
                             df_dict["age"].append(row["((0010, 1010)-Patients Age)"])
