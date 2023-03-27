@@ -94,12 +94,6 @@ class Table:
         :param d_folder: str - data folder (default: data_testing/)
         """
 
-        # definition of
-        if df_subj is not None:
-            self.df = df_subj
-        else:
-            self.create_table(table_file)
-
         self.subjects_list = self.df["ID"].tolist()
         if p_path:
             self.processed_path = p_path
@@ -113,6 +107,13 @@ class Table:
 
         if not os.path.exists(self.data_path):
             os.makedirs(self.data_path)
+
+        # definition of
+        if df_subj is not None:
+            self.df = df_subj
+        else:
+            self.create_table(table_file)
+
 
     def update(self):
         """
