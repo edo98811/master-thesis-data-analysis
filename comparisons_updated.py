@@ -360,7 +360,9 @@ class SummaryPlot_updated:
                 subj_lists.append(table.df_stats_aparcR["ID"].tolist())
                 columns.append(set(table.df_stats_aparcR.columns.tolist()))
 
-        columns_set = set(columns[1]).intersection(set(columns[1]), set(columns[2]), set(columns[3]))
+        columns_set = set(columns[0])
+        for column in columns[1:]:
+            columns_set.intersection(set(column))
 
         return df_list, subj_lists, columns_set
 
@@ -383,15 +385,28 @@ class SummaryPlot_updated:
         ages.index = subj_list
 
         full_table = pd.concat([df_element, ages], axis=1)
-        age_groups = np.arange(55, 85, 3)
+        age_groups = np.arange(55, 85, 5)
 
         # Create a new DataFrame to store the results
+        # full_table.drop(columns="Unnamed: 0", inplace=True)
         full_table['AgeGroup'] = pd.cut(full_table['age'], bins=age_groups, labels=age_groups[:-1])
         data_points = full_table.groupby('AgeGroup').mean()
-        data_points.index = age_groups[:-1] + 1
+        data_std = full_table.groupby('AgeGroup').std()
+        data_n = full_table.groupby('AgeGroup').count().iloc[:, 0]
+
+        # concatenate the dataframes, adding keys for each dataframe
+        data_table_all_info = pd.concat([data_points, data_std, data_n], axis=1, keys=['value', 'std', 'count'])
+
+        # create a multi-index from the column names and the dataframe keys
+        list_indexes = [(col, key) for key in ['value', 'std'] for col in data_points.columns]
+        list_indexes.append(("count", "count"))
+        columns = pd.MultiIndex.from_tuples(list_indexes)
+        data_table_all_info.columns = columns
+
+        data_table_all_info.index = [f"{age_groups[i]} - {age_groups[i + 1]}" for i in range(len(age_groups) - 1)]
 
         # print(data_points.head())
-        data_points_list.append(data_points)
+        data_points_list.append(data_table_all_info)
 
     def series_and_legend(self, data_points_list, column_to_compare, d, not_done):
         serieses = []
@@ -400,34 +415,39 @@ class SummaryPlot_updated:
         for i, df in enumerate(data_points_list):
 
             # creation of the serieses to plot and ages
-            series = pd.to_numeric(df[column_to_compare], errors='coerce')
-            series.rename(f"{d}_{self.df_list_obj[i].name}_{column_to_compare}")
-            legend.append(f"{d}_{self.df_list_obj[i].name}_{column_to_compare}")
-            LogWriter.log(f"        {d}_{self.df_list_obj[i].name}_{column_to_compare}. "
-                          f"series name {series.name}")
-            LogWriter.log(f"{legend[-1]}")
-
-            if series.any() and series.notnull().all():
-                serieses.append(series)
-
+            # series = pd.to_numeric(df[column_to_compare, "value"], errors='coerce')
+            if (column_to_compare, "std") in df.columns.tolist():
+                series = df.loc[:, (column_to_compare, ["value", "std"])]
             else:
+                LogWriter.log(f"        not possible: column{column_to_compare}")
+                not_done.append(column_to_compare)
 
-                LogWriter.log(f"        line not possible for column {series.name}")
+            series.name = f"{d}_{self.df_list_obj[i].name}_{column_to_compare}"
+            legend.append(f"{d}_{self.df_list_obj[i].name}_{column_to_compare}")
+            # LogWriter.log(f"        {d}_{self.df_list_obj[i].name}_{column_to_compare}. "
+            #               f"series name {series.name}")
+            # LogWriter.log(f"{legend[-1]}")
 
-                LogWriter.log(f"        {series.tolist()}")
-                LogWriter.log(f"        correction...")
+            #if series.any() and series.notnull().all():
+            # serieses.append(series)
 
-                # to add
-                for i, k in enumerate(series):
-                    if k == "nan":
-                        series.iloc[i] = 0
-                        pass
+            # LogWriter.log(f"        line not possible for column {series.name}")
+            #
+            # LogWriter.log(f"        {series.tolist()}")
+            # LogWriter.log(f"        correction...")
 
-                serieses.append(series)
+            # to add
+            for i, k in enumerate(series[(column_to_compare, "value")]):
+                if k == "nan":
+                    series.iloc[i] = 0
+                    pass
+
+            serieses.append(series)
 
         return serieses, legend
 
-    def comparison_plot_line(self, data=("aseg", "aparcL", "aparcR"), c_to_exclude=("ID"), c_to_keep=None, n_subplots=4, n_rows=2):
+    def comparison_plot_line(self, data=("aseg", "aparcL", "aparcR"), c_to_exclude=("ID", "Unnamed: 0"), c_to_keep=None, n_subplots=4,
+                             n_rows=2):
         """
         :param columns: list of str - list of column names to print (default None: prints all)
         :param data: str - type of input (aseg, aparcL or aparcR)
@@ -453,6 +473,7 @@ class SummaryPlot_updated:
 
             for table, subj_list, df_element in zip(self.df_list_obj, subj_lists, df_list):
                 df_element = df_element.set_index("ID")  # to do in init o in table creation in stats
+                df_element.drop(["Unnamed: 0"], axis=1, inplace=True)  # da controllare
                 self.data_points_calculation(table, subj_list, df_element, data_points_list)
 
                 # aggiungere metodo per calcolare devstd
@@ -483,7 +504,7 @@ class SummaryPlot_updated:
                     if plots_n >= self.max_plot:  # to avoid plotting too much
                         break
 
-            if plots_n % n_subplots != 0:
+            if plots_n % n_subplots != 0 or (plots_n % n_subplots == 0 and plots_n <= n_subplots):
                 fig.savefig(f"{self.data_path}images\\img_{d}_line_{self.name}"
                             f"_{str(plots_n - n_subplots)}-{str(plots_n)}.png")  # save the figure to file
             del axs, fig
@@ -513,14 +534,37 @@ class SummaryPlot_updated:
     def __line_plot(ax, data, title, legend):
         max_ = 0
 
-        LogWriter.log(f"    LINE PLOT")
         for series, legend_entry in zip(data, legend):
+            # series = series.reset_index(level=[1], drop=True)
+            confidence_up = series.iloc[:, 0] + 2 * series.iloc[:, 1]
+            confidence_down = series.iloc[:, 0] - 2 * series.iloc[:, 1]
+
+            values = pd.to_numeric(series.iloc[:, 0], errors='coerce')
+            LogWriter.log(values)
+
+            # values = series.iloc[:, 0]
+            pattern = r"(\d+)\s*-\s*(\d+)"
+            avg = []
+
+
+
+            # x entries
+            for index in values.index.tolist():
+
+                match = re.match(pattern, index)
+                if match:
+                    num1 = int(match.group(1))
+                    num2 = int(match.group(2))
+
+                    avg.append(int((num1 + num2) / 2))
+
+            LogWriter.log(f"    LINE PLOT { ' | '.join(legend)} ")
             if series.index.tolist():
-                ax.plot(series.index.tolist(), series.tolist(),
+                ax.plot(avg, values.tolist(),
                         label=legend_entry)  # mettere il nome della serie e le cose qui
-                LogWriter.log(f"        {series.name}")
-                if series.max() > max_:
-                    max_ = series.max()
+                ax.fill_between(avg, confidence_down, confidence_up, alpha=0.2)
+                if values.max() > max_:
+                    max_ = values.max()
 
         # Add a legend and axis labels
         ax.axis(ymin=0, ymax=max_)
@@ -529,8 +573,6 @@ class SummaryPlot_updated:
         ax.set_ylabel('Data')
         ax.ticklabel_format(style='sci', axis='y', scilimits=(0, 0), useMathText=True)
         ax.set_title(title)
-
-
 
 
 class Comparison_updated:
@@ -569,12 +611,13 @@ class Comparison_updated:
         # create common subjects list and common column list
         self.subjects_list = set(self.stat_df_1.df_subj["ID"].tolist()).intersection(
             set(self.stat_df_2.df_subj["ID"].tolist()))
-        self.columns_list = set(self.stat_df_1.df_subj.columns.tolist()).intersection(
-            set(self.stat_df_2.df_subj.columns.tolist()))
+        # self.columns_list = set(self.stat_df_1.df_subj.columns.tolist()).intersection(
+        #     set(self.stat_df_2.df_subj.columns.tolist()))
 
         # check that there are common subjects and define image path
-        if not self.subjects_list or not self.columns_list:
-            raise "datasets do not have elements in common"
+        # if not self.subjects_list or not self.columns_list:
+        #     raise "datasets do not have elements in common"
+
         if not os.path.exists(self.data_path + "images/"):
             os.makedirs(self.data_path + "images/")
 
@@ -624,30 +667,37 @@ class Comparison_updated:
 
         return df1, df2
 
-    def bland_altmann(self, data=("aseg", "aparcL", "aparcR"), columns=None, n_subplots=4, n_rows=2, c_to_exclude=()):
+    def bland_altmann(self, data=("aseg", "aparcL", "aparcR"), columns=None, n_subplots=4, n_rows=2, c_to_exclude=("ID")):
 
         for d in data:
             img_name = f"{self.data_path}images\\img_{d}_ba_{self.name}"
             self.iterate(self.__bland_altman_plot, d, columns, n_subplots, n_rows, c_to_exclude, img_name)
 
-    def violin(self, data=("aseg", "aparcL", "aparcR"), columns=None, n_subplots=10, n_rows=2, c_to_exclude=()):
+    def violin(self, data=("aseg", "aparcL", "aparcR"), columns=None, n_subplots=10, n_rows=2, c_to_exclude=("ID")):
 
         for d in data:
-
             img_name = f"{self.data_path}images\\img_{d}_violin_{self.name}"
             self.iterate(self.__violin_plot, d, columns, n_subplots, n_rows, c_to_exclude, img_name)
 
-    def iterate(self, function, data, columns, n_subplots, n_rows, c_to_exclude, img_name):
+    def iterate(self, function, data, c_to_keep, n_subplots, n_rows, c_to_exclude, img_name):
         plots_n = 0
         fig, axs = None, None
 
         df1, df2 = self.get_table(data)
 
+        columns_list = set(df1.columns.tolist()).intersection(
+            set(df2.columns.tolist()))
+
+        if c_to_keep is not None:
+            columns = [x for x in columns_list if x in c_to_keep]
+        else:
+            columns = columns_list
+
         if function.__name__ == "bland_altmann":
             df1, df2 = self.__match_dataframes(df1, df2)
 
         not_done = []
-        for column_to_compare in self.columns_list:
+        for i, column_to_compare in enumerate(columns):
             if column_to_compare not in c_to_exclude:
                 a = pd.to_numeric(df1.loc[:, column_to_compare], errors='coerce')
                 b = pd.to_numeric(df2.loc[:, column_to_compare], errors='coerce')
@@ -672,22 +722,21 @@ class Comparison_updated:
 
                 else:
                     not_done.append(a.name)
+                    LogWriter.log(f"excluded {column_to_compare}")
 
                 if plots_n >= self.max_plot:  # to avoid plotting too much
                     break
 
-                else:
-                    LogWriter.log(f"excluded {column_to_compare}")
 
-                if plots_n % n_subplots != 0:
-                    if fig is not None:
-                        fig.savefig(f"{img_name}"
-                                    f"_{str(plots_n - (plots_n % n_subplots))}-{str(plots_n)}.png")  # save the figure to file
+        if plots_n % n_subplots != 0:
+            if fig is not None:
+                fig.savefig(f"{img_name}"
+                            f"_{str(plots_n - (plots_n % n_subplots))}-{str(plots_n)}.png")  # save the figure to file
                 del axs, fig
 
-                LogWriter.log(f"    plotted for {plots_n} variables out of {len(columns)}")
-                not_done_str = ' | '.join(not_done)
-                LogWriter.log(f"    skipped: {not_done_str}")
+        LogWriter.log(f"    plotted for {plots_n} variables out of {i}")
+        not_done_str = ' | '.join(not_done)
+        LogWriter.log(f"    skipped: {not_done_str}")
 
     def get_table(self, data):
         # if data == "aseg":
@@ -723,6 +772,7 @@ class Comparison_updated:
         plt.subplots_adjust(wspace=0.2)
 
         return fig, axs
+
     @staticmethod
     def __violin_plot(_ax, _a, _b, title):
         # Create a DataFrame with the two Series
@@ -840,8 +890,8 @@ class Comparison_updated:
 
                             r_all.append({"name": f"{self.name}_{d}_{column_to_compare_name}",
                                           "wilcoxon": {"result": r1,
-                                                           "p_value": p1,
-                                                           "outcome": o1},
+                                                       "p_value": p1,
+                                                       "outcome": o1},
                                           "t_test": {"result": r2,
                                                      "p_value": p2,
                                                      "outcome": o2},
@@ -851,8 +901,8 @@ class Comparison_updated:
                         if isinstance(column_to_compare, str):
                             r_all.append({"name": f"{self.name}_{d}_{column_to_compare}",
                                           "wilcoxon": {"result": r1,
-                                                           "p_value": p1,
-                                                           "outcome": o1},
+                                                       "p_value": p1,
+                                                       "outcome": o1},
                                           "t_test": {"result": r2,
                                                      "p_value": p2,
                                                      "outcome": o2},
@@ -883,7 +933,7 @@ class Comparison_updated:
                 if row["wilcoxon p_value"] < self.updated_alpha:
                     row[
                         "wilcoxon message"] = f"p-value: {row['wilcoxon p_value']} - null hypothesis " \
-                                                  f"rejected, means are not statistically equal "
+                                              f"rejected, means are not statistically equal "
                     row["wilcoxon outcome"] = 1
             if type(row["t_test p_value"]) is not str and type(row["t_test p_value"]) is not str and type(
                     self.updated_alpha) is not str:
@@ -993,13 +1043,10 @@ class Comparison_updated:
         return d, string
 
 
-
 class Recap:
-
 
     def __init__(self):
         self.df = pd.DataFrame()
-
 
     def add_line(self, list):
         row = pd.series(list)
@@ -1008,4 +1055,3 @@ class Recap:
 
     def save(self, filename="dataframe.csv"):
         self.df.to_csv(filename)
-

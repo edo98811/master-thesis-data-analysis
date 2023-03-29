@@ -6,7 +6,7 @@ from comparisons_updated import SummaryPlot_updated, Comparison_updated
 ADNI_PATH = ""
 # OASIS_PATH = "/media/neuropsycad/disk12t/VascoDiogo/OASIS/FS7/"
 BASE_PATH = "C:\\Users\\edoar\\Dropbox (Politecnico Di Torino Studenti)\\Tesi\\data_testing_ADNI\\"
-DATA_FOLDER = "test_data_ADNI_pc_cp2703\\"
+DATA_FOLDER = "test_data_ADNI_pc_cp2903_prove_con_intervallo_confidenza_solo_amigdala_2\\"
 
 
 def main():
@@ -52,20 +52,20 @@ def main():
     # stats_free_MCI = ft.Stats("MC_FREE", BASE_PATH, table, "main_condition!='NL'", aseg=aseg_free,
     #                          aparcRight=aparcR_free, aparcLeft=aparcL_free)
 
-    stats_fast_healthy.save_stats_files()
-    stats_fast_MCI.save_stats_files()
-    stats_free_healthy.save_stats_files()
-    stats_free_MCI.save_stats_files()
+    # stats_fast_healthy.save_stats_files()
+    # stats_fast_MCI.save_stats_files()
+    # stats_free_healthy.save_stats_files()
+    # stats_free_MCI.save_stats_files()
 
-    comp1 = Comparison_updated("NotHealthy_ADNI", BASE_PATH, stats_free_MCI, stats_fast_MCI, d_folder=DATA_FOLDER)
-    comp2 = Comparison_updated("healthy_ADNI", BASE_PATH, stats_free_healthy, stats_fast_healthy, d_folder=DATA_FOLDER)
-    comp1.stat_test()
-    comp2.stat_test()
-    #
-    comp1.bonferroni_correction()
-    comp2.bonferroni_correction()
-    comp1.save_data()
-    comp2.save_data()
+    # comp1 = Comparison_updated("NotHealthy_ADNI", BASE_PATH, stats_free_MCI, stats_fast_MCI, d_folder=DATA_FOLDER)
+    # comp2 = Comparison_updated("healthy_ADNI", BASE_PATH, stats_free_healthy, stats_fast_healthy, d_folder=DATA_FOLDER)
+    # comp1.stat_test()
+    # comp2.stat_test()
+    # #
+    # comp1.bonferroni_correction()
+    # comp2.bonferroni_correction()
+    # comp1.save_data()
+    # comp2.save_data()
     #
     # comp2.violin()
     # comp2.bland_altmann()
@@ -73,10 +73,33 @@ def main():
     # comp2.violin()
     # comp2.bland_altmann()
 
-    # summary1 = SummaryPlot_updated("summary", BASE_PATH, [stats_free_MCI, stats_fast_MCI, stats_free_healthy,
-    #                                                  stats_fast_healthy], d_folder=DATA_FOLDER)
+    # summary1 = SummaryPlot_updated("summary_not_healthy", BASE_PATH, [stats_free_MCI, stats_fast_MCI],
+    #                                d_folder=DATA_FOLDER)
     # summary1.comparison_plot_line()
 
+
+    comp1 = Comparison_updated("free_ADNI", BASE_PATH, stats_free_MCI, stats_free_healthy, d_folder=DATA_FOLDER)
+    comp2 = Comparison_updated("fast_ADNI", BASE_PATH, stats_fast_MCI, stats_fast_healthy, d_folder=DATA_FOLDER)
+
+    comp1.violin()
+    comp1.bland_altmann()
+
+    comp2.violin()
+    comp2.bland_altmann()
+
+    # summary2 = SummaryPlot_updated("summary_free", BASE_PATH, [stats_free_healthy,stats_free_MCI
+    #                                                               ], d_folder=DATA_FOLDER)
+    # summary2.comparison_plot_line(data=["aseg"], c_to_keep=['Right-Hippocampus_volume_mm3', 'Left-Amygdala_volume_mm3',
+    #                                                       'Left-Hippocampus_volume_mm3', 'Right-Amygdala_volume_mm3'])
+    # summary1 = SummaryPlot_updated("summary_fast", BASE_PATH, [stats_fast_healthy, stats_fast_MCI]
+    #                                , d_folder=DATA_FOLDER)
+    # summary1.comparison_plot_line(data=["aseg"], c_to_keep=['Right-Hippocampus_volume_mm3', 'Left-Amygdala_volume_mm3',
+    #                                                       'Left-Hippocampus_volume_mm3', 'Right-Amygdala_volume_mm3'])
+
+    # summary2.comparison_plot_line(data="aseg", c_to_keep=['Right-Hippocampus_volume_mm3', 'Left-Amygdala_volume_mm3',
+    #                                                       'Left-Hippocampus_volume_mm3', 'Right-Amygdala_volume_mm3'])
+    # summary2.comparison_plot_line(data="aseg", c_to_keep=['Right-Hippocampus_volume_mm3', 'Left-Amygdala_volume_mm3',
+    #                                                       'Left-Hippocampus_volume_mm3', 'Right-Amygdala_volume_mm3'])
     # ft.LogWriter()
 
 
