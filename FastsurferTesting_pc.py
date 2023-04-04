@@ -168,7 +168,7 @@ class Table:
         df = self.df.query(query)
         if only_processed:
             df = df.loc[df['processed'] == 'yes']
-        print(f"table: {self.name} filtered throug query: {query}, {len(df)} subjects found")
+        print(f"    table: {self.name} filtered throug query: {query}, {len(df)} subjects found")
         return df
 
     def save_csv(self, filename):
@@ -303,7 +303,7 @@ class Table:
         l = []
         for i, s in enumerate(_list):
             l.append("sub-" + s)
-        LogWriter.log("    add_sub: correctly added sub- to all the patients")
+        LogWriter.log("        add_sub: correctly added sub- to all the patients")
         return l
 
 
@@ -428,10 +428,10 @@ class Stats:
         self.n_sub = len(self.df_subj)
 
         if self.n_sub > 0:
-            LogWriter.log(f"stats {self.name} correctly initialized {self.n_sub} being considered")
-            LogWriter.log(f"    len aseg {len(self.df_stats_aseg)}")
-            LogWriter.log(f"    len aparcR {len(self.df_stats_aparcL)}")
-            LogWriter.log(f"    len aparcR {len(self.df_stats_aparcR)}")
+            LogWriter.log(f"    stats {self.name} correctly initialized {self.n_sub} being considered")
+            LogWriter.log(f"        len aseg {len(self.df_stats_aseg)}")
+            LogWriter.log(f"        len aparcR {len(self.df_stats_aparcL)}")
+            LogWriter.log(f"        len aparcR {len(self.df_stats_aparcR)}")
         else:
             LogWriter.log(f"stats {self.name} EMPTY")
         # print(len(self.subj_list))
@@ -446,7 +446,7 @@ class Stats:
         l = []
         for i, s in enumerate(_list):
             l.append("sub-" + s)
-        LogWriter.log("    add_sub: correctly added sub- to all the patients")
+        LogWriter.log("     add_sub: correctly added sub- to all the patients")
         return l
 
     @staticmethod
@@ -464,7 +464,7 @@ class Stats:
         if len(l) != len(_list):
             LogWriter.log("warning deletesub: wrong number of subjects matched the pattern sub-#######...")
         else:
-            LogWriter.log("    delete_sub: correctly deleted sub- from all the patients")
+            LogWriter.log("         delete_sub: correctly deleted sub- from all the patients")
         return l
 
     def extract_stats_fast(self, stats_filename, _type):

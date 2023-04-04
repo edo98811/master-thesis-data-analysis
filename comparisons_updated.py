@@ -9,6 +9,10 @@ import numpy as np
 from copy import deepcopy
 import pingouin as pg
 import FastsurferTesting_pc as ft
+from sklearn import metrics
+from sklearn.linear_model import LinearRegression
+from sklearn.metrics import r2_score
+
 
 """
 todo:
@@ -428,7 +432,7 @@ class SummaryPlot_updated:
             #               f"series name {series.name}")
             # LogWriter.log(f"{legend[-1]}")
 
-            #if series.any() and series.notnull().all():
+            # if series.any() and series.notnull().all():
             # serieses.append(series)
 
             # LogWriter.log(f"        line not possible for column {series.name}")
@@ -446,7 +450,8 @@ class SummaryPlot_updated:
 
         return serieses, legend
 
-    def comparison_plot_line(self, data=("aseg", "aparcL", "aparcR"), c_to_exclude=("ID", "Unnamed: 0"), c_to_keep=None, n_subplots=4,
+    def comparison_plot_line(self, data=("aseg", "aparcL", "aparcR"), c_to_exclude=("ID", "Unnamed: 0"), c_to_keep=None,
+                             n_subplots=4,
                              n_rows=2):
         """
         :param columns: list of str - list of column names to print (default None: prints all)
@@ -482,9 +487,9 @@ class SummaryPlot_updated:
 
             for column_to_compare in columns:
                 if column_to_compare not in c_to_exclude:
-                    LogWriter.log(f"        column{column_to_compare}")
+                    # LogWriter.log(f"        column{column_to_compare}")
 
-                    title = f"{d} {column_to_compare}"
+                    title = f"{d} {column_to_compare} \n {self.name}"
 
                     serieses, legend = self.series_and_legend(data_points_list, column_to_compare, d, not_done)
 
@@ -540,13 +545,11 @@ class SummaryPlot_updated:
             confidence_down = series.iloc[:, 0] - 2 * series.iloc[:, 1]
 
             values = pd.to_numeric(series.iloc[:, 0], errors='coerce')
-            LogWriter.log(values)
+            # LogWriter.log(values)
 
             # values = series.iloc[:, 0]
             pattern = r"(\d+)\s*-\s*(\d+)"
             avg = []
-
-
 
             # x entries
             for index in values.index.tolist():
@@ -558,13 +561,13 @@ class SummaryPlot_updated:
 
                     avg.append(int((num1 + num2) / 2))
 
-            LogWriter.log(f"    LINE PLOT { ' | '.join(legend)} ")
+            LogWriter.log(f"    LINE PLOT {' | '.join(legend)} ")
             if series.index.tolist():
                 ax.plot(avg, values.tolist(),
                         label=legend_entry)  # mettere il nome della serie e le cose qui
                 ax.fill_between(avg, confidence_down, confidence_up, alpha=0.2)
-                if values.max() > max_:
-                    max_ = values.max()
+                if confidence_up.max() > max_:
+                    max_ = confidence_up.max()
 
         # Add a legend and axis labels
         ax.axis(ymin=0, ymax=max_)
@@ -574,11 +577,55 @@ class SummaryPlot_updated:
         ax.ticklabel_format(style='sci', axis='y', scilimits=(0, 0), useMathText=True)
         ax.set_title(title)
 
+    @staticmethod
+    def avg_vector(series, pattern = r"(\d+)\s*-\s*(\d+)"):
+
+        avg = []
+
+        # x entries
+        for index in series.index.tolist():
+
+            match = re.match(pattern, index)
+            if match:
+                num1 = int(match.group(1))
+                num2 = int(match.group(2))
+
+                avg.append(int((num1 + num2) / 2))
+        return avg
+
+    @staticmethod
+    def model_fit(ax, data, title, legend):
+
+        max_ = 0
+        r2 = []
+
+        for series, legend_entry in zip(data, legend):
+
+            values = pd.to_numeric(series.iloc[:, 0], errors='coerce')
+            avg = SummaryPlot_updated.avg_vector(values)
+            max_ = max(values)*1.5
+
+            linear_model = LinearRegression().fit(avg, values)
+            r2.append(r2_score(linear_model.predict(avg), values))
+            results = linear_model.predict(np.linspace(avg[0], avg[-1], 100))
+            LogWriter.log(f"    LINEAR REGRESSION {' | '.join(legend)} ")
+            if series.index.tolist():
+                ax.plot(avg, results,
+                        label=legend_entry)
+            print(f"R2 score {legend_entry}: {r2[-1]} ")
+
+        # Add a legend and axis labels
+        ax.axis(ymin=0, ymax=max_)
+        ax.legend()
+        ax.set_xlabel('Age')
+        ax.set_ylabel('Data')
+        ax.ticklabel_format(style='sci', axis='y', scilimits=(0, 0), useMathText=True)
+        ax.set_title(title)
 
 class Comparison_updated:
 
     def __init__(self, name, b_path, stats_df_1, stats_df_2, alpha=0.05, d_folder="data_testing_ADNI/",
-                 columns_to_test=None,
+                 categories=("FastSurfer", "FreeSurfer"),
                  max_plot=500):
         """
         :param name: str - name of the object
@@ -629,6 +676,7 @@ class Comparison_updated:
         self.alpha = alpha
         self.updated_alpha = "no correction"
         self.max_plot = max_plot
+        self.categories = categories
 
         self.stat_df_result = None
 
@@ -667,17 +715,22 @@ class Comparison_updated:
 
         return df1, df2
 
-    def bland_altmann(self, data=("aseg", "aparcL", "aparcR"), columns=None, n_subplots=4, n_rows=2, c_to_exclude=("ID")):
+    def bland_altmann(self, data=("aseg", "aparcL", "aparcR"), c_to_keep=None, n_subplots=4, n_rows=2,
+                      c_to_exclude=("ID")):
+
+        if not self.subjects_list:
+            LogWriter.log("bland altmannn: datasets do not have elements in common")
+            return
 
         for d in data:
             img_name = f"{self.data_path}images\\img_{d}_ba_{self.name}"
-            self.iterate(self.__bland_altman_plot, d, columns, n_subplots, n_rows, c_to_exclude, img_name)
+            self.iterate(self.__bland_altman_plot, d, c_to_keep, n_subplots, n_rows, c_to_exclude, img_name)
 
-    def violin(self, data=("aseg", "aparcL", "aparcR"), columns=None, n_subplots=10, n_rows=2, c_to_exclude=("ID")):
+    def violin(self, data=("aseg", "aparcL", "aparcR"), c_to_keep=None, n_subplots=10, n_rows=2, c_to_exclude=("ID")):
 
         for d in data:
             img_name = f"{self.data_path}images\\img_{d}_violin_{self.name}"
-            self.iterate(self.__violin_plot, d, columns, n_subplots, n_rows, c_to_exclude, img_name)
+            self.iterate(self.__violin_plot, d, c_to_keep, n_subplots, n_rows, c_to_exclude, img_name)
 
     def iterate(self, function, data, c_to_keep, n_subplots, n_rows, c_to_exclude, img_name):
         plots_n = 0
@@ -693,7 +746,7 @@ class Comparison_updated:
         else:
             columns = columns_list
 
-        if function.__name__ == "bland_altmann":
+        if function.__name__ == "__bland_altman_plot":
             df1, df2 = self.__match_dataframes(df1, df2)
 
         not_done = []
@@ -711,10 +764,6 @@ class Comparison_updated:
                                             f"_{str(plots_n - n_subplots)}-{str(plots_n)}.png")  # save the figure to file
 
                         fig, axs = self.create_plot(n_subplots, n_rows)
-                        # fig, axs = plt.subplots(n_rows, int(n_subplots / n_rows), figsize=(40, 20))
-                        # axs = axs.ravel()
-                        # plt.subplots_adjust(hspace=0.5)
-                        # plt.subplots_adjust(wspace=0.2)
 
                     if function is not None:
                         function(axs[plots_n % n_subplots], a, b, title=a.name + "\n" + self.name)
@@ -722,11 +771,10 @@ class Comparison_updated:
 
                 else:
                     not_done.append(a.name)
-                    LogWriter.log(f"excluded {column_to_compare}")
+                    # LogWriter.log(f"        excluded {column_to_compare}")
 
                 if plots_n >= self.max_plot:  # to avoid plotting too much
                     break
-
 
         if plots_n % n_subplots != 0:
             if fig is not None:
@@ -734,7 +782,7 @@ class Comparison_updated:
                             f"_{str(plots_n - (plots_n % n_subplots))}-{str(plots_n)}.png")  # save the figure to file
                 del axs, fig
 
-        LogWriter.log(f"    plotted for {plots_n} variables out of {i}")
+        LogWriter.log(f"    {self.name} - plotted for {plots_n} variables out of {i+1}")
         not_done_str = ' | '.join(not_done)
         LogWriter.log(f"    skipped: {not_done_str}")
 
@@ -773,13 +821,12 @@ class Comparison_updated:
 
         return fig, axs
 
-    @staticmethod
-    def __violin_plot(_ax, _a, _b, title):
+    def __violin_plot(self, _ax, _a, _b, title):
         # Create a DataFrame with the two Series
         # df = pd.DataFrame({'Freesurfer': _a, 'Fastsurfer': _b})
 
         df = pd.DataFrame({'Data': pd.concat([_a, _b]),
-                           'Group': ['FreeSurfer'] * len(_a) + ['FastSurfer'] * len(_b),
+                           'Group': [self.categories[0]] * len(_a) + [self.categories[1]] * len(_b),
                            "Area": [_a.name] * (len(_a) + len(_b))})
 
         # Create a split violin plot
