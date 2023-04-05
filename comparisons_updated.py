@@ -11,8 +11,9 @@ import pingouin as pg
 import FastsurferTesting_pc as ft
 from sklearn import metrics
 from sklearn.linear_model import LinearRegression
+from sklearn.preprocessing import PolynomialFeatures
+from sklearn.pipeline import make_pipeline
 from sklearn.metrics import r2_score
-
 
 """
 todo:
@@ -518,6 +519,74 @@ class SummaryPlot_updated:
             not_done_str = ' | '.join(not_done)
             LogWriter.log(f"    skipped: {not_done_str}")
 
+    def model_fit(self, data=("aseg", "aparcL", "aparcR"), c_to_exclude=("ID", "Unnamed: 0"), c_to_keep=None,
+                  n_subplots=4,
+                  n_rows=2):
+        """
+        :param columns: list of str - list of column names to print (default None: prints all)
+        :param data: str - type of input (aseg, aparcL or aparcR)
+        :param n_subplots:
+        :param n_rows:
+        :return:
+        """
+
+        # saves the dataframes from the stats object
+        LogWriter.log(f"\n")
+        LogWriter.log(f"    line plot:{self.name}...")
+
+        for d in data:
+            df_list, subj_lists, columns = self.create_list(
+                d)  # questa si potrebbe fare anche in init, cosi lo devo fare una volta sola
+            plots_n = 0
+
+            if c_to_keep is not None:
+                columns = [x for x in columns if x in c_to_keep]
+
+            not_done = []
+            data_points_list = []
+
+            for table, subj_list, df_element in zip(self.df_list_obj, subj_lists, df_list):
+                df_element = df_element.set_index("ID")  # to do in init o in table creation in stats
+                df_element.drop(["Unnamed: 0"], axis=1, inplace=True)  # da controllare
+                self.data_points_calculation(table, subj_list, df_element, data_points_list)
+
+                # aggiungere metodo per calcolare devstd
+
+                # idea: copiare cme ho fatto su comparisons
+
+            for column_to_compare in columns:
+                if column_to_compare not in c_to_exclude:
+                    # LogWriter.log(f"        column{column_to_compare}")
+
+                    title = f"{d} {column_to_compare} \n {self.name}"
+
+                    serieses, legend = self.series_and_legend(data_points_list, column_to_compare, d, not_done)
+
+                    if not len(serieses):
+                        continue
+                    # selects the column from all the dataframes and puts them in a list of series
+
+                    if not plots_n % n_subplots:
+                        if plots_n > 1:
+                            fig.savefig(f"{self.data_path}images\\img_{d}_line_{self.name}"
+                                        f"_{str(plots_n - n_subplots)}-{str(plots_n)}.png")  # save the figure to file
+                        fig, axs = self.create_plot(n_subplots, n_rows)
+
+                    self.__model_fit(axs[plots_n % n_subplots], serieses, title, legend)
+                    plots_n += 1
+
+                    if plots_n >= self.max_plot:  # to avoid plotting too much
+                        break
+
+            if plots_n % n_subplots != 0 or (plots_n % n_subplots == 0 and plots_n <= n_subplots):
+                fig.savefig(f"{self.data_path}images\\img_{d}_line_{self.name}"
+                            f"_{str(plots_n - n_subplots)}-{str(plots_n)}.png")  # save the figure to file
+            del axs, fig
+
+            LogWriter.log(f"    plotted {plots_n} variables out of {len(columns)}")
+            not_done_str = ' | '.join(not_done)
+            LogWriter.log(f"    skipped: {not_done_str}")
+
     @staticmethod
     def __scatter_plot(ax, data, ages, title, legend):
         max_ = 0
@@ -578,7 +647,7 @@ class SummaryPlot_updated:
         ax.set_title(title)
 
     @staticmethod
-    def avg_vector(series, pattern = r"(\d+)\s*-\s*(\d+)"):
+    def avg_vector(series, pattern=r"(\d+)\s*-\s*(\d+)"):
 
         avg = []
 
@@ -594,7 +663,7 @@ class SummaryPlot_updated:
         return avg
 
     @staticmethod
-    def model_fit(ax, data, title, legend):
+    def __model_fit(ax, data, title, legend):
 
         max_ = 0
         r2 = []
@@ -603,16 +672,48 @@ class SummaryPlot_updated:
 
             values = pd.to_numeric(series.iloc[:, 0], errors='coerce')
             avg = SummaryPlot_updated.avg_vector(values)
-            max_ = max(values)*1.5
+            max_ = max(values) * 1.5
 
-            linear_model = LinearRegression().fit(avg, values)
-            r2.append(r2_score(linear_model.predict(avg), values))
-            results = linear_model.predict(np.linspace(avg[0], avg[-1], 100))
             LogWriter.log(f"    LINEAR REGRESSION {' | '.join(legend)} ")
+            linear_model = LinearRegression().fit(np.array(avg).reshape(-1, 1), np.array(values).reshape(-1, 1))
+            # r2.append(r2_score(linear_model.predict(avg), values))
+            results = linear_model.predict(np.linspace(avg[0], avg[-1], 100))
+
             if series.index.tolist():
                 ax.plot(avg, results,
                         label=legend_entry)
-            print(f"R2 score {legend_entry}: {r2[-1]} ")
+
+            R21 = r2_score(linear_model.predict(avg), values)
+
+            LogWriter.log(f"    QUADRATIC LINEAR REGRESSION {' | '.join(legend)} ")
+            quadreatic_model = make_pipeline(PolynomialFeatures(2), LinearRegression())
+            quadreatic_model.fit(np.array(avg).reshape(-1, 1), np.array(values).reshape(-1, 1)).predict((np.linspace(avg[0], avg[-1], 100)))
+
+            if series.index.tolist():
+                ax.plot(avg, results,
+                        label=legend_entry)
+
+            R22 = r2_score(linear_model.predict(avg), values)
+            LogWriter.log(f"    CUBIC LINEAR REGRESSION {' | '.join(legend)} ")
+
+            quadreatic_model = make_pipeline(PolynomialFeatures(2), LinearRegression())
+            quadreatic_model.fit(np.array(avg).reshape(-1, 1), np.array(values).reshape(-1, 1)).predict((np.linspace(avg[0], avg[-1], 100)))
+
+            if series.index.tolist():
+                ax.plot(avg, results,
+                        label=legend_entry)
+
+            R23 = r2_score(linear_model.predict(avg), values)
+
+            # print(f"R2 score {legend_entry}: {r2[-1]} ")
+
+            textstr = '\n'.join((
+                r'$R2 linear=%.2f$' % (R21,),
+                r'$R2 quadratic=%.2f$' % (R22,),
+                r'$R2 cubic=%.2f$' % (R23,)))
+
+            ax.text(0.05, 0.95, textstr, transform=ax.transAxes, fontsize=14,
+                    verticalalignment='top')
 
         # Add a legend and axis labels
         ax.axis(ymin=0, ymax=max_)
@@ -621,6 +722,7 @@ class SummaryPlot_updated:
         ax.set_ylabel('Data')
         ax.ticklabel_format(style='sci', axis='y', scilimits=(0, 0), useMathText=True)
         ax.set_title(title)
+
 
 class Comparison_updated:
 
@@ -782,7 +884,7 @@ class Comparison_updated:
                             f"_{str(plots_n - (plots_n % n_subplots))}-{str(plots_n)}.png")  # save the figure to file
                 del axs, fig
 
-        LogWriter.log(f"    {self.name} - plotted for {plots_n} variables out of {i+1}")
+        LogWriter.log(f"    {self.name} - plotted for {plots_n} variables out of {i + 1}")
         not_done_str = ' | '.join(not_done)
         LogWriter.log(f"    skipped: {not_done_str}")
 
