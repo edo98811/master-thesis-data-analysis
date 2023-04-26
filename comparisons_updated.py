@@ -390,7 +390,7 @@ class SummaryPlot_updated:
         ages.index = subj_list
 
         full_table = pd.concat([df_element, ages], axis=1)
-        age_groups = np.arange(55, 85, 5)
+        age_groups = np.arange(55, 90, 5)
 
         # Create a new DataFrame to store the results
         # full_table.drop(columns="Unnamed: 0", inplace=True)
@@ -429,23 +429,41 @@ class SummaryPlot_updated:
 
             series.name = f"{d}_{self.df_list_obj[i].name}_{column_to_compare}"
             legend.append(f"{d}_{self.df_list_obj[i].name}_{column_to_compare}")
-            # LogWriter.log(f"        {d}_{self.df_list_obj[i].name}_{column_to_compare}. "
-            #               f"series name {series.name}")
-            # LogWriter.log(f"{legend[-1]}")
 
-            # if series.any() and series.notnull().all():
-            # serieses.append(series)
-
-            # LogWriter.log(f"        line not possible for column {series.name}")
-            #
-            # LogWriter.log(f"        {series.tolist()}")
-            # LogWriter.log(f"        correction...")
 
             # to add
             for i, k in enumerate(series[(column_to_compare, "value")]):
                 if k == "nan":
                     series.iloc[i] = 0
                     pass
+
+            serieses.append(series)
+
+        return serieses, legend
+
+    def _model_fit_legend(self, data_points_list, column_to_compare, d, not_done):
+        serieses = []
+        legend = []
+
+        for i, df in enumerate(data_points_list):
+
+            # creation of the serieses to plot and ages
+            # series = pd.to_numeric(df[column_to_compare, "value"], errors='coerce')
+            if column_to_compare in df.columns.tolist():
+                series = df.loc[:, [column_to_compare, "age"]]
+            else:
+                LogWriter.log(f"        not possible: column{column_to_compare}")
+                not_done.append(column_to_compare)
+
+            series.name = f"{d}_{self.df_list_obj[i].name}_{column_to_compare}"
+            legend.append(f"{d}_{self.df_list_obj[i].name}_{column_to_compare}")
+
+
+            # to add
+            # for i, k in enumerate(series[(column_to_compare, "value")]):
+            #     if k == "nan":
+            #         series.iloc[i] = 0
+            #         pass
 
             serieses.append(series)
 
@@ -464,7 +482,7 @@ class SummaryPlot_updated:
 
         # saves the dataframes from the stats object
         LogWriter.log(f"\n")
-        LogWriter.log(f"    line plot:{self.name}...")
+        LogWriter.log(f"    scatter plot with ages: {self.name}...")
 
         for d in data:
             df_list, subj_lists, columns = self.create_list(
@@ -518,6 +536,138 @@ class SummaryPlot_updated:
             LogWriter.log(f"    plotted {plots_n} variables out of {len(columns)}")
             not_done_str = ' | '.join(not_done)
             LogWriter.log(f"    skipped: {not_done_str}")
+    def scatter_plot(self, data=("aseg", "aparcL", "aparcR"), c_to_exclude=("ID", "Unnamed: 0"), c_to_keep=None,
+                  n_subplots=4,
+                  n_rows=2):
+        """
+        :param columns: list of str - list of column names to print (default None: prints all)
+        :param data: str - type of input (aseg, aparcL or aparcR)
+        :param n_subplots:
+        :param n_rows:
+        :return:
+        """
+
+        # saves the dataframes from the stats object
+        LogWriter.log(f"\n")
+        LogWriter.log(f"    line plot:{self.name}...")
+
+        for d in data:
+            df_list, subj_lists, columns = self.create_list(
+                d)  # questa si potrebbe fare anche in init, cosi lo devo fare una volta sola
+            plots_n = 0
+
+            if c_to_keep is not None:
+                columns = [x for x in columns if x in c_to_keep]
+
+            not_done = []
+            data_points_list = []
+
+            for table, subj_list, df_element in zip(self.df_list_obj, subj_lists, df_list):
+                df_element = df_element.set_index("ID")  # to do in init o in table creation in stats
+                df_element.drop(["Unnamed: 0"], axis=1, inplace=True)  # da controllare
+
+                s = list(ft.Stats.delete_sub(subj_list))
+                t = table.df_subj[table.df_subj['ID'].isin(s)]
+                ages = t.loc[:, "age"]
+                ages.index = subj_list
+                full_table = pd.concat([df_element, ages], axis=1)
+                # self.data_points_calculation(table, subj_list, df_element, data_points_list)
+                data_points_list.append(full_table)
+
+            for column_to_compare in columns:
+                if column_to_compare not in c_to_exclude:
+                    # LogWriter.log(f"        column{column_to_compare}")
+
+                    title = f"{d} {column_to_compare} \n {self.name}"
+
+                    serieses, legend = self._model_fit_legend(data_points_list, column_to_compare, d, not_done)
+
+                    if not len(serieses):
+                        continue
+                    # selects the column from all the dataframes and puts them in a list of series
+
+                    if not plots_n % n_subplots:
+                        if plots_n > 1:
+                            fig.savefig(f"{self.data_path}images\\img_{d}_line_{self.name}"
+                                        f"_{str(plots_n - n_subplots)}-{str(plots_n)}.png")  # save the figure to file
+                        fig, axs = self.create_plot(n_subplots, n_rows)
+
+                    self.__scatter_plot2(axs[plots_n % n_subplots], serieses, title, legend)
+                    plots_n += 1
+
+                    if plots_n >= self.max_plot:  # to avoid plotting too much
+                        break
+
+            if plots_n % n_subplots != 0 or (plots_n % n_subplots == 0 and plots_n <= n_subplots):
+                fig.savefig(f"{self.data_path}images\\img_{d}_line_{self.name}"
+                            f"_{str(plots_n - plots_n % n_subplots)}-{str(plots_n)}.png")  # save the figure to file
+            del axs, fig
+
+            LogWriter.log(f"    plotted {plots_n} variables out of {len(columns)}")
+            not_done_str = ' | '.join(not_done)
+            LogWriter.log(f"    skipped: {not_done_str}")
+    def scatter_plot_aseg_with_ages(self, data=("aseg_normalized",), c_to_exclude=(), c_to_keep=None,
+                  n_subplots=6,
+                  n_rows=2):
+        """
+        :param columns: list of str - list of column names to print (default None: prints all)
+        :param data: str - type of input (aseg, aparcL or aparcR)
+        :param n_subplots:
+        :param n_rows:
+        :return:
+        """
+
+        # saves the dataframes from the stats object
+        LogWriter.log(f"\n")
+        LogWriter.log(f"    scatter plot with ages: {self.name}...")
+
+        for d in data:
+            df_list = [n.aseg_normalized for n in self.df_list_obj]
+            columns = df_list[0].columns
+            plots_n = 0
+
+            if c_to_keep is not None:
+                columns = [x for x in columns if x in c_to_keep]
+
+            not_done = []
+            data_points_list = []
+
+            for df_element in df_list:
+
+                data_points_list.append(df_element)
+
+            for column_to_compare in columns:
+                if column_to_compare not in c_to_exclude:
+                    # LogWriter.log(f"        column{column_to_compare}")
+
+                    title = f"{d} {column_to_compare} \n {self.name}"
+
+                    serieses, legend = self._model_fit_legend(data_points_list, column_to_compare, d, not_done)
+
+                    if not len(serieses):
+                        continue
+                    # selects the column from all the dataframes and puts them in a list of series
+
+                    if not plots_n % n_subplots:
+                        if plots_n > 1:
+                            fig.savefig(f"{self.data_path}images\\img_{d}_scatter_normalized_{self.name}"
+                                        f"_{str(plots_n - n_subplots)}-{str(plots_n)}.png")  # save the figure to file
+                        fig, axs = self.create_plot(n_subplots, n_rows)
+
+                    self.__scatter_plot_2(axs[plots_n % n_subplots], serieses, title, legend)
+                    plots_n += 1
+
+                    if plots_n >= self.max_plot:  # to avoid plotting too much
+                        break
+
+            if plots_n % n_subplots != 0 or (plots_n % n_subplots == 0 and plots_n <= n_subplots):
+                fig.savefig(f"{self.data_path}images\\img_{d}_scatter_normalized_{self.name}"
+                            f"_{str(plots_n - plots_n % n_subplots)}-{str(plots_n)}.png")  # save the figure to file
+            del axs, fig
+
+            LogWriter.log(f"    plotted {plots_n} variables out of {len(columns)}")
+            not_done_str = ' | '.join(not_done)
+            LogWriter.log(f"    skipped: {not_done_str}")
 
     def model_fit(self, data=("aseg", "aparcL", "aparcR"), c_to_exclude=("ID", "Unnamed: 0"), c_to_keep=None,
                   n_subplots=4,
@@ -548,11 +698,14 @@ class SummaryPlot_updated:
             for table, subj_list, df_element in zip(self.df_list_obj, subj_lists, df_list):
                 df_element = df_element.set_index("ID")  # to do in init o in table creation in stats
                 df_element.drop(["Unnamed: 0"], axis=1, inplace=True)  # da controllare
-                self.data_points_calculation(table, subj_list, df_element, data_points_list)
 
-                # aggiungere metodo per calcolare devstd
-
-                # idea: copiare cme ho fatto su comparisons
+                s = list(ft.Stats.delete_sub(subj_list))
+                t = table.df_subj[table.df_subj['ID'].isin(s)]
+                ages = t.loc[:, "age"]
+                ages.index = subj_list
+                full_table = pd.concat([df_element, ages], axis=1)
+                # self.data_points_calculation(table, subj_list, df_element, data_points_list)
+                data_points_list.append(full_table)
 
             for column_to_compare in columns:
                 if column_to_compare not in c_to_exclude:
@@ -560,7 +713,7 @@ class SummaryPlot_updated:
 
                     title = f"{d} {column_to_compare} \n {self.name}"
 
-                    serieses, legend = self.series_and_legend(data_points_list, column_to_compare, d, not_done)
+                    serieses, legend = self._model_fit_legend(data_points_list, column_to_compare, d, not_done)
 
                     if not len(serieses):
                         continue
@@ -580,7 +733,7 @@ class SummaryPlot_updated:
 
             if plots_n % n_subplots != 0 or (plots_n % n_subplots == 0 and plots_n <= n_subplots):
                 fig.savefig(f"{self.data_path}images\\img_{d}_line_{self.name}"
-                            f"_{str(plots_n - n_subplots)}-{str(plots_n)}.png")  # save the figure to file
+                            f"_{str(plots_n - plots_n % n_subplots)}-{str(plots_n)}.png")  # save the figure to file
             del axs, fig
 
             LogWriter.log(f"    plotted {plots_n} variables out of {len(columns)}")
@@ -604,6 +757,24 @@ class SummaryPlot_updated:
         ax.ticklabel_format(style='sci', axis='y', scilimits=(0, 0), useMathText=True)
         ax.set_title(title)
 
+    @staticmethod
+    def __scatter_plot_2(ax, data, title, legend):
+        max_ = 0
+
+        for i, (series, legend_entry) in enumerate(zip(data, legend)):
+
+            values = pd.to_numeric(series.iloc[:, 0], errors='coerce')
+            age = pd.to_numeric(series.iloc[:,1], errors='coerce')
+            max_ = max(values) * 1.5
+            ax.scatter(age, values.tolist(), label=legend_entry)  # mettere il nome della serie e le cose qui
+
+      # Add a legend and axis labels
+        ax.axis(ymin=0, ymax=max_)
+        ax.legend()
+        ax.set_xlabel('Age')
+        ax.set_ylabel('Data')
+        ax.ticklabel_format(style='sci', axis='y', scilimits=(0, 0), useMathText=True)
+        ax.set_title(title)
     @staticmethod
     def __line_plot(ax, data, title, legend):
         max_ = 0
@@ -666,44 +837,48 @@ class SummaryPlot_updated:
     def __model_fit(ax, data, title, legend):
 
         max_ = 0
-        r2 = []
 
-        for series, legend_entry in zip(data, legend):
+        for i, (series, legend_entry) in enumerate(zip(data, legend)):
 
             values = pd.to_numeric(series.iloc[:, 0], errors='coerce')
-            avg = SummaryPlot_updated.avg_vector(values)
+            ages = pd.to_numeric(series.iloc[:,1], errors='coerce')
             max_ = max(values) * 1.5
+            x = np.linspace(min(ages), max(ages), 100)
 
             LogWriter.log(f"    LINEAR REGRESSION {' | '.join(legend)} ")
-            linear_model = LinearRegression().fit(np.array(avg).reshape(-1, 1), np.array(values).reshape(-1, 1))
-            # r2.append(r2_score(linear_model.predict(avg), values))
-            results = linear_model.predict(np.linspace(avg[0], avg[-1], 100))
+            linear_model = LinearRegression().fit(np.array(ages).reshape(-1, 1), np.array(values).reshape(-1, 1))
+            # r2.append(r2_score(linear_model.predict(avg.reshape(-1,1), values).reshape(-1,1)
+            results = linear_model.predict(x.reshape(-1, 1))
 
             if series.index.tolist():
-                ax.plot(avg, results,
+                ax.plot(x, results,
                         label=legend_entry)
 
-            R21 = r2_score(linear_model.predict(avg), values)
+            R21 = r2_score(linear_model.predict(np.array(ages).reshape(-1, 1)), np.array(values).reshape(-1, 1))
 
             LogWriter.log(f"    QUADRATIC LINEAR REGRESSION {' | '.join(legend)} ")
-            quadreatic_model = make_pipeline(PolynomialFeatures(2), LinearRegression())
-            quadreatic_model.fit(np.array(avg).reshape(-1, 1), np.array(values).reshape(-1, 1)).predict((np.linspace(avg[0], avg[-1], 100)))
+            quadratic_model = make_pipeline(PolynomialFeatures(2), LinearRegression())
+            quadratic_model.fit(np.array(ages).reshape(-1, 1), np.array(values).reshape(-1, 1)).predict(
+                (x.reshape(-1, 1)))
+
+            results = quadratic_model.predict(x.reshape(-1, 1))
 
             if series.index.tolist():
-                ax.plot(avg, results,
+                ax.plot(x, results,
                         label=legend_entry)
 
-            R22 = r2_score(linear_model.predict(avg), values)
+            R22 = r2_score(quadratic_model.predict(np.array(ages).reshape(-1, 1)), np.array(values).reshape(-1, 1))
             LogWriter.log(f"    CUBIC LINEAR REGRESSION {' | '.join(legend)} ")
 
-            quadreatic_model = make_pipeline(PolynomialFeatures(2), LinearRegression())
-            quadreatic_model.fit(np.array(avg).reshape(-1, 1), np.array(values).reshape(-1, 1)).predict((np.linspace(avg[0], avg[-1], 100)))
+            cubic_model = make_pipeline(PolynomialFeatures(2), LinearRegression())
+            cubic_model.fit(np.array(ages).reshape(-1, 1), np.array(values).reshape(-1, 1)).predict((x.reshape(-1, 1)))
+            results = cubic_model.predict(x.reshape(-1, 1))
 
             if series.index.tolist():
-                ax.plot(avg, results,
+                ax.plot(x, results,
                         label=legend_entry)
 
-            R23 = r2_score(linear_model.predict(avg), values)
+            R23 = r2_score(cubic_model.predict(np.array(ages).reshape(-1, 1)), np.array(values).reshape(-1, 1))
 
             # print(f"R2 score {legend_entry}: {r2[-1]} ")
 
@@ -712,12 +887,12 @@ class SummaryPlot_updated:
                 r'$R2 quadratic=%.2f$' % (R22,),
                 r'$R2 cubic=%.2f$' % (R23,)))
 
-            ax.text(0.05, 0.95, textstr, transform=ax.transAxes, fontsize=14,
+            ax.text(0.05 + 0.18 * i, 0.95, textstr, transform=ax.transAxes, fontsize=14,
                     verticalalignment='top')
 
         # Add a legend and axis labels
         ax.axis(ymin=0, ymax=max_)
-        ax.legend()
+        ax.legend(loc='lower right')
         ax.set_xlabel('Age')
         ax.set_ylabel('Data')
         ax.ticklabel_format(style='sci', axis='y', scilimits=(0, 0), useMathText=True)
