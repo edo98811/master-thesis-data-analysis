@@ -852,16 +852,14 @@ class Stats:
 
         return paths_found
 
-    def save_stats_with_age(self):
+    def normalize_stats_age(self):
 
         s = list(Stats.delete_sub(self.subj_list))
         t = self.df_subj[self.df_subj['ID'].isin(s)]
         ages = t.loc[:, "age"]
         ages.index = self.subj_list
 
-        path = self.data_path + self.name + "_stats_ages"
-        if not os.path.exists(path):
-            os.makedirs(path)
+
         t = self.df_stats_aseg.set_index("ID")
         t.drop("Unnamed: 0", axis=1, inplace=True)
         t = t.div(t['EstimatedTotalIntraCranialVol'], axis=0)
@@ -871,10 +869,39 @@ class Stats:
         age_column = df_stats_aseg_with_ages.pop('age')
 
         df_stats_aseg_with_ages.insert(0, 'age', age_column)
-        df_stats_aseg_with_ages.to_excel((path + "\\" + "aseg_normalized.xlsx"))
+
 
         LogWriter.log("     patient normalized saved for " + self.name)
         self.aseg_normalized = df_stats_aseg_with_ages
+
+    def normalize_stats_mmse(self):
+
+        s = list(Stats.delete_sub(self.subj_list))
+        t = self.df_subj[self.df_subj['ID'].isin(s)]
+        ages = t.loc[:, "age"]
+        ages.index = self.subj_list
+
+
+        t = self.df_stats_aseg.set_index("ID")
+        t.drop("Unnamed: 0", axis=1, inplace=True)
+        t = t.div(t['EstimatedTotalIntraCranialVol'], axis=0)
+
+        df_stats_aseg_with_ages = pd.concat([t, ages], axis=1)
+        df_stats_aseg_with_ages.pop('EstimatedTotalIntraCranialVol')
+        age_column = df_stats_aseg_with_ages.pop('age')
+
+        df_stats_aseg_with_ages.insert(0, 'age', age_column)
+
+
+        LogWriter.log("     patient normalized saved for " + self.name)
+        self.aseg_normalized = df_stats_aseg_with_ages
+
+
+    def save_stats_normalized(self):
+        path = self.data_path + self.name + "_stats_normalized"
+        if not os.path.exists(path):
+            os.makedirs(path)
+        self.aseg_normalized.to_excel((path + "\\" + "aseg_normalized.xlsx"))
         # a questo punto dovrei aggiungere un modo per plottare, in realtà ho gia scritto la funzione per farlo quindi non
         # dovrebbe essere lungo
 class Comparisons:

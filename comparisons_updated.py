@@ -3,6 +3,7 @@ import matplotlib.pyplot as plt
 import os
 import re
 from scipy import stats
+import scipy as sp
 import seaborn as sns
 import data_manipulation as dm
 import numpy as np
@@ -10,7 +11,7 @@ from copy import deepcopy
 import pingouin as pg
 import FastsurferTesting_pc as ft
 from sklearn import metrics
-from sklearn.linear_model import LinearRegression
+from sklearn.linear_model import LinearRegression, HuberRegressor
 from sklearn.preprocessing import PolynomialFeatures
 from sklearn.pipeline import make_pipeline
 from sklearn.metrics import r2_score
@@ -211,8 +212,10 @@ class SummaryPlot_updated:
 
         if not os.path.exists(self.data_path):
             os.makedirs(self.data_path)
-        if not os.path.exists(self.data_path + "\\images"):
-            os.makedirs(self.data_path + "\\images")
+        # if not os.path.exists(self.data_path + "\\images"):
+        #     os.makedirs(self.data_path + "\\images")
+        #     os.makedirs(self.data_path + "\\images_linear_regression")
+        #     os.makedirs(self.data_path + "\\images_huber")
 
         # self.subjects_list = self.df["ID"].tolist()
         # self.columns_list = self.df.columns.tolist()
@@ -430,7 +433,6 @@ class SummaryPlot_updated:
             series.name = f"{d}_{self.df_list_obj[i].name}_{column_to_compare}"
             legend.append(f"{d}_{self.df_list_obj[i].name}_{column_to_compare}")
 
-
             # to add
             for i, k in enumerate(series[(column_to_compare, "value")]):
                 if k == "nan":
@@ -458,6 +460,31 @@ class SummaryPlot_updated:
             series.name = f"{d}_{self.df_list_obj[i].name}_{column_to_compare}"
             legend.append(f"{d}_{self.df_list_obj[i].name}_{column_to_compare}")
 
+            # to add
+            # for i, k in enumerate(series[(column_to_compare, "value")]):
+            #     if k == "nan":
+            #         series.iloc[i] = 0
+            #         pass
+
+            serieses.append(series)
+
+        return serieses, legend
+    def _model_fit_legend_mmse(self, data_points_list, column_to_compare, d, not_done):
+        serieses = []
+        legend = []
+
+        for i, df in enumerate(data_points_list):
+
+            # creation of the serieses to plot and ages
+            # series = pd.to_numeric(df[column_to_compare, "value"], errors='coerce')
+            if column_to_compare in df.columns.tolist():
+                series = df.loc[:, [column_to_compare, "MMSE"]]
+            else:
+                LogWriter.log(f"        not possible: column{column_to_compare}")
+                not_done.append(column_to_compare)
+
+            series.name = f"{d}_{self.df_list_obj[i].name}_{column_to_compare}"
+            legend.append(f"{d}_{self.df_list_obj[i].name}_{column_to_compare}")
 
             # to add
             # for i, k in enumerate(series[(column_to_compare, "value")]):
@@ -536,9 +563,10 @@ class SummaryPlot_updated:
             LogWriter.log(f"    plotted {plots_n} variables out of {len(columns)}")
             not_done_str = ' | '.join(not_done)
             LogWriter.log(f"    skipped: {not_done_str}")
+
     def scatter_plot(self, data=("aseg", "aparcL", "aparcR"), c_to_exclude=("ID", "Unnamed: 0"), c_to_keep=None,
-                  n_subplots=4,
-                  n_rows=2):
+                     n_subplots=4,
+                     n_rows=2):
         """
         :param columns: list of str - list of column names to print (default None: prints all)
         :param data: str - type of input (aseg, aparcL or aparcR)
@@ -606,9 +634,10 @@ class SummaryPlot_updated:
             LogWriter.log(f"    plotted {plots_n} variables out of {len(columns)}")
             not_done_str = ' | '.join(not_done)
             LogWriter.log(f"    skipped: {not_done_str}")
-    def scatter_plot_aseg_with_ages(self, data=("aseg_normalized",), c_to_exclude=(), c_to_keep=None,
-                  n_subplots=6,
-                  n_rows=2):
+
+    def scatter_plot_aseg_normalized_linear_regression(self, data=("aseg_normalized",), c_to_exclude=(), c_to_keep=None,
+                                                       n_subplots=6,
+                                                       n_rows=2):
         """
         :param columns: list of str - list of column names to print (default None: prints all)
         :param data: str - type of input (aseg, aparcL or aparcR)
@@ -616,14 +645,22 @@ class SummaryPlot_updated:
         :param n_rows:
         :return:
         """
-
+        if not os.path.exists(self.data_path + "\\images_linear_regression"):
+            os.makedirs(self.data_path + "\\images_linear_regression")
         # saves the dataframes from the stats object
         LogWriter.log(f"\n")
         LogWriter.log(f"    scatter plot with ages: {self.name}...")
+        if hasattr(self, 'fitted_models'): del self.fitted_models
+        self.fitted_models = {
+            "legend_entry": [],
+            "first_coefficient": [],
+            "intercept": [],
+            "R2": [],
+            "message": []}
 
         for d in data:
             df_list = [n.aseg_normalized for n in self.df_list_obj]
-            columns = df_list[0].columns
+            columns = df_list[0].columns  # da mettere a posto magari
             plots_n = 0
 
             if c_to_keep is not None:
@@ -633,7 +670,6 @@ class SummaryPlot_updated:
             data_points_list = []
 
             for df_element in df_list:
-
                 data_points_list.append(df_element)
 
             for column_to_compare in columns:
@@ -650,24 +686,243 @@ class SummaryPlot_updated:
 
                     if not plots_n % n_subplots:
                         if plots_n > 1:
-                            fig.savefig(f"{self.data_path}images\\img_{d}_scatter_normalized_{self.name}"
-                                        f"_{str(plots_n - n_subplots)}-{str(plots_n)}.png")  # save the figure to file
+                            fig.savefig(
+                                f"{self.data_path}images_linear_regression\\img_{d}_scatter_normalized{self.name}"
+                                f"_{str(plots_n - n_subplots)}-{str(plots_n)}.png")  # save the figure to file
                         fig, axs = self.create_plot(n_subplots, n_rows)
 
-                    self.__scatter_plot_2(axs[plots_n % n_subplots], serieses, title, legend)
+                    self.__scatter_plot_linear_regression(axs[plots_n % n_subplots], serieses, title, legend)
                     plots_n += 1
 
                     if plots_n >= self.max_plot:  # to avoid plotting too much
                         break
 
             if plots_n % n_subplots != 0 or (plots_n % n_subplots == 0 and plots_n <= n_subplots):
-                fig.savefig(f"{self.data_path}images\\img_{d}_scatter_normalized_{self.name}"
+                fig.savefig(f"{self.data_path}images_linear_regression\\img_{d}_scatter_normalized{self.name}"
                             f"_{str(plots_n - plots_n % n_subplots)}-{str(plots_n)}.png")  # save the figure to file
             del axs, fig
 
             LogWriter.log(f"    plotted {plots_n} variables out of {len(columns)}")
             not_done_str = ' | '.join(not_done)
             LogWriter.log(f"    skipped: {not_done_str}")
+            pd.DataFrame.from_dict(self.fitted_models).to_excel(f"{self.data_path}\\{self.name}_{d}_linear.xlsx")
+            # dm.write_txt(self.fitted_models, f"{self.data_path}\\{self.name}_{d}.txt")
+    def scatter_plot_aseg_mmse(self, data=("aseg_normalized_mmse",), c_to_exclude=(), c_to_keep=None,
+                                                      n_subplots=6,
+                                                      n_rows=2):
+        """
+        :param columns: list of str - list of column names to print (default None: prints all)
+        :param data: str - type of input (aseg, aparcL or aparcR)
+        :param n_subplots:
+        :param n_rows:
+        :return:
+        """
+        if not os.path.exists(self.data_path + "\\images_confidence_intervals"):
+            os.makedirs(self.data_path + "\\images_confidence_intervals")
+
+        # saves the dataframes from the stats object
+        LogWriter.log(f"\n")
+        LogWriter.log(f"    scatter plot with ages: {self.name}...")
+        if hasattr(self, 'fitted_models'): del self.fitted_models
+        self.fitted_models = {
+            "legend_entry": [],
+            "first_coefficient": [],
+            "intercept": [],
+            "R2": []}
+
+        for d in data:
+            if data == "aseg_normalized":
+                df_list = [n.aseg_normalized for n in self.df_list_obj]
+            elif data == "aseg_normalized_mmse":
+                df_list = [n.aseg_normalized_mmse for n in self.df_list_obj]
+            columns = df_list[0].columns  # da mettere a posto magari
+            plots_n = 0
+
+            if c_to_keep is not None:
+                columns = [x for x in columns if x in c_to_keep]
+
+            not_done = []
+            data_points_list = []
+
+            for df_element in df_list:
+                data_points_list.append(df_element)
+
+            for column_to_compare in columns:
+                if column_to_compare not in c_to_exclude:
+                    # LogWriter.log(f"        column{column_to_compare}")
+
+                    title = f"{d} {column_to_compare} \n {self.name}"
+
+                    serieses, legend = self._model_fit_legend(data_points_list, column_to_compare, d, not_done)
+
+                    if not len(serieses):
+                        continue
+                    # selects the column from all the dataframes and puts them in a list of series
+
+                    if not plots_n % n_subplots:
+                        if plots_n > 1:
+                            fig.savefig(f"{self.data_path}images\\img_{d}_confidence_{self.name}"
+                                        f"_{str(plots_n - n_subplots)}-{str(plots_n)}.png")  # save the figure to file
+                        fig, axs = self.create_plot(n_subplots, n_rows)
+
+                    self.__scatter_plot_confidence_intervals_internet(axs[plots_n % n_subplots], serieses, title, legend)
+                    plots_n += 1
+
+                    if plots_n >= self.max_plot:  # to avoid plotting too much
+                        break
+
+            if plots_n % n_subplots != 0 or (plots_n % n_subplots == 0 and plots_n <= n_subplots):
+                fig.savefig(f"{self.data_path}images\\img_{d}_confidence_{self.name}"
+                            f"_{str(plots_n - plots_n % n_subplots)}-{str(plots_n)}.png")  # save the figure to file
+            del axs, fig
+
+            LogWriter.log(f"    plotted {plots_n} variables out of {len(columns)}")
+            not_done_str = ' | '.join(not_done)
+            LogWriter.log(f"    skipped: {not_done_str}")
+            pd.DataFrame.from_dict(self.fitted_models).to_excel(f"{self.data_path}\\{self.name}_{d}_linear.xlsx")
+            # dm.write_txt(self.fitted_models, f"{self.data_path}\\{self.name}_{d}.txt")
+    def scatter_plot_aseg_normalized_regression_confidence(self, data=("aseg_normalized",), c_to_exclude=(), c_to_keep=None,
+                                                      n_subplots=6,
+                                                      n_rows=2):
+        """
+        :param columns: list of str - list of column names to print (default None: prints all)
+        :param data: str - type of input (aseg, aparcL or aparcR)
+        :param n_subplots:
+        :param n_rows:
+        :return:
+        """
+        if not os.path.exists(self.data_path + "\\images_confidence_intervals"):
+            os.makedirs(self.data_path + "\\images_confidence_intervals")
+
+        # saves the dataframes from the stats object
+        LogWriter.log(f"\n")
+        LogWriter.log(f"    scatter plot with ages: {self.name}...")
+        if hasattr(self, 'fitted_models'): del self.fitted_models
+        self.fitted_models = {
+            "legend_entry": [],
+            "first_coefficient": [],
+            "intercept": [],
+            "R2": []}
+
+        for d in data:
+            df_list = [n.aseg_normalized for n in self.df_list_obj]
+            columns = df_list[0].columns  # da mettere a posto magari
+            plots_n = 0
+
+            if c_to_keep is not None:
+                columns = [x for x in columns if x in c_to_keep]
+
+            not_done = []
+            data_points_list = []
+
+            for df_element in df_list:
+                data_points_list.append(df_element)
+
+            for column_to_compare in columns:
+                if column_to_compare not in c_to_exclude:
+                    # LogWriter.log(f"        column{column_to_compare}")
+
+                    title = f"{d} {column_to_compare} \n {self.name}"
+
+                    serieses, legend = self._model_fit_legend(data_points_list, column_to_compare, d, not_done)
+
+                    if not len(serieses):
+                        continue
+                    # selects the column from all the dataframes and puts them in a list of series
+
+                    if not plots_n % n_subplots:
+                        if plots_n > 1:
+                            fig.savefig(f"{self.data_path}images_confidence_intervals\\img_{d}_confidence_{self.name}"
+                                        f"_{str(plots_n - n_subplots)}-{str(plots_n)}.png")  # save the figure to file
+                        fig, axs = self.create_plot(n_subplots, n_rows)
+
+                    self.__scatter_plot_confidence_intervals_internet(axs[plots_n % n_subplots], serieses, title, legend)
+                    plots_n += 1
+
+                    if plots_n >= self.max_plot:  # to avoid plotting too much
+                        break
+
+            if plots_n % n_subplots != 0 or (plots_n % n_subplots == 0 and plots_n <= n_subplots):
+                fig.savefig(f"{self.data_path}images_confidence_intervals\\img_{d}_confidence_{self.name}"
+                            f"_{str(plots_n - plots_n % n_subplots)}-{str(plots_n)}.png")  # save the figure to file
+            del axs, fig
+
+            LogWriter.log(f"    plotted {plots_n} variables out of {len(columns)}")
+            not_done_str = ' | '.join(not_done)
+            LogWriter.log(f"    skipped: {not_done_str}")
+            pd.DataFrame.from_dict(self.fitted_models).to_excel(f"{self.data_path}\\{self.name}_{d}_linear.xlsx")
+            # dm.write_txt(self.fitted_models, f"{self.data_path}\\{self.name}_{d}.txt")
+    def scatter_plot_aseg_normalized_huber_regression(self, data=("aseg_normalized",), c_to_exclude=(), c_to_keep=None,
+                                                      n_subplots=6,
+                                                      n_rows=2):
+        """
+        :param columns: list of str - list of column names to print (default None: prints all)
+        :param data: str - type of input (aseg, aparcL or aparcR)
+        :param n_subplots:
+        :param n_rows:
+        :return:
+        """
+        if not os.path.exists(self.data_path + "\\images_huber_loss"):
+            os.makedirs(self.data_path + "\\images_huber_loss")
+        # saves the dataframes from the stats object
+        LogWriter.log(f"\n")
+        LogWriter.log(f"    scatter plot with ages: {self.name}...")
+        if hasattr(self, 'fitted_models'): del self.fitted_models
+        self.fitted_models = {
+            "legend_entry": [],
+            "first_coefficient": [],
+            "intercept": [],
+            "R2": [],
+            "message": []}
+
+        for d in data:
+            df_list = [n.aseg_normalized for n in self.df_list_obj]
+            columns = df_list[0].columns  # da mettere a posto magari
+            plots_n = 0
+
+            if c_to_keep is not None:
+                columns = [x for x in columns if x in c_to_keep]
+
+            not_done = []
+            data_points_list = []
+
+            for df_element in df_list:
+                data_points_list.append(df_element)
+
+            for column_to_compare in columns:
+                if column_to_compare not in c_to_exclude:
+                    # LogWriter.log(f"        column{column_to_compare}")
+
+                    title = f"{d} {column_to_compare} \n {self.name}"
+
+                    serieses, legend = self._model_fit_legend(data_points_list, column_to_compare, d, not_done)
+
+                    if not len(serieses):
+                        continue
+                    # selects the column from all the dataframes and puts them in a list of series
+
+                    if not plots_n % n_subplots:
+                        if plots_n > 1:
+                            fig.savefig(f"{self.data_path}images_huber_loss\\img_{d}_scatter_normalized_{self.name}"
+                                        f"_{str(plots_n - n_subplots)}-{str(plots_n)}.png")  # save the figure to file
+                        fig, axs = self.create_plot(n_subplots, n_rows)
+
+                    self.__scatter_plot_huber(axs[plots_n % n_subplots], serieses, title, legend)
+                    plots_n += 1
+
+                    if plots_n >= self.max_plot:  # to avoid plotting too much
+                        break
+
+            if plots_n % n_subplots != 0 or (plots_n % n_subplots == 0 and plots_n <= n_subplots):
+                fig.savefig(f"{self.data_path}images_huber_loss\\img_{d}_scatter_normalized_{self.name}"
+                            f"_{str(plots_n - plots_n % n_subplots)}-{str(plots_n)}.png")  # save the figure to file
+            del axs, fig
+
+            LogWriter.log(f"    plotted {plots_n} variables out of {len(columns)}")
+            not_done_str = ' | '.join(not_done)
+            LogWriter.log(f"    skipped: {not_done_str}")
+            pd.DataFrame.from_dict(self.fitted_models).to_excel(f"{self.data_path}\\{self.name}_{d}_huber.xlsx")
+            # dm.write_txt(self.fitted_models, f"{self.data_path}\\{self.name}_{d}.txt")
 
     def model_fit(self, data=("aseg", "aparcL", "aparcR"), c_to_exclude=("ID", "Unnamed: 0"), c_to_keep=None,
                   n_subplots=4,
@@ -758,23 +1013,201 @@ class SummaryPlot_updated:
         ax.set_title(title)
 
     @staticmethod
-    def __scatter_plot_2(ax, data, title, legend):
+    def plot_ci_manual(t, s_err, n, x, x2, y2, ax=None, color="b"):
+        """Return an axes of confidence bands using a simple approach.
+
+        Notes
+        -----
+        .. math:: \left| \: \hat{\mu}_{y|x0} - \mu_{y|x0} \: \right| \; \leq \; T_{n-2}^{.975} \; \hat{\sigma} \; \sqrt{\frac{1}{n}+\frac{(x_0-\bar{x})^2}{\sum_{i=1}^n{(x_i-\bar{x})^2}}}
+        .. math:: \hat{\sigma} = \sqrt{\sum_{i=1}^n{\frac{(y_i-\hat{y})^2}{n-2}}}
+
+        References
+        ----------
+        .. [1] M. Duarte.  "Curve fitting," Jupyter Notebook.
+           http://nbviewer.ipython.org/github/demotu/BMC/blob/master/notebooks/CurveFitting.ipynb
+
+        """
+        if ax is None:
+            ax = plt.gca()
+
+        ci = t * s_err * np.sqrt(1 / n + (x2 - np.mean(x)) ** 2 / np.sum((x - np.mean(x)) ** 2))
+        ax.fill_between(x2, y2 + ci, y2 - ci, alpha=0.3, color=color)
+
+        return ax
+
+    @staticmethod
+    def plot_ci_bootstrap(xs, ys, resid, nboot=500, ax=None, color=None):
+        """Return an axes of confidence bands using a bootstrap approach.
+
+        Notes
+        -----
+        The bootstrap approach iteratively resampling residuals.
+        It plots `nboot` number of straight lines and outlines the shape of a band.
+        The density of overlapping lines indicates improved confidence.
+
+        Returns
+        -------
+        ax : axes
+            - Cluster of lines
+            - Upper and Lower bounds (high and low) (optional)  Note: sensitive to outliers
+
+        References
+        ----------
+        .. [1] J. Stults. "Visualizing Confidence Intervals", Various Consequences.
+           http://www.variousconsequences.com/2010/02/visualizing-confidence-intervals.html
+
+        """
+        if ax is None:
+            ax = plt.gca()
+
+        bootindex = sp.random.randint
+
+        for _ in range(nboot):
+            resamp_resid = resid[bootindex(0, len(resid) - 1, len(resid))]
+            # Make coeffs of for polys
+            pc = sp.polyfit(xs, ys + resamp_resid, 1)
+            # Plot bootstrap cluster
+            ax.plot(xs, sp.polyval(pc, xs), "b-", linewidth=2, alpha=3.0 / float(nboot))
+
+        return ax
+
+    def __scatter_plot_confidence_intervals_internet(self, ax, data, title, legend):
         max_ = 0
+        LogWriter.log(f"    regression with intervals from normalized data {' | '.join(legend)} ")
 
         for i, (series, legend_entry) in enumerate(zip(data, legend)):
+            color = next(ax._get_lines.prop_cycler)['color']
+            y = pd.to_numeric(series.iloc[:, 0], errors='coerce')
+            x = pd.to_numeric(series.iloc[:, 1], errors='coerce')
+            if max(y) > max_: max_ = max(y) * 1.5
+            p, cov = np.polyfit(x, y, 1, cov=True)  # parameters and covariance from of the fit of 1-D polynom.
+            y_model = np.polyval(p, x)  # model using the fit parameters; NOTE: parameters here are coefficients
 
-            values = pd.to_numeric(series.iloc[:, 0], errors='coerce')
-            age = pd.to_numeric(series.iloc[:,1], errors='coerce')
-            max_ = max(values) * 1.5
-            ax.scatter(age, values.tolist(), label=legend_entry)  # mettere il nome della serie e le cose qui
+            # Statistics
+            n = x.size  # number of observations
+            m = p.size  # number of parameters
+            dof = n - m  # degrees of freedom
+            t = stats.t.ppf(0.975, n - m)  # t-statistic; used for CI and PI bands
 
-      # Add a legend and axis labels
+            # Estimates of Error in Data/Model
+            resid = y - y_model  # residuals; diff. actual data from predicted values
+            chi2 = np.sum((resid / y_model) ** 2)  # chi-squared; estimates error in data
+            chi2_red = chi2 / dof  # reduced chi-squared; measures goodness of fit
+            s_err = np.sqrt(np.sum(resid ** 2) / dof)  # standard deviation of the error
+            R2 = r2_score(x, y_model)
+
+            self.fitted_models["legend_entry"].append(legend_entry)
+            self.fitted_models["first_coefficient"].append(p[0])
+            self.fitted_models["intercept"].append(p[1])
+            self.fitted_models["R2"].append(R2)
+
+
+            # Data
+            ax.plot(x, y, "o", alpha=0.5, label=legend_entry, color=color)
+                # , color="#b9cfe7", markersize=8,
+                # markeredgewidth=1, markeredgecolor="b", markerfacecolor="None")
+
+            # Fit
+            ax.plot(x, y_model, "-", color=color, alpha = 0.3)
+
+            #, color="0.1", linewidth=1.5, alpha=0.5, label="Fit")
+            x2 = np.linspace(np.min(x), np.max(x), 100)
+            y2 = np.polyval(p, x2)
+
+            # Confidence Interval (select one)
+            SummaryPlot_updated.plot_ci_manual(t, s_err, n, x, x2, y2, ax=ax, color=color)
+            # plot_ci_bootstrap(x, y, resid, ax=ax)
+
+            # Prediction Interval
+            pi = t * s_err * np.sqrt(1 + 1 / n + (x2 - np.mean(x)) ** 2 / np.sum((x - np.mean(x)) ** 2))
+            ax.fill_between(x2, y2 + pi, y2 - pi, color="None", linestyle="--", alpha=0.5)
+            ax.plot(x2, y2 - pi, "--", color="0.5", label="_95% Prediction Limits")
+            ax.plot(x2, y2 + pi, "--", color="0.5")
+
         ax.axis(ymin=0, ymax=max_)
         ax.legend()
         ax.set_xlabel('Age')
         ax.set_ylabel('Data')
         ax.ticklabel_format(style='sci', axis='y', scilimits=(0, 0), useMathText=True)
         ax.set_title(title)
+
+    def __scatter_plot_huber(self, ax, data, title, legend):
+        max_ = 0
+        LogWriter.log(f"    huber regression from normalized data {' | '.join(legend)} ")
+        for i, (series, legend_entry) in enumerate(zip(data, legend)):
+
+            values = pd.to_numeric(series.iloc[:, 0], errors='coerce')
+            age = pd.to_numeric(series.iloc[:, 1], errors='coerce')
+            max_ = max(values) * 1.5
+            ax.scatter(age, values.tolist(), label=legend_entry)  # mettere il nome della serie e le cose qui
+
+            x = np.linspace(min(age), max(age), 100)
+
+
+            huber_loss_model = HuberRegressor().fit(np.array(age).reshape(-1, 1),
+                                                    np.array(values).reshape(-1, 1).ravel())
+            # r2.append(r2_score(linear_model.predict(avg.reshape(-1,1), values).reshape(-1,1)
+            results = huber_loss_model.predict(x.reshape(-1, 1))
+
+            if series.index.tolist():
+                ax.plot(x, results,
+                        label="_legend_entry")
+
+            R2 = r2_score(np.array(values).reshape(-1, 1), huber_loss_model.predict(np.array(age).reshape(-1, 1)))
+
+            self.fitted_models["legend_entry"].append(legend_entry)
+            self.fitted_models["first_coefficient"].append(huber_loss_model.coef_[0])
+            self.fitted_models["intercept"].append(huber_loss_model.intercept_)
+            self.fitted_models["R2"].append(R2)
+            self.fitted_models["message"].append(
+                f"{legend_entry} equation: {huber_loss_model.coef_[0]}x + {huber_loss_model.intercept_}  r2: {R2}")
+
+        # Add a legend and axis labels
+        ax.axis(ymin=0, ymax=max_)
+        ax.legend()
+        ax.set_xlabel('Age')
+        ax.set_ylabel('Data')
+        ax.ticklabel_format(style='sci', axis='y', scilimits=(0, 0), useMathText=True)
+        ax.set_title(title)
+
+    def __scatter_plot_linear_regression(self, ax, data, title, legend):
+        max_ = 0
+
+        for i, (series, legend_entry) in enumerate(zip(data, legend)):
+
+            values = pd.to_numeric(series.iloc[:, 0], errors='coerce')
+            age = pd.to_numeric(series.iloc[:, 1], errors='coerce')
+            max_ = max(values) * 1.5
+            ax.scatter(age, values.tolist(), label=legend_entry)  # mettere il nome della serie e le cose qui
+
+            x = np.linspace(min(age), max(age), 100)
+
+            LogWriter.log(f"    linear regression from normalized data {' | '.join(legend)} ")
+            linear_model = LinearRegression().fit(np.array(age).reshape(-1, 1), np.array(values).reshape(-1, 1))
+            # r2.append(r2_score(linear_model.predict(avg.reshape(-1,1), values).reshape(-1,1)
+            results = linear_model.predict(x.reshape(-1, 1))
+
+            if series.index.tolist():
+                ax.plot(x, results,
+                        label="_legend_entry")
+
+            R2 = r2_score(np.array(values).reshape(-1, 1), linear_model.predict(np.array(age).reshape(-1, 1)))
+
+            self.fitted_models["legend_entry"].append(legend_entry)
+            self.fitted_models["first_coefficient"].append(linear_model.coef_[0][0])
+            self.fitted_models["intercept"].append(linear_model.intercept_[0])
+            self.fitted_models["R2"].append(R2)
+            self.fitted_models["message"].append(
+                f"{legend_entry} equation: {linear_model.coef_[0][0]}x + {linear_model.intercept_[0]}  r2: {R2}")
+
+        # Add a legend and axis labels
+        ax.axis(ymin=0, ymax=max_)
+        ax.legend()
+        ax.set_xlabel('Age')
+        ax.set_ylabel('Data')
+        ax.ticklabel_format(style='sci', axis='y', scilimits=(0, 0), useMathText=True)
+        ax.set_title(title)
+
     @staticmethod
     def __line_plot(ax, data, title, legend):
         max_ = 0
@@ -841,7 +1274,7 @@ class SummaryPlot_updated:
         for i, (series, legend_entry) in enumerate(zip(data, legend)):
 
             values = pd.to_numeric(series.iloc[:, 0], errors='coerce')
-            ages = pd.to_numeric(series.iloc[:,1], errors='coerce')
+            ages = pd.to_numeric(series.iloc[:, 1], errors='coerce')
             max_ = max(values) * 1.5
             x = np.linspace(min(ages), max(ages), 100)
 

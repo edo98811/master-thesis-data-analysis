@@ -6,7 +6,7 @@ from comparisons_updated import SummaryPlot_updated, Comparison_updated
 ADNI_PATH = ""
 # OASIS_PATH = "/media/neuropsycad/disk12t/VascoDiogo/OASIS/FS7/"
 BASE_PATH = "C:\\Users\\edoar\\Dropbox (Politecnico Di Torino Studenti)\\Tesi\\data_testing_ADNI\\"
-DATA_FOLDER = "test_data_ADNI_dopo_incontro\\"
+DATA_FOLDER = "test_data_ADNI_2804\\"
 
 
 def main():
@@ -46,14 +46,46 @@ def main():
     stats_free_MCI = ft.Stats("NotHealthy_FREE", BASE_PATH, table, "main_condition!='NL'", d_folder=DATA_FOLDER,
                               alg="free", aseg=aseg_free_a,
                               aparcRight=aparcR_free_a, aparcLeft=aparcL_free_a)
+    #
+    stats_free_MCI.normalize_stats_age()
+    stats_free_healthy.normalize_stats_age()
+    stats_fast_MCI.normalize_stats_age()
+    stats_fast_healthy.normalize_stats_age()
 
-    stats_free_MCI.save_stats_with_age()
-    stats_free_healthy.save_stats_with_age()
-    stats_fast_MCI.save_stats_with_age()
-    stats_fast_healthy.save_stats_with_age()
+    stats_free_MCI.save_stats_normalized()
+    stats_free_healthy.save_stats_normalized()
+    stats_fast_MCI.save_stats_normalized()
+    stats_fast_healthy.save_stats_normalized()
 
-    summary1 = SummaryPlot_updated("summary_free", BASE_PATH, [stats_free_healthy], d_folder=DATA_FOLDER)
-    summary1.scatter_plot_aseg_with_ages()
+    # summary1 = SummaryPlot_updated("summary_free_healthy", BASE_PATH, [stats_free_healthy], d_folder=DATA_FOLDER)
+    # summary1.scatter_plot_aseg_with_ages()
+    # summary2 = SummaryPlot_updated("summary_fast_healthy", BASE_PATH, [stats_fast_healthy], d_folder=DATA_FOLDER)
+    # summary2.scatter_plot_aseg_with_ages()
+    # summary3 = SummaryPlot_updated("summary_free_MCI", BASE_PATH, [stats_free_MCI], d_folder=DATA_FOLDER)
+    # summary3.scatter_plot_aseg_with_ages()
+    # summary4 = SummaryPlot_updated("summary_fast_MCI", BASE_PATH, [stats_fast_MCI], d_folder=DATA_FOLDER)
+    # summary4.scatter_plot_aseg_with_ages()
+
+    summary1 = SummaryPlot_updated("freesurfer", BASE_PATH, [stats_free_healthy, stats_free_MCI], d_folder=DATA_FOLDER)
+    summary1.scatter_plot_aseg_normalized_linear_regression()
+    summary1.scatter_plot_aseg_normalized_huber_regression()
+    summary1.scatter_plot_aseg_normalized_regression_confidence()
+    summary2 = SummaryPlot_updated("fastsurfer", BASE_PATH, [stats_fast_healthy, stats_fast_MCI], d_folder=DATA_FOLDER)
+    summary2.scatter_plot_aseg_normalized_linear_regression()
+    summary2.scatter_plot_aseg_normalized_huber_regression()
+    summary2.scatter_plot_aseg_normalized_regression_confidence()
+    summary3 = SummaryPlot_updated("MCI", BASE_PATH, [stats_fast_MCI, stats_free_MCI], d_folder=DATA_FOLDER)
+    summary3.scatter_plot_aseg_normalized_linear_regression()
+    summary3.scatter_plot_aseg_normalized_huber_regression()
+    summary3.scatter_plot_aseg_normalized_regression_confidence()
+    summary4 = SummaryPlot_updated("healthy", BASE_PATH, [stats_fast_healthy, stats_free_healthy], d_folder=DATA_FOLDER)
+    summary4.scatter_plot_aseg_normalized_linear_regression()
+    summary4.scatter_plot_aseg_normalized_huber_regression()
+    summary4.scatter_plot_aseg_normalized_regression_confidence()
+    # summary3 = SummaryPlot_updated("summary_all", BASE_PATH, [stats_fast_healthy, stats_fast_MCI, stats_free_healthy, stats_free_MCI], d_folder=DATA_FOLDER)
+    # summary3.scatter_plot_aseg_normalized_linear_regression()
+    # summary3.scatter_plot_aseg_normalized_huber_regression()
+    # summary3.scatter_plot_aseg_normalized_regression_confidence()
     # stats_free_healthy = ft.Stats("healthy_FREE", BASE_PATH, table, "main_condition=='NL'", aseg=aseg_free,
     #                               aparcRight=aparcR_free, aparcLeft=aparcL_free)
     # stats_free_MCI = ft.Stats("MC_FREE", BASE_PATH, table, "main_condition!='NL'", aseg=aseg_free,
