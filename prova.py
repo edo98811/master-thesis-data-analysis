@@ -1,6 +1,11 @@
 import matplotlib.pyplot as plt
 import random
 import numpy as np
+import pandas as pd
+
+pd.
+
+
 
 a = random.sample(range(100000, 999999), 10)
 b = random.sample(range(100000, 999999), 10)

@@ -2,17 +2,18 @@ import FastsurferTesting_pc as ft
 import pandas as pd
 import numpy as np
 from comparisons_updated import SummaryPlot_updated, Comparison_updated
+import os
 
 ADNI_PATH = ""
 # OASIS_PATH = "/media/neuropsycad/disk12t/VascoDiogo/OASIS/FS7/"
 BASE_PATH = "C:\\Users\\edoar\\Dropbox (Politecnico Di Torino Studenti)\\Tesi\\data_testing_ADNI\\"
-DATA_FOLDER = "test_data_ADNI_2804\\"
+DATA_FOLDER = "test_data_ADNI_1105\\"
 
 
 def main():
     ft.LogWriter.clearlog()
     # np.warnings.filterwarnings('error', category=np.VisibleDeprecationWarning)
-
+    # os.system("-Xfrozen_modules = off")
     table = ft.Table("ADNI_TABLE", BASE_PATH,
                      df_subj=pd.read_csv(BASE_PATH + "UPDATED_ADNI.csv"))
 
@@ -34,7 +35,7 @@ def main():
     aparcL_fast_a = pd.read_csv(BASE_PATH + "data_testing_ADNI_workstation\\NotHealthy_FAST_stats\\aseg_right.csv")
     aparcR_fast_a = pd.read_csv(BASE_PATH + "data_testing_ADNI_workstation\\NotHealthy_FAST_stats\\aseg_left.csv")
 
-    stats_fast_healthy = ft.Stats("healthy_FAST", BASE_PATH, table, " main_condition=='NL'", d_folder=DATA_FOLDER,
+    stats_fast_healthy = ft.Stats("healthy_FAST", BASE_PATH, table, "main_condition=='NL'", d_folder=DATA_FOLDER,
                                   aseg=aseg_fast_h,
                                   aparcRight=aparcR_fast_h, aparcLeft=aparcL_fast_h)
     stats_fast_MCI = ft.Stats("NotHealthy_FAST", BASE_PATH, table, "main_condition!='NL'", d_folder=DATA_FOLDER,
@@ -52,36 +53,39 @@ def main():
     stats_fast_MCI.normalize_stats_age()
     stats_fast_healthy.normalize_stats_age()
 
+    stats_free_MCI.normalize_stats_mmse()
+    stats_free_healthy.normalize_stats_mmse()
+    stats_fast_MCI.normalize_stats_mmse()
+    stats_fast_healthy.normalize_stats_mmse()
+
+    stats_free_MCI.clean_aparc()
+    stats_free_healthy.clean_aparc()
+    stats_fast_MCI.clean_aparc()
+    stats_fast_healthy.clean_aparc()
+
     stats_free_MCI.save_stats_normalized()
     stats_free_healthy.save_stats_normalized()
     stats_fast_MCI.save_stats_normalized()
     stats_fast_healthy.save_stats_normalized()
 
-    # summary1 = SummaryPlot_updated("summary_free_healthy", BASE_PATH, [stats_free_healthy], d_folder=DATA_FOLDER)
-    # summary1.scatter_plot_aseg_with_ages()
-    # summary2 = SummaryPlot_updated("summary_fast_healthy", BASE_PATH, [stats_fast_healthy], d_folder=DATA_FOLDER)
-    # summary2.scatter_plot_aseg_with_ages()
-    # summary3 = SummaryPlot_updated("summary_free_MCI", BASE_PATH, [stats_free_MCI], d_folder=DATA_FOLDER)
-    # summary3.scatter_plot_aseg_with_ages()
-    # summary4 = SummaryPlot_updated("summary_fast_MCI", BASE_PATH, [stats_fast_MCI], d_folder=DATA_FOLDER)
-    # summary4.scatter_plot_aseg_with_ages()
+    # summary1 = SummaryPlot_updated("free_healthy", BASE_PATH, [stats_free_healthy], d_folder=DATA_FOLDER)
+    # summary1.scatter_plot_aseg_mmse()
+    # summary2 = SummaryPlot_updated("fast_healthy", BASE_PATH, [stats_fast_healthy], d_folder=DATA_FOLDER)
+    # summary2.scatter_plot_aseg_mmse()
+    # summary3 = SummaryPlot_updated("free_MCI", BASE_PATH, [stats_free_MCI], d_folder=DATA_FOLDER)
+    # summary3.scatter_plot_aseg_mmse()
+    # summary4 = SummaryPlot_updated("fast_MCI", BASE_PATH, [stats_fast_MCI], d_folder=DATA_FOLDER)
+    # summary4.scatter_plot_aseg_mmse()
 
     summary1 = SummaryPlot_updated("freesurfer", BASE_PATH, [stats_free_healthy, stats_free_MCI], d_folder=DATA_FOLDER)
-    summary1.scatter_plot_aseg_normalized_linear_regression()
-    summary1.scatter_plot_aseg_normalized_huber_regression()
-    summary1.scatter_plot_aseg_normalized_regression_confidence()
+    summary1.scatter_plot_aseg_mmse()
     summary2 = SummaryPlot_updated("fastsurfer", BASE_PATH, [stats_fast_healthy, stats_fast_MCI], d_folder=DATA_FOLDER)
-    summary2.scatter_plot_aseg_normalized_linear_regression()
-    summary2.scatter_plot_aseg_normalized_huber_regression()
-    summary2.scatter_plot_aseg_normalized_regression_confidence()
+    summary2.scatter_plot_aseg_mmse()
     summary3 = SummaryPlot_updated("MCI", BASE_PATH, [stats_fast_MCI, stats_free_MCI], d_folder=DATA_FOLDER)
-    summary3.scatter_plot_aseg_normalized_linear_regression()
-    summary3.scatter_plot_aseg_normalized_huber_regression()
-    summary3.scatter_plot_aseg_normalized_regression_confidence()
+    summary3.scatter_plot_aseg_mmse()
     summary4 = SummaryPlot_updated("healthy", BASE_PATH, [stats_fast_healthy, stats_free_healthy], d_folder=DATA_FOLDER)
-    summary4.scatter_plot_aseg_normalized_linear_regression()
-    summary4.scatter_plot_aseg_normalized_huber_regression()
-    summary4.scatter_plot_aseg_normalized_regression_confidence()
+    summary4.scatter_plot_aseg_mmse()
+
     # summary3 = SummaryPlot_updated("summary_all", BASE_PATH, [stats_fast_healthy, stats_fast_MCI, stats_free_healthy, stats_free_MCI], d_folder=DATA_FOLDER)
     # summary3.scatter_plot_aseg_normalized_linear_regression()
     # summary3.scatter_plot_aseg_normalized_huber_regression()

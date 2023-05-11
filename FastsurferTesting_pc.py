@@ -446,7 +446,7 @@ class Stats:
         l = []
         for i, s in enumerate(_list):
             l.append("sub-" + s)
-        LogWriter.log("     add_sub: correctly added sub- to all the patients")
+        # LogWriter.log("     add_sub: correctly added sub- to all the patients")
         return l
 
     @staticmethod
@@ -461,10 +461,10 @@ class Stats:
             match = re.split("sub-", s)
             if len(match) > 1:
                 l.append(match[1])
-        if len(l) != len(_list):
-            LogWriter.log("warning deletesub: wrong number of subjects matched the pattern sub-#######...")
-        else:
-            LogWriter.log("         delete_sub: correctly deleted sub- from all the patients")
+        # if len(l) != len(_list):
+        #     LogWriter.log("warning deletesub: wrong number of subjects matched the pattern sub-#######...")
+        # else:
+        #     LogWriter.log("         delete_sub: correctly deleted sub- from all the patients")
         return l
 
     def extract_stats_fast(self, stats_filename, _type):
@@ -874,34 +874,72 @@ class Stats:
         LogWriter.log("     patient normalized saved for " + self.name)
         self.aseg_normalized = df_stats_aseg_with_ages
 
-    def normalize_stats_mmse(self):
+
+    def clean_aparc(self):
 
         s = list(Stats.delete_sub(self.subj_list))
         t = self.df_subj[self.df_subj['ID'].isin(s)]
         ages = t.loc[:, "age"]
         ages.index = self.subj_list
 
+        t = self.df_stats_aparcL.set_index("ID")
+        if "Unnamed: 0" in t.columns.tolist():
+            t.drop("Unnamed: 0", axis=1, inplace=True)
 
+        self.aparcL_cleaned = pd.concat([t, ages], axis=1)
+        del t
+
+        t = self.df_stats_aparcR.set_index("ID")
+        if "Unnamed: 0" in t.columns.tolist():
+            t.drop("Unnamed: 0", axis=1, inplace=True)
+
+        self.aparcR_cleaned = pd.concat([t, ages], axis=1)
+        del t
+
+    def normalize_stats_mmse(self):
+
+        s = list(Stats.delete_sub(self.subj_list))
+        t = self.df_subj.loc[self.df_subj['ID'].isin(s)]
+        t.rename(columns={"mmse_score": "mmse"}, inplace=True)
+        mmse = t.loc[:, "mmse"]
+        mmse.index = self.subj_list
+
+
+        ages = t.loc[:, "age"]
+        ages.index = self.subj_list
+
+        del t
         t = self.df_stats_aseg.set_index("ID")
-        t.drop("Unnamed: 0", axis=1, inplace=True)
-        t = t.div(t['EstimatedTotalIntraCranialVol'], axis=0)
+        if "Unnamed: 0" in t.columns:
+            t.drop("Unnamed: 0", axis=1, inplace=True)
+        if "EstimatedTotalIntraCranialVol" in t.columns:
+            t = t.div(t["EstimatedTotalIntraCranialVol"], axis=0)
+            t.pop('EstimatedTotalIntraCranialVol')
 
-        df_stats_aseg_with_ages = pd.concat([t, ages], axis=1)
-        df_stats_aseg_with_ages.pop('EstimatedTotalIntraCranialVol')
-        age_column = df_stats_aseg_with_ages.pop('age')
+        df_stats_aseg_with_mmse = pd.concat([t, ages,  mmse], axis=1)
 
-        df_stats_aseg_with_ages.insert(0, 'age', age_column)
+        mmse_column = df_stats_aseg_with_mmse.pop('mmse')
+        df_stats_aseg_with_mmse.insert(0, 'mmse', mmse_column)
 
 
-        LogWriter.log("     patient normalized saved for " + self.name)
-        self.aseg_normalized = df_stats_aseg_with_ages
+        LogWriter.log("     patient normalized with mmse saved for " + self.name)
+        self.aseg_normalized_mmse = df_stats_aseg_with_mmse
 
 
     def save_stats_normalized(self):
         path = self.data_path + self.name + "_stats_normalized"
         if not os.path.exists(path):
             os.makedirs(path)
-        self.aseg_normalized.to_excel((path + "\\" + "aseg_normalized.xlsx"))
+
+        if hasattr(self, "aseg_normalized"):
+            self.aseg_normalized.to_excel((path + "\\" + "aseg_normalized.xlsx"))
+        if hasattr(self, "aseg_normalized_mmse"):
+            self.aseg_normalized_mmse.to_excel((path + "\\" + "aseg_normalized_mmse.xlsx"))
+        if hasattr(self, "aparcL_cleaned"):
+            self.aparcL_cleaned.to_excel((path + "\\" + "aparcL_cleaned.xlsx"))
+        if hasattr(self, "aparcR_cleaned"):
+            self.aparcR_cleaned.to_excel((path + "\\" + "aparcR_cleaned.xlsx"))
+
         # a questo punto dovrei aggiungere un modo per plottare, in realtà ho gia scritto la funzione per farlo quindi non
         # dovrebbe essere lungo
 class Comparisons:
