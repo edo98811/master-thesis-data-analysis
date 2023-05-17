@@ -4,6 +4,7 @@ from sklearn.metrics import accuracy_score
 from sklearn.linear_model import LogisticRegression
 import sklearn.feature_selection as feature_selection
 import pandas as pd
+import os
 import comparisons_updated as cu
 import FastsurferTesting_pc as ft
 import numpy as np
@@ -12,13 +13,17 @@ import missingno as msno
 
 
 class Models_Binary:
-    def __init__(self, data, base_path):
+    def __init__(self, data, base_path, data_path="\\machine_learning"):
 
         if len(data) == 2:
             self.data = data
         else:
             raise "wrong number of class inputs (only binary classification)"
         self.base_path = base_path
+
+        self.data_path = base_path + data_path
+        if not os.path.exists(data_path):
+            os.makedirs(data_path)
 
         self.X, self.Y = self._dataset_preparation()
 
@@ -131,19 +136,28 @@ class Models_Binary:
 
         return X_new
 
+    def feature_selection(self, list=[""]):
+        # msno.matrix(self.X)
+        self.drop_nan(self.X)
+        X_new = feature_selection.SelectKBest(score_func=feature_selection.f_classif, k=10).fit_transform(self.X, self.Y)
+
+        return X_new
+
     def _set_splitting(self, X, y, test=0.2):
         X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=test, random_state=0)
 
         return X_train, X_test, y_train, y_test
 
-    def logistic_regression(self, data=("aseg_normalized_mmse", "aparcR", "aparcR"), c_to_exclude=("age"), c_to_keep=None,
-                                   n_subplots=6,
-                                   n_rows=2):
+    def logistic_regression(self, features):
 
-        self.X_new = self.anova_feature_selection()
+        if not os.path.isfile(self.data_path + "dataset_complete.xlsx"):
+            self.X.to_excel(self.data_path + "dataset_complete.xlsx")
+
+        self.X_new = self.feature_selection(features)
+
         X_train, X_test, y_train, y_test = self._set_splitting(self.X_new, self.Y)
         # print(self.X_new)
-        # self.X.to_excel(self.base_path + "dataset_new.xlsx")
+
 
         model_log = LogisticRegression().fit(X_train, y_train)
         y_pred_log = model_log.predict(X_test)

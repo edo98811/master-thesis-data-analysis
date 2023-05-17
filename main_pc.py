@@ -7,7 +7,7 @@ import os
 ADNI_PATH = ""
 # OASIS_PATH = "/media/neuropsycad/disk12t/VascoDiogo/OASIS/FS7/"
 BASE_PATH = "C:\\Users\\edoar\\Dropbox (Politecnico Di Torino Studenti)\\Tesi\\data_testing_ADNI\\"
-DATA_FOLDER = "test_data_ADNI_1105\\"
+DATA_FOLDER = "test_data_ADNI_1605_2\\"
 
 
 def main():
@@ -68,6 +68,7 @@ def main():
     stats_fast_MCI.save_stats_normalized()
     stats_fast_healthy.save_stats_normalized()
 
+
     # summary1 = SummaryPlot_updated("free_healthy", BASE_PATH, [stats_free_healthy], d_folder=DATA_FOLDER)
     # summary1.scatter_plot_aseg_mmse()
     # summary2 = SummaryPlot_updated("fast_healthy", BASE_PATH, [stats_fast_healthy], d_folder=DATA_FOLDER)
@@ -77,14 +78,14 @@ def main():
     # summary4 = SummaryPlot_updated("fast_MCI", BASE_PATH, [stats_fast_MCI], d_folder=DATA_FOLDER)
     # summary4.scatter_plot_aseg_mmse()
 
-    summary1 = SummaryPlot_updated("freesurfer", BASE_PATH, [stats_free_healthy, stats_free_MCI], d_folder=DATA_FOLDER)
-    summary1.scatter_plot_aseg_mmse()
-    summary2 = SummaryPlot_updated("fastsurfer", BASE_PATH, [stats_fast_healthy, stats_fast_MCI], d_folder=DATA_FOLDER)
-    summary2.scatter_plot_aseg_mmse()
-    summary3 = SummaryPlot_updated("MCI", BASE_PATH, [stats_fast_MCI, stats_free_MCI], d_folder=DATA_FOLDER)
-    summary3.scatter_plot_aseg_mmse()
-    summary4 = SummaryPlot_updated("healthy", BASE_PATH, [stats_fast_healthy, stats_free_healthy], d_folder=DATA_FOLDER)
-    summary4.scatter_plot_aseg_mmse()
+    # summary1 = SummaryPlot_updated("freesurfer", BASE_PATH, [stats_free_healthy, stats_free_MCI], d_folder=DATA_FOLDER)
+    # summary1.scatter_plot_aseg_mmse()
+    # summary2 = SummaryPlot_updated("fastsurfer", BASE_PATH, [stats_fast_healthy, stats_fast_MCI], d_folder=DATA_FOLDER)
+    # summary2.scatter_plot_aseg_mmse()
+    # summary3 = SummaryPlot_updated("MCI", BASE_PATH, [stats_fast_MCI, stats_free_MCI], d_folder=DATA_FOLDER)
+    # summary3.scatter_plot_aseg_mmse()
+    # summary4 = SummaryPlot_updated("healthy", BASE_PATH, [stats_fast_healthy, stats_free_healthy], d_folder=DATA_FOLDER)
+    # summary4.scatter_plot_aseg_mmse()
 
     # summary3 = SummaryPlot_updated("summary_all", BASE_PATH, [stats_fast_healthy, stats_fast_MCI, stats_free_healthy, stats_free_MCI], d_folder=DATA_FOLDER)
     # summary3.scatter_plot_aseg_normalized_linear_regression()
@@ -100,15 +101,15 @@ def main():
     # stats_free_healthy.save_stats_files()
     # stats_free_MCI.save_stats_files()
 
-    # comp1 = Comparison_updated("NotHealthy_ADNI", BASE_PATH, stats_free_MCI, stats_fast_MCI, d_folder=DATA_FOLDER)
-    # comp2 = Comparison_updated("healthy_ADNI", BASE_PATH, stats_free_healthy, stats_fast_healthy, d_folder=DATA_FOLDER)
-    # comp1.stat_test()
-    # comp2.stat_test()
+    comp1 = Comparison_updated("NotHealthy_ADNI", BASE_PATH, stats_free_MCI, stats_fast_MCI, d_folder=DATA_FOLDER)
+    comp2 = Comparison_updated("healthy_ADNI", BASE_PATH, stats_free_healthy, stats_fast_healthy, d_folder=DATA_FOLDER)
+    comp1.stat_test()
+    comp2.stat_test()
     # #
-    # comp1.bonferroni_correction()
-    # comp2.bonferroni_correction()
-    # comp1.save_data()
-    # comp2.save_data()
+    comp1.bonferroni_correction()
+    comp2.bonferroni_correction()
+    comp1.save_data()
+    comp2.save_data()
     #
     # comp2.violin()
     # comp2.bland_altmann()

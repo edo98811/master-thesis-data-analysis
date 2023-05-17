@@ -1436,23 +1436,28 @@ class Comparisons:
         return result, p_value, outcome
 
     @staticmethod
-    def __cohens_d(_a, _b):
-        n1, n2 = len(_a), len(_b)
-        var1, var2 = np.var(_a, ddof=1), np.var(_b, ddof=1)
+    def __cohens_d(_a, _b, test="t"):
+        # to check because it needs to be compute din a different way for different tests
+        if test=="t":
+            n1, n2 = len(_a), len(_b)
+            var1, var2 = np.var(_a, ddof=1), np.var(_b, ddof=1)
 
-        SDpooled = np.sqrt(((n1 - 1) * var1 + (n2 - 1) * var2) / (n1 + n2 - 2))
-        d = (np.mean(_a) - np.mean(_b)) / SDpooled
+            SDpooled = np.sqrt(((n1 - 1) * var1 + (n2 - 1) * var2) / (n1 + n2 - 2))
+            d = (np.mean(_a) - np.mean(_b)) / SDpooled
 
-        if d < 0.2:
-            string = "Very small effect size"
-        elif d < 0.5:
-            string = "Small effect size"
-        elif d < 0.8:
-            string = "Medium effect size"
-        else:
-            string = "Large effect size"
+            if d < 0.2:
+                string = "Very small effect size"
+            elif d < 0.5:
+                string = "Small effect size"
+            elif d < 0.8:
+                string = "Medium effect size"
+            else:
+                string = "Large effect size"
 
-        return d, string
+            return d, string
+        elif test=="w":
+            # to implement
+            pass
 
     # @staticmethod
     # def __ICC(_a, _b):

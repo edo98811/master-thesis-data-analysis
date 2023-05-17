@@ -1515,21 +1515,27 @@ class Comparison_updated:
 
         return df1, df2
 
-    def bland_altmann(self, data=("aseg", "aparcL", "aparcR"), c_to_keep=None, n_subplots=4, n_rows=2,
+    def bland_altmann(self, data=("aseg", "aparcL", "aparcR"), c_to_keep=None, n_subplots=4, n_rows=2, folder="bland_altmann",
                       c_to_exclude=("ID")):
 
         if not self.subjects_list:
             LogWriter.log("bland altmannn: datasets do not have elements in common")
             return
 
+        if not os.path.exists(self.data_path + folder):
+            os.makedirs(self.data_path + folder)
+
         for d in data:
-            img_name = f"{self.data_path}images\\img_{d}_ba_{self.name}"
+            img_name = f"{self.data_path}_{folder}\\img_{d}_ba_{self.name}"
             self.iterate(self.__bland_altman_plot, d, c_to_keep, n_subplots, n_rows, c_to_exclude, img_name)
 
-    def violin(self, data=("aseg", "aparcL", "aparcR"), c_to_keep=None, n_subplots=10, n_rows=2, c_to_exclude=("ID")):
+    def violin(self, data=("aseg", "aparcL", "aparcR"), c_to_keep=None, n_subplots=10, n_rows=2, c_to_exclude=("ID"), folder="violin"):
+
+        if not os.path.exists(self.data_path + folder):
+            os.makedirs(self.data_path + folder)
 
         for d in data:
-            img_name = f"{self.data_path}images\\img_{d}_violin_{self.name}"
+            img_name = f"{self.data_path}_{folder}\\img_{d}_violin_{self.name}"
             self.iterate(self.__violin_plot, d, c_to_keep, n_subplots, n_rows, c_to_exclude, img_name)
 
     def iterate(self, function, data, c_to_keep, n_subplots, n_rows, c_to_exclude, img_name):
@@ -1799,7 +1805,7 @@ class Comparison_updated:
                 LogWriter.log(row.tolist())
 
             if save:
-                self.stat_df_result.to_csv(self.data_path + f"{self.name}_bonferroni_corrected.csv")
+                self.stat_df_result.to_excel(self.data_path + f"{self.name}_bonferroni_corrected.xlsx")
 
     def save_data(self, filename=None):
         """
@@ -1808,8 +1814,8 @@ class Comparison_updated:
         :return:
         """
         if filename is None:
-            filename = f"{self.name}_stats.csv"
-        self.stat_df_result.to_csv(self.data_path + filename)
+            filename = f"{self.name}_stats.xlsx"
+        self.stat_df_result.to_excel(self.data_path + filename)
 
     def __save_dataframe(self, list_to_save):
         self.stat_df_result = pd.DataFrame()
@@ -1855,7 +1861,7 @@ class Comparison_updated:
         if "NaN" in _a or "NaN" in _b:
             return "result could not be computed", "NaN", "NaN"
 
-        # df1.to_csv("dataset_uniti_test.csv", index=False)
+        # df1.to_excel("dataset_uniti_test.xlsx", index=False)
 
         # t_stat, p_value = stats.mannwhitneyu(_a, _b)
         t_stat, p_value = stats.wilcoxon(_a, _b)
@@ -1871,24 +1877,42 @@ class Comparison_updated:
         return result, p_value, outcome
 
     @staticmethod
-    def __cohens_d(_a, _b):
-        n1, n2 = len(_a), len(_b)
-        var1, var2 = np.var(_a, ddof=1), np.var(_b, ddof=1)
+    def __cohens_d(_a, _b, test="t"):
+        # to check because it needs to be compute din a different way for different tests
+        if test=="t":
+            n1, n2 = len(_a), len(_b)
+            var1, var2 = np.var(_a, ddof=1), np.var(_b, ddof=1)
 
-        SDpooled = np.sqrt(((n1 - 1) * var1 + (n2 - 1) * var2) / (n1 + n2 - 2))
-        d = (np.mean(_a) - np.mean(_b)) / SDpooled
+            SDpooled = np.sqrt(((n1 - 1) * var1 + (n2 - 1) * var2) / (n1 + n2 - 2))
+            d = (np.mean(_a) - np.mean(_b)) / SDpooled
 
-        if d < 0.2:
-            string = "Very small effect size"
-        elif d < 0.5:
-            string = "Small effect size"
-        elif d < 0.8:
-            string = "Medium effect size"
-        else:
-            string = "Large effect size"
+            if d < 0.2:
+                string = "Very small effect size"
+            elif d < 0.5:
+                string = "Small effect size"
+            elif d < 0.8:
+                string = "Medium effect size"
+            else:
+                string = "Large effect size"
 
-        return d, string
+            return d, string
+        elif test=="w":
+            # to implement
+            pass
+    @staticmethod
+    def __ICC(_a, _b):
+        # da finire di impostare
+        # to check because it needs to be compute din a different way for different tests
+        subjects = _a.index.tolist() +_b.index.tolist()
+        rater = [0]*len(_a) + [1]*len(_b)
+        scores = _a.tolist() + _b.tolist()
+        input_df = pd.DataFrame(list(zip(subjects, rater, scores)),
+                          columns=["subjs", "rater", "scores"])
 
+        results_df = pg.intraclass_corr(input_df, targets='subjs', raters='rater',
+                         ratings='scores').round(3)
+        # da aggiungere
+        return
 
 class Recap:
 
@@ -1900,5 +1924,5 @@ class Recap:
 
         self.df.appen(row)
 
-    def save(self, filename="dataframe.csv"):
-        self.df.to_csv(filename)
+    def save(self, filename="dataframe.xlsx"):
+        self.df.to_excel(filename)
