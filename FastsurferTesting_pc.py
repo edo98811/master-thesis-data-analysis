@@ -1294,7 +1294,7 @@ class Comparisons:
 
                     r1, p1, o1 = self.__mann_whitney(a, b)
                     r2, p2, o2 = self.__t_test(a, b)
-                    d, rd = self.__cohens_d(a, b)
+                    cd, rd = self.__effect_size(a, b)
                     # ICC
 
                     if isinstance(column_to_compare, int):
@@ -1308,7 +1308,7 @@ class Comparisons:
                                                  "p_value": p2,
                                                  "outcome": o2},
                                       "d": {"result": rd,
-                                            "d_value": d}})
+                                            "d_value": cd}})
 
                     if isinstance(column_to_compare, str):
                         r_all.append({"name": f"{self.name}_{data_n}_{column_to_compare}",
@@ -1319,7 +1319,7 @@ class Comparisons:
                                                  "p_value": p2,
                                                  "outcome": o2},
                                       "d": {"result": rd,
-                                            "d_value": d}})
+                                            "d_value": cd}})
 
                 else:
                     # print(f"absent or not valid data in category {column_to_compare}for file {self.name} - {data}")
@@ -1436,7 +1436,7 @@ class Comparisons:
         return result, p_value, outcome
 
     @staticmethod
-    def __cohens_d(_a, _b, test="t"):
+    def __effect_size(_a, _b, test="t"):
         # to check because it needs to be compute din a different way for different tests
         if test=="t":
             n1, n2 = len(_a), len(_b)

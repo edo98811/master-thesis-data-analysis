@@ -6,6 +6,7 @@ import re
 from scipy import stats
 import scipy as sp
 import seaborn as sns
+from collections import defaultdict
 import data_manipulation as dm
 import numpy as np
 from copy import deepcopy
@@ -238,7 +239,7 @@ class SummaryPlot_updated:
         :param n_rows:
         :return:
         """
-        raise "old"
+        raise Exception("old")
         #
         # df_list = []
         # subj_lists = []
@@ -660,7 +661,9 @@ class SummaryPlot_updated:
             not_done_str = ' | '.join(not_done)
             LogWriter.log(f"    skipped: {not_done_str}")
 
-    def scatter_plot_aseg_normalized_linear_regression(self, data=("aseg_normalized","aparcL_cleaned", "aparcR_cleaned"), c_to_exclude=("age"), c_to_keep=None,
+    def scatter_plot_aseg_normalized_linear_regression(self,
+                                                       data=("aseg_normalized", "aparcL_cleaned", "aparcR_cleaned"),
+                                                       c_to_exclude=("age"), c_to_keep=None,
                                                        n_subplots=6,
                                                        n_rows=2, folder="images_linear"):
         """
@@ -734,9 +737,10 @@ class SummaryPlot_updated:
             LogWriter.log(f"    skipped: {not_done_str}")
             pd.DataFrame.from_dict(self.fitted_models).to_excel(f"{self.data_path}\\{self.name}_{d}_linear.xlsx")
             # dm.write_txt(self.fitted_models, f"{self.data_path}\\{self.name}_{d}.txt")
+
     def scatter_plot_aseg_mmse(self, data=("aseg_normalized_mmse",), c_to_exclude=("age", "mmse"), c_to_keep=None,
-                                                      n_subplots=6,
-                                                      n_rows=2, folder="images_mmse"):
+                               n_subplots=6,
+                               n_rows=2, folder="images_mmse"):
         """
         :param columns: list of str - list of column names to print (default None: prints all)
         :param data: str - type of input (aseg, aparcL or aparcR)
@@ -750,7 +754,7 @@ class SummaryPlot_updated:
         # saves the dataframes from the stats object
         LogWriter.log(f"\n")
         LogWriter.log(f"    scatter plot with ages: {self.name}...")
-        if hasattr(self, 'fitted_models') : del self.fitted_models
+        if hasattr(self, 'fitted_models'): del self.fitted_models
 
         self.fitted_models = {
             "legend_entry": [],
@@ -782,7 +786,8 @@ class SummaryPlot_updated:
 
                     title = f"{d} {column_to_compare} \n {self.name}"
 
-                    serieses, legend = self._model_fit_legend(data_points_list, column_to_compare, d, not_done, mmse = True)
+                    serieses, legend = self._model_fit_legend(data_points_list, column_to_compare, d, not_done,
+                                                              mmse=True)
 
                     if not len(serieses):
                         not_done.append(column_to_compare)
@@ -811,9 +816,12 @@ class SummaryPlot_updated:
             LogWriter.log(f"    skipped: {not_done_str}")
             pd.DataFrame.from_dict(self.fitted_models).to_excel(f"{self.data_path}\\{self.name}_{d}_linear.xlsx")
             # dm.write_txt(self.fitted_models, f"{self.data_path}\\{self.name}_{d}.txt")
-    def scatter_plot_aseg_normalized_regression_confidence(self, data=("aseg_normalized","aparcL_cleaned", "aparcR_cleaned"), c_to_exclude=("age"), c_to_keep=None,
-                                                      n_subplots=6,
-                                                      n_rows=2, folder="images_linear_with_confidence_intervals"):
+
+    def scatter_plot_aseg_normalized_regression_confidence(self,
+                                                           data=("aseg_normalized", "aparcL_cleaned", "aparcR_cleaned"),
+                                                           c_to_exclude=("age"), c_to_keep=None,
+                                                           n_subplots=6,
+                                                           n_rows=2, folder="images_linear_with_confidence_intervals"):
         """
         :param columns: list of str - list of column names to print (default None: prints all)
         :param data: str - type of input (aseg, aparcL or aparcR)
@@ -841,7 +849,7 @@ class SummaryPlot_updated:
             plots_n = 0
 
             if c_to_keep is not None:
-                columns_set  = [x for x in columns_set  if x in c_to_keep]
+                columns_set = [x for x in columns_set if x in c_to_keep]
 
             not_done = []
             data_points_list = []
@@ -849,7 +857,7 @@ class SummaryPlot_updated:
             for df_element in df_list:
                 data_points_list.append(df_element)
 
-            for column_to_compare in columns_set :
+            for column_to_compare in columns_set:
                 if column_to_compare not in c_to_exclude:
                     # LogWriter.log(f"        column{column_to_compare}")
 
@@ -868,7 +876,8 @@ class SummaryPlot_updated:
                                         f"_{str(plots_n - n_subplots)}-{str(plots_n)}.png")  # save the figure to file
                         fig, axs = self.create_plot(n_subplots, n_rows)
 
-                    self.__scatter_plot_confidence_intervals_internet(axs[plots_n % n_subplots], serieses, title, legend)
+                    self.__scatter_plot_confidence_intervals_internet(axs[plots_n % n_subplots], serieses, title,
+                                                                      legend)
                     plots_n += 1
 
                     if plots_n >= self.max_plot:  # to avoid plotting too much
@@ -884,7 +893,10 @@ class SummaryPlot_updated:
             LogWriter.log(f"    skipped: {not_done_str}")
             pd.DataFrame.from_dict(self.fitted_models).to_excel(f"{self.data_path}\\{self.name}_{d}_linear.xlsx")
             # dm.write_txt(self.fitted_models, f"{self.data_path}\\{self.name}_{d}.txt")
-    def scatter_plot_aseg_normalized_huber_regression(self, data=("aseg_normalized","aparcL_cleaned", "aparcR_cleaned"), c_to_exclude=("age"), c_to_keep=None,
+
+    def scatter_plot_aseg_normalized_huber_regression(self,
+                                                      data=("aseg_normalized", "aparcL_cleaned", "aparcR_cleaned"),
+                                                      c_to_exclude=("age"), c_to_keep=None,
                                                       n_subplots=6,
                                                       n_rows=2, folder="images_huber_loss"):
         """
@@ -1134,16 +1146,15 @@ class SummaryPlot_updated:
             self.fitted_models["intercept"].append(p[1])
             self.fitted_models["R2"].append(R2)
 
-
             # Data
             ax.plot(x, y, "o", alpha=0.5, label=legend_entry, color=color)
-                # , color="#b9cfe7", markersize=8,
-                # markeredgewidth=1, markeredgecolor="b", markerfacecolor="None")
+            # , color="#b9cfe7", markersize=8,
+            # markeredgewidth=1, markeredgecolor="b", markerfacecolor="None")
 
             # Fit
-            ax.plot(x, y_model, "-", color=color, alpha = 0.3)
+            ax.plot(x, y_model, "-", color=color, alpha=0.3)
 
-            #, color="0.1", linewidth=1.5, alpha=0.5, label="Fit")
+            # , color="0.1", linewidth=1.5, alpha=0.5, label="Fit")
             x2 = np.linspace(np.min(x), np.max(x), 100)
             y2 = np.polyval(p, x2)
 
@@ -1176,7 +1187,6 @@ class SummaryPlot_updated:
 
             x = np.linspace(min(age), max(age), 100)
 
-
             huber_loss_model = HuberRegressor().fit(np.array(age).reshape(-1, 1),
                                                     np.array(values).reshape(-1, 1).ravel())
             # r2.append(r2_score(linear_model.predict(avg.reshape(-1,1), values).reshape(-1,1)
@@ -1207,9 +1217,7 @@ class SummaryPlot_updated:
         max_ = 0
         LogWriter.log(f"    mmse color coded plot from normalized data {' | '.join(legend)} ")
 
-
         for i, (series, legend_entry) in enumerate(zip(data, legend)):
-
             mmse = pd.to_numeric(series.iloc[:, 2], errors='coerce')
             colors = np.empty(len(mmse), dtype='U10')
 
@@ -1442,11 +1450,11 @@ class Comparison_updated:
         if isinstance(stats_df_1, ft.Stats):
             self.stat_df_1 = stats_df_1
         else:
-            raise "stats of the wrong class"
+            raise Exception("stats of the wrong class")
         if isinstance(stats_df_2, ft.Stats):
             self.stat_df_2 = stats_df_2
         else:
-            raise "stats of the wrong class"
+            raise Exception("stats of the wrong class")
 
         # definition od path variables and folders
         self.base_path = b_path
@@ -1483,26 +1491,37 @@ class Comparison_updated:
         global plot_n
         plot_n = 0
 
-    def __match_dataframes(self, df1, df2):
+    def __match_dataframes(self, df1, df2, ID=True):
         LogWriter.log(f"    subject matching")
         LogWriter.log(f"    selection of common subjects")
 
-        set1 = set(df1.loc[:, "ID"].tolist())
-        set2 = set(df2.loc[:, "ID"].tolist())
+        if ID:
+            set1 = set(df1.index.tolist())
+            set2 = set(df2.index.tolist())
+        else:
+            set1 = set(df1.loc[:, "ID"].tolist())
+            set2 = set(df2.loc[:, "ID"].tolist())
 
         sd = set1.symmetric_difference(set2)
-        u = set1.intersection(set2)
+        # u = set1.intersection(set2)
 
         if sd:
             LogWriter.log(f"        elements to delete: {' '.join(sd)}")
             for id_to_delete in sd:
                 if id_to_delete in set1:
                     LogWriter.log(f"            element{id_to_delete} found in  {self.stat_df_1.name}")
-                    df1 = df1[df1["ID"] != id_to_delete]
+                    if ID:
+                        df1.drop(id_to_delete, inplace=True)
+                    else:
+                        df1 = df1[df1["ID"] != id_to_delete]
                     LogWriter.log(f"            dropped: {id_to_delete} from {self.stat_df_1.name}")
                 if id_to_delete in set2:
                     LogWriter.log(f"            element{id_to_delete} found in  {self.stat_df_2.name}")
-                    df2 = df2[df2["ID"] != id_to_delete]
+                    if ID:
+                        df2.drop(id_to_delete, inplace=True)
+                    else:
+                        df2 = df2[df2["ID"] != id_to_delete]
+
                     LogWriter.log(f"            dropped: {id_to_delete} from {self.stat_df_2.name}")
         else:
             LogWriter.log(f"        no element to delete")
@@ -1515,7 +1534,8 @@ class Comparison_updated:
 
         return df1, df2
 
-    def bland_altmann(self, data=("aseg", "aparcL", "aparcR"), c_to_keep=None, n_subplots=4, n_rows=2, folder="bland_altmann",
+    def bland_altmann(self, data=("aseg", "aparcL", "aparcR"), c_to_keep=None, n_subplots=4, n_rows=2,
+                      folder="bland_altmann",
                       c_to_exclude=("ID")):
 
         if not self.subjects_list:
@@ -1526,16 +1546,17 @@ class Comparison_updated:
             os.makedirs(self.data_path + folder)
 
         for d in data:
-            img_name = f"{self.data_path}_{folder}\\img_{d}_ba_{self.name}"
+            img_name = f"{self.data_path}{folder}\\img_{d}_ba_{self.name}"
             self.iterate(self.__bland_altman_plot, d, c_to_keep, n_subplots, n_rows, c_to_exclude, img_name)
 
-    def violin(self, data=("aseg", "aparcL", "aparcR"), c_to_keep=None, n_subplots=10, n_rows=2, c_to_exclude=("ID"), folder="violin"):
+    def violin(self, data=("aseg", "aparcL", "aparcR"), c_to_keep=None, n_subplots=10, n_rows=2, c_to_exclude=("ID"),
+               folder="violin"):
 
         if not os.path.exists(self.data_path + folder):
             os.makedirs(self.data_path + folder)
 
         for d in data:
-            img_name = f"{self.data_path}_{folder}\\img_{d}_violin_{self.name}"
+            img_name = f"{self.data_path}{folder}\\img_{d}_violin_{self.name}"
             self.iterate(self.__violin_plot, d, c_to_keep, n_subplots, n_rows, c_to_exclude, img_name)
 
     def iterate(self, function, data, c_to_keep, n_subplots, n_rows, c_to_exclude, img_name):
@@ -1544,6 +1565,9 @@ class Comparison_updated:
 
         df1, df2 = self.get_table(data)
 
+        if function.__name__ == "__bland_altman_plot":
+            df1, df2 = self.__match_dataframes(df1, df2)
+
         columns_list = set(df1.columns.tolist()).intersection(
             set(df2.columns.tolist()))
 
@@ -1551,9 +1575,6 @@ class Comparison_updated:
             columns = [x for x in columns_list if x in c_to_keep]
         else:
             columns = columns_list
-
-        if function.__name__ == "__bland_altman_plot":
-            df1, df2 = self.__match_dataframes(df1, df2)
 
         not_done = []
         for i, column_to_compare in enumerate(columns):
@@ -1592,7 +1613,7 @@ class Comparison_updated:
         not_done_str = ' | '.join(not_done)
         LogWriter.log(f"    skipped: {not_done_str}")
 
-    def get_table(self, data):
+    def get_table_old(self, data):
         # if data == "aseg":
         #     _df1 = self.stat_df_1.df_stats_aseg[self.stat_df_1.df_stats_aseg["ID"].isin(self.subjects_list)]
         #     _df2 = self.stat_df_2.df_stats_aseg[self.stat_df_2.df_stats_aseg["ID"].isin(self.subjects_list)]
@@ -1614,7 +1635,34 @@ class Comparison_updated:
             _df1 = self.stat_df_1.df_stats_aparcR
             _df2 = self.stat_df_2.df_stats_aparcR
         else:
-            raise "wrong selection parameter"
+            raise Exception("wrong selection parameter")
+        return _df1, _df2
+
+    def get_table(self, d):
+        if d == "aseg":
+            _df1 = self.stat_df_1.df_stats_aseg
+            _df2 = self.stat_df_2.df_stats_aseg
+        elif d == "aparcR":
+            _df1 = self.stat_df_1.df_stats_aparcR
+            _df2 = self.stat_df_2.df_stats_aparcR
+        elif d == "aparcL":
+            _df1 = self.stat_df_1.df_stats_aparcL
+            _df2 = self.stat_df_2.df_stats_aparcL
+        elif d == "aseg_normalized":
+            _df1 = self.stat_df_1.aseg_normalized
+            _df2 = self.stat_df_2.aseg_normalized
+        elif d == "aseg_normalized_mmse":
+            _df1 = self.stat_df_1.aseg_normalized_mmse
+            _df2 = self.stat_df_2.aseg_normalized_mmse
+        elif d == "aparcL_cleaned":
+            _df1 = self.stat_df_1.aparcL_cleaned
+            _df2 = self.stat_df_2.aparcL_cleaned
+        elif d == "aparcR_cleaned":
+            _df1 = self.stat_df_1.aparcR_cleaned
+            _df2 = self.stat_df_2.aparcR_cleaned
+        else:
+            raise Exception("wrong selection parameter")
+
         return _df1, _df2
 
     @staticmethod
@@ -1696,7 +1744,9 @@ class Comparison_updated:
     def __correction_param(self):
         return self.alpha / len(self.stat_df_result)
 
-    def stat_test(self, c_to_exclude=None, data=("aseg", "aparcL", "aparcR")):
+    def stat_test(self, columns=None, c_to_exclude=("age"),
+                  data=("aseg_normalized", "aparcL_cleaned", "aparcR_cleaned"),
+                  match=False):
         """
         :param c_to_exclude:
         :param columns: list of str - list of column names to print (default None: prints all)
@@ -1710,57 +1760,67 @@ class Comparison_updated:
         for d in data:
             _df1, _df2 = self.get_table(d)
 
-            _df1, _df2 = self.__match_dataframes(_df1, _df2)
+            icc = defaultdict(lambda: "NaN")
+            if match:
+                _df1, _df2 = self.__match_dataframes(_df1, _df2)
+                LogWriter.log(f"matched: wilcoxon, effect size, and icc on {d} in {self.name}...")
+                LogWriter.log(f"len a: {len(_df1)} len b: {len(_df2)}")
 
-            LogWriter.log(f"t_test and mann whitney on {d} in {self.name}...")
+            else:
+                LogWriter.log(f"not matched: mann whitney, effect size,on {d} in {self.name}...")
+                LogWriter.log(f"len a: {len(_df1)} len b: {len(_df2)}")
 
             # se non viene dato un input fa il test per tutte le colonne
-            if not c_to_exclude:
+            if columns is None:
                 columns = set(_df1.columns.tolist()).intersection(set(_df2.columns.tolist()))
-            else:
-                columns = c_to_exclude
 
             not_done = []
             for i, column_to_compare in enumerate(columns):
                 if column_to_compare not in c_to_exclude:
-                    a = pd.to_numeric(_df1.loc[:, column_to_compare], errors='coerce')
-                    b = pd.to_numeric(_df2.loc[:, column_to_compare], errors='coerce')
-
-                    if len(a) != len(b):
-                        LogWriter.log(f"        len a: {len(a)} len b: {len(b)}")
-                        not_done.append(column_to_compare)
+                    try:
+                        a = pd.to_numeric(_df1.loc[:, column_to_compare], errors='coerce')
+                        b = pd.to_numeric(_df2.loc[:, column_to_compare], errors='coerce')
+                    except:
+                        LogWriter.log(f"per qualche ragione la colonna {column_to_compare} non e in un df")
                         continue
+
+                    # if len(a) != len(b):
+                    #
+                    #     not_done.append(column_to_compare)
+                    #     continue
 
                     if a.any() and b.any() and (a.notnull().all() and b.notnull().all()):
 
-                        r1, p1, o1 = self.__wilcoxon(a, b)
-                        r2, p2, o2 = self.__t_test(a, b)
-                        cd, rd = self.__cohens_d(a, b)
-                        # ICC
+                        if match:
+                            icc["res"], icc["message"] = self.__ICC(a, b)
+                            r, p, o = self.__wilcoxon(a, b)
+                            cd, rd = self.__effect_size(a, b, test="w")
+                        else:
+                            r, p, o = self.__m_whitney(a, b)
+                            cd, rd = self.__effect_size(a, b, test="m")
 
-                        if isinstance(column_to_compare, int):
-                            column_to_compare_name = _df1.columns[column_to_compare]
-
-                            r_all.append({"name": f"{self.name}_{d}_{column_to_compare_name}",
-                                          "wilcoxon": {"result": r1,
-                                                       "p_value": p1,
-                                                       "outcome": o1},
-                                          "t_test": {"result": r2,
-                                                     "p_value": p2,
-                                                     "outcome": o2},
-                                          "d": {"result": rd,
-                                                "d_value": cd}})
+                        # if isinstance(column_to_compare, int):
+                        #     column_to_compare_name = _df1.columns[column_to_compare]
+                        #
+                        #     r_all.append({"name": f"{self.name}_{d}_{column_to_compare_name}",
+                        #                   "mann whitney": {"result": r,
+                        #                              "p_value": p,
+                        #                              "outcome": o},
+                        #                   "ICC": {"icc": icc["res"],
+                        #                           "message": icc["message"]},
+                        #                   "ef": {"result": rd,
+                        #                          "d_value": cd}})
 
                         if isinstance(column_to_compare, str):
                             r_all.append({"name": f"{self.name}_{d}_{column_to_compare}",
-                                          "wilcoxon": {"result": r1,
-                                                       "p_value": p1,
-                                                       "outcome": o1},
-                                          "t_test": {"result": r2,
-                                                     "p_value": p2,
-                                                     "outcome": o2},
-                                          "d": {"result": rd,
-                                                "d_value": d}})
+                                          "stat_test": {"result": r,
+                                                        "p_value": p,
+                                                        "outcome": o},
+                                          "ICC": {"icc": icc["res"],
+                                                  "message": icc["message"]},
+                                          "effect_size": {"result": rd,
+                                                          "value": cd}})
+
 
                 else:
                     # print(f"absent or not valid data in category {column_to_compare}for file {self.name} - {data}")
@@ -1769,6 +1829,7 @@ class Comparison_updated:
             LogWriter.log(f"    failed {len(not_done)} variables out of {len(columns)}")
             not_done_str = ' | '.join(not_done)
             LogWriter.log(f"    skipped: {not_done_str}")
+            columns = None
         self.__save_dataframe(r_all)
 
     def bonferroni_correction(self, save=False):
@@ -1776,25 +1837,17 @@ class Comparison_updated:
         :param save: bool - if true save the file after correction
         :return: void
         """
-
         self.updated_alpha = self.__correction_param()
 
         # iterates through the rows od the table and applies the correction
         for i, row in self.stat_df_result.iterrows():
-            if type(row["wilcoxon p_value"]) is not str and type(row["wilcoxon p_value"]) is not str and type(
+            if type(row["stat_test p_value"]) is not str and type(row["stat_test p_value"]) is not str and type(
                     self.updated_alpha) is not str:
-                if row["wilcoxon p_value"] < self.updated_alpha:
+                if row["stat_test p_value"] < self.updated_alpha:
                     row[
-                        "wilcoxon message"] = f"p-value: {row['wilcoxon p_value']} - null hypothesis " \
-                                              f"rejected, means are not statistically equal "
-                    row["wilcoxon outcome"] = 1
-            if type(row["t_test p_value"]) is not str and type(row["t_test p_value"]) is not str and type(
-                    self.updated_alpha) is not str:
-                if row["t_test p_value"] < self.updated_alpha:
-                    row[
-                        "t_test message"] = f"p-value: {row['t_test p_value']} - null hypothesis rejected, the " \
-                                            f"datasets have a different distribution "
-                    row["t_test outcome"] = 1
+                        "stat_test message"] = f"p-value: {row['stat_test p_value']} - null hypothesis " \
+                                               f"rejected, means are not statistically equal "
+                    row["stat_test outcome"] = 1
             row.loc["alpha_correction"] = self.updated_alpha
             if len(row) == len(self.stat_df_result.loc[i, :]):
                 self.stat_df_result.loc[i, :] = row
@@ -1806,6 +1859,36 @@ class Comparison_updated:
 
             if save:
                 self.stat_df_result.to_excel(self.data_path + f"{self.name}_bonferroni_corrected.xlsx")
+        # old
+        # self.updated_alpha = self.__correction_param()
+        #
+        # # iterates through the rows od the table and applies the correction
+        # for i, row in self.stat_df_result.iterrows():
+        #     if type(row["wilcoxon p_value"]) is not str and type(row["wilcoxon p_value"]) is not str and type(
+        #             self.updated_alpha) is not str:
+        #         if row["wilcoxon p_value"] < self.updated_alpha:
+        #             row[
+        #                 "wilcoxon message"] = f"p-value: {row['wilcoxon p_value']} - null hypothesis " \
+        #                                       f"rejected, means are not statistically equal "
+        #             row["wilcoxon outcome"] = 1
+        #     if type(row["mann whitney p_value"]) is not str and type(row["mann whitney p_value"]) is not str and type(
+        #             self.updated_alpha) is not str:
+        #         if row["mann whitney p_value"] < self.updated_alpha:
+        #             row[
+        #                 "mann whitney message"] = f"p-value: {row['mann whitney p_value']} - null hypothesis rejected, the " \
+        #                                           f"datasets have a different distribution "
+        #             row["mann whitney outcome"] = 1
+        #     row.loc["alpha_correction"] = self.updated_alpha
+        #     if len(row) == len(self.stat_df_result.loc[i, :]):
+        #         self.stat_df_result.loc[i, :] = row
+        #     else:
+        #         LogWriter.log(
+        #             f"     row{i} ERROR BONFERRONI CORRECTION, follows row from dataframe and row processed")
+        #         LogWriter.log(self.stat_df_result.loc[i, :])
+        #         LogWriter.log(row.tolist())
+        #
+        #     if save:
+        #         self.stat_df_result.to_excel(self.data_path + f"{self.name}_bonferroni_corrected.xlsx")
 
     def save_data(self, filename=None):
         """
@@ -1822,20 +1905,19 @@ class Comparison_updated:
 
         for item in list_to_save:
             self.stat_df_result = pd.concat(
-                [self.stat_df_result, pd.DataFrame({"wilcoxon p_value": item["wilcoxon"]["p_value"],
-                                                    "wilcoxon outcome": item["wilcoxon"]["outcome"],
-                                                    "wilcoxon message": item["wilcoxon"]["result"],
-                                                    "t_test p_value": item["t_test"]["p_value"],
-                                                    "t_test outcome": item["t_test"]["outcome"],
-                                                    "t_test message": item["t_test"]["result"],
-                                                    "cohens d value": item["d"]["d_value"],
-                                                    "cohens d result": item["d"]["result"],
+                [self.stat_df_result, pd.DataFrame({"stat_test p_value": item["stat_test"]["p_value"],
+                                                    "stat_test outcome": item["stat_test"]["outcome"],
+                                                    "stat_test message": item["stat_test"]["result"],
+                                                    "effect size": item["effect_size"]["value"],
+                                                    "effect size": item["effect_size"]["result"],
+                                                    "ICC d value": item["ICC"]["icc"],
+                                                    "ICC message": item["ICC"]["message"],
                                                     "alpha_used": self.alpha,
                                                     "alpha_correction": self.updated_alpha
                                                     }, index=[item["name"]])])
 
     @staticmethod
-    def __t_test(_a, _b):
+    def __m_whitney(_a, _b):
         # a, b = get_column(column_to_compare, df1, df2)
 
         # togliere questo
@@ -1843,7 +1925,7 @@ class Comparison_updated:
             print("could not compute")
             return "result could not be computed", "NaN", "NaN"
 
-        t_stat, p_value = stats.ttest_ind(_a, _b)
+        t_stat, p_value = stats.mannwhitneyu(_a, _b)
 
         if p_value > 0.05:
             result = f"p-value: {p_value} - null hypothesis cannot be rejected"
@@ -1877,42 +1959,51 @@ class Comparison_updated:
         return result, p_value, outcome
 
     @staticmethod
-    def __cohens_d(_a, _b, test="t"):
+    def __effect_size(_a, _b, test="t"):
         # to check because it needs to be compute din a different way for different tests
-        if test=="t":
+        if test == "t":
             n1, n2 = len(_a), len(_b)
             var1, var2 = np.var(_a, ddof=1), np.var(_b, ddof=1)
 
             SDpooled = np.sqrt(((n1 - 1) * var1 + (n2 - 1) * var2) / (n1 + n2 - 2))
-            d = (np.mean(_a) - np.mean(_b)) / SDpooled
+            sd = (np.mean(_a) - np.mean(_b)) / SDpooled
 
-            if d < 0.2:
+            if sd < 0.2:
                 string = "Very small effect size"
-            elif d < 0.5:
+            elif sd < 0.5:
                 string = "Small effect size"
-            elif d < 0.8:
+            elif sd < 0.8:
                 string = "Medium effect size"
             else:
                 string = "Large effect size"
 
-            return d, string
-        elif test=="w":
+            return sd, string
+        elif test == "w":
             # to implement
-            pass
+            return "NaN", "NaN"
+        elif test == "m":
+            return "NaN", "NaN"
+
     @staticmethod
     def __ICC(_a, _b):
         # da finire di impostare
         # to check because it needs to be compute din a different way for different tests
-        subjects = _a.index.tolist() +_b.index.tolist()
-        rater = [0]*len(_a) + [1]*len(_b)
+        subjects = _a.index.tolist() + _b.index.tolist()
+        rater = [0] * len(_a) + [1] * len(_b)
         scores = _a.tolist() + _b.tolist()
         input_df = pd.DataFrame(list(zip(subjects, rater, scores)),
-                          columns=["subjs", "rater", "scores"])
+                                columns=["subjs", "rater", "scores"])
 
         results_df = pg.intraclass_corr(input_df, targets='subjs', raters='rater',
-                         ratings='scores').round(3)
+                                        ratings='scores').round(3)
+
+        # print(results_df.head())
+        row = results_df.loc[2, :]
+        icc = row['ICC']
+        string = f"ICC3 - ICC: {row['ICC']}, F-score: {row['F']}, C.I. 95%: {row['CI95%']}, p-val: {row['pval']}"
         # da aggiungere
-        return
+        return icc, string
+
 
 class Recap:
 

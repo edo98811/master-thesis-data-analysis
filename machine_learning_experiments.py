@@ -1,17 +1,15 @@
-import machine_learning_models as ml
+import machine_learning as ml
 import FastsurferTesting_pc as ft
 import comparisons_updated as cu
-
-
-import FastsurferTesting_pc as ft
 import pandas as pd
 import numpy as np
+import data_manipulation as dm
 from comparisons_updated import SummaryPlot_updated, Comparison_updated
 
 ADNI_PATH = ""
 # OASIS_PATH = "/media/neuropsycad/disk12t/VascoDiogo/OASIS/FS7/"
 BASE_PATH = "C:\\Users\\edoar\\Dropbox (Politecnico Di Torino Studenti)\\Tesi\\data_testing_ADNI\\"
-DATA_FOLDER = "test_data_ADNI_0205r\\"
+DATA_FOLDER = "test_data_ADNI_chiamata\\"
 
 
 def main():
@@ -62,13 +60,12 @@ def main():
     stats_fast_MCI.clean_aparc()
     stats_fast_healthy.clean_aparc()
 
-    model = ml.Models_Binary([stats_fast_MCI, stats_fast_healthy], BASE_PATH)
-    model.logistic_regression()
-    # print(model.X)
-    # model.X.to_excel(BASE_PATH + "dataset.xlsx")
-    # print(model.X_new.shape)
+    model = ml.Models_Binary([stats_fast_MCI, stats_fast_healthy], BASE_PATH, data_path=DATA_FOLDER)
+    model.save_dataset(model.X)
 
-    print("ciao")
+    f = dm.load_txt(BASE_PATH + "selected_features.txt")
+    model.classify("test.xlsx", features=f)
+
 
 if __name__ == "__main__":
     main()

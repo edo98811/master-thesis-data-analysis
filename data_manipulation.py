@@ -62,13 +62,13 @@ def write_dict(all_files, filename):
 def write_txt(list, filename):
     with open(filename, 'w') as f:
         for item in list:
-            f.write(item + '\n')
+            f.write(str(item) + '\n')
 
 
 def load_txt(filename):
     with open(filename, "r") as file:
         data = file.read()
-        return data.split("\n")
+    return data.split("\n")
 
 
 def load_dict(filename):
