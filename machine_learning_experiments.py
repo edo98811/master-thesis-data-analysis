@@ -9,7 +9,7 @@ from comparisons_updated import SummaryPlot_updated, Comparison_updated
 ADNI_PATH = ""
 # OASIS_PATH = "/media/neuropsycad/disk12t/VascoDiogo/OASIS/FS7/"
 BASE_PATH = "C:\\Users\\edoar\\Dropbox (Politecnico Di Torino Studenti)\\Tesi\\data_testing_ADNI\\"
-DATA_FOLDER = "test_data_ADNI_chiamata\\"
+DATA_FOLDER = "test_data_ADNI_test_indexes\\"
 
 
 def main():
@@ -21,21 +21,21 @@ def main():
 
     table.save_csv("UPDATED_ADNI.csv")
 
-    aseg_free_h = pd.read_csv(BASE_PATH + "data_testing_ADNI_workstation\\healthy_FREE_stats\\aseg.csv")
-    aparcL_free_h = pd.read_csv(BASE_PATH + "data_testing_ADNI_workstation\\healthy_FREE_stats\\aseg_right.csv")
-    aparcR_free_h = pd.read_csv(BASE_PATH + "data_testing_ADNI_workstation\\healthy_FREE_stats\\aseg_left.csv")
+    aseg_free_h = pd.read_csv(BASE_PATH + "stats\\healthy_FREE_stats\\aseg.csv")
+    aparcL_free_h = pd.read_csv(BASE_PATH + "stats\\healthy_FREE_stats\\aseg_right.csv")
+    aparcR_free_h = pd.read_csv(BASE_PATH + "stats\\healthy_FREE_stats\\aseg_left.csv")
 
-    aseg_fast_h = pd.read_csv(BASE_PATH + "data_testing_ADNI_workstation\\healthy_FAST_stats\\aseg.csv")
-    aparcL_fast_h = pd.read_csv(BASE_PATH + "data_testing_ADNI_workstation\\healthy_FAST_stats\\aseg_right.csv")
-    aparcR_fast_h = pd.read_csv(BASE_PATH + "data_testing_ADNI_workstation\\healthy_FAST_stats\\aseg_left.csv")
+    aseg_fast_h = pd.read_csv(BASE_PATH + "stats\\healthy_FAST_stats\\aseg.csv")
+    aparcL_fast_h = pd.read_csv(BASE_PATH + "stats\\healthy_FAST_stats\\aseg_right.csv")
+    aparcR_fast_h = pd.read_csv(BASE_PATH + "stats\\healthy_FAST_stats\\aseg_left.csv")
 
-    aseg_free_a = pd.read_csv(BASE_PATH + "data_testing_ADNI_workstation\\NotHealthy_FREE_stats\\aseg.csv")
-    aparcL_free_a = pd.read_csv(BASE_PATH + "data_testing_ADNI_workstation\\NotHealthy_FREE_stats\\aseg_right.csv")
-    aparcR_free_a = pd.read_csv(BASE_PATH + "data_testing_ADNI_workstation\\NotHealthy_FREE_stats\\aseg_left.csv")
+    aseg_free_a = pd.read_csv(BASE_PATH + "stats\\NotHealthy_FREE_stats\\aseg.csv")
+    aparcL_free_a = pd.read_csv(BASE_PATH + "stats\\NotHealthy_FREE_stats\\aseg_right.csv")
+    aparcR_free_a = pd.read_csv(BASE_PATH + "stats\\NotHealthy_FREE_stats\\aseg_left.csv")
 
-    aseg_fast_a = pd.read_csv(BASE_PATH + "data_testing_ADNI_workstation\\NotHealthy_FAST_stats\\aseg.csv")
-    aparcL_fast_a = pd.read_csv(BASE_PATH + "data_testing_ADNI_workstation\\NotHealthy_FAST_stats\\aseg_right.csv")
-    aparcR_fast_a = pd.read_csv(BASE_PATH + "data_testing_ADNI_workstation\\NotHealthy_FAST_stats\\aseg_left.csv")
+    aseg_fast_a = pd.read_csv(BASE_PATH + "stats\\NotHealthy_FAST_stats\\aseg.csv")
+    aparcL_fast_a = pd.read_csv(BASE_PATH + "stats\\NotHealthy_FAST_stats\\aseg_right.csv")
+    aparcR_fast_a = pd.read_csv(BASE_PATH + "stats\\NotHealthy_FAST_stats\\aseg_left.csv")
 
     stats_fast_healthy = ft.Stats("healthy_FAST", BASE_PATH, table, "main_condition=='NL'", d_folder=DATA_FOLDER,
                                   aseg=aseg_fast_h,
@@ -59,13 +59,32 @@ def main():
     stats_free_healthy.clean_aparc()
     stats_fast_MCI.clean_aparc()
     stats_fast_healthy.clean_aparc()
+    #
+    # model = ml.Models_Binary([stats_free_MCI, stats_free_healthy], BASE_PATH, data_path=DATA_FOLDER)
+    # model.save_dataset(model.X)
+    #
+    # f = dm.load_txt(BASE_PATH + "selected_features.txt")
+    # model.classify("test_free_balanced_test.xlsx", features=f)
 
+
+    # model = ml.Models_Binary([stats_fast_MCI, stats_fast_healthy], BASE_PATH, data_path=DATA_FOLDER)
+    # model.save_dataset(model.X)
+    #
+    # f = dm.load_txt(BASE_PATH + "selected_features.txt")
+    # res = model.classify("test_fast_balanced_test.xlsx", features=f)
+    indexes = {"experiment1":[(-1, "Left-Lateral-Ventricle_volume_mm3"), (-1, "Left-Inf-Lat-Vent_volume_mm3"),
+               (-1, "Right-Inf-Lat-Vent_volume_mm3"), (-1, "3rd-Ventricle_volume_mm3"),
+               (-1, "4th-Ventricle_volume_mm3"), (-1, "Right-Lateral-Ventricle_volume_mm3"),
+               (1, "Right-Amygdala_volume_mm3"), (1, "Left-Amygdala_volume_mm3"), (1, "Left-Hippocampus_volume_mm3"),
+               (1, "Right-Hippocampus_volume_mm3"), (1, "Left-Accumbens-area_volume_mm3"),
+               (1, "Right-Accumbens-area_volume_mm3")],
+               "experiment2":[(1, "Right-Amygdala_volume_mm3"), (1, "Left-Amygdala_volume_mm3"), (1, "Left-Hippocampus_volume_mm3"),
+               (1, "Right-Hippocampus_volume_mm3"), (1, "Left-Accumbens-area_volume_mm3"),
+               (1, "Right-Accumbens-area_volume_mm3")]
+               }
     model = ml.Models_Binary([stats_fast_MCI, stats_fast_healthy], BASE_PATH, data_path=DATA_FOLDER)
-    model.save_dataset(model.X)
-
-    f = dm.load_txt(BASE_PATH + "selected_features.txt")
-    model.classify("test.xlsx", features=f)
-
-
+    model.scores("scoresFastSurfer.xlsx", indexes)
+    model = ml.Models_Binary([stats_free_MCI, stats_free_healthy], BASE_PATH, data_path=DATA_FOLDER)
+    model.scores("scores_FreeSurfer.xlsx", indexes)
 if __name__ == "__main__":
     main()

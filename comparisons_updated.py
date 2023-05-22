@@ -535,7 +535,7 @@ class SummaryPlot_updated:
 
         # saves the dataframes from the stats object
         LogWriter.log(f"\n")
-        LogWriter.log(f"    scatter plot with ages: {self.name}...")
+        LogWriter.log(f"   comparison plot with averages: {self.name}...")
 
         for d in data:
             df_list, subj_lists, columns = self.create_list(
@@ -677,7 +677,7 @@ class SummaryPlot_updated:
             os.makedirs(self.data_path + folder)
         # saves the dataframes from the stats object
         LogWriter.log(f"\n")
-        LogWriter.log(f"    scatter plot with ages: {self.name}...")
+        LogWriter.log(f"    scatter plot linear regression normalized: {self.name}...")
         if hasattr(self, 'fitted_models'): del self.fitted_models
         self.fitted_models = {
             "legend_entry": [],
@@ -753,7 +753,7 @@ class SummaryPlot_updated:
 
         # saves the dataframes from the stats object
         LogWriter.log(f"\n")
-        LogWriter.log(f"    scatter plot with ages: {self.name}...")
+        LogWriter.log(f"    scatter plot with mmse: {self.name}...")
         if hasattr(self, 'fitted_models'): del self.fitted_models
 
         self.fitted_models = {
@@ -834,7 +834,7 @@ class SummaryPlot_updated:
 
         # saves the dataframes from the stats object
         LogWriter.log(f"\n")
-        LogWriter.log(f"    scatter plot with ages: {self.name}...")
+        LogWriter.log(f"    scatter plot with linear regression and confidence intervals: {self.name}...")
         if hasattr(self, 'fitted_models'): del self.fitted_models
         self.fitted_models = {
             "legend_entry": [],
@@ -891,7 +891,8 @@ class SummaryPlot_updated:
             LogWriter.log(f"    plotted {plots_n} variables out of {len(columns_set)}")
             not_done_str = ' | '.join(not_done)
             LogWriter.log(f"    skipped: {not_done_str}")
-            pd.DataFrame.from_dict(self.fitted_models).to_excel(f"{self.data_path}\\{self.name}_{d}_linear.xlsx")
+            # TODO: to uncomment for saving excel
+            # pd.DataFrame.from_dict(self.fitted_models).to_excel(f"{self.data_path}\\{self.name}_{d}_linear_with_CI.xlsx")
             # dm.write_txt(self.fitted_models, f"{self.data_path}\\{self.name}_{d}.txt")
 
     def scatter_plot_aseg_normalized_huber_regression(self,
@@ -910,7 +911,7 @@ class SummaryPlot_updated:
             os.makedirs(self.data_path + folder)
         # saves the dataframes from the stats object
         LogWriter.log(f"\n")
-        LogWriter.log(f"    scatter plot with ages: {self.name}...")
+        LogWriter.log(f"    scatter plot with huber regression: {self.name}...")
         if hasattr(self, 'fitted_models'): del self.fitted_models
         self.fitted_models = {
             "legend_entry": [],
@@ -1221,7 +1222,7 @@ class SummaryPlot_updated:
             mmse = pd.to_numeric(series.iloc[:, 2], errors='coerce')
             colors = np.empty(len(mmse), dtype='U10')
 
-            cmap = plt.cm.get_cmap('summer', 3)
+            # cmap = plt.cm.get_cmap('summer', 3)
             colors[mmse > 24] = 2
             colors[(19 < mmse) & (mmse <= 24)] = 1
             colors[mmse <= 19] = 0
@@ -1231,7 +1232,8 @@ class SummaryPlot_updated:
 
             max_ = max(values) * 1.5
             # norm = Normalize(vmin=min(mmse), vmax=max(mmse))
-            ax.scatter(age, values.tolist(), c=colors, cmap=cmap)
+            sns.scatterplot(x=age, y=values, hue=colors, ax=ax, legend="brief")
+            # ax.scatter(age, values.tolist(), c=colors, cmap=cmap)
 
             # x = np.linspace(min(age), max(age), 100)
             #
@@ -1256,13 +1258,13 @@ class SummaryPlot_updated:
 
         # Add a legend and axis labels
         # Add colorbar to show color scale
-        cbar = plt.colorbar(ax=ax, label="mmse")
-        cbar.set_ticks([0, 1, 2])
-        cbar.set_ticklabels(['< 19', '19 - 24', '> 24'])
+        # cbar = plt.colorbar(ax=ax, label="mmse")
+        # cbar.set_ticks([0, 1, 2])
+        # cbar.set_ticklabels(['< 19', '19 - 24', '> 24'])
         # sm.set_array([])  # only needed for matplotlib < 3.1
         # plt.colorbar(sm, ax=ax)
         ax.axis(ymin=0, ymax=max_)
-        # ax.legend()
+        ax.legend()
         ax.set_xlabel('Age')
         ax.set_ylabel('Data')
         ax.ticklabel_format(style='sci', axis='y', scilimits=(0, 0), useMathText=True)
@@ -1506,7 +1508,7 @@ class Comparison_updated:
         # u = set1.intersection(set2)
 
         if sd:
-            LogWriter.log(f"        elements to delete: {' '.join(sd)}")
+            LogWriter.log(f"        elements to delete: {' '.join(str(sd))}")
             for id_to_delete in sd:
                 if id_to_delete in set1:
                     LogWriter.log(f"            element{id_to_delete} found in  {self.stat_df_1.name}")
@@ -1679,8 +1681,8 @@ class Comparison_updated:
         # Create a DataFrame with the two Series
         # df = pd.DataFrame({'Freesurfer': _a, 'Fastsurfer': _b})
 
-        df = pd.DataFrame({'Data': pd.concat([_a, _b]),
-                           'Group': [self.categories[0]] * len(_a) + [self.categories[1]] * len(_b),
+        df = pd.DataFrame({"Data": pd.concat([_a, _b]),
+                           "Group": [self.categories[0]] * len(_a) + [self.categories[1]] * len(_b),
                            "Area": [_a.name] * (len(_a) + len(_b))})
 
         # Create a split violin plot
@@ -1744,7 +1746,7 @@ class Comparison_updated:
     def __correction_param(self):
         return self.alpha / len(self.stat_df_result)
 
-    def stat_test(self, columns=None, c_to_exclude=("age"),
+    def stat_test(self, c_to_keep=None, c_to_exclude=("age"),
                   data=("aseg_normalized", "aparcL_cleaned", "aparcR_cleaned"),
                   match=False):
         """
@@ -1771,8 +1773,10 @@ class Comparison_updated:
                 LogWriter.log(f"len a: {len(_df1)} len b: {len(_df2)}")
 
             # se non viene dato un input fa il test per tutte le colonne
-            if columns is None:
-                columns = set(_df1.columns.tolist()).intersection(set(_df2.columns.tolist()))
+
+            columns = set(_df1.columns.tolist()).intersection(set(_df2.columns.tolist()))
+            if c_to_keep is not None:
+                columns = set(columns).intersection(c_to_keep)
 
             not_done = []
             for i, column_to_compare in enumerate(columns):
@@ -1782,6 +1786,7 @@ class Comparison_updated:
                         b = pd.to_numeric(_df2.loc[:, column_to_compare], errors='coerce')
                     except:
                         LogWriter.log(f"per qualche ragione la colonna {column_to_compare} non e in un df")
+                        not_done.append(column_to_compare)
                         continue
 
                     # if len(a) != len(b):
@@ -1793,11 +1798,11 @@ class Comparison_updated:
 
                         if match:
                             icc["res"], icc["message"] = self.__ICC(a, b)
-                            r, p, o = self.__wilcoxon(a, b)
-                            cd, rd = self.__effect_size(a, b, test="w")
+                            r, p, o, cd, rd = self.__wilcoxon(a, b)
+                            # cd, rd = self.__effect_size(a, b, test="w")
                         else:
-                            r, p, o = self.__m_whitney(a, b)
-                            cd, rd = self.__effect_size(a, b, test="m")
+                            r, p, o, cd, rd = self.__m_whitney(a, b)
+                            # cd, rd = self.__effect_size(a, b, test="m")
 
                         # if isinstance(column_to_compare, int):
                         #     column_to_compare_name = _df1.columns[column_to_compare]
@@ -1829,7 +1834,7 @@ class Comparison_updated:
             LogWriter.log(f"    failed {len(not_done)} variables out of {len(columns)}")
             not_done_str = ' | '.join(not_done)
             LogWriter.log(f"    skipped: {not_done_str}")
-            columns = None
+
         self.__save_dataframe(r_all)
 
     def bonferroni_correction(self, save=False):
@@ -1846,7 +1851,7 @@ class Comparison_updated:
                 if row["stat_test p_value"] < self.updated_alpha:
                     row[
                         "stat_test message"] = f"p-value: {row['stat_test p_value']} - null hypothesis " \
-                                               f"rejected, means are not statistically equal "
+                                               f"rejected "
                     row["stat_test outcome"] = 1
             row.loc["alpha_correction"] = self.updated_alpha
             if len(row) == len(self.stat_df_result.loc[i, :]):
@@ -1908,9 +1913,9 @@ class Comparison_updated:
                 [self.stat_df_result, pd.DataFrame({"stat_test p_value": item["stat_test"]["p_value"],
                                                     "stat_test outcome": item["stat_test"]["outcome"],
                                                     "stat_test message": item["stat_test"]["result"],
-                                                    "effect size": item["effect_size"]["value"],
-                                                    "effect size": item["effect_size"]["result"],
-                                                    "ICC d value": item["ICC"]["icc"],
+                                                    "effect_size_value": item["effect_size"]["value"],
+                                                    "effect_size_message": item["effect_size"]["result"],
+                                                    "ICC value": item["ICC"]["icc"],
                                                     "ICC message": item["ICC"]["message"],
                                                     "alpha_used": self.alpha,
                                                     "alpha_correction": self.updated_alpha
@@ -1925,8 +1930,17 @@ class Comparison_updated:
             print("could not compute")
             return "result could not be computed", "NaN", "NaN"
 
-        t_stat, p_value = stats.mannwhitneyu(_a, _b)
-
+        result = pg.mwu(_a, _b)
+        e_size = result.loc['MWU', 'RBC']
+        p_value = result.loc['MWU', 'p-val']
+        # n1, n2 = len(_a), len(_b)
+        # U2 = n1*n2 -U1
+        # U = min(U1, U2)
+        #
+        # z = (U1 + 0.5) - U/((n1*n2*(n1+n2+1))/12)
+        # # e_size = abs(z)/(n1 + n2)
+        # e_size = z / np.sqrt(len(_a) + len(_b))
+        e_message = Comparison_updated.__effect_size(e_size, 0)
         if p_value > 0.05:
             result = f"p-value: {p_value} - null hypothesis cannot be rejected"
             outcome = 0
@@ -1934,7 +1948,7 @@ class Comparison_updated:
             result = f"p-value: {p_value} - null hypothesis rejected"
             outcome = 1
 
-        return result, p_value, outcome
+        return result, p_value, outcome, e_size, e_message
 
     @staticmethod
     def __wilcoxon(_a, _b):
@@ -1946,9 +1960,13 @@ class Comparison_updated:
         # df1.to_excel("dataset_uniti_test.xlsx", index=False)
 
         # t_stat, p_value = stats.mannwhitneyu(_a, _b)
-        t_stat, p_value = stats.wilcoxon(_a, _b)
+        # ho messo il method approx se no non potevo avere la z
+        result = pg.wilcoxon(_a, _b)
+        e_size = result.loc['Wilcoxon', 'RBC']
+        p_value = result.loc['Wilcoxon', 'p-val']
+        # e_size = z/np.sqrt(len(_a) + len(_b))
+        e_message = Comparison_updated.__effect_size(e_size, 0)
 
-        # p value is the likelihood that these are the same
         if p_value > 0.05:
             result = f"p-value: {p_value} - null hypothesis cannot be rejected"
             outcome = 0
@@ -1956,10 +1974,10 @@ class Comparison_updated:
             result = f"p-value: {p_value} - null hypothesis rejected"
             outcome = 1
 
-        return result, p_value, outcome
+        return result, p_value, outcome, e_size, e_message
 
     @staticmethod
-    def __effect_size(_a, _b, test="t"):
+    def __effect_size(_a, _b, test="only_message"):
         # to check because it needs to be compute din a different way for different tests
         if test == "t":
             n1, n2 = len(_a), len(_b)
@@ -1983,6 +2001,20 @@ class Comparison_updated:
             return "NaN", "NaN"
         elif test == "m":
             return "NaN", "NaN"
+        elif test=="only_message":
+            sd = _a
+
+            if sd < 0.2:
+                string = "Very small effect size"
+            elif sd < 0.5:
+                string = "Small effect size"
+            elif sd < 0.8:
+                string = "Medium effect size"
+            else:
+                string = "Large effect size"
+
+            return string
+
 
     @staticmethod
     def __ICC(_a, _b):

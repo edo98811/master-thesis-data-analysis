@@ -13,6 +13,7 @@ import comparisons_updated as cu
 import FastsurferTesting_pc as ft
 import numpy as np
 import missingno as msno
+import matplotlib.pyplot as plt
 
 """
 idee 
@@ -207,10 +208,10 @@ class Models_Binary:
             n = int(np.ceil((1 - test) * min(len(class1), len(class2))))
 
             train1 = np.random.permutation(range(len(class1)))[:n]
-            train2 = np.random.permutation(range(len(class2)))[:n]
+            train2 = np.random.permutation(range(len(class1)))[:n]
 
             test1 = np.random.permutation(range(len(class1)))[n + 1:]
-            test2 = np.random.permutation(range(len(class2)))[n + 1:]
+            test2 = np.random.permutation(range(len(class1)))[n + 1:]
 
             train = np.concatenate(([class1[train1, :], class2[train2, :]]), axis=0)
             test = np.concatenate(([class1[test1, :], class2[test2, :]]), axis=0)
@@ -232,7 +233,7 @@ class Models_Binary:
     def check_balance(y):
         # byclass = self.X.groupby(by="class").count()
         # ft.LogWriter.log(f"{byclass}")
-        ft.LogWriter.log(f"{len(y['class'==1])}")
+        ft.LogWriter.log(f"{len(y['class' == 1])}")
         ft.LogWriter.log(f"{len(y['class' == 0])}")
 
     @staticmethod
@@ -268,12 +269,12 @@ class Models_Binary:
 
         results_dict = dict()
 
-        results_dict["text"] = metrics.classification_report(y_test, y_pred)
         results_dict["accuracy"] = metrics.accuracy_score(y_test, y_pred)
         results_dict["precision"] = metrics.precision_score(y_test, y_pred)
         results_dict["recall"] = metrics.recall_score(y_test, y_pred)
         results_dict["balanced_accuracy"] = metrics.balanced_accuracy_score(y_test, y_pred)
         results_dict["confusion_matrix"] = metrics.confusion_matrix(y_test, y_pred)
+        results_dict["text"] = metrics.classification_report(y_test, y_pred)
 
         results_series = pd.Series(results_dict)
         results_series.name = index
@@ -281,7 +282,7 @@ class Models_Binary:
         return results_series
 
     def classify(self, filename, features=None, feature_selection_method=None, normalization=("minmax",),
-                 model_type=("logistic", "svm"), setbalance=("balance_same_seed",), n_iter=2):
+                 model_type=("logistic", "svm"), setbalance=("over",), n_iter=1):
         """
 
         :param features:
@@ -292,23 +293,197 @@ class Models_Binary:
         :param n_iter:
         :return:
         """
-        res = pd.DataFrame()
 
+        res = pd.DataFrame()
         X_selected = self.feature_selection(self.X, self.Y, features=features, method=feature_selection_method)
         for n_ in normalization:
             X_normalized = self.normalize_features(X_selected, method=n_)
             for sb_ in setbalance:
                 X_train, X_test, y_train, y_test = self._set_splitting(X_normalized, self.Y, method=sb_)
 
-                for m_ in model_type:
-                    for i in range(n_iter):
-                        index = f"{m_}_{sb_}_{n_}_{i}"
+                for i in range(n_iter):
+                    # logistic regression 1
+                    index = f"logistc_{sb_}_{i}_try1"
 
-                        model = Models_Binary.train_model(X_train, y_train, m_)
-                        y_pred = Models_Binary.test_model(X_test, model)
-                        res = pd.concat([res, Models_Binary.metrics(y_test, y_pred, index)], axis=1)
+                    model = LogisticRegression().fit(X_train, y_train)
+                    y_pred = Models_Binary.test_model(X_test, model)
+                    res = pd.concat([res, Models_Binary.metrics(y_test, y_pred, index)], axis=0)
+                    # logistic regression 1
+                    # index = f"logistc_{sb_}_{i}_try4"
+                    #
+                    # model = LogisticRegression(penalty='elasticnet').fit(X_train, y_train)
+                    # y_pred = Models_Binary.test_model(X_test, model)
+                    # res = pd.concat([res, Models_Binary.metrics(y_test, y_pred, index)], axis=1)
+                    # logistic regression 1
+                    # index = f"logistc_{sb_}_{i}_try2"
+                    #
+                    # model = LogisticRegression(penalty='l1').fit(X_train, y_train)
+                    # y_pred = Models_Binary.test_model(X_test, model)
+                    # res = pd.concat([res, Models_Binary.metrics(y_test, y_pred, index)], axis=1)
+                    # logistic regression 1
+                    index = f"logistc_{sb_}_{i}_try3"
+
+                    model = LogisticRegression(penalty='l2').fit(X_train, y_train)
+                    y_pred = Models_Binary.test_model(X_test, model)
+                    res = pd.concat([res, Models_Binary.metrics(y_test, y_pred, index)], axis=0)
+
+                    # svm 1
+                    index = f"svm_{sb_}_{i}_try1"
+
+                    model = SVC().fit(X_train, y_train)
+                    y_pred = Models_Binary.test_model(X_test, model)
+                    res = pd.concat([res, Models_Binary.metrics(y_test, y_pred, index)], axis=0)
+                    # svm 2
+                    index = f"svm_{sb_}_{i}_try2"
+
+                    model = SVC(kernel='linear').fit(X_train, y_train)
+                    y_pred = Models_Binary.test_model(X_test, model)
+                    res = pd.concat([res, Models_Binary.metrics(y_test, y_pred, index)], axis=0)
+                    # svm 3
+                    index = f"svm_{sb_}_{i}_try3"
+
+                    model = SVC(kernel='sigmoid').fit(X_train, y_train)
+                    y_pred = Models_Binary.test_model(X_test, model)
+                    res = pd.concat([res, Models_Binary.metrics(y_test, y_pred, index)], axis=0)
+                    # svm 4
+                    index = f"svm_{sb_}_{i}_try4"
+
+                    model = SVC(kernel='poly').fit(X_train, y_train)
+                    y_pred = Models_Binary.test_model(X_test, model)
+                    res = pd.concat([res, Models_Binary.metrics(y_test, y_pred, index)], axis=0)
+                    # svm 5
+                    index = f"svm_{sb_}_{i}_try5"
+
+                    model = SVC(kernel='poly', degree=5).fit(X_train, y_train)
+                    y_pred = Models_Binary.test_model(X_test, model)
+                    res = pd.concat([res, Models_Binary.metrics(y_test, y_pred, index)], axis=0)
 
         res.to_excel(self.data_path + filename)
+        return res
+
+    def plot_scores(self, results, n_subplots=8, n_rows=2, img_name="boxplots"):
+        if not os.path.exists(self.data_path + "boxplots\\"):
+            os.makedirs(self.data_path + "boxplots\\")
+        img_name = self.data_path +"boxplots\\" + img_name
+        c_to_exclude = ("class",)
+        plots_n = 0
+        fig = None
+
+        for column in results:
+            if column not in c_to_exclude:
+                values = results.loc[:, ["class", column]]
+
+                if not plots_n % n_subplots:
+                    # plots when
+                    if plots_n > 1:
+                        if fig is not None:
+                            fig.savefig(f"{img_name}"
+                                        f"_{str(plots_n - n_subplots)}-{str(plots_n)}.png")  # save the figure to file
+
+                    fig, axs = self.create_plot(n_subplots, n_rows)
+
+                plot_ = values.boxplot(by="class", ax=axs[plots_n % n_subplots])
+                plot_.plot()
+                plots_n += 1
+
+        if plots_n % n_subplots != 0:
+            if fig is not None:
+                fig.savefig(f"{img_name}"
+                            f"_{str(plots_n - (plots_n % n_subplots))}-{str(plots_n)}.png")  # save the figure to file
+                del axs, fig
+
+    @staticmethod
+    def create_plot(n_subplots, n_rows):
+
+        fig, axs = plt.subplots(n_rows, int(n_subplots / n_rows), figsize=(40, 20))
+        axs = axs.ravel()
+        plt.subplots_adjust(hspace=0.5)
+        plt.subplots_adjust(wspace=0.2)
+
+        return fig, axs
+
+    def scores(self, filename, indexes, features=None, setbalance=("over",)):
+        X_selected = self.feature_selection(self.X, self.Y, features=features)
+        subjects = X_selected.index.tolist()
+        # X_train, X_test, y_train, y_test = self._set_splitting(X_selected, self.Y)
+
+        results = pd.DataFrame()
+        results["class"] = self.Y
+        results.index = subjects
+
+        for index_name in indexes.keys():
+            results[index_name] = np.nan
+
+            for index, element in X_selected.iterrows():
+                results.loc[index, index_name] = self.compute_index(element, indexes[index_name])
+                # score.add(self.compute_index(element, indexes[index_name]), index=index)
+
+        results.to_excel(self.data_path + filename)
+        self.plot_scores(results)
+        plot_ = results.boxplot(by="class")
+        for plotn in plot_:
+            plotn.plot()
+        plt.show()
+
+    """
+    index = dictionary 
+    name: [(coeff, var), ]
+    """
+
+    @staticmethod
+    def _plot_scores(results):
+        pass
+
+    def compute_index(self, dataset, index_formula):
+        score = 0
+        # index formula, list of tuples (coeff, variable name)
+        for coeff, variable in index_formula:
+            score += coeff * dataset.loc[variable]
+
+        return score
+
+    def cross_validation(self):
+        pass
+
+    """
+        res = pd.DataFrame()
+        if features is None:
+            X_selected = self.feature_selection(self.X, self.Y, features=features, method=feature_selection_method)
+        else:
+            for n_f, features_ in enumerate(features):
+                X_selected = self.feature_selection(self.X, self.Y, features=features_, method=feature_selection_method)
+                for n_ in normalization:
+                    X_normalized = self.normalize_features(X_selected, method=n_)
+                    for sb_ in setbalance:
+                        X_train, X_test, y_train, y_test = self._set_splitting(X_normalized, self.Y, method=sb_)
+        
+                        for m_ in model_type:
+                            for i in range(n_iter):
+                                index = f"features_set_n{n_f}_{m_}_{sb_}_{n_}_{i}"
+        
+                                model = Models_Binary.train_model(X_train, y_train, m_)
+                                y_pred = Models_Binary.test_model(X_test, model)
+                                res = pd.concat([res, Models_Binary.metrics(y_test, y_pred, index)], axis=1)
+
+        res.to_excel(self.data_path + filename)
+        """
+    # res = pd.DataFrame()
+    # X_selected = self.feature_selection(self.X, self.Y, features=features, method=feature_selection_method)
+    # for n_ in normalization:
+    #     X_normalized = self.normalize_features(X_selected, method=n_)
+    #     for sb_ in setbalance:
+    #         X_train, X_test, y_train, y_test = self._set_splitting(X_normalized, self.Y, method=sb_)
+    #
+    #         for m_ in model_type:
+    #             for i in range(n_iter):
+    #                 index = f"{m_}_{sb_}_{n_}_{i}"
+    #
+    #                 model = Models_Binary.train_model(X_train, y_train, m_)
+    #                 y_pred = Models_Binary.test_model(X_test, model)
+    #                 res = pd.concat([res, Models_Binary.metrics(y_test, y_pred, index)], axis=1)
+    #
+    # res.to_excel(self.data_path + filename)
+    # res = pd.DataFrame()
 
     # def medial_temporal_lobe_atrophy_score(self, features=None):
     #
