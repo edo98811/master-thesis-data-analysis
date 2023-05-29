@@ -7,7 +7,7 @@ import os
 ADNI_PATH = ""
 # OASIS_PATH = "/media/neuropsycad/disk12t/VascoDiogo/OASIS/FS7/"
 BASE_PATH = "C:\\Users\\edoar\\Dropbox (Politecnico Di Torino Studenti)\\Tesi\\data_testing_ADNI\\"
-DATA_FOLDER = "test_data_ADNI_important_regions_all\\"
+DATA_FOLDER = "test_data_ADNI_all_short_name_stat_test\\"
 def main_all():
     pd.options.mode.chained_assignment = None
     ft.LogWriter.clearlog()

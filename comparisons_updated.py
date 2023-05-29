@@ -26,7 +26,7 @@ todo:
 
 
 
-- aggiungere statistiche a line plot
+- aggiungere statistiche a line plotw
 - provare wilcoxon test
 - salvare statistiche su linee saltate eccetera
 - plot del pvalue per area
@@ -1817,7 +1817,7 @@ class Comparison_updated:
                         #                          "d_value": cd}})
 
                         if isinstance(column_to_compare, str):
-                            r_all.append({"name": f"{self.name}_{d}_{column_to_compare}",
+                            r_all.append({"name":f"{column_to_compare}",# f"{self.name}_{d}_{column_to_compare}",
                                           "stat_test": {"result": r,
                                                         "p_value": p,
                                                         "outcome": o},

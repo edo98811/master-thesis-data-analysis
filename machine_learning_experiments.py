@@ -59,32 +59,35 @@ def main():
     stats_free_healthy.clean_aparc()
     stats_fast_MCI.clean_aparc()
     stats_fast_healthy.clean_aparc()
-    #
-    # model = ml.Models_Binary([stats_free_MCI, stats_free_healthy], BASE_PATH, data_path=DATA_FOLDER)
-    # model.save_dataset(model.X)
-    #
-    # f = dm.load_txt(BASE_PATH + "selected_features.txt")
-    # model.classify("test_free_balanced_test.xlsx", features=f)
 
-
-    # model = ml.Models_Binary([stats_fast_MCI, stats_fast_healthy], BASE_PATH, data_path=DATA_FOLDER)
-    # model.save_dataset(model.X)
-    #
-    # f = dm.load_txt(BASE_PATH + "selected_features.txt")
-    # res = model.classify("test_fast_balanced_test.xlsx", features=f)
-    indexes = {"experiment1":[(-1, "Left-Lateral-Ventricle_volume_mm3"), (-1, "Left-Inf-Lat-Vent_volume_mm3"),
-               (-1, "Right-Inf-Lat-Vent_volume_mm3"), (-1, "3rd-Ventricle_volume_mm3"),
-               (-1, "4th-Ventricle_volume_mm3"), (-1, "Right-Lateral-Ventricle_volume_mm3"),
-               (1, "Right-Amygdala_volume_mm3"), (1, "Left-Amygdala_volume_mm3"), (1, "Left-Hippocampus_volume_mm3"),
-               (1, "Right-Hippocampus_volume_mm3"), (1, "Left-Accumbens-area_volume_mm3"),
-               (1, "Right-Accumbens-area_volume_mm3")],
-               "experiment2":[(1, "Right-Amygdala_volume_mm3"), (1, "Left-Amygdala_volume_mm3"), (1, "Left-Hippocampus_volume_mm3"),
-               (1, "Right-Hippocampus_volume_mm3"), (1, "Left-Accumbens-area_volume_mm3"),
-               (1, "Right-Accumbens-area_volume_mm3")]
-               }
-    model = ml.Models_Binary([stats_fast_MCI, stats_fast_healthy], BASE_PATH, data_path=DATA_FOLDER)
-    model.scores("scoresFastSurfer.xlsx", indexes)
+    res = pd.DataFrame()
     model = ml.Models_Binary([stats_free_MCI, stats_free_healthy], BASE_PATH, data_path=DATA_FOLDER)
-    model.scores("scores_FreeSurfer.xlsx", indexes)
+    model.save_dataset(model.X)
+
+    f = dm.load_txt(BASE_PATH + "selected_features.txt")
+    res = pd.concat([res, model.classify("test_free_balanced_test.xlsx", features=f)], axis=0)
+
+
+    model = ml.Models_Binary([stats_fast_MCI, stats_fast_healthy], BASE_PATH, data_path=DATA_FOLDER)
+    model.save_dataset(model.X)
+
+    f = dm.load_txt(BASE_PATH + "selected_features.txt")
+    res = pd.concat([res, model.classify("test_fast_balanced_test.xlsx", features=f)], axis=0)
+
+    res.to_excel(BASE_PATH + DATA_FOLDER + "results_from_main.xlsx")
+    # indexes = {"experiment1":[(-1, "Left-Lateral-Ventricle_volume_mm3"), (-1, "Left-Inf-Lat-Vent_volume_mm3"),
+    #            (-1, "Right-Inf-Lat-Vent_volume_mm3"), (-1, "3rd-Ventricle_volume_mm3"),
+    #            (-1, "4th-Ventricle_volume_mm3"), (-1, "Right-Lateral-Ventricle_volume_mm3"),
+    #            (1, "Right-Amygdala_volume_mm3"), (1, "Left-Amygdala_volume_mm3"), (1, "Left-Hippocampus_volume_mm3"),
+    #            (1, "Right-Hippocampus_volume_mm3"), (1, "Left-Accumbens-area_volume_mm3"),
+    #            (1, "Right-Accumbens-area_volume_mm3")],
+    #            "experiment2":[(1, "Right-Amygdala_volume_mm3"), (1, "Left-Amygdala_volume_mm3"), (1, "Left-Hippocampus_volume_mm3"),
+    #            (1, "Right-Hippocampus_volume_mm3"), (1, "Left-Accumbens-area_volume_mm3"),
+    #            (1, "Right-Accumbens-area_volume_mm3")]
+    #            }
+    # model = ml.Models_Binary([stats_fast_MCI, stats_fast_healthy], BASE_PATH, data_path=DATA_FOLDER)
+    # model.scores("scoresFastSurfer.xlsx", indexes)
+    # model = ml.Models_Binary([stats_free_MCI, stats_free_healthy], BASE_PATH, data_path=DATA_FOLDER)
+    # model.scores("scores_FreeSurfer.xlsx", indexes)
 if __name__ == "__main__":
     main()

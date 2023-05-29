@@ -79,7 +79,8 @@ class Models_Binary:
         columns_set = set(columns)
 
         return dataframe_selected, subj_lists, columns_set
-
+    @staticmethod
+    def load_features(self):
     @staticmethod
     def _drop_nan(X):
         cols_to_drop = []
@@ -233,8 +234,12 @@ class Models_Binary:
     def check_balance(y):
         # byclass = self.X.groupby(by="class").count()
         # ft.LogWriter.log(f"{byclass}")
-        ft.LogWriter.log(f"{len(y['class' == 1])}")
-        ft.LogWriter.log(f"{len(y['class' == 0])}")
+        if isinstance(y, pd.DataFrame):
+            ft.LogWriter.log(f"{len(y['class' == 1])}")
+            ft.LogWriter.log(f"{len(y['class' == 0])}")
+        elif type(y) is np.ndarray:
+            print("to_implement")
+            pass
 
     @staticmethod
     def normalize_features(X, method="minmax"):
@@ -262,10 +267,12 @@ class Models_Binary:
 
     @staticmethod
     def test_model(X_test, model):
+        if model is None:
+            return
         return model.predict(X_test)
 
     @staticmethod
-    def metrics(y_test, y_pred, index):
+    def metrics(y_test, y_pred, index, features):
 
         results_dict = dict()
 
@@ -273,11 +280,12 @@ class Models_Binary:
         results_dict["precision"] = metrics.precision_score(y_test, y_pred)
         results_dict["recall"] = metrics.recall_score(y_test, y_pred)
         results_dict["balanced_accuracy"] = metrics.balanced_accuracy_score(y_test, y_pred)
-        results_dict["confusion_matrix"] = metrics.confusion_matrix(y_test, y_pred)
+        results_dict["confusion_matrix"] = str(metrics.confusion_matrix(y_test, y_pred))
         results_dict["text"] = metrics.classification_report(y_test, y_pred)
+        results_dict["features_used"] = ';'.join(features)
 
-        results_series = pd.Series(results_dict)
-        results_series.name = index
+        results_series = pd.DataFrame(results_dict, index=(index,))
+        # results_series.name = index
 
         return results_series
 
@@ -302,12 +310,16 @@ class Models_Binary:
                 X_train, X_test, y_train, y_test = self._set_splitting(X_normalized, self.Y, method=sb_)
 
                 for i in range(n_iter):
+                    model = None
                     # logistic regression 1
                     index = f"logistc_{sb_}_{i}_try1"
 
-                    model = LogisticRegression().fit(X_train, y_train)
+                    scores = sklearn.model_selection.cross_validate(LogisticRegression(), X_train, y_train, scoring='balanced_accuracy', return_estimator=True)
+                    model = scores['estimator']
+
+                    # model = LogisticRegression().fit(X_train, y_train)
                     y_pred = Models_Binary.test_model(X_test, model)
-                    res = pd.concat([res, Models_Binary.metrics(y_test, y_pred, index)], axis=0)
+                    res = pd.concat([res, Models_Binary.metrics(y_test, y_pred, index, features)], axis=0)
                     # logistic regression 1
                     # index = f"logistc_{sb_}_{i}_try4"
                     #
@@ -325,38 +337,38 @@ class Models_Binary:
 
                     model = LogisticRegression(penalty='l2').fit(X_train, y_train)
                     y_pred = Models_Binary.test_model(X_test, model)
-                    res = pd.concat([res, Models_Binary.metrics(y_test, y_pred, index)], axis=0)
+                    res = pd.concat([res, Models_Binary.metrics(y_test, y_pred, index, features)], axis=0)
 
                     # svm 1
                     index = f"svm_{sb_}_{i}_try1"
 
                     model = SVC().fit(X_train, y_train)
                     y_pred = Models_Binary.test_model(X_test, model)
-                    res = pd.concat([res, Models_Binary.metrics(y_test, y_pred, index)], axis=0)
+                    res = pd.concat([res, Models_Binary.metrics(y_test, y_pred, index, features)], axis=0)
                     # svm 2
                     index = f"svm_{sb_}_{i}_try2"
 
                     model = SVC(kernel='linear').fit(X_train, y_train)
                     y_pred = Models_Binary.test_model(X_test, model)
-                    res = pd.concat([res, Models_Binary.metrics(y_test, y_pred, index)], axis=0)
+                    res = pd.concat([res, Models_Binary.metrics(y_test, y_pred, index, features)], axis=0)
                     # svm 3
                     index = f"svm_{sb_}_{i}_try3"
 
                     model = SVC(kernel='sigmoid').fit(X_train, y_train)
                     y_pred = Models_Binary.test_model(X_test, model)
-                    res = pd.concat([res, Models_Binary.metrics(y_test, y_pred, index)], axis=0)
+                    res = pd.concat([res, Models_Binary.metrics(y_test, y_pred, index, features)], axis=0)
                     # svm 4
                     index = f"svm_{sb_}_{i}_try4"
 
                     model = SVC(kernel='poly').fit(X_train, y_train)
                     y_pred = Models_Binary.test_model(X_test, model)
-                    res = pd.concat([res, Models_Binary.metrics(y_test, y_pred, index)], axis=0)
+                    res = pd.concat([res, Models_Binary.metrics(y_test, y_pred, index, features)], axis=0)
                     # svm 5
                     index = f"svm_{sb_}_{i}_try5"
 
                     model = SVC(kernel='poly', degree=5).fit(X_train, y_train)
                     y_pred = Models_Binary.test_model(X_test, model)
-                    res = pd.concat([res, Models_Binary.metrics(y_test, y_pred, index)], axis=0)
+                    res = pd.concat([res, Models_Binary.metrics(y_test, y_pred, index, features)], axis=0)
 
         res.to_excel(self.data_path + filename)
         return res
@@ -364,7 +376,7 @@ class Models_Binary:
     def plot_scores(self, results, n_subplots=8, n_rows=2, img_name="boxplots"):
         if not os.path.exists(self.data_path + "boxplots\\"):
             os.makedirs(self.data_path + "boxplots\\")
-        img_name = self.data_path +"boxplots\\" + img_name
+        img_name = self.data_path + "boxplots\\" + img_name
         c_to_exclude = ("class",)
         plots_n = 0
         fig = None
