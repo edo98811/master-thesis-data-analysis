@@ -9,7 +9,7 @@ from comparisons_updated import SummaryPlot_updated, Comparison_updated
 ADNI_PATH = ""
 # OASIS_PATH = "/media/neuropsycad/disk12t/VascoDiogo/OASIS/FS7/"
 BASE_PATH = "C:\\Users\\edoar\\Dropbox (Politecnico Di Torino Studenti)\\Tesi\\data_testing_ADNI\\"
-DATA_FOLDER = "test_data_ADNI_test_indexes\\"
+DATA_FOLDER = "machine_learning\\"
 
 
 def main():
@@ -61,20 +61,30 @@ def main():
     stats_fast_healthy.clean_aparc()
 
     res = pd.DataFrame()
-    model = ml.Models_Binary([stats_free_MCI, stats_free_healthy], BASE_PATH, data_path=DATA_FOLDER)
-    model.save_dataset(model.X)
 
-    f = dm.load_txt(BASE_PATH + "selected_features.txt")
-    res = pd.concat([res, model.classify("test_free_balanced_test.xlsx", features=f)], axis=0)
+    for nc, pt, name in zip([stats_free_MCI, stats_fast_MCI], [stats_free_healthy, stats_fast_healthy], ["free", "fast"]):
+        model = ml.Models_Binary([nc, pt], BASE_PATH, data_path=DATA_FOLDER)
+        # model.save_dataset(model.X)
+        for i in range(5):
+            f = dm.load_txt(BASE_PATH + f"\\fs\\selected_features{i + 1}.txt")
+            res = pd.concat([res, model.classify(f"{i + 1}_{name}", features=f)], axis=0)
 
+    # # for freesurfer
+    # model = ml.Models_Binary([stats_free_MCI, stats_free_healthy], BASE_PATH, data_path=DATA_FOLDER)
+    # # model.save_dataset(model.X)
+    # for i in range(5):
+    #     f = dm.load_txt(BASE_PATH + f"\\fs\\selected_features{i+1}.txt")
+    #     res = pd.concat([res, model.classify(f"{i+1}", features=f)], axis=0)
+    #
+    # # for fastsurfer
+    # model = ml.Models_Binary([stats_fast_MCI, stats_fast_healthy], BASE_PATH, data_path=DATA_FOLDER)
+    # # model.save_dataset(model.X)
+    #
+    # for i in range(5):
+    #     f = dm.load_txt(BASE_PATH + f"\\fs\\selected_features{i+1}.txt")
+    #     res = pd.concat([res, model.classify(f"{i+1}", features=f)], axis=0)
 
-    model = ml.Models_Binary([stats_fast_MCI, stats_fast_healthy], BASE_PATH, data_path=DATA_FOLDER)
-    model.save_dataset(model.X)
-
-    f = dm.load_txt(BASE_PATH + "selected_features.txt")
-    res = pd.concat([res, model.classify("test_fast_balanced_test.xlsx", features=f)], axis=0)
-
-    res.to_excel(BASE_PATH + DATA_FOLDER + "results_from_main.xlsx")
+    res.to_excel(BASE_PATH + DATA_FOLDER + "results_zip.xlsx")
     # indexes = {"experiment1":[(-1, "Left-Lateral-Ventricle_volume_mm3"), (-1, "Left-Inf-Lat-Vent_volume_mm3"),
     #            (-1, "Right-Inf-Lat-Vent_volume_mm3"), (-1, "3rd-Ventricle_volume_mm3"),
     #            (-1, "4th-Ventricle_volume_mm3"), (-1, "Right-Lateral-Ventricle_volume_mm3"),
@@ -89,5 +99,7 @@ def main():
     # model.scores("scoresFastSurfer.xlsx", indexes)
     # model = ml.Models_Binary([stats_free_MCI, stats_free_healthy], BASE_PATH, data_path=DATA_FOLDER)
     # model.scores("scores_FreeSurfer.xlsx", indexes)
+
+
 if __name__ == "__main__":
     main()
