@@ -61,14 +61,23 @@ def main():
     stats_fast_healthy.clean_aparc()
 
     res = pd.DataFrame()
-
-    for nc, pt, name in zip([stats_free_MCI, stats_fast_MCI], [stats_free_healthy, stats_fast_healthy], ["free", "fast"]):
+    param_grid = {9: {
+        'n_estimators': [100, 200, 300],  # Number of trees in the forest
+        'criterion': ['gini', 'entropy'],  # Splitting criterion
+        'max_depth': [None, 5, 10],  # Maximum depth of the tree
+        'min_samples_split': [2, 5, 10],  # Minimum number of samples required to split an internal node
+        'min_samples_leaf': [1, 2, 4],  # Minimum number of samples required to be at a leaf node
+        'bootstrap': [True, False]  # Whether bootstrap samples are used when building trees
+    }}
+    for nc, pt, name in zip([stats_free_MCI, stats_fast_MCI], [stats_free_healthy, stats_fast_healthy],
+                            ["free", "fast"]):
         model = ml.Models_Binary([nc, pt], BASE_PATH, data_path=DATA_FOLDER)
         # model.save_dataset(model.X)
-        for i in range(5):
+        for i in range(1):
             f = dm.load_txt(BASE_PATH + f"\\fs\\selected_features{i + 1}.txt")
-            res = pd.concat([res, model.classify(f"{i + 1}_{name}", features=f)], axis=0)
+            res = pd.concat([res, model.classify(f"{i + 1}_{name}", features=f, params=param_grid)], axis=0)
 
+    res.to_excel(BASE_PATH + DATA_FOLDER + "results_grid_search.xlsx")
     # # for freesurfer
     # model = ml.Models_Binary([stats_free_MCI, stats_free_healthy], BASE_PATH, data_path=DATA_FOLDER)
     # # model.save_dataset(model.X)
@@ -84,7 +93,6 @@ def main():
     #     f = dm.load_txt(BASE_PATH + f"\\fs\\selected_features{i+1}.txt")
     #     res = pd.concat([res, model.classify(f"{i+1}", features=f)], axis=0)
 
-    res.to_excel(BASE_PATH + DATA_FOLDER + "results_zip.xlsx")
     # indexes = {"experiment1":[(-1, "Left-Lateral-Ventricle_volume_mm3"), (-1, "Left-Inf-Lat-Vent_volume_mm3"),
     #            (-1, "Right-Inf-Lat-Vent_volume_mm3"), (-1, "3rd-Ventricle_volume_mm3"),
     #            (-1, "4th-Ventricle_volume_mm3"), (-1, "Right-Lateral-Ventricle_volume_mm3"),

@@ -1,3 +1,5 @@
+import collections
+
 import sklearn
 from sklearn.model_selection import train_test_split
 from sklearn.metrics import accuracy_score
@@ -23,6 +25,8 @@ idee
     salvare risultati in excel
 
 """
+
+random_state = 100
 
 
 class Models_Binary:
@@ -288,7 +292,7 @@ class Models_Binary:
         return model.predict(X_test)
 
     @staticmethod
-    def metrics(y_test, y_pred, index, features, text):
+    def metrics(y_test, y_pred, index, features, text, kfold_scores=None, grid_search=None):
 
         results_dict = dict()
 
@@ -299,13 +303,18 @@ class Models_Binary:
         results_dict["confusion_matrix"] = str(metrics.confusion_matrix(y_test, y_pred))
         results_dict["text"] = text
         results_dict["features_used"] = ';'.join(features)
-
+        if kfold_scores is not None:
+            results_dict["Kfold_scores"] = ' '.join(str(x) for x in kfold_scores)
+        if grid_search is not None:
+            results_dict["params_chosen"] = ' '.join(str(x) for x in kfold_scores)
         results_series = pd.DataFrame(results_dict, index=(index,))
+
         # results_series.name = index
 
         return results_series
 
-    def get_model(self, index, sb_, n_):
+    @staticmethod
+    def get_model(index, sb_, n_):
         match index:
             case 1:
                 return LogisticRegression(), f"model: logistic regression \n feature selection: " \
@@ -340,11 +349,32 @@ class Models_Binary:
                                               max_features=3), f"model: Random Forest: \n feature selection: " \
                                                                f"{sb_} sampling \n normalization method: {n_} \n" \
                                                                f" additional parameters: "
+            case 9:
+                return RandomForestClassifier(), f"model: Random Forest grid search"
             case _:
                 return None, None
 
+    @staticmethod
+    def fit_and_test_model(model, X_train, y_train):
+        cv = sklearn.model_selection.RepeatedKFold(n_splits=10, n_repeats=5, random_state=random_state)
+        scores = sklearn.model_selection.cross_validate(model, X_train, y_train, cv=cv,
+                                                        scoring='balanced_accuracy', return_estimator=True)
+
+        model = scores["estimator"][np.argmax(scores["test_score"])]
+        return model, scores["test_score"]
+
+    @staticmethod
+    def grid_search(model, search_dict, X_train, y_train):
+        # cv = sklearn.model_selection.RepeatedKFold(n_splits=10, n_repeats=5, random_state=random_state)
+        grid_search = sklearn.model_selection.GridSearchCV(estimator=model, param_grid=search_dict, verbose=2)
+        grid_search.fit(X_train, y_train)
+        model_ = grid_search.best_estimator_
+        best_params = grid_search.best_params_
+        results = grid_search.cv_results_
+        return model_, str(best_params), results
+
     def classify(self, name, features=None, feature_selection_method=None, normalization=("minmax",),
-                 model_type=("logistic", "svm"), setbalance=("over",), n_iter=1):
+                 model_type=("logistic", "svm"), setbalance=("over",), n_iter=1, params=None):
         """
 
         :param features:
@@ -356,6 +386,9 @@ class Models_Binary:
         :return:
         """
 
+        if params is None:
+            params = dict()
+
         res = pd.DataFrame()
         X_selected = self.feature_selection(self.X, self.Y, features=features, method=feature_selection_method)
         for n_ in normalization:
@@ -364,14 +397,28 @@ class Models_Binary:
                 X_train, X_test, y_train, y_test = self._set_splitting(X_normalized, self.Y, method=sb_)
 
                 for i in range(n_iter):
-                    index_list = range(8)
+                    # index_list = range(8)
+                    best_par = None
+                    index_list = (9,)
                     for index in index_list:
-                        model, text = self.get_model(index, n_, sb_)
+                        # questo lo sostituisco con gridsearch per trovare il modello
+                        model, text = Models_Binary.get_model(index, n_, sb_)
                         if model is None or text is None:
                             continue
-                        model.fit(X_train, y_train)
+                        ft.LogWriter.log(f"computing--------------")
+                        ft.LogWriter.log(f"{name}_{text}")
+
+                        if index in params.keys():
+                            ft.LogWriter.log(f"grid search--------------")
+                            model, best_par, results = Models_Binary.grid_search(model, params[index], X_train, y_train)
+                            pd.DataFrame(results).to_excel(self.data_path + f"grid_search_details{name}_{index}.xlsx")
+                        else:
+                            model, scores = Models_Binary.fit_and_test_model(model, X_train, y_train)
+                        # questi tre li sostituisco con fit_model()
+                        # model.fit(X_train, y_train)
                         y_pred = Models_Binary.test_model(X_test, model)
-                        res = pd.concat([res, Models_Binary.metrics(y_test, y_pred, index, features, text)], axis=0)
+                        res = pd.concat([res, Models_Binary.metrics(y_test, y_pred, index, features, f"{name}_{text}",
+                                                                    grid_search=best_par)], axis=0)
 
                     # # logistic regression 1
                     # index = f"logistc_{sb_}_{i}_try1"
