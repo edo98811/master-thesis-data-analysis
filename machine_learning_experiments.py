@@ -73,11 +73,11 @@ def main():
                             ["free", "fast"]):
         model = ml.Models_Binary([nc, pt], BASE_PATH, data_path=DATA_FOLDER)
         # model.save_dataset(model.X)
-        for i in range(1):
+        for i in range(5):
             f = dm.load_txt(BASE_PATH + f"\\fs\\selected_features{i + 1}.txt")
             res = pd.concat([res, model.classify(f"{i + 1}_{name}", features=f, params=param_grid)], axis=0)
 
-    res.to_excel(BASE_PATH + DATA_FOLDER + "results_grid_search.xlsx")
+    res.to_excel(BASE_PATH + DATA_FOLDER + "results_kfold2.xlsx")
     # # for freesurfer
     # model = ml.Models_Binary([stats_free_MCI, stats_free_healthy], BASE_PATH, data_path=DATA_FOLDER)
     # # model.save_dataset(model.X)

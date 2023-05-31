@@ -212,8 +212,8 @@ class Models_Binary:
             X_train, X_test, y_train, y_test = train_test_split(X_balanced, y_balanced, test_size=test, random_state=0)
 
         elif method == "over":
-            under_sampler = im.over_sampling.RandomOverSampler(random_state=42)
-            X_balanced, y_balanced = under_sampler.fit_resample(X, y)
+            over_sampler = im.over_sampling.RandomOverSampler(random_state=42)
+            X_balanced, y_balanced = over_sampler.fit_resample(X, y)
             Models_Binary.check_balance(y_balanced)
 
             X_train, X_test, y_train, y_test = train_test_split(X_balanced, y_balanced, test_size=test, random_state=0)
@@ -246,7 +246,7 @@ class Models_Binary:
             y_test = test[:, -1]
             X_test = test[:, :-2]
         else:
-            return None
+            return None, None, None, None
 
         return X_train, X_test, y_train, y_test
 
@@ -397,9 +397,9 @@ class Models_Binary:
                 X_train, X_test, y_train, y_test = self._set_splitting(X_normalized, self.Y, method=sb_)
 
                 for i in range(n_iter):
-                    # index_list = range(8)
+                    index_list = range(8)
                     best_par = None
-                    index_list = (9,)
+                    # index_list = (9,)
                     for index in index_list:
                         # questo lo sostituisco con gridsearch per trovare il modello
                         model, text = Models_Binary.get_model(index, n_, sb_)
@@ -419,79 +419,6 @@ class Models_Binary:
                         y_pred = Models_Binary.test_model(X_test, model)
                         res = pd.concat([res, Models_Binary.metrics(y_test, y_pred, index, features, f"{name}_{text}",
                                                                     grid_search=best_par)], axis=0)
-
-                    # # logistic regression 1
-                    # index = f"logistc_{sb_}_{i}_try1"
-                    #
-                    # # scores = sklearn.model_selection.cross_validate(LogisticRegression(), X_train, y_train, scoring='balanced_accuracy', return_estimator=True)
-                    # # model = scores['estimator']
-                    #
-                    # model = LogisticRegression().fit(X_train, y_train)
-                    # y_pred = Models_Binary.test_model(X_test, model)
-                    # text = f"model: logistic regression \n feature selection: {sb_} sampling \n normalization method: {n_} \n additional parameters: "
-                    # res = pd.concat([res, Models_Binary.metrics(y_test, y_pred, index, features, text)], axis=0)
-                    # # logistic regression 1
-                    # # index = f"logistc_{sb_}_{i}_try4"
-                    # #
-                    # # model = LogisticRegression(penalty='elasticnet').fit(X_train, y_train)
-                    # # y_pred = Models_Binary.test_model(X_test, model)
-                    # # res = pd.concat([res, Models_Binary.metrics(y_test, y_pred, index)], axis=1)
-                    # # logistic regression 1
-                    # # index = f"logistc_{sb_}_{i}_try2"
-                    # #
-                    # # model = LogisticRegression(penalty='l1').fit(X_train, y_train)
-                    # # y_pred = Models_Binary.test_model(X_test, model)
-                    # # res = pd.concat([res, Models_Binary.metrics(y_test, y_pred, index)], axis=1)
-                    # # logistic regression 1
-                    # index = f"logistc_{sb_}_{i}_try3"
-                    #
-                    # model = LogisticRegression(penalty='l2').fit(X_train, y_train)
-                    # y_pred = Models_Binary.test_model(X_test, model)
-                    # text = f"model: logistic regression \n feature selection: {sb_} sampling \n normalization method: {n_} \n additional parameters: penalty: l2"
-                    # res = pd.concat([res, Models_Binary.metrics(y_test, y_pred, index, features, text)], axis=0)
-                    #
-                    # # svm 1
-                    # index = f"svm_{sb_}_{i}_try1"
-                    #
-                    # model = SVC().fit(X_train, y_train)
-                    # y_pred = Models_Binary.test_model(X_test, model)
-                    # text = f"model: SVM \n feature selection: {sb_} sampling \n normalization method: {n_} \n additional parameters: "
-                    # res = pd.concat([res, Models_Binary.metrics(y_test, y_pred, index, features, text)], axis=0)
-                    # # svm 2
-                    # index = f"svm_{sb_}_{i}_try2"
-                    #
-                    # model = SVC(kernel='linear').fit(X_train, y_train)
-                    # y_pred = Models_Binary.test_model(X_test, model)
-                    # text = f"model: SVM \n feature selection: {sb_} sampling \n normalization method: {n_} \n additional parameters: kernel='linear'"
-                    # res = pd.concat([res, Models_Binary.metrics(y_test, y_pred, index, features, text)], axis=0)
-                    # # svm 3
-                    # index = f"svm_{sb_}_{i}_try3"
-                    #
-                    # model = SVC(kernel='sigmoid').fit(X_train, y_train)
-                    # y_pred = Models_Binary.test_model(X_test, model)
-                    # text = f"model: SVM \n feature selection: {sb_} sampling \n normalization method: {n_} \n additional parameters: kernel='sigmoid'"
-                    # res = pd.concat([res, Models_Binary.metrics(y_test, y_pred, index, features, text)], axis=0)
-                    # # svm 4
-                    # index = f"svm_{sb_}_{i}_try4"
-                    #
-                    # model = SVC(kernel='poly').fit(X_train, y_train)
-                    # y_pred = Models_Binary.test_model(X_test, model)
-                    # text = f"model: SVM \n feature selection: {sb_} sampling \n normalization method: {n_} \n additional parameters: kernel='poly' degree=3"
-                    # res = pd.concat([res, Models_Binary.metrics(y_test, y_pred, index, features, text)], axis=0)
-                    # # svm 5
-                    # index = f"svm_{sb_}_{i}_try5"
-                    #
-                    # model = SVC(kernel='poly', degree=5).fit(X_train, y_train)
-                    # y_pred = Models_Binary.test_model(X_test, model)
-                    # text = f"model: SVM \n feature selection: {sb_} sampling \n normalization method: {n_} \n additional parameters: kernel='poly', degree=5"
-                    # res = pd.concat([res, Models_Binary.metrics(y_test, y_pred, index, features, text)], axis=0)
-                    #
-                    # index = f"random_forest_{sb_}_{i}_try5"
-                    #
-                    # model = RandomForestClassifier(n_estimators=100, max_depth=6, max_features=3).fit(X_train, y_train)
-                    # y_pred = Models_Binary.test_model(X_test, model)
-                    # text = f"model: RandomForest \n feature selection: {sb_} sampling \n normalization method: {n_} \n additional parameters: n_estimators=100, max_depth=6, max_features=3"
-                    # res = pd.concat([res, Models_Binary.metrics(y_test, y_pred, index, features, text)], axis=0)
 
         # res.to_excel(self.data_path + filename)
         return res
