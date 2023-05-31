@@ -1,11 +1,14 @@
 import collections
 
 import sklearn
+from sklearn.metrics import matthews_corrcoef
 from sklearn.model_selection import train_test_split
 from sklearn.metrics import accuracy_score
+
 from sklearn.linear_model import LogisticRegression
 from sklearn.ensemble import RandomForestClassifier
 from sklearn.svm import SVC
+
 import sklearn.metrics as metrics
 import sklearn.feature_selection as feature_selection
 import pandas as pd
@@ -209,17 +212,25 @@ class Models_Binary:
             X_balanced, y_balanced = under_sampler.fit_resample(X, y)
             Models_Binary.check_balance(y_balanced)
 
-            X_train, X_test, y_train, y_test = train_test_split(X_balanced, y_balanced, test_size=test, random_state=0)
-
+            X_train, X_test, y_train, y_test = train_test_split(X_balanced, y_balanced, test_size=test, random_state=random_state)
         elif method == "over":
-            over_sampler = im.over_sampling.RandomOverSampler(random_state=42)
+            X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=test, random_state=random_state)
+            over_sampler = im.over_sampling.RandomOverSampler(random_state=random_state)
+            X_train, y_train = over_sampler.fit_resample(X_train, y_train)
+            X_test, y_test = over_sampler.fit_resample(X_test, y_test)
+            Models_Binary.check_balance(y_train)
+            Models_Binary.check_balance(y_test)
+
+            # X_train, X_test, y_train, y_test = train_test_split(X_balanced, y_balanced, test_size=test, random_state=0)
+        elif method == "over_old":
+            over_sampler = im.over_sampling.RandomOverSampler(random_state=random_state)
             X_balanced, y_balanced = over_sampler.fit_resample(X, y)
             Models_Binary.check_balance(y_balanced)
 
-            X_train, X_test, y_train, y_test = train_test_split(X_balanced, y_balanced, test_size=test, random_state=0)
+            X_train, X_test, y_train, y_test = train_test_split(X_balanced, y_balanced, test_size=test, random_state=random_state)
 
         elif method == "no":
-            X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=test, random_state=0)
+            X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=test, random_state=random_state)
         elif method == "balance_same_seed":
             np.random.seed(42)
 
@@ -255,11 +266,11 @@ class Models_Binary:
         # byclass = self.X.groupby(by="class").count()
         # ft.LogWriter.log(f"{byclass}")
         if isinstance(y, pd.DataFrame):
-            ft.LogWriter.log(f"{len(y['class' == 1])}")
-            ft.LogWriter.log(f"{len(y['class' == 0])}")
+            ft.LogWriter.log(f"n of 1: {len(y['class' == 1])}")
+            ft.LogWriter.log(f"n of 2: {len(y['class' == 0])}")
         elif type(y) is np.ndarray:
-            print("to_implement")
-            pass
+            ft.LogWriter.log(f"n of 1: {y.count(1)}")
+            ft.LogWriter.log(f"n of 2: {y.count(0)}")
 
     @staticmethod
     def normalize_features(X, method="minmax"):
@@ -351,6 +362,12 @@ class Models_Binary:
                                                                f" additional parameters: "
             case 9:
                 return RandomForestClassifier(), f"model: Random Forest grid search"
+            case "logistic":
+                return LogisticRegression(), None
+            case "SVM":
+                return SVC(), None
+            case "RF":
+                return RandomForestClassifier(), None
             case _:
                 return None, None
 
@@ -364,43 +381,87 @@ class Models_Binary:
         return model, scores["test_score"]
 
     @staticmethod
-    def grid_search(model, search_dict, X_train, y_train):
-        # cv = sklearn.model_selection.RepeatedKFold(n_splits=10, n_repeats=5, random_state=random_state)
-        grid_search = sklearn.model_selection.GridSearchCV(estimator=model, param_grid=search_dict, verbose=2)
+    def grid_search(model, search_dict, X_train, y_train, index, columns_to_keep=("mean_test_score", "std_test_score", )):
+        cv = sklearn.model_selection.RepeatedKFold(n_splits=5, n_repeats=3, random_state=random_state)
+        grid_search = sklearn.model_selection.GridSearchCV(estimator=model, param_grid=search_dict, verbose=2, cv=cv,
+                                                           scoring=matthews_corrcoef)
         grid_search.fit(X_train, y_train)
         model_ = grid_search.best_estimator_
-        best_params = grid_search.best_params_
-        results = grid_search.cv_results_
-        return model_, str(best_params), results
+        # best_params = grid_search.best_params_
+        res_dataframe = pd.DataFrame(grid_search.cv_results_)
+        res_dataframe['Model'] = index
+        # for column in res_dataframe.columns():
+        #     if column not in columns_to_keep:
+        #         res_dataframe.drop(columns=column, inplace=True)
+        # results = grid_search.cv_results_
+        return model_, res_dataframe  # , str(best_params)# , results
 
     def classify(self, name, features=None, feature_selection_method=None, normalization=("minmax",),
-                 model_type=("logistic", "svm"), setbalance=("over",), n_iter=1, params=None):
+                 model_list=("logistic", "svm"), data_splitting_method=("over",), n_iter=1, params=None):
         """
 
         :param features:
         :param feature_selection_method:
         :param normalization:
         :param model_type:
-        :param setbalance:
+        :param data_splitting_method:
         :param n_iter:
         :return:
         """
 
         if params is None:
             params = dict()
+        if model_list is None:
+            return "model not provided"
+        models = []
+        res_test = pd.DataFrame()
+        res = pd.DataFrame()
 
+        X_selected = self.feature_selection(self.X, self.Y, features=features, method=feature_selection_method)
+        for n_ in normalization:
+            X_normalized = self.normalize_features(X_selected, method=n_)
+            for sb_ in data_splitting_method:
+                X_train, X_test, y_train, y_test = self._set_splitting(X_normalized, self.Y, method=sb_)
+                for i in range(n_iter):
+                    for index in model_list:
+
+                        ft.LogWriter.log(f"computing--------------")
+                        ft.LogWriter.log(f"{name}_{index}")
+
+                        if index in params.keys():
+                            model, _ = Models_Binary.get_model(index, n_, sb_)
+                            ft.LogWriter.log(f"grid search--------------")
+                            best_model, results_grid_search = Models_Binary.grid_search(model, params[index], X_train,
+                                                                                        y_train, index)
+                            res = pd.concat([res, results_grid_search], axis=0)
+                            # pd.DataFrame(results).to_excel(self.data_path + f"grid_search_details{name}_{index}.xlsx")
+                            models.append(best_model)
+                        else:
+                            model, text = Models_Binary.get_model(index, n_, sb_)
+                            model, scores = Models_Binary.fit_and_test_model(model, X_train, y_train)
+                            y_pred = Models_Binary.test_model(X_test, model)
+                            res = pd.concat(
+                                [res, Models_Binary.metrics(y_test, y_pred, index, features, f"{name}_{text}")], axis=0)
+
+                    if len(models):
+                        for i, model in enumerate(models):
+                            model, scores = Models_Binary.fit_and_test_model(model, X_train, y_train)
+                            y_pred = Models_Binary.test_model(X_test, model)
+                            res_test = pd.concat(
+                                [res_test, Models_Binary.metrics(y_test, y_pred, i, features, f"{name}_{i}")], axis=0)
+        """ OLD LOOP
         res = pd.DataFrame()
         X_selected = self.feature_selection(self.X, self.Y, features=features, method=feature_selection_method)
         for n_ in normalization:
             X_normalized = self.normalize_features(X_selected, method=n_)
-            for sb_ in setbalance:
+            for sb_ in data_splitting_method:
                 X_train, X_test, y_train, y_test = self._set_splitting(X_normalized, self.Y, method=sb_)
 
                 for i in range(n_iter):
-                    index_list = range(8)
+                    #model_list = range(8)
                     best_par = None
-                    # index_list = (9,)
-                    for index in index_list:
+                    # model_list = (9,)
+                    for index in model_list:
                         # questo lo sostituisco con gridsearch per trovare il modello
                         model, text = Models_Binary.get_model(index, n_, sb_)
                         if model is None or text is None:
@@ -421,7 +482,8 @@ class Models_Binary:
                                                                     grid_search=best_par)], axis=0)
 
         # res.to_excel(self.data_path + filename)
-        return res
+        """
+        return res, res_test
 
     def plot_scores(self, results, n_subplots=8, n_rows=2, img_name="boxplots"):
         if not os.path.exists(self.data_path + "boxplots\\"):
@@ -464,7 +526,7 @@ class Models_Binary:
 
         return fig, axs
 
-    def scores(self, filename, indexes, features=None, setbalance=("over",)):
+    def scores(self, filename, indexes, features=None, data_splitting_method=("over",)):
         X_selected = self.feature_selection(self.X, self.Y, features=features)
         subjects = X_selected.index.tolist()
         # X_train, X_test, y_train, y_test = self._set_splitting(X_selected, self.Y)
@@ -516,7 +578,7 @@ class Models_Binary:
                 X_selected = self.feature_selection(self.X, self.Y, features=features_, method=feature_selection_method)
                 for n_ in normalization:
                     X_normalized = self.normalize_features(X_selected, method=n_)
-                    for sb_ in setbalance:
+                    for sb_ in data_splitting_method:
                         X_train, X_test, y_train, y_test = self._set_splitting(X_normalized, self.Y, method=sb_)
         
                         for m_ in model_type:
@@ -533,7 +595,7 @@ class Models_Binary:
     # X_selected = self.feature_selection(self.X, self.Y, features=features, method=feature_selection_method)
     # for n_ in normalization:
     #     X_normalized = self.normalize_features(X_selected, method=n_)
-    #     for sb_ in setbalance:
+    #     for sb_ in data_splitting_method:
     #         X_train, X_test, y_train, y_test = self._set_splitting(X_normalized, self.Y, method=sb_)
     #
     #         for m_ in model_type:
@@ -561,7 +623,7 @@ class Models_Binary:
     #
     # def feature_tests(self):
     #     pass
-    # def logistic_regression(self, features=None, normalization="minmax", model="logistc", setbalance="balance_same_seed"):
+    # def logistic_regression(self, features=None, normalization="minmax", model="logistc", data_splitting_method="balance_same_seed"):
     #
     #     X_fs = self.feature_selection(self.X, self.Y, features=features)
     #     X_normalized = self.normalize_features(X_fs)
