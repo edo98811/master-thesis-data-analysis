@@ -9,7 +9,7 @@ from comparisons_updated import SummaryPlot_updated, Comparison_updated
 ADNI_PATH = ""
 # OASIS_PATH = "/media/neuropsycad/disk12t/VascoDiogo/OASIS/FS7/"
 BASE_PATH = "C:\\Users\\edoar\\Dropbox (Politecnico Di Torino Studenti)\\Tesi\\data_testing_ADNI\\"
-DATA_FOLDER = "machine_learning\\"
+DATA_FOLDER = "machine_learning_0106\\"
 
 
 def main():
@@ -72,7 +72,7 @@ def main():
     #     'bootstrap': [True, False]  # Whether bootstrap samples are used when building trees
     # }}
 
-    param_grid = {"SVM": {'C': [0.1, 1, 10], 'gamma': [0.1, 1, 10], "kernel": ["linear", "poly"]},
+    param_grid = {"SVM": {'C': [0.1, 1, 10], 'gamma': [0.1, 1, 10], "kernel": ["linear", "poly", ""]},
                   "logistic": {'C': [0.1, 1, 10]},
                   "RF": {'n_estimators': [50, 100, 200], 'max_depth': [None, 5, 10]}}
 

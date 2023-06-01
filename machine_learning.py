@@ -215,7 +215,8 @@ class Models_Binary:
             X_train, X_test, y_train, y_test = train_test_split(X_balanced, y_balanced, test_size=test, random_state=random_state)
         elif method == "over":
             X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=test, random_state=random_state)
-            over_sampler = im.over_sampling.RandomOverSampler(random_state=random_state)
+            #over_sampler = im.over_sampling.RandomOverSampler(random_state=random_state)
+            over_sampler = im.over_sampling.SMOTE(random_state=random_state)
             X_train, y_train = over_sampler.fit_resample(X_train, y_train)
             X_test, y_test = over_sampler.fit_resample(X_test, y_test)
             Models_Binary.check_balance(y_train)
@@ -381,7 +382,7 @@ class Models_Binary:
         return model, scores["test_score"]
 
     @staticmethod
-    def grid_search(model, search_dict, X_train, y_train, index, columns_to_keep=("mean_test_score", "std_test_score", )):
+    def grid_search(model, search_dict, X_train, y_train, name, index, columns_to_keep=("mean_test_score", "std_test_score", )):
         cv = sklearn.model_selection.RepeatedKFold(n_splits=5, n_repeats=3, random_state=random_state)
         grid_search = sklearn.model_selection.GridSearchCV(estimator=model, param_grid=search_dict, verbose=2, cv=cv,
                                                            scoring=make_scorer(matthews_corrcoef), error_score='raise')
@@ -389,6 +390,7 @@ class Models_Binary:
         model_ = grid_search.best_estimator_
         # best_params = grid_search.best_params_
         res_dataframe = pd.DataFrame(grid_search.cv_results_)
+        res_dataframe['Description'] = name
         res_dataframe['Model'] = index
         # for column in res_dataframe.columns():
         #     if column not in columns_to_keep:
@@ -432,7 +434,7 @@ class Models_Binary:
                             model, _ = Models_Binary.get_model(index, n_, sb_)
                             ft.LogWriter.log(f"grid search--------------")
                             best_model, results_grid_search = Models_Binary.grid_search(model, params[index], X_train,
-                                                                                        y_train, f"{index}_{name}")
+                                                                                        y_train, name, index)
                             res = pd.concat([res, results_grid_search], axis=0)
                             # pd.DataFrame(results).to_excel(self.data_path + f"grid_search_details{name}_{index}.xlsx")
                             models.append(best_model)

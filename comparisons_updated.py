@@ -1536,7 +1536,7 @@ class Comparison_updated:
 
         return df1, df2
 
-    def bland_altmann(self, data=("aseg", "aparcL", "aparcR"), c_to_keep=None, n_subplots=4, n_rows=2,
+    def bland_altmann(self, data=("aseg_normalized", "aparcL_cleaned", "aparcR_cleaned"), c_to_keep=None, n_subplots=4, n_rows=2,
                       folder="bland_altmann",
                       c_to_exclude=("ID")):
 
@@ -1551,7 +1551,7 @@ class Comparison_updated:
             img_name = f"{self.data_path}{folder}\\img_{d}_ba_{self.name}"
             self.iterate(self.__bland_altman_plot, d, c_to_keep, n_subplots, n_rows, c_to_exclude, img_name)
 
-    def violin(self, data=("aseg", "aparcL", "aparcR"), c_to_keep=None, n_subplots=10, n_rows=2, c_to_exclude=("ID"),
+    def violin(self, data=("aseg_normalized", "aparcL_cleaned", "aparcR_cleaned"), c_to_keep=None, n_subplots=10, n_rows=2, c_to_exclude=("ID"),
                folder="violin"):
 
         if not os.path.exists(self.data_path + folder):
