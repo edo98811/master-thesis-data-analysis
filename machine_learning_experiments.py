@@ -73,21 +73,21 @@ def main():
     # }}
 
     param_grid = {"SVM": {'C': [0.1, 1, 10], 'gamma': [0.1, 1, 10], "kernel": ["linear", "poly"]},
-                  "logistic": {'C': [0.1, 1, 10], "penalty": ["l2", "elasticnet"]},
+                  "logistic": {'C': [0.1, 1, 10]},
                   "RF": {'n_estimators': [50, 100, 200], 'max_depth': [None, 5, 10]}}
 
     for nc, pt, name in zip([stats_free_MCI, stats_fast_MCI], [stats_free_healthy, stats_fast_healthy],
                             ["free", "fast"]):
         model = ml.Models_Binary([nc, pt], BASE_PATH, data_path=DATA_FOLDER)
         # model.save_dataset(model.X)
-        for i in range(1):
+        for i in range(5):
             f = dm.load_txt(BASE_PATH + f"\\fs\\selected_features{i + 1}.txt")
-            res_temp, res_test_temp = model.classify(f"{i + 1}_{name}", features=f, params=param_grid, model_list=("RF", "SVM", "logistic"))
+            res_temp, res_test_temp = model.classify(f"features{i + 1}_{name}", features=f, params=param_grid, model_list=("RF", "SVM", "logistic"))
             res = pd.concat([res, res_temp], axis=0)
             res_test = pd.concat([res_test, res_test_temp], axis=0)
 
-    res.to_excel(BASE_PATH + DATA_FOLDER + "results_grid_search.xlsx")
-    res_test.to_excel(BASE_PATH + DATA_FOLDER + "results_grid_search_test_best_models.xlsx")
+    res.to_excel(BASE_PATH + DATA_FOLDER + "results_grid_search_all_features.xlsx")
+    res_test.to_excel(BASE_PATH + DATA_FOLDER + "results_grid_search_test_best_models_all_features.xlsx")
     # # for freesurfer
     # model = ml.Models_Binary([stats_free_MCI, stats_free_healthy], BASE_PATH, data_path=DATA_FOLDER)
     # # model.save_dataset(model.X)

@@ -1,7 +1,7 @@
 import collections
 
 import sklearn
-from sklearn.metrics import matthews_corrcoef
+from sklearn.metrics import matthews_corrcoef, make_scorer
 from sklearn.model_selection import train_test_split
 from sklearn.metrics import accuracy_score
 
@@ -384,7 +384,7 @@ class Models_Binary:
     def grid_search(model, search_dict, X_train, y_train, index, columns_to_keep=("mean_test_score", "std_test_score", )):
         cv = sklearn.model_selection.RepeatedKFold(n_splits=5, n_repeats=3, random_state=random_state)
         grid_search = sklearn.model_selection.GridSearchCV(estimator=model, param_grid=search_dict, verbose=2, cv=cv,
-                                                           scoring=matthews_corrcoef)
+                                                           scoring=make_scorer(matthews_corrcoef), error_score='raise')
         grid_search.fit(X_train, y_train)
         model_ = grid_search.best_estimator_
         # best_params = grid_search.best_params_
@@ -432,7 +432,7 @@ class Models_Binary:
                             model, _ = Models_Binary.get_model(index, n_, sb_)
                             ft.LogWriter.log(f"grid search--------------")
                             best_model, results_grid_search = Models_Binary.grid_search(model, params[index], X_train,
-                                                                                        y_train, index)
+                                                                                        y_train, f"{index}_{name}")
                             res = pd.concat([res, results_grid_search], axis=0)
                             # pd.DataFrame(results).to_excel(self.data_path + f"grid_search_details{name}_{index}.xlsx")
                             models.append(best_model)
