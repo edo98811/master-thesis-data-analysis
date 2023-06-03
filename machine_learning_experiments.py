@@ -9,7 +9,7 @@ from comparisons_updated import SummaryPlot_updated, Comparison_updated
 ADNI_PATH = ""
 # OASIS_PATH = "/media/neuropsycad/disk12t/VascoDiogo/OASIS/FS7/"
 BASE_PATH = "C:\\Users\\edoar\\Dropbox (Politecnico Di Torino Studenti)\\Tesi\\data_testing_ADNI\\"
-DATA_FOLDER = "machine_learning_0106\\"
+DATA_FOLDER = "machine_learning_0206\\"
 
 
 def main():
@@ -72,21 +72,25 @@ def main():
     #     'bootstrap': [True, False]  # Whether bootstrap samples are used when building trees
     # }}
 
-    param_grid = {"SVM": {'C': [0.1, 1, 10], 'gamma': [0.1, 1, 10], "kernel": ["linear", "poly", ""]},
+    param_grid = {"SVM": {'C': [0.1, 1, 10], 'gamma': [0.1, 1, 10], "kernel": ["linear", "poly", "rbf"]},
                   "logistic": {'C': [0.1, 1, 10]},
                   "RF": {'n_estimators': [50, 100, 200], 'max_depth': [None, 5, 10]}}
-
+    rep = 1000
+    # ripeto 1000 volte, scelgo sempre il migliore, lotesto co tutte quelle features. salvo anche la devstd e il
+    # matthews del migliore
     for nc, pt, name in zip([stats_free_MCI, stats_fast_MCI], [stats_free_healthy, stats_fast_healthy],
-                            ["free", "fast"]):
+                            ["FreeSurfer", "FastSurfer"]):
         model = ml.Models_Binary([nc, pt], BASE_PATH, data_path=DATA_FOLDER)
         # model.save_dataset(model.X)
-        for i in range(5):
-            f = dm.load_txt(BASE_PATH + f"\\fs\\selected_features{i + 1}.txt")
-            res_temp, res_test_temp = model.classify(f"features{i + 1}_{name}", features=f, params=param_grid, model_list=("RF", "SVM", "logistic"))
+        f = dm.load_txt(BASE_PATH + f"\\fs\\selected_features0306.txt")
+        for i in range(rep):
+            res_temp, res_test_temp = model.classify(f"test{i + 1}_{name}", features=f, params=param_grid, model_list=("RF", "SVM", "logistic"))
             res = pd.concat([res, res_temp], axis=0)
             res_test = pd.concat([res_test, res_test_temp], axis=0)
 
-    res.to_excel(BASE_PATH + DATA_FOLDER + "results_grid_search_all_features.xlsx")
+        res.to_excel(BASE_PATH + DATA_FOLDER + f"results_{name}.xlsx")
+
+
     res_test.to_excel(BASE_PATH + DATA_FOLDER + "results_grid_search_test_best_models_all_features.xlsx")
     # # for freesurfer
     # model = ml.Models_Binary([stats_free_MCI, stats_free_healthy], BASE_PATH, data_path=DATA_FOLDER)
