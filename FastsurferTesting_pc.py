@@ -1346,14 +1346,14 @@ class Comparisons:
                     row[
                         "mann_whitney message"] = f"p-value: {row['mann_whitney p_value']} - null hypothesis " \
                                                   f"rejected, means are not statistically equal "
-                    row["mann_whitney outcome"] = 1
+                    row["mann_whitney outcome"] = 0
             if type(row["t_test p_value"]) is not str and type(row["t_test p_value"]) is not str and type(
                     self.updated_alpha) is not str:
                 if row["t_test p_value"] < self.updated_alpha:
                     row[
                         "t_test message"] = f"p-value: {row['t_test p_value']} - null hypothesis rejected, the " \
                                             f"datasets have a different distribution "
-                    row["t_test outcome"] = 1
+                    row["t_test outcome"] = 0
             row.loc["alpha_correction"] = self.updated_alpha
             if len(row) == len(self.stat_df_result.loc[i, :]):
                 self.stat_df_result.loc[i, :] = row

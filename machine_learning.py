@@ -208,7 +208,7 @@ class Models_Binary:
         """
 
         if method == "under":
-            under_sampler = im.under_sampling.RandomUnderSampler(random_state=42)
+            under_sampler = im.under_sampling.RandomUnderSampler(random_state=random_state)
             X_balanced, y_balanced = under_sampler.fit_resample(X, y)
             Models_Binary.check_balance(y_balanced)
 
@@ -374,7 +374,7 @@ class Models_Binary:
 
     @staticmethod
     def fit_and_test_model(model, X_train, y_train):
-        cv = sklearn.model_selection.RepeatedKFold(n_splits=10, n_repeats=5, random_state=random_state)
+        cv = sklearn.model_selection.RepeatedKFold(n_splits=5, n_repeats=5, random_state=random_state)
         scores = sklearn.model_selection.cross_validate(model, X_train, y_train, cv=cv,
                                                         scoring='balanced_accuracy', return_estimator=True)
 

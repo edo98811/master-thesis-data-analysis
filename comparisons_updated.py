@@ -1817,7 +1817,7 @@ class Comparison_updated:
                         #                          "d_value": cd}})
 
                         if isinstance(column_to_compare, str):
-                            r_all.append({"name":f"{column_to_compare}",# f"{self.name}_{d}_{column_to_compare}",
+                            r_all.append({"name":f"{d}_{column_to_compare}",# f"{self.name}_{d}_{column_to_compare}",
                                           "stat_test": {"result": r,
                                                         "p_value": p,
                                                         "outcome": o},
@@ -1846,13 +1846,13 @@ class Comparison_updated:
 
         # iterates through the rows od the table and applies the correction
         for i, row in self.stat_df_result.iterrows():
-            if type(row["stat_test p_value"]) is not str and type(row["stat_test p_value"]) is not str and type(
+            if type(row["stat_test_p_value"]) is not str and type(row["stat_test_p_value"]) is not str and type(
                     self.updated_alpha) is not str:
-                if row["stat_test p_value"] < self.updated_alpha:
+                if row["stat_test_p_value"] < self.updated_alpha:
                     row[
-                        "stat_test message"] = f"p-value: {row['stat_test p_value']} - null hypothesis " \
+                        "stat_test_message"] = f"p-value: {row['stat_test_p_value']} - null hypothesis " \
                                                f"rejected "
-                    row["stat_test outcome"] = 1
+                    row["stat_test_outcome"] = 0
             row.loc["alpha_correction"] = self.updated_alpha
             if len(row) == len(self.stat_df_result.loc[i, :]):
                 self.stat_df_result.loc[i, :] = row
@@ -1910,13 +1910,13 @@ class Comparison_updated:
 
         for item in list_to_save:
             self.stat_df_result = pd.concat(
-                [self.stat_df_result, pd.DataFrame({"stat_test p_value": item["stat_test"]["p_value"],
-                                                    "stat_test outcome": item["stat_test"]["outcome"],
-                                                    "stat_test message": item["stat_test"]["result"],
+                [self.stat_df_result, pd.DataFrame({"stat_test_p_value": item["stat_test"]["p_value"],
+                                                    "stat_test_outcome": item["stat_test"]["outcome"],
+                                                    "stat_test_message": item["stat_test"]["result"],
                                                     "effect_size_value": item["effect_size"]["value"],
                                                     "effect_size_message": item["effect_size"]["result"],
-                                                    "ICC value": item["ICC"]["icc"],
-                                                    "ICC message": item["ICC"]["message"],
+                                                    "ICC_value": item["ICC"]["icc"],
+                                                    "ICC_message": item["ICC"]["message"],
                                                     "alpha_used": self.alpha,
                                                     "alpha_correction": self.updated_alpha
                                                     }, index=[item["name"]])])

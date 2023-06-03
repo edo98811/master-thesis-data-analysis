@@ -7,7 +7,7 @@ import os
 ADNI_PATH = ""
 # OASIS_PATH = "/media/neuropsycad/disk12t/VascoDiogo/OASIS/FS7/"
 BASE_PATH = "C:\\Users\\edoar\\Dropbox (Politecnico Di Torino Studenti)\\Tesi\\data_testing_ADNI\\"
-DATA_FOLDER = "all_features_correction_violin_plot\\"
+DATA_FOLDER = "to_combine_features\\"
 def main_all():
     pd.options.mode.chained_assignment = None
     ft.LogWriter.clearlog()
@@ -46,6 +46,7 @@ def main_all():
     stats_free_MCI = ft.Stats("NotHealthy_FREE", BASE_PATH, table, "main_condition!='NL'", d_folder=DATA_FOLDER,
                               alg="free", aseg=aseg_free_a,
                               aparcRight=aparcR_free_a, aparcLeft=aparcL_free_a)
+
     #
     stats_free_MCI.normalize_stats_age()
     stats_free_healthy.normalize_stats_age()
@@ -95,31 +96,35 @@ def main_all():
     comp2 = Comparison_updated("Healthy", BASE_PATH, stats_free_healthy, stats_fast_healthy, d_folder=DATA_FOLDER)
     comp3 = Comparison_updated("FastSurfer", BASE_PATH, stats_fast_healthy, stats_fast_MCI, d_folder=DATA_FOLDER, categories=("Healthy", "Pathologic"))
     comp4 = Comparison_updated("FreeSurfer", BASE_PATH, stats_free_healthy, stats_free_MCI, d_folder=DATA_FOLDER, categories=("Healthy", "Pathologic"))
+    # comp5 = Comparison_updated("FastSurfer", BASE_PATH, stats_fast_healthy, stats_fast_MCI, d_folder=DATA_FOLDER,
+    #                            categories=("Healthy", "Pathologic"))
+    # comp6 = Comparison_updated("FreeSurfer", BASE_PATH, stats_free_healthy, stats_free_MCI, d_folder=DATA_FOLDER,
+    #                            categories=("Healthy", "Pathologic"))
 
-    # comp1.stat_test(match=True)
-    # comp2.stat_test(match=True)
-    # comp3.stat_test()
-    # comp4.stat_test()
-    #
-    # comp1.bonferroni_correction()
-    # comp2.bonferroni_correction()
-    # comp3.bonferroni_correction()
-    # comp4.bonferroni_correction()
-    # comp1.save_data()
-    # comp2.save_data()
-    # comp3.save_data()
-    # comp4.save_data()
+    comp1.stat_test(match=True)
+    comp2.stat_test(match=True)
+    comp3.stat_test()
+    comp4.stat_test()
 
-    comp1.violin()
+    comp1.bonferroni_correction()
+    comp2.bonferroni_correction()
+    comp3.bonferroni_correction()
+    comp4.bonferroni_correction()
+    comp1.save_data()
+    comp2.save_data()
+    comp3.save_data()
+    comp4.save_data()
+
+    #comp1.violin()
     #comp1.bland_altmann()
     #
-    comp2.violin()
+    #comp2.violin()
     #comp2.bland_altmann()
     #
-    comp3.violin()
+    # comp3.violin()
     #comp3.bland_altmann()
     #
-    comp4.violin()
+    # comp4.violin()
     #comp4.bland_altmann()
 
 def main():
