@@ -76,6 +76,7 @@ def main():
                   "logistic": {'C': [0.1, 1, 10]},
                   "RF": {'n_estimators': [50, 100, 200], 'max_depth': [None, 5, 10]}}
     rep = 1000
+
     # ripeto 1000 volte, scelgo sempre il migliore, lotesto co tutte quelle features. salvo anche la devstd e il
     # matthews del migliore
     for nc, pt, name in zip([stats_free_MCI, stats_fast_MCI], [stats_free_healthy, stats_fast_healthy],
