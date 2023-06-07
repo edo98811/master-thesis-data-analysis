@@ -33,10 +33,11 @@ random_state = 100
 
 
 class Models_Binary:
-    def __init__(self, data, base_path, data_path="\\machine_learning"):
+    def __init__(self, data, base_path, data_path="\\machine_learning", selected_subjects=None, features_selected=None):
 
         self.X_normalized = None
         self.X_feature_selected = None
+        self.features = features_selected
         if len(data) == 2:
             self.data = data
         else:
@@ -46,8 +47,11 @@ class Models_Binary:
         self.data_path = base_path + data_path
         if not os.path.exists(data_path):
             os.makedirs(data_path)
-
-        self.X, self.Y = self._dataset_preparation()
+        if selected_subjects is None:
+            self.X, self.Y = self._dataset_preparation()
+        else:
+            selected_subjects = ft.Table.add_sub(selected_subjects)
+            self.X_train, self.y_train, self.X_test, self.y_test = self._dataset_preparation(test_subjects=selected_subjects)
         ft.LogWriter.log("dataset object created")
 
     @staticmethod
@@ -127,7 +131,7 @@ class Models_Binary:
         dm.write_txt(df.columns.tolist(), f"{self.data_path}features.txt")
 
     def _dataset_preparation(self, data=("aparcL_cleaned", "aparcR_cleaned", "aseg_normalized"),
-                             columns_to_exclude=("mmse")):
+                             columns_to_exclude=("mmse"), test_subjects=None):
 
         df = pd.DataFrame()
         for i, stats_object in enumerate(self.data):
@@ -155,13 +159,24 @@ class Models_Binary:
                 raise Exception("dataset could not be created")
 
         df = df.sample(frac=1)
-
+        Models_Binary._drop_nan(df)
+        df = self.feature_selection(df, 1, self.features)
+        if test_subjects is not None:
+            test_set = self.test_set(df, test_subjects)
         # df.to_excel(f"{self.base_path}dataset.xlsx")
 
-        Y = df.loc[:, "class"].copy(deep=True)
-        X = df.drop(columns=["class"]).copy(deep=True)
+        if 'test_set' in locals():
+            Y_train = df.loc[:, "class"].copy(deep=True)
+            X_train = df.drop(columns=["class"]).copy(deep=True)
+            Y_test = test_set.loc[:, "class"].copy(deep=True)
+            X_test = test_set.drop(columns=["class"]).copy(deep=True)
 
-        return X, Y
+            return np.array(X_train), np.array(Y_train), np.array(X_test), np.array(Y_test)
+        else:
+            Y = df.loc[:, "class"].copy(deep=True)
+            X = df.drop(columns=["class"]).copy(deep=True)
+            return X, Y
+
         """
         :param decode:
         :param dataframe_selected:
@@ -181,10 +196,15 @@ class Models_Binary:
             - salvare dataset y 
         """
 
+    def test_set(self, df, selected_subjects):
+        selected_subjects = set(selected_subjects).intersection(set(df.index.tolist()))
+        test_set = df.loc[selected_subjects, :]
+        df.drop(selected_subjects, inplace=True)
+
+        return test_set
     @staticmethod
-    def feature_selection(X, y, features=None, method=0):
+    def feature_selection(X, y, features=None, method=1):
         X_feature_selected = None
-        Models_Binary._drop_nan(X)
         if features is None:
             if method == 0:
                 X_feature_selected = X
@@ -193,12 +213,16 @@ class Models_Binary:
                                                                    k=10).fit_transform(
                     X, y)
         else:
-            X_feature_selected = X[X.columns.intersection(features)]
+            if method==0:
+                X_train_feature_selected = X[X.columns.intersection(features)]
+                X_test_feature_selected = y[y.columns.intersection(features)]
+                return X_train_feature_selected, X_test_feature_selected
+            else:
+                X_feature_selected = X[X.columns.intersection(features)]
 
         return X_feature_selected
 
-    @staticmethod
-    def _set_splitting(X, y, test=0.2, method="under"):
+    def _set_splitting(self, X, y, X_test, y_test, test=0.2, method="over_manual_test"):
         """
         :param X:
         :param y:
@@ -212,12 +236,13 @@ class Models_Binary:
             X_balanced, y_balanced = under_sampler.fit_resample(X, y)
             Models_Binary.check_balance(y_balanced)
 
-            X_train, X_test, y_train, y_test = train_test_split(X_balanced, y_balanced, test_size=test, random_state=random_state)
-        elif method == "over":
-            X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=test, random_state=random_state)
-            #over_sampler = im.over_sampling.RandomOverSampler(random_state=random_state)
+            X_train, X_test, y_train, y_test = train_test_split(X_balanced, y_balanced, test_size=test,
+                                                                random_state=random_state)
+        elif method == "over_manual_test":
+            # X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=test, random_state=random_state)
+            # over_sampler = im.over_sampling.RandomOverSampler(random_state=random_state)
             over_sampler = im.over_sampling.SMOTE(random_state=random_state)
-            X_train, y_train = over_sampler.fit_resample(X_train, y_train)
+            X_train, y_train = over_sampler.fit_resample(X, y)
             X_test, y_test = over_sampler.fit_resample(X_test, y_test)
             Models_Binary.check_balance(y_train)
             Models_Binary.check_balance(y_test)
@@ -228,7 +253,8 @@ class Models_Binary:
             X_balanced, y_balanced = over_sampler.fit_resample(X, y)
             Models_Binary.check_balance(y_balanced)
 
-            X_train, X_test, y_train, y_test = train_test_split(X_balanced, y_balanced, test_size=test, random_state=random_state)
+            X_train, X_test, y_train, y_test = train_test_split(X_balanced, y_balanced, test_size=test,
+                                                                random_state=random_state)
 
         elif method == "no":
             X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=test, random_state=random_state)
@@ -257,6 +283,9 @@ class Models_Binary:
             X_train = train[:, :-2]
             y_test = test[:, -1]
             X_test = test[:, :-2]
+        elif method == "manual":
+            return None, None, None, None
+
         else:
             return None, None, None, None
 
@@ -270,17 +299,20 @@ class Models_Binary:
             ft.LogWriter.log(f"n of 1: {len(y['class' == 1])}")
             ft.LogWriter.log(f"n of 2: {len(y['class' == 0])}")
         elif type(y) is np.ndarray:
-            ft.LogWriter.log(f"n of 1: {y.count(1)}")
-            ft.LogWriter.log(f"n of 2: {y.count(0)}")
+            return
+            # ft.LogWriter.log(f"n of 1: {y.count(1)}")
+            # ft.LogWriter.log(f"n of 2: {y.count(0)}")
 
     @staticmethod
-    def normalize_features(X, method="minmax"):
+    def normalize_features(X_train, X_test, method="minmax"):
         if method == "standard":
-            X_normalized = sklearn.preprocessing.StandardScaler().fit_transform(X)
+            X_normalized = sklearn.preprocessing.StandardScaler().fit_transform(X_train)
         elif method == "minmax":
-            X_normalized = sklearn.preprocessing.MinMaxScaler().fit_transform(X)
+            X_normalized_train = sklearn.preprocessing.MinMaxScaler().fit_transform(X_train)
+            X_normalized_test = sklearn.preprocessing.MinMaxScaler().fit_transform(X_test)
+            return X_normalized_train, X_normalized_test
         elif method == "other":
-            X_normalized = sklearn.preprocessing.MinMaxScaler().fit_transform(X)
+            X_normalized = sklearn.preprocessing.MinMaxScaler().fit_transform(X_train)
         else:
             return None
 
@@ -302,6 +334,25 @@ class Models_Binary:
         if model is None:
             return
         return model.predict(X_test)
+
+    @staticmethod
+    def metrics_2(y_test, y_pred, index):
+
+        results_dict = dict()
+        CM = metrics.confusion_matrix(y_test, y_pred)
+        TP = CM[1, 1]
+        TN = CM[0, 0]
+        FP = CM[1, 0]
+        FN = CM[1, 0]
+        results_dict["accuracy"] = metrics.accuracy_score(y_test, y_pred)
+        results_dict["sensitivity"] = TP / (TP + FN)
+        results_dict["specificity"] = TN / (TN + FP)
+        results_dict["PPV"] = metrics.precision_score(y_test, y_pred)
+        results_dict["NPV"] = FN / (FN + TP)
+        results_dict["roc_auc"] = metrics.roc_auc_score(y_test, y_pred)
+        results_dict["MCCscore"] = metrics.matthews_corrcoef(y_test, y_pred)
+
+        return pd.DataFrame(results_dict, index=(index,))
 
     @staticmethod
     def metrics(y_test, y_pred, index, features, text, kfold_scores=None, grid_search=None):
@@ -382,21 +433,46 @@ class Models_Binary:
         return model, scores["test_score"]
 
     @staticmethod
-    def grid_search(model, search_dict, X_train, y_train, name, index, columns_to_keep=("mean_test_score", "std_test_score", )):
-        cv = sklearn.model_selection.RepeatedKFold(n_splits=5, n_repeats=3, random_state=random_state)
-        grid_search = sklearn.model_selection.GridSearchCV(estimator=model, param_grid=search_dict, verbose=2, cv=cv,
-                                                           scoring=make_scorer(matthews_corrcoef), error_score='raise')
-        grid_search.fit(X_train, y_train)
-        model_ = grid_search.best_estimator_
-        # best_params = grid_search.best_params_
-        res_dataframe = pd.DataFrame(grid_search.cv_results_)
-        res_dataframe['Description'] = name
-        res_dataframe['Model'] = index
-        # for column in res_dataframe.columns():
-        #     if column not in columns_to_keep:
-        #         res_dataframe.drop(columns=column, inplace=True)
-        # results = grid_search.cv_results_
-        return model_, res_dataframe  # , str(best_params)# , results
+    def best_model_index(df):
+        index = df['best_score'].idxmax()
+        return df.index.tolist().index(index)
+
+    @staticmethod
+    def grid_search(model, search_dict, X_train, y_train, name, index,
+                    columns_to_keep=("mean_test_score", "std_test_score",), method="forrepetition"):
+        if method == "forrepetition":
+            res = dict()
+            cv = sklearn.model_selection.RepeatedKFold(n_splits=5, n_repeats=3, random_state=random_state)
+            grid_search = sklearn.model_selection.GridSearchCV(estimator=model, param_grid=search_dict, verbose=2,
+                                                               cv=cv,
+                                                               scoring=make_scorer(matthews_corrcoef),
+                                                               error_score='raise')
+            grid_search.fit(X_train, y_train)
+            model_ = grid_search.best_estimator_
+            res['best_score'] = grid_search.best_score_
+            res['best_params'] = str(grid_search.best_params_)
+            res['best_std'] = grid_search.cv_results_['std_test_score'][grid_search.best_index_]
+
+            return model_, pd.DataFrame(res, index=(index,))
+
+
+        else:
+            cv = sklearn.model_selection.RepeatedKFold(n_splits=5, n_repeats=3, random_state=random_state)
+            grid_search = sklearn.model_selection.GridSearchCV(estimator=model, param_grid=search_dict, verbose=2,
+                                                               cv=cv,
+                                                               scoring=make_scorer(matthews_corrcoef),
+                                                               error_score='raise')
+            grid_search.fit(X_train, y_train)
+            model_ = grid_search.best_estimator_
+            # best_params = grid_search.best_params_
+            res_dataframe = pd.DataFrame(grid_search.cv_results_)
+            res_dataframe['Description'] = name
+            res_dataframe['Model'] = index
+            # for column in res_dataframe.columns():
+            #     if column not in columns_to_keep:
+            #         res_dataframe.drop(columns=column, inplace=True)
+            # results = grid_search.cv_results_
+            return model_, res_dataframe  # , str(best_params)# , results
 
     def classify(self, name, features=None, feature_selection_method=None, normalization=("minmax",),
                  model_list=("logistic", "svm"), data_splitting_method=("over",), n_iter=1, params=None):
@@ -419,11 +495,15 @@ class Models_Binary:
         res_test = pd.DataFrame()
         res = pd.DataFrame()
 
-        X_selected = self.feature_selection(self.X, self.Y, features=features, method=feature_selection_method)
+
+        # if True:
+        #     X_train_selected, X_test_selected = self.feature_selection(self.X_train, self.X_test, features=features, method=feature_selection_method)
+        # else:
+        #     X_selected = self.feature_selection(self.X, self.Y, features=features, method=feature_selection_method)
         for n_ in normalization:
-            X_normalized = self.normalize_features(X_selected, method=n_)
+            X_train_normalized, X_test_normalized = self.normalize_features(self.X_train, self.X_test, method=n_)
             for sb_ in data_splitting_method:
-                X_train, X_test, y_train, y_test = self._set_splitting(X_normalized, self.Y, method=sb_)
+                X_train, X_test, y_train, y_test = self._set_splitting(X_train_normalized , self.y_train, X_test_normalized, self.y_test)
                 for i in range(n_iter):
                     for index in model_list:
 
@@ -445,12 +525,22 @@ class Models_Binary:
                             res = pd.concat(
                                 [res, Models_Binary.metrics(y_test, y_pred, index, features, f"{name}_{text}")], axis=0)
 
-                    if len(models):
-                        for i, model in enumerate(models):
-                            model, scores = Models_Binary.fit_and_test_model(model, X_train, y_train)
-                            y_pred = Models_Binary.test_model(X_test, model)
-                            res_test = pd.concat(
-                                [res_test, Models_Binary.metrics(y_test, y_pred, i, features, f"{name}_{i}")], axis=0)
+                    index_name = f"{name}_{res['best_score'].idxmax()}"
+                    selected_model = models[Models_Binary.best_model_index(res)]
+                    selected_model_res = res.iloc[Models_Binary.best_model_index(res), :]
+                    selected_model_res = selected_model_res.rename(index_name)
+                    selected_model_res_df = pd.DataFrame(selected_model_res).transpose()
+                    y_pred = Models_Binary.test_model(X_test, selected_model)
+                    res_test_temp = pd.concat([selected_model_res_df, Models_Binary.metrics_2(y_test, y_pred, index_name)],
+                                         axis=1)
+                    res_test = pd.concat([res_test, res_test_temp],
+                                         axis=0)
+                    # if len(models):
+                    #     for i, model in enumerate(models):
+                    #         # model, scores = Models_Binary.fit_and_test_model(model, X_train, y_train)
+                    #         y_pred = Models_Binary.test_model(X_test, selected_model)
+                    #         res_test = pd.concat(
+                    #             [res_test, Models_Binary.metrics(y_test, y_pred, i, features, f"{name}_{i}")], axis=0)
         """ OLD LOOP
         res = pd.DataFrame()
         X_selected = self.feature_selection(self.X, self.Y, features=features, method=feature_selection_method)
@@ -485,7 +575,7 @@ class Models_Binary:
 
         # res.to_excel(self.data_path + filename)
         """
-        return res, res_test
+        return res_test
 
     def plot_scores(self, results, n_subplots=8, n_rows=2, img_name="boxplots"):
         if not os.path.exists(self.data_path + "boxplots\\"):

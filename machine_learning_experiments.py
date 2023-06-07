@@ -61,7 +61,7 @@ def main():
     stats_fast_healthy.clean_aparc()
 
     res = pd.DataFrame()
-    res_test = pd.DataFrame()
+    #res_test = pd.DataFrame()
 
     # param_grid = {9: {
     #     'n_estimators': [100, 200, 300],  # Number of trees in the forest
@@ -75,24 +75,25 @@ def main():
     param_grid = {"SVM": {'C': [0.1, 1, 10], 'gamma': [0.1, 1, 10], "kernel": ["linear", "poly", "rbf"]},
                   "logistic": {'C': [0.1, 1, 10]},
                   "RF": {'n_estimators': [50, 100, 200], 'max_depth': [None, 5, 10]}}
-    rep = 1000
+    rep = 100
 
     # ripeto 1000 volte, scelgo sempre il migliore, lotesto co tutte quelle features. salvo anche la devstd e il
     # matthews del migliore
+    selected_subjects_list = dm.load_txt(BASE_PATH + f"\\fs\\test_subjects.txt")
     for nc, pt, name in zip([stats_free_MCI, stats_fast_MCI], [stats_free_healthy, stats_fast_healthy],
                             ["FreeSurfer", "FastSurfer"]):
-        model = ml.Models_Binary([nc, pt], BASE_PATH, data_path=DATA_FOLDER)
-        # model.save_dataset(model.X)
         f = dm.load_txt(BASE_PATH + f"\\fs\\selected_features0306.txt")
+        model = ml.Models_Binary([nc, pt], BASE_PATH, data_path=DATA_FOLDER, selected_subjects=selected_subjects_list, features_selected=f)
+        # model.save_dataset(model.X)
         for i in range(rep):
-            res_temp, res_test_temp = model.classify(f"test{i + 1}_{name}", features=f, params=param_grid, model_list=("RF", "SVM", "logistic"))
+            res_temp = model.classify(f"test{i + 1}_{name}", features=f, params=param_grid, model_list=("RF", "SVM", "logistic"))
             res = pd.concat([res, res_temp], axis=0)
-            res_test = pd.concat([res_test, res_test_temp], axis=0)
+            # res_test = pd.concat([res_test, res_test_temp], axis=0)
 
         res.to_excel(BASE_PATH + DATA_FOLDER + f"results_{name}.xlsx")
 
 
-    res_test.to_excel(BASE_PATH + DATA_FOLDER + "results_grid_search_test_best_models_all_features.xlsx")
+    # res_test.to_excel(BASE_PATH + DATA_FOLDER + "results_grid_search_test_best_models_all_features.xlsx")
     # # for freesurfer
     # model = ml.Models_Binary([stats_free_MCI, stats_free_healthy], BASE_PATH, data_path=DATA_FOLDER)
     # # model.save_dataset(model.X)
