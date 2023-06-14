@@ -9,7 +9,7 @@ from comparisons_updated import SummaryPlot_updated, Comparison_updated
 ADNI_PATH = ""
 # OASIS_PATH = "/media/neuropsycad/disk12t/VascoDiogo/OASIS/FS7/"
 BASE_PATH = "C:\\Users\\edoar\\Dropbox (Politecnico Di Torino Studenti)\\Tesi\\data_testing_ADNI\\"
-DATA_FOLDER = "machine_learning_0206\\"
+DATA_FOLDER = "machine_learning_1406\\"
 
 
 def main():
@@ -83,7 +83,9 @@ def main():
     for nc, pt, name in zip([stats_free_MCI, stats_fast_MCI], [stats_free_healthy, stats_fast_healthy],
                             ["FreeSurfer", "FastSurfer"]):
         f = dm.load_txt(BASE_PATH + f"\\fs\\selected_features0306.txt")
-        model = ml.Models_Binary([nc, pt], BASE_PATH, data_path=DATA_FOLDER, selected_subjects=selected_subjects_list, features_selected=f)
+
+        # model = ml.Models_Binary([nc, pt], BASE_PATH, data_path=DATA_FOLDER, selected_subjects=selected_subjects_list, features_selected=f)
+        model = ml.Models_Binary([nc, pt], BASE_PATH, data_path=DATA_FOLDER, features_selected=f)
         # model.save_dataset(model.X)
         for i in range(rep):
             res_temp = model.classify(f"test{i + 1}_{name}", features=f, params=param_grid, model_list=("RF", "SVM", "logistic"))

@@ -48,7 +48,7 @@ class Models_Binary:
         if not os.path.exists(data_path):
             os.makedirs(data_path)
         if selected_subjects is None:
-            self.X, self.Y = self._dataset_preparation()
+            self.X, self.y = self._dataset_preparation()
         else:
             selected_subjects = ft.Table.add_sub(selected_subjects)
             self.X_train, self.y_train, self.X_test, self.y_test = self._dataset_preparation(test_subjects=selected_subjects)
@@ -222,7 +222,7 @@ class Models_Binary:
 
         return X_feature_selected
 
-    def _set_splitting(self, X, y, X_test, y_test, test=0.2, method="over_manual_test"):
+    def _set_splitting(self, X, y, X_test=None, y_test=None, test=0.2, method="over"):
         """
         :param X:
         :param y:
@@ -248,6 +248,16 @@ class Models_Binary:
             Models_Binary.check_balance(y_test)
 
             # X_train, X_test, y_train, y_test = train_test_split(X_balanced, y_balanced, test_size=test, random_state=0)
+        elif method == "over":
+            # X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=test, random_state=random_state)
+            # over_sampler = im.over_sampling.RandomOverSampler(random_state=random_state)
+            X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=test, random_state=0)
+            over_sampler = im.over_sampling.SMOTE(random_state=random_state)
+            X_train, y_train = over_sampler.fit_resample(X, y)
+            # X_test, y_test = over_sampler.fit_resample(X_test, y_test)
+            Models_Binary.check_balance(y_train)
+            Models_Binary.check_balance(y_test)
+
         elif method == "over_old":
             over_sampler = im.over_sampling.RandomOverSampler(random_state=random_state)
             X_balanced, y_balanced = over_sampler.fit_resample(X, y)
@@ -304,13 +314,16 @@ class Models_Binary:
             # ft.LogWriter.log(f"n of 2: {y.count(0)}")
 
     @staticmethod
-    def normalize_features(X_train, X_test, method="minmax"):
+    def normalize_features(X_train, X_test=None, method="minmax"):
         if method == "standard":
             X_normalized = sklearn.preprocessing.StandardScaler().fit_transform(X_train)
-        elif method == "minmax":
+        elif method == "minmax_test":
             X_normalized_train = sklearn.preprocessing.MinMaxScaler().fit_transform(X_train)
             X_normalized_test = sklearn.preprocessing.MinMaxScaler().fit_transform(X_test)
             return X_normalized_train, X_normalized_test
+        elif method == "minmax":
+            X_normalized = sklearn.preprocessing.MinMaxScaler().fit_transform(X_train)
+            return X_normalized
         elif method == "other":
             X_normalized = sklearn.preprocessing.MinMaxScaler().fit_transform(X_train)
         else:
@@ -501,9 +514,11 @@ class Models_Binary:
         # else:
         #     X_selected = self.feature_selection(self.X, self.Y, features=features, method=feature_selection_method)
         for n_ in normalization:
-            X_train_normalized, X_test_normalized = self.normalize_features(self.X_train, self.X_test, method=n_)
+            # X_train_normalized, X_test_normalized = self.normalize_features(self.X_train, self.X_test, method=n_)
+            X_normalized = self.normalize_features(self.X, method=n_)
             for sb_ in data_splitting_method:
-                X_train, X_test, y_train, y_test = self._set_splitting(X_train_normalized , self.y_train, X_test_normalized, self.y_test)
+                # X_train, X_test, y_train, y_test = self._set_splitting(X_train_normalized, self.y_train, X_test_normalized, self.y_test)
+                X_train, X_test, y_train, y_test = self._set_splitting(X_normalized, self.y)
                 for i in range(n_iter):
                     for index in model_list:
 

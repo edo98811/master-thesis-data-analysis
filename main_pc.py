@@ -7,7 +7,7 @@ import os
 ADNI_PATH = ""
 # OASIS_PATH = "/media/neuropsycad/disk12t/VascoDiogo/OASIS/FS7/"
 BASE_PATH = "C:\\Users\\edoar\\Dropbox (Politecnico Di Torino Studenti)\\Tesi\\data_testing_ADNI\\"
-DATA_FOLDER = "to_combine_features\\"
+DATA_FOLDER = "mmse\\"
 def main_all():
     pd.options.mode.chained_assignment = None
     ft.LogWriter.clearlog()
@@ -68,29 +68,29 @@ def main_all():
     # stats_fast_MCI.save_stats_normalized()
     # stats_fast_healthy.save_stats_normalized()
     # #
-    # summary1 = SummaryPlot_updated("FreeSurfer", BASE_PATH, [stats_free_healthy, stats_free_MCI], d_folder=DATA_FOLDER)
-    # # summary1.scatter_plot_aseg_mmse()
+    summary1 = SummaryPlot_updated("FreeSurfer", BASE_PATH, [stats_free_healthy, stats_free_MCI], d_folder=DATA_FOLDER)
+    summary1.scatter_plot_aseg_mmse()
     # summary1.scatter_plot_aseg_normalized_linear_regression()
-    # # summary1.scatter_plot_aseg_normalized_huber_regression()
-    # # summary1.scatter_plot_aseg_normalized_regression_confidence()
-    # summary2 = SummaryPlot_updated("FastSurfer", BASE_PATH, [stats_fast_healthy, stats_fast_MCI], d_folder=DATA_FOLDER)
-    # # summary2.scatter_plot_aseg_mmse()
+    # summary1.scatter_plot_aseg_normalized_huber_regression()
+    # summary1.scatter_plot_aseg_normalized_regression_confidence()
+    summary2 = SummaryPlot_updated("FastSurfer", BASE_PATH, [stats_fast_healthy, stats_fast_MCI], d_folder=DATA_FOLDER)
+    summary2.scatter_plot_aseg_mmse()
     # summary2.scatter_plot_aseg_normalized_linear_regression()
-    #
-    # # summary2.scatter_plot_aseg_normalized_huber_regression()
-    # # summary2.scatter_plot_aseg_normalized_regression_confidence()
-    # summary3 = SummaryPlot_updated("Healthy", BASE_PATH, [stats_fast_healthy, stats_free_healthy], d_folder=DATA_FOLDER)
-    # # summary3.scatter_plot_aseg_mmse()
+
+    # summary2.scatter_plot_aseg_normalized_huber_regression()
+    # summary2.scatter_plot_aseg_normalized_regression_confidence()
+    summary3 = SummaryPlot_updated("Healthy", BASE_PATH, [stats_fast_healthy, stats_free_healthy], d_folder=DATA_FOLDER)
+    summary3.scatter_plot_aseg_mmse()
     # summary3.scatter_plot_aseg_normalized_linear_regression()
-    #
-    # # summary3.scatter_plot_aseg_normalized_huber_regression()
-    # # summary3.scatter_plot_aseg_normalized_regression_confidence()
-    # summary4 = SummaryPlot_updated("Pathologic", BASE_PATH, [stats_fast_MCI, stats_free_MCI], d_folder=DATA_FOLDER)
-    # # summary4.scatter_plot_aseg_mmse()
+
+    # summary3.scatter_plot_aseg_normalized_huber_regression()
+    # summary3.scatter_plot_aseg_normalized_regression_confidence()
+    summary4 = SummaryPlot_updated("Pathologic", BASE_PATH, [stats_fast_MCI, stats_free_MCI], d_folder=DATA_FOLDER)
+    summary4.scatter_plot_aseg_mmse()
     # summary4.scatter_plot_aseg_normalized_linear_regression()
-    #
-    # summary4.scatter_plot_aseg_normalized_huber_regression()
-    # summary4.scatter_plot_aseg_normalized_regression_confidence()
+
+    summary4.scatter_plot_aseg_normalized_huber_regression()
+    summary4.scatter_plot_aseg_normalized_regression_confidence()
 
     comp1 = Comparison_updated("Pathologic", BASE_PATH, stats_free_MCI, stats_fast_MCI, d_folder=DATA_FOLDER)
     comp2 = Comparison_updated("Healthy", BASE_PATH, stats_free_healthy, stats_fast_healthy, d_folder=DATA_FOLDER)
@@ -101,29 +101,29 @@ def main_all():
     # comp6 = Comparison_updated("FreeSurfer", BASE_PATH, stats_free_healthy, stats_free_MCI, d_folder=DATA_FOLDER,
     #                            categories=("Healthy", "Pathologic"))
 
-    comp1.stat_test(match=True)
-    comp2.stat_test(match=True)
-    comp3.stat_test()
-    comp4.stat_test()
-
-    comp1.bonferroni_correction()
-    comp2.bonferroni_correction()
-    comp3.bonferroni_correction()
-    comp4.bonferroni_correction()
-    comp1.save_data()
-    comp2.save_data()
-    comp3.save_data()
-    comp4.save_data()
-
-    #comp1.violin()
-    #comp1.bland_altmann()
+    # comp1.stat_test(match=True)
+    # comp2.stat_test(match=True)
+    # comp3.stat_test()
+    # comp4.stat_test()
     #
-    #comp2.violin()
-    #comp2.bland_altmann()
-    #
+    # comp1.bonferroni_correction()
+    # comp2.bonferroni_correction()
+    # comp3.bonferroni_correction()
+    # comp4.bonferroni_correction()
+    # comp1.save_data()
+    # comp2.save_data()
+    # comp3.save_data()
+    # comp4.save_data()
+
+    # comp1.violin()
+    # comp1.bland_altmann()
+
+    # comp2.violin()
+    # comp2.bland_altmann()
+
     # comp3.violin()
-    #comp3.bland_altmann()
-    #
+    # comp3.bland_altmann()
+
     # comp4.violin()
     #comp4.bland_altmann()
 

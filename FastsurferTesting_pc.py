@@ -1520,7 +1520,7 @@ class Comparisons:
         sd = np.std(diff, axis=0)
 
         # Create plot
-        _ax.scatter(mean, diff, s=10)
+        _ax.scatter(mean, diff, s=30)
         _ax.axhline(md, color='gray', linestyle='--')
         _ax.axhline(md + 1.96 * sd, color='gray', linestyle='--')
         _ax.axhline(md - 1.96 * sd, color='gray', linestyle='--')

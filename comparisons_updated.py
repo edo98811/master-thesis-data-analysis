@@ -1220,49 +1220,30 @@ class SummaryPlot_updated:
 
         for i, (series, legend_entry) in enumerate(zip(data, legend)):
             mmse = pd.to_numeric(series.iloc[:, 2], errors='coerce')
-            colors = np.empty(len(mmse), dtype='U10')
+            #colors = np.empty(len(mmse), dtype='U10')
 
-            # cmap = plt.cm.get_cmap('summer', 3)
-            colors[mmse > 24] = 2
-            colors[(19 < mmse) & (mmse <= 24)] = 1
-            colors[mmse <= 19] = 0
+            cmap = plt.cm.get_cmap('summer')
+            # colors[mmse > 24] = 2
+            # colors[(19 < mmse) & (mmse <= 24)] = 1
+            # colors[mmse <= 19] = 0
 
             values = pd.to_numeric(series.iloc[:, 0], errors='coerce')
             age = pd.to_numeric(series.iloc[:, 1], errors='coerce')
 
             max_ = max(values) * 1.5
             # norm = Normalize(vmin=min(mmse), vmax=max(mmse))
-            sns.scatterplot(x=age, y=values, hue=colors, ax=ax, legend="brief")
-            # ax.scatter(age, values.tolist(), c=colors, cmap=cmap)
-
-            # x = np.linspace(min(age), max(age), 100)
-            #
-            #
-            # huber_loss_model = HuberRegressor().fit(np.array(age).reshape(-1, 1),
-            #                                         np.array(values).reshape(-1, 1).ravel())
-            # # r2.append(r2_score(linear_model.predict(avg.reshape(-1,1), values).reshape(-1,1)
-            # results = huber_loss_model.predict(x.reshape(-1, 1))
-            #
-            # if series.index.tolist():
-            #     ax.plot(x, results,
-            #             label="_legend_entry")
-            #
-            # R2 = r2_score(np.array(values).reshape(-1, 1), huber_loss_model.predict(np.array(age).reshape(-1, 1)))
-            #
-            # self.fitted_models["legend_entry"].append(legend_entry)
-            # self.fitted_models["first_coefficient"].append(huber_loss_model.coef_[0])
-            # self.fitted_models["intercept"].append(huber_loss_model.intercept_)
-            # self.fitted_models["R2"].append(R2)
-            # self.fitted_models["message"].append(
-            #     f"{legend_entry} equation: {huber_loss_model.coef_[0]}x + {huber_loss_model.intercept_}  r2: {R2}")
+            # sns.scatterplot(x=age, y=values, hue=colors, ax=ax, legend="brief")
+            ax.scatter(age, values.tolist(), c=mmse, cmap=cmap)
+        plt.colorbar()
 
         # Add a legend and axis labels
         # Add colorbar to show color scale
-        # cbar = plt.colorbar(ax=ax, label="mmse")
+
         # cbar.set_ticks([0, 1, 2])
         # cbar.set_ticklabels(['< 19', '19 - 24', '> 24'])
         # sm.set_array([])  # only needed for matplotlib < 3.1
         # plt.colorbar(sm, ax=ax)
+        ax.collections[0].colorbar.ax.set_ylim(14, 30)
         ax.axis(ymin=0, ymax=max_)
         ax.legend()
         ax.set_xlabel('Age')
@@ -1716,7 +1697,7 @@ class Comparison_updated:
         sd = np.std(diff, axis=0)
 
         # Create plot
-        _ax.scatter(mean, diff, s=10)
+        _ax.scatter(mean, diff, s=30)
         _ax.axhline(md, color='gray', linestyle='--')
         _ax.axhline(md + 1.96 * sd, color='gray', linestyle='--')
         _ax.axhline(md - 1.96 * sd, color='gray', linestyle='--')
@@ -1726,6 +1707,9 @@ class Comparison_updated:
         _ax.legend(['Mean difference', '95% limits of agreement'])
         _ax.ticklabel_format(style='sci', axis='x', scilimits=(0, 0), useMathText=True)
         _ax.ticklabel_format(style='sci', axis='y', scilimits=(0, 0), useMathText=True)
+        ylimtop = np.mean(diff) - max(mean)/10
+        ylimbottom = np.mean(diff) + max(mean)/10
+        _ax.set_ylim(top = ylimtop, bottom=ylimbottom)
 
     @staticmethod
     def saphiro_test(data):
@@ -1944,6 +1928,7 @@ class Comparison_updated:
         if p_value > 0.05:
             result = f"p-value: {p_value} - null hypothesis cannot be rejected"
             outcome = 0
+
         else:
             result = f"p-value: {p_value} - null hypothesis rejected"
             outcome = 1
