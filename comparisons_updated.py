@@ -1217,12 +1217,12 @@ class SummaryPlot_updated:
     def __scatter_plot_mmse(self, ax, data, title, legend):
         max_ = 0
         LogWriter.log(f"    mmse color coded plot from normalized data {' | '.join(legend)} ")
-
+        scatter = None
         for i, (series, legend_entry) in enumerate(zip(data, legend)):
             mmse = pd.to_numeric(series.iloc[:, 2], errors='coerce')
-            #colors = np.empty(len(mmse), dtype='U10')
+            # colors = np.empty(len(mmse), dtype='U10')
 
-            cmap = plt.cm.get_cmap('summer')
+            cmap = plt.cm.get_cmap('brg')
             # colors[mmse > 24] = 2
             # colors[(19 < mmse) & (mmse <= 24)] = 1
             # colors[mmse <= 19] = 0
@@ -1233,8 +1233,15 @@ class SummaryPlot_updated:
             max_ = max(values) * 1.5
             # norm = Normalize(vmin=min(mmse), vmax=max(mmse))
             # sns.scatterplot(x=age, y=values, hue=colors, ax=ax, legend="brief")
-            ax.scatter(age, values.tolist(), c=mmse, cmap=cmap)
-        plt.colorbar()
+            scatter = ax.scatter(age, values.tolist(), c=mmse, cmap=cmap)
+            norm = plt.Normalize(vmin=14, vmax=30)
+            scatter.set_norm(norm)
+        if scatter:
+            clb = plt.colorbar(scatter, ax=ax)
+
+            # clb.set_ticks([14, 30])
+        # clb.set_clim(14, 30)
+        # colorbar.
 
         # Add a legend and axis labels
         # Add colorbar to show color scale
@@ -1243,9 +1250,9 @@ class SummaryPlot_updated:
         # cbar.set_ticklabels(['< 19', '19 - 24', '> 24'])
         # sm.set_array([])  # only needed for matplotlib < 3.1
         # plt.colorbar(sm, ax=ax)
-        ax.collections[0].colorbar.ax.set_ylim(14, 30)
+        # ax.collections[0].colorbar.ax.set_ylim(14, 30)
         ax.axis(ymin=0, ymax=max_)
-        ax.legend()
+        # ax.legend()
         ax.set_xlabel('Age')
         ax.set_ylabel('Data')
         ax.ticklabel_format(style='sci', axis='y', scilimits=(0, 0), useMathText=True)
@@ -1517,7 +1524,8 @@ class Comparison_updated:
 
         return df1, df2
 
-    def bland_altmann(self, data=("aseg_normalized", "aparcL_cleaned", "aparcR_cleaned"), c_to_keep=None, n_subplots=4, n_rows=2,
+    def bland_altmann(self, data=("aseg_normalized", "aparcL_cleaned", "aparcR_cleaned"), c_to_keep=None, n_subplots=4,
+                      n_rows=2,
                       folder="bland_altmann",
                       c_to_exclude=("ID")):
 
@@ -1532,7 +1540,8 @@ class Comparison_updated:
             img_name = f"{self.data_path}{folder}\\img_{d}_ba_{self.name}"
             self.iterate(self.__bland_altman_plot, d, c_to_keep, n_subplots, n_rows, c_to_exclude, img_name)
 
-    def violin(self, data=("aseg_normalized", "aparcL_cleaned", "aparcR_cleaned"), c_to_keep=None, n_subplots=10, n_rows=2, c_to_exclude=("ID"),
+    def violin(self, data=("aseg_normalized", "aparcL_cleaned", "aparcR_cleaned"), c_to_keep=None, n_subplots=10,
+               n_rows=2, c_to_exclude=("ID"),
                folder="violin"):
 
         if not os.path.exists(self.data_path + folder):
@@ -1707,9 +1716,9 @@ class Comparison_updated:
         _ax.legend(['Mean difference', '95% limits of agreement'])
         _ax.ticklabel_format(style='sci', axis='x', scilimits=(0, 0), useMathText=True)
         _ax.ticklabel_format(style='sci', axis='y', scilimits=(0, 0), useMathText=True)
-        ylimtop = np.mean(diff) - max(mean)/10
-        ylimbottom = np.mean(diff) + max(mean)/10
-        _ax.set_ylim(top = ylimtop, bottom=ylimbottom)
+        ylimtop = np.mean(diff) - max(mean) / 10
+        ylimbottom = np.mean(diff) + max(mean) / 10
+        _ax.set_ylim(top=ylimtop, bottom=ylimbottom)
 
     @staticmethod
     def saphiro_test(data):
@@ -1801,7 +1810,7 @@ class Comparison_updated:
                         #                          "d_value": cd}})
 
                         if isinstance(column_to_compare, str):
-                            r_all.append({"name":f"{d}_{column_to_compare}",# f"{self.name}_{d}_{column_to_compare}",
+                            r_all.append({"name": f"{d}_{column_to_compare}",  # f"{self.name}_{d}_{column_to_compare}",
                                           "stat_test": {"result": r,
                                                         "p_value": p,
                                                         "outcome": o},
@@ -1986,7 +1995,7 @@ class Comparison_updated:
             return "NaN", "NaN"
         elif test == "m":
             return "NaN", "NaN"
-        elif test=="only_message":
+        elif test == "only_message":
             sd = _a
 
             if sd < 0.2:
@@ -1999,7 +2008,6 @@ class Comparison_updated:
                 string = "Large effect size"
 
             return string
-
 
     @staticmethod
     def __ICC(_a, _b):
