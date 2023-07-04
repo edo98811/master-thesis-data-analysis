@@ -9,7 +9,7 @@ from comparisons_updated import SummaryPlot_updated, Comparison_updated
 ADNI_PATH = ""
 # OASIS_PATH = "/media/neuropsycad/disk12t/VascoDiogo/OASIS/FS7/"
 BASE_PATH = "C:\\Users\\edoar\\Dropbox (Politecnico Di Torino Studenti)\\Tesi\\data_testing_ADNI\\"
-DATA_FOLDER = "machine_learning_1406\\"
+DATA_FOLDER = "machine_learning_0407\\"
 
 
 def main():
@@ -60,7 +60,7 @@ def main():
     stats_fast_MCI.clean_aparc()
     stats_fast_healthy.clean_aparc()
 
-    res = pd.DataFrame()
+
     #res_test = pd.DataFrame()
 
     # param_grid = {9: {
@@ -82,6 +82,7 @@ def main():
     selected_subjects_list = dm.load_txt(BASE_PATH + f"\\fs\\test_subjects.txt")
     for nc, pt, name in zip([stats_free_MCI, stats_fast_MCI], [stats_free_healthy, stats_fast_healthy],
                             ["FreeSurfer", "FastSurfer"]):
+        res = pd.DataFrame()
         f = dm.load_txt(BASE_PATH + f"\\fs\\selected_features0306.txt")
 
         # model = ml.Models_Binary([nc, pt], BASE_PATH, data_path=DATA_FOLDER, selected_subjects=selected_subjects_list, features_selected=f)

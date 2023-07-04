@@ -29,7 +29,7 @@ idee
 
 """
 
-random_state = 100
+random_state = 200
 
 
 class Models_Binary:
@@ -51,7 +51,8 @@ class Models_Binary:
             self.X, self.y = self._dataset_preparation()
         else:
             selected_subjects = ft.Table.add_sub(selected_subjects)
-            self.X_train, self.y_train, self.X_test, self.y_test = self._dataset_preparation(test_subjects=selected_subjects)
+            self.X_train, self.y_train, self.X_test, self.y_test = self._dataset_preparation(
+                test_subjects=selected_subjects)
         ft.LogWriter.log("dataset object created")
 
     @staticmethod
@@ -202,6 +203,7 @@ class Models_Binary:
         df.drop(selected_subjects, inplace=True)
 
         return test_set
+
     @staticmethod
     def feature_selection(X, y, features=None, method=1):
         X_feature_selected = None
@@ -213,7 +215,7 @@ class Models_Binary:
                                                                    k=10).fit_transform(
                     X, y)
         else:
-            if method==0:
+            if method == 0:
                 X_train_feature_selected = X[X.columns.intersection(features)]
                 X_test_feature_selected = y[y.columns.intersection(features)]
                 return X_train_feature_selected, X_test_feature_selected
@@ -251,7 +253,7 @@ class Models_Binary:
         elif method == "over":
             # X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=test, random_state=random_state)
             # over_sampler = im.over_sampling.RandomOverSampler(random_state=random_state)
-            X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=test, random_state=0)
+            X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=test, random_state=random_state)
             over_sampler = im.over_sampling.SMOTE(random_state=random_state)
             X_train, y_train = over_sampler.fit_resample(X, y)
             # X_test, y_test = over_sampler.fit_resample(X_test, y_test)
@@ -508,7 +510,6 @@ class Models_Binary:
         res_test = pd.DataFrame()
         res = pd.DataFrame()
 
-
         # if True:
         #     X_train_selected, X_test_selected = self.feature_selection(self.X_train, self.X_test, features=features, method=feature_selection_method)
         # else:
@@ -546,8 +547,10 @@ class Models_Binary:
                     selected_model_res = selected_model_res.rename(index_name)
                     selected_model_res_df = pd.DataFrame(selected_model_res).transpose()
                     y_pred = Models_Binary.test_model(X_test, selected_model)
-                    res_test_temp = pd.concat([selected_model_res_df, Models_Binary.metrics_2(y_test, y_pred, index_name)],
-                                         axis=1)
+                    res_test_temp = pd.concat(
+                        [selected_model_res_df, Models_Binary.metrics_2(y_test, y_pred, index_name)],
+                        axis=1)
+                    pd.DataFrame(np.concatenate((X_test,  np.expand_dims(np.array(y_test), 1),  np.expand_dims(y_pred, 1)), axis=1)).to_excel(self.data_path + "test_results.xlsx")
                     res_test = pd.concat([res_test, res_test_temp],
                                          axis=0)
                     # if len(models):
