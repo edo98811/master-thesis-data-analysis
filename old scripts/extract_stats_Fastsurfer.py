@@ -4,7 +4,7 @@ import pandas as pd
 import shutil
 import csv
 import re
-import data_manipulation as dm
+import data_manipulation_helpers as dm
 
 
 def extract_path_all(filename, base_path):

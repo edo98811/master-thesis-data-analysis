@@ -4,7 +4,7 @@ import os
 import matplotlib.pyplot as plt
 import scipy as sp
 from scipy.stats import shapiro
-import data_manipulation as dm
+import data_manipulation_helpers as dm
 
 """
 questo file serve per calcolare il recap dei risultati degli algoritmi di machine learning come salvati dallo script, si carica l'excel e poi si pososno richiamare funzioni per fare i test statisticei e calcolare le metriche di riepilogo 

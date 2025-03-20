@@ -1,5 +1,5 @@
-import data_manipulation as dm
-import data_visualization as dv
+import data_manipulation_helpers as dm
+import data_visualization_helpers as dv
 import pandas as pd
 import re
 import os

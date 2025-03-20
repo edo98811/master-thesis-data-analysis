@@ -2,7 +2,7 @@ import matplotlib.pyplot as plt
 import torch
 import numpy as np
 import re
-import data_manipulation as dm
+import data_manipulation_helpers as dm
 
 def see_random_slice(img):
     torch.manual_seed(42)

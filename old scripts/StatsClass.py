@@ -80,6 +80,7 @@ class Comparison2:
                     b = pd.to_numeric(_df2.loc[:, column_to_compare], errors='coerce')
 
                     if a.any() and b.any() and (a.notnull().all() and b.notnull().all()):
+                        pass
 
     def violin(self, data="aseg", columns=None, n_subplots=10, n_rows=2, c_to_exclude=[]):
 

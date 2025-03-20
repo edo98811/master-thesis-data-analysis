@@ -1,4 +1,4 @@
-import data_manipulation as dm
+import data_manipulation_helpers as dm
 import pandas as pd
 from scipy import stats
 import matplotlib.pyplot as plt

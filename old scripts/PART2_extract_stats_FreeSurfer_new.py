@@ -4,7 +4,7 @@ import pandas as pd
 import shutil
 import csv
 import re
-import data_manipulation as dm
+import data_manipulation_helpers as dm
 
 BASE_PATH = "/media/neuropsycad/disk12t/VascoDiogo/OASIS/FS7/"
 SAVE_PATH = '/media/neuropsycad/disk12t/EdoardoFilippiMasterThesis/Stats_FreeSurfer/'

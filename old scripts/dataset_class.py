@@ -5,7 +5,7 @@ import pandas as pd
 from skimage import io, transform
 import numpy as np
 import matplotlib.pyplot as plt
-from data_manipulation import load_dict, read_img
+from data_manipulation_helpers import load_dict, read_img
 from torch.utils.data import Dataset, DataLoader
 from math import floor
 from torchvision import transforms, utils

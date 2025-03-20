@@ -1,7 +1,7 @@
 import FastsurferTesting_pc as ft
 import pandas as pd
 import numpy as np
-from comparisons_updated import SummaryPlot_updated, Comparison_updated
+from compare_results import SummaryPlot_updated, Comparison_updated
 import os
 
 ADNI_PATH = ""

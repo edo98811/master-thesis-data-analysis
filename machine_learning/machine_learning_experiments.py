@@ -1,10 +1,10 @@
 import machine_learning as ml
 import FastsurferTesting_pc as ft
-import comparisons_updated as cu
+import compare_results as cu
 import pandas as pd
 import numpy as np
-import data_manipulation as dm
-from comparisons_updated import SummaryPlot_updated, Comparison_updated
+import data_manipulation_helpers as dm
+from compare_results import SummaryPlot_updated, Comparison_updated
 
 ADNI_PATH = ""
 # OASIS_PATH = "/media/neuropsycad/disk12t/VascoDiogo/OASIS/FS7/"

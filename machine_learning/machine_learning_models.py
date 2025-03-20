@@ -5,9 +5,9 @@ from sklearn.linear_model import LogisticRegression
 import sklearn.feature_selection as feature_selection
 import pandas as pd
 import os
-import data_manipulation as dm
+import data_manipulation_helpers as dm
 import imblearn as im
-import comparisons_updated as cu
+import compare_results as cu
 import FastsurferTesting_pc as ft
 import numpy as np
 import missingno as msno

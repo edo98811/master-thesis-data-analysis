@@ -7,7 +7,7 @@ from scipy import stats
 import scipy as sp
 import seaborn as sns
 from collections import defaultdict
-import data_manipulation as dm
+import data_manipulation_helpers as dm
 import numpy as np
 from copy import deepcopy
 import pingouin as pg

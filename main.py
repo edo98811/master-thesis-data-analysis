@@ -1,5 +1,5 @@
 import FastsurferTesting_workstation as ft
-import comparisons_updated as ftu
+import compare_results as ftu
 import pandas as pd
 import numpy as np
 
