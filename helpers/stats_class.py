@@ -3,7 +3,7 @@ import re
 import pandas as pd
 from copy import deepcopy
 from FastsurferTesting_workstation import Table  # Replace 'some_module' with the actual module name where Table and LogWriter are defined
-from LogWriter import LogWriter
+from helpers.LogWriter import LogWriter
 
 """
 cose da fare

@@ -11,7 +11,7 @@ import pingouin as pg
 # from statsmodels.stats import shapiro
 # import dropboxAPI
 import subprocess
-from LogWriter import LogWriter
+from helpers.LogWriter import LogWriter
 # todo altro:
 """
 

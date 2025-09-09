@@ -8,7 +8,7 @@ import data_manipulation_helpers as dm
 import numpy as np
 from copy import deepcopy
 import pingouin as pg
-from LogWriter import LogWriter
+from helpers.LogWriter import LogWriter
 # from statsmodels.stats import shapiro
 # import dropboxAPI
 import subprocess
